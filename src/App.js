@@ -1,23 +1,11 @@
 import React, { useState } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Routes
-} from 'react-router-dom';
-import addSelloutdata from "./components/add-selloutdata.component";
+import {  BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import AddSelloutdata from "./components/add-selloutdata.component.js";
+import MyMenu from "./components/menu.component.js";
+import HomeComponent from "./components/home.component.js";
 import { createBrowserHistory as createHistory } from "history";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
-import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-} from "reactstrap";
 
 const history = createHistory();
 
@@ -31,22 +19,12 @@ const MissingPage = () => <h1>404</h1>
 
   return (
     <div className="App">
-      <Router history={history}>
-        <Navbar color="light" light expand="md">
-          <NavbarBrand href="/">Ecommerce Sellout</NavbarBrand>
-          <NavbarToggler onClick={toggle} />
-          <Collapse isOpen={isOpen} navbar>
-            <Nav className="ml-auto" navbar>
-              <NavItem>
-                <NavLink href="/">Home</NavLink>
-              </NavItem>
-            </Nav>
-          </Collapse>
-        </Navbar>
-        <Link to='/'>Go to Home</Link> <br />
+      <Router history = {history}>
+        <MyMenu/>
         <Routes>
-          <Route path="/" component={ addSelloutdata } />
-          <Route component={MissingPage} />
+          <Route path="/" exact element={ <HomeComponent/> } />
+          <Route path="/add" exact element={ <AddSelloutdata/> } />
+          <Route MissingPage element={<MissingPage/>}></Route>
         </Routes>
       </Router>
     </div>
