@@ -1,0 +1,94 @@
+import {
+    CREATE_SELLOUTDATA,
+    RETRIEVE_SELLOUTDATA,
+    UPDATE_SELLOUTDATA,
+    DELETE_SELLOUTDATA,
+    DELETE_ALL_SELLOUTDATA
+  } from "./type";
+
+  import SellOutDataService from "../services/selloutdata";
+
+  export const createSellOutData = (name) => async(dispatch) => {
+    try{
+        const res = await SellOutDataService.create({name});
+
+        dispatch({
+            type: CREATE_SELLOUTDATA,
+            payload: res.data,
+          });
+        
+          return Promise.resolve(res.data); 
+
+    } catch (err){
+        return Promise.reject(err);
+    }
+  }
+
+  export const retrieveSellOutData = () => async (dispatch) => {
+    try {
+      const res = await SellOutDataService.getAll();
+  
+      dispatch({
+        type: RETRIEVE_SELLOUTDATA,
+        payload: res.data,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  export const retrieveById = (id) => async(dispatch) => {
+    try {
+      const res = await SellOutDataService.get(id);
+  
+      dispatch({
+        type: RETRIEVE_SELLOUTDATA,
+        payload: res.data,
+      });
+    }catch (err) {
+      console.log(err);
+    }
+  }
+
+  export const updateSellOutData = (id, data) => async (dispatch) => {
+    try {
+      const res = await SellOutDataService.update(id, data);
+  
+      dispatch({
+        type: UPDATE_SELLOUTDATA,
+        payload: data,
+      });
+  
+      return Promise.resolve(res.data);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  };
+
+  export const deleteSellOutData = (id) => async (dispatch) => {
+    try {
+      await SellOutDataService.delete(id);
+  
+      dispatch({
+        type: DELETE_SELLOUTDATA,
+        payload: { id },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  export const deleteAllSellOutData = () => async (dispatch) => {
+    try {
+      const res = await SellOutDataService.deleteAll();
+  
+      dispatch({
+        type: DELETE_ALL_SELLOUTDATA,
+        payload: res.data,
+      });
+  
+      return Promise.resolve(res.data);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  };
