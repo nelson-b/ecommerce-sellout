@@ -8,7 +8,7 @@ import {
 
   import SellOutDataService from "../services/selloutdata";
 
-  export const createSellOutData = (name) => async(dispatch) => {
+  export const sellOutData = (name) => async(dispatch) => {
     try{
         const res = await SellOutDataService.create({name});
 
