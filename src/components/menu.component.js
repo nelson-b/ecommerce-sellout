@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Collapse,
   Navbar,
@@ -9,27 +9,20 @@ import {
   NavLink
 } from "reactstrap";
 
-export default class MyMenu extends React.Component {
-  constructor(props) {
-    super(props);
+function MyMenu(){
 
-    this.toggle = this.toggle.bind(this);
-    this.state = {
-      isOpen: false
-    };
-  }
-  toggle() {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  }
-  render() {
+  const toggle = () => {
+    toggleNavbar(!isOpen);
+  };
+  
+  const [isOpen, toggleNavbar] = useState(false);
+
     return (
       <div>
         <Navbar color="light" light expand="md">
           <NavbarBrand href="/">Ecommerce Sellout</NavbarBrand>
-          <NavbarToggler onClick={this.toggle} />
-          <Collapse isOpen={this.state.isOpen} navbar>
+          <NavbarToggler onClick={toggle} />
+          <Collapse isOpen={isOpen} navbar>
             <Nav className="ml-auto" navbar>
               <NavItem>
                 <NavLink href="/">Home</NavLink>
@@ -42,5 +35,6 @@ export default class MyMenu extends React.Component {
         </Navbar>
       </div>
     );
-  }
 }
+
+export default MyMenu
