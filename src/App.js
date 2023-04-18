@@ -15,16 +15,16 @@ function App() {
     setIsOpen(!isOpen);
   };
 
-const MissingPage = () => <h1>404</h1>
+const MissingPage = () => <h1>404 - Page not found</h1>
 
   return (
     <div className="App">
       <Router history = {history}>
         <MyMenu/>
         <Routes>
-          <Route path="/" exact element={ <HomeComponent/> } />
+          <Route path="/" element={ <HomeComponent/> } />
           <Route path="/add" exact element={ <AddSelloutdata/> } />
-          <Route MissingPage element={<MissingPage/>}></Route>
+          <Route path="*" element={ <MissingPage/> } />
         </Routes>
       </Router>
     </div>
