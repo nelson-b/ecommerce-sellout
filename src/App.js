@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import {  BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import AddSelloutdata from "./components/add-selloutdata.component.js";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import PartnerComponent from "./components/partner.component.js";
 import MyMenu from "./components/menu.component.js";
 import HomeComponent from "./components/home.component.js";
 import { createBrowserHistory as createHistory } from "history";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 const history = createHistory();
@@ -15,16 +15,16 @@ function App() {
     setIsOpen(!isOpen);
   };
 
-const MissingPage = () => <h1>404 - Page not found</h1>
+  const MissingPage = () => <h1>404 - Page not found</h1>;
 
   return (
     <div className="App">
-      <Router history = {history}>
-        <MyMenu/>
+      <Router history={history}>
+        <MyMenu />
         <Routes>
-          <Route path="/" element={ <HomeComponent/> } />
-          <Route path="/add" exact element={ <AddSelloutdata/> } />
-          <Route path="*" element={ <MissingPage/> } />
+          <Route path="/" element={<HomeComponent />} />
+          <Route path="/addPartner" exact element={<PartnerComponent />} />
+          <Route path="*" element={<MissingPage />} />
         </Routes>
       </Router>
     </div>
