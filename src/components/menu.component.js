@@ -1,10 +1,4 @@
 import React, { useState } from "react";
-// import { Navbar, NavbarBrand, NavbarToggler, Nav, NavItem, NavLink, Collapse, NavbarText,Dropdown,
-//   UncontrolledDropdown,
-//   DropdownToggle,
-//   DropdownMenu,
-//   DropdownItem
-//  } from "reactstrap";
 import {Nav,  Navbar, NavDropdown, Form, Container, Button, Image } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from "../images/schneider-electric-logo.png"
