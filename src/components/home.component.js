@@ -1,10 +1,21 @@
 import React, { Component } from "react";
-import { Card, CardBody, CardTitle, CardSubtitle, CardText, Button } from "reactstrap";
+import { connect } from "react-redux";
+import { sellOutData } from "../actions/selloutaction";
+import MyMenu from "./menu.component.js";
+import { Breadcrumb, BreadcrumbItem } from "react-bootstrap";
+import { BiHome } from 'react-icons/bi';
 
 function Home(){
-    return (
-        <h1>This is the home page</h1>
+    return(
+        <>
+        <MyMenu/>
+        <div className="padding:5;">
+        <Breadcrumb tag="nav">
+            <BreadcrumbItem active style={{width:100}}><><BiHome/>Home</></BreadcrumbItem>
+        </Breadcrumb>
+        </div>
+        </>
     );
 }
 
-export default Home;
+export default connect(null, { sellOutData })(Home);
