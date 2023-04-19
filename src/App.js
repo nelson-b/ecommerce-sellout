@@ -5,7 +5,6 @@ import ErrorPageComponent from "./components/error-page.component.js";
 import HomeComponent from "./components/home.component.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
-import homeComponent from "./components/home.component.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
