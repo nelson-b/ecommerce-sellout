@@ -11,14 +11,18 @@ function MyMenu(args){
 
   const [username, setLoggedInUsrName] = useState("Jean-Pascal");
   const [showNotifiation, setshowNotification] = useState(false);
-  const [notificationCount, setnotificationCount] = useState(1);
+  const [notificationCount, setnotificationCount] = useState(1); //currently set with test values
 
+  //set current notification count
   const setNotification = (value) => setnotificationCount(value);
+  //set username
   const setUsername = (usrname) => setLoggedInUsrName(usrname);
+  //show/hide notification
   const toggleShowNotification = () => {
     setshowNotification(!showNotifiation);
     setnotificationCount(0);
   }
+
   const [position, setPosition] = useState('top-start');
 
     return (
@@ -53,7 +57,7 @@ function MyMenu(args){
               </Toast>
               </ToastContainer>
             </Nav.Link>
-              <NavDropdown align="end" title={
+            <NavDropdown onClick={() => setshowNotification(false)} align="end" title={
                     <div>
                         <Image src={loginUserPic} style={{ height: 35, width: 35, padding:6 }} roundedCircle></Image>
                         <b>{username}</b>
@@ -61,7 +65,7 @@ function MyMenu(args){
                   } className="pull-right" id="navbarScrollingDropdown">
                 <NavDropdown.Item href="/action1">Action 1</NavDropdown.Item>
                 <NavDropdown.Item href="/action2">Action 2</NavDropdown.Item>
-              </NavDropdown>
+             </NavDropdown>
           </Nav>
         </Navbar.Collapse>
       </Container>
