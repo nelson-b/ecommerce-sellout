@@ -1,37 +1,57 @@
 import React, { useState } from "react";
-import {Nav,  Navbar, NavDropdown, Container, Image, Badge, Button, Stack } from 'react-bootstrap';
+import {Nav,  Navbar, NavDropdown, Container, Image, Badge, Button, Toast,
+  ToastContainer } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from './../../images/schneider-electric-logo.png'
 import loginUserPic from "./../../images/loginUser.jpg";
 import { AiFillBell } from 'react-icons/ai';
 import './menu.component.css';
-import { Link } from "react-router-dom";
 
 function MyMenu(args){
 
-  const toggle = () => {
-    toggleNavbar(!isOpen);
-  };
-
-  const handleSelect = (eventKey) => setLoggedInUsrName(eventKey);
-  const [selectedKey, SetKey] = useState("home"); 
   const [username, setLoggedInUsrName] = useState("Jean-Pascal");
-  const [isOpen, toggleNavbar] = useState(false);
-  
+  const [showNotifiation, setshowNotification] = useState(false);
+  const [notificationCount, setnotificationCount] = useState(1);
+
+  const setNotification = (value) => setnotificationCount(value);
+  const setUsername = (usrname) => setLoggedInUsrName(usrname);
+  const toggleShowNotification = () => {
+    setshowNotification(!showNotifiation);
+    setnotificationCount(0);
+  }
+  const [position, setPosition] = useState('top-start');
+
     return (
-    <Navbar bg="light" collapseOnSelect fixed="top" variant="light">
+    <Navbar bg="light" collapseOnSelect variant="light">
       <Container fluid>
         <Navbar.Brand>
-          <Link to="/">
+          <Nav.Link href="/">
             <img alt="logo" src={logo} style={{ height: 70, width: 200 }} />
-          </Link>
+          </Nav.Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav className="me-auto"></Nav>
+        <Nav className="me-auto">
+        </Nav>
         <Nav>
             <Nav.Link>
-              <Button size="lg" variant="light"><AiFillBell/><Badge pill bg="danger">9</Badge></Button>
+              <Button size="lg" variant="light" onClick={toggleShowNotification}>
+                <AiFillBell/><Badge pill bg="danger">{ notificationCount }</Badge>
+              </Button>
+              <ToastContainer containerPosition="position-relative">
+              <Toast show={showNotifiation} onClose={toggleShowNotification}>
+                <Toast.Header>
+                  <img
+                    src="holder.js/20x20?text=%20"
+                    className="rounded me-2"
+                    alt=""
+                  />
+                  <strong className="me-auto">Notifications</strong>
+                  <small>11 mins ago</small>
+                </Toast.Header>
+                <Toast.Body>You have got one inbox message!!</Toast.Body>
+              </Toast>
+              </ToastContainer>
             </Nav.Link>
               <NavDropdown align="end" title={
                     <div>

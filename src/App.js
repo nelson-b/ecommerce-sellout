@@ -15,7 +15,7 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={ <HomeComponent/> } />
+          <Route exact path="/" element={ <HomeComponent/> } />
           <Route path="*" element={ <ErrorPageComponent/> } />
         </Routes>
       </Router>
