@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import {Nav,  Navbar, NavDropdown, Container, Image } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import logo from "../images/schneider-electric-logo.png"
-import loginUserPic from "../images/loginUser.jpg";
+import logo from './../../images/schneider-electric-logo.png'
+import loginUserPic from "./../../images/loginUser.jpg";
 import { AiFillBell } from 'react-icons/ai';
+import './menu.component.css';
 
 function MyMenu(args){
 
@@ -12,13 +13,13 @@ function MyMenu(args){
   };
 
   const handleSelect = (eventKey) => setLoggedInUsrName(eventKey);
-  const [selectedKey, SetKey] = useState(0); 
+  const [selectedKey, SetKey] = useState("home"); 
   const [username, setLoggedInUsrName] = useState("Jean-Pascal");
   const [isOpen, toggleNavbar] = useState(false);
   
     return (
     <>
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="dark" expand="lg" collapseOnSelect fixed="top" variant="dark">
       <Container fluid>
         <Navbar.Brand href="/">
           <img alt="logo" src={logo} style={{ height: 70, width: 200 }} />
@@ -29,13 +30,16 @@ function MyMenu(args){
             style={{ maxHeight: '100px' }}
             navbarScroll>
             <Nav.Item>
-              <Nav.Link eventKey={1} href="/">BU Split</Nav.Link>
+              <Nav.Link eventKey="home" href="/">Home</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey={2} href="/">Data Input</Nav.Link>
+              <Nav.Link eventKey="busplit" href="/">BU Split</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey={3} href="/">Partner</Nav.Link>
+              <Nav.Link eventKey="datainput" href="/">Data Input</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="partner" href="/">Partner</Nav.Link>
             </Nav.Item>
           </Nav>
           <Nav>

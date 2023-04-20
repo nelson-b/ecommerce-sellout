@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { sellOutData } from "../actions/selloutaction";
-import MyMenu from "./menu.component.js";
+import MyMenu from "./menu/menu.component.js";
 import { Breadcrumb, BreadcrumbItem } from "react-bootstrap";
 import { BiHome } from 'react-icons/bi';
 
