@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import {Nav,  Navbar, NavDropdown, Container, Image } from 'react-bootstrap';
+import {Nav,  Navbar, NavDropdown, Container, Image, Badge, Button, Stack } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from './../../images/schneider-electric-logo.png'
 import loginUserPic from "./../../images/loginUser.jpg";
 import { AiFillBell } from 'react-icons/ai';
 import './menu.component.css';
+import { Link } from "react-router-dom";
 
 function MyMenu(args){
 
@@ -18,36 +19,24 @@ function MyMenu(args){
   const [isOpen, toggleNavbar] = useState(false);
   
     return (
-    <>
-    <Navbar bg="dark" expand="lg" collapseOnSelect fixed="top" variant="dark">
+    <Navbar bg="light" collapseOnSelect fixed="top" variant="light">
       <Container fluid>
-        <Navbar.Brand href="/">
-          <img alt="logo" src={logo} style={{ height: 70, width: 200 }} />
+        <Navbar.Brand>
+          <Link to="/">
+            <img alt="logo" src={logo} style={{ height: 70, width: 200 }} />
+          </Link>
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="navbarScroll" />
-        <Navbar.Collapse id="navbarScroll">
-          <Nav variant="features" activeKey={selectedKey} onSelect={handleSelect} className="me-auto my-2 my-lg-0"
-            style={{ maxHeight: '100px' }}
-            navbarScroll>
-            <Nav.Item>
-              <Nav.Link eventKey="home" href="/">Home</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link eventKey="busplit" href="/">BU Split</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link eventKey="datainput" href="/">Data Input</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link eventKey="partner" href="/">Partner</Nav.Link>
-            </Nav.Item>
-          </Nav>
-          <Nav>
-              <Nav.Link><AiFillBell/></Nav.Link>
-              <NavDropdown title={
-                <div className="pull-right">
-                        <Image src={loginUserPic} style={{ height: 30, width: 30, padding:5 }} roundedCircle></Image>
-                        {username}
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="me-auto"></Nav>
+        <Nav>
+            <Nav.Link>
+              <Button size="lg" variant="light"><AiFillBell/><Badge pill bg="danger">9</Badge></Button>
+            </Nav.Link>
+              <NavDropdown align="end" title={
+                    <div>
+                        <Image src={loginUserPic} style={{ height: 35, width: 35, padding:6 }} roundedCircle></Image>
+                        <b>{username}</b>
                     </div>
                   } className="pull-right" id="navbarScrollingDropdown">
                 <NavDropdown.Item href="/action1">Action 1</NavDropdown.Item>
@@ -57,7 +46,6 @@ function MyMenu(args){
         </Navbar.Collapse>
       </Container>
     </Navbar>
-    </>
     );
 }
 
