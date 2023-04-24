@@ -147,7 +147,8 @@ const SellOutDataComponent = () => {
 
       if (valueChanged) {
         params.data[monthWithYear] =
-          newValInt || newValInt >= 0
+          // newValInt || newValInt >= 0
+          newValInt >= 0
             ? newValInt
             : params.oldValue !== undefined
             ? params.oldValue
