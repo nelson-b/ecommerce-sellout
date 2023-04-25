@@ -16,6 +16,7 @@ const SellOutDataComponent = () => {
       partner: "Partner C",
       model: "E1",
       status: "Active",
+      currency: "INR",
     },
     {
       zone: "Zone 2",
@@ -23,6 +24,7 @@ const SellOutDataComponent = () => {
       partner: "Partner C",
       model: "E2",
       status: "Active",
+      currency: "USD",
     },
     {
       zone: "Zone 1",
@@ -30,6 +32,7 @@ const SellOutDataComponent = () => {
       partner: "Partner B",
       model: "E2",
       status: "Active",
+      currency: "Euro",
     },
     {
       zone: "Zone 2",
@@ -37,6 +40,7 @@ const SellOutDataComponent = () => {
       partner: "Partner C",
       model: "E2",
       status: "Inactive",
+      currency: "USD",
     },
   ];
 
@@ -89,6 +93,11 @@ const SellOutDataComponent = () => {
         }
       },
     },
+    {
+      headerName: "Currency of Reporting",
+      field: "currency",
+      minWidth: 100,
+    },
   ];
 
   const defaultColDef = useMemo(
@@ -98,29 +107,6 @@ const SellOutDataComponent = () => {
     }),
     []
   );
-
-  // Validation
-  const onSubmit = (values) => {
-    console.log("Values:::", values);
-    console.log("Values:::", JSON.stringify(values));
-  };
-
-  const onError = (error) => {
-    console.log("ERROR:::", error);
-  };
-
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    watch,
-    formState: { errors },
-  } = useForm({
-    mode: "onTouched",
-    reValidateMode: "onSubmit",
-    reValidateMode: "onChange",
-    defaultValues: getData,
-  });
 
   const currentDate = new Date();
 
@@ -215,7 +201,7 @@ const SellOutDataComponent = () => {
     setRowData(getData);
   };
 
-  console.log(rowData);
+  // console.log(rowData);
 
   const onCellValueChanged = (e) => {
     setRowData(
@@ -268,7 +254,6 @@ const SellOutDataComponent = () => {
               className="btn-upload"
               onClick={() => {
                 handleSave();
-                // handleSubmit(onSubmit, onError);
               }}
             >
               Save

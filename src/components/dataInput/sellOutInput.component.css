@@ -3,12 +3,19 @@
 
 .sell-out-input-upload {
   display: flex;
-  align-items: center;
   justify-content: center;
+  margin-bottom: 25px;
+  height: 70px;
 }
 
 .file-upload-position {
   margin-top: 7px;
+}
+
+.estimate-header {
+  margin: 20px 12px;
+  display: flex;
+  justify-content: right;
 }
 
 .input-header {
