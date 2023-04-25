@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {  BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ErrorPageComponent from "./components/error-page.component.js";
-import HomeComponent from "./components/home.component.js";
+import HomeComponent from "./components/home/home.component.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
 
