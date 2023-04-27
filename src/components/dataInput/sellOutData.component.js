@@ -110,9 +110,6 @@ const SellOutDataComponent = () => {
 
   const currentDate = new Date();
 
-  // To change current date
-  // currentDate.setFullYear(2023, 7, 1);
-
   const currentMonth = currentDate.getMonth();
   const currentYear = String(currentDate.getFullYear()).slice(-2);
 
@@ -133,7 +130,6 @@ const SellOutDataComponent = () => {
 
       if (valueChanged) {
         params.data[monthWithYear] =
-          // newValInt || newValInt >= 0
           newValInt >= 0
             ? newValInt
             : params.oldValue !== undefined
@@ -144,7 +140,6 @@ const SellOutDataComponent = () => {
       return valueChanged;
     };
 
-    // currentMonth === 0 => "Jan", 1=> "Feb" and so on...
     if (currentYear !== year && currentMonth !== 0) continue;
 
     i == 1
@@ -156,15 +151,7 @@ const SellOutDataComponent = () => {
             singleClickEdit: true,
             minWidth: 100,
             valueParser: (params) => Number(params.newValue),
-            valueSetter: checkNumericValue,
-
-            // cellEditor: NumericEditor,
-            // valueFormatter: myValueFormatter,
-            // valueFormatter: (params) => {
-            //   Number(params.data[monthWithYear]).toFixed(2);
-            //   // console.log(params.data.field);
-            // },
-            // type: numericColumn,
+            valueSetter: checkNumericValue
           },
           {
             headerName: "Editor's Comment",
@@ -181,13 +168,7 @@ const SellOutDataComponent = () => {
           singleClickEdit: true,
           minWidth: 100,
           valueParser: (params) => Number(params.newValue),
-          valueSetter: checkNumericValue,
-          // cellEditor: NumericEditor,
-          // valueFormatter: (params) => {
-          //   Number(params.data[monthWithYear]).toFixed(2);
-          //   // console.log(params.data.field);
-          // },
-          // valueFormatter: numberFormatter,
+          valueSetter: checkNumericValue
         });
   }
 
@@ -219,11 +200,6 @@ const SellOutDataComponent = () => {
     );
   };
   // To be used when API is available
-  // const onGridReady = useCallback((params) => {
-  //   axios
-  //     .get("API_URL")
-  //     .then((data) => setRowData(data));
-  // }, []);
 
   return (
     <>

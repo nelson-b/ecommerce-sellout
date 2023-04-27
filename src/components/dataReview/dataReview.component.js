@@ -1,5 +1,5 @@
 import { useState } from "react";
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
 
 const DataReviewComponent = ({ excelData }) => {
   // on change state

@@ -5,64 +5,10 @@ import DataReviewComponent from "../dataReview/dataReview.component";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import * as XLSX from "xlsx";
+import * as xlsx from "xlsx";
 
 const SellOutInputComponent = () => {
   const navigate = useNavigate();
-
-  // State management for reading Excel file
-  // =========================================
-  // const [excelFile, setExcelFile] = useState(null);
-  // const [excelFileError, setExcelFileError] = useState(null);
-
-  // submit
-  // const [excelData, setExcelData] = useState(null);
-  // =========================================
-
-  // Reading data from Excel
-  //=========================================
-  // console.log(excelFile);
-  // const fileType = [
-  //   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  // ];
-  // const handleFile = (e) => {
-  //   e.preventDefault();
-  //   let selectedFile = e.target.files[0];
-
-  //   if (selectedFile) {
-  //     // console.log(selectedFile.type);
-  //     if (selectedFile && fileType.includes(selectedFile.type)) {
-  //       let reader = new FileReader();
-  //       reader.readAsArrayBuffer(selectedFile);
-  //       reader.onload = (e) => {
-  //         setExcelFileError(null);
-  //         setExcelFile(e.target.result);
-  //       };
-  //     } else {
-  //       setExcelFileError("Please select only Excel File");
-  //       setExcelFile(null);
-  //     }
-  //   } else {
-  //     console.log("Please select your file");
-  //   }
-  // };
-
-  // =====================================
-
-  // submit Function
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (excelFile !== null) {
-  //     const workbook = XLSX.read(excelFile, { type: "buffer" });
-  //     const worksheetName = workbook.SheetNames[0];
-  //     const worksheet = workbook.Sheets[worksheetName];
-  //     const data = XLSX.utils.sheet_to_json(worksheet);
-  //     setExcelData(data);
-  //   } else {
-  //     setExcelData(null);
-  //   }
-  // };
-  //=============================================
 
   const {
     register,
@@ -75,8 +21,12 @@ const SellOutInputComponent = () => {
     reValidateMode: "onChange",
   });
 
+  const[fileData, setFileData] = useState(null);
+
   const onSubmit = (data) => {
     const file = data.file[0];
+    console.log('file', file);
+
     if (
       file.type !==
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -86,16 +36,24 @@ const SellOutInputComponent = () => {
         message: "Only Excel files are valid for upload.",
       });
       return;
-    } else if (
-      file.type ===
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    ) {
-      // console.log(data);
-      // <DataReviewComponent />;
-      navigate("/dataReview");
+    } else {
+      if (data.file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            console.log('reader onload');
+            const result = e.target.result;
+            const workbook = xlsx.read(result, { type: "array" });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = xlsx.utils.sheet_to_json(worksheet);
+            console.log('Reading excel: ', json);
+            setFileData(json);
+        };
+        reader.readAsArrayBuffer(data.file[0]);
+      }
+        //navigate("/dataReview");
+        console.log(fileData);
     }
-    console.log("data:::", data);
-    console.log("data:::", JSON.stringify(data));
   };
 
   const onError = (error) => {
@@ -114,18 +72,15 @@ const SellOutInputComponent = () => {
             </Col>
             <Col xs="auto">
               <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
-                {/* <Form onSubmit={handleSubmit}> */}
                 <Row>
                   <Col xs="auto">
                     <Form.Group controlId="formFile" className="mb-3">
                       <Form.Control
                         type="file"
                         accept=".xlsx,.xls"
-                        // onChange={handleFile}
                         {...register("file", {
                           required: "Excel file is required",
                         })}
-                        // accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                       />
                       {errors.file && (
                         <Form.Text className="text-danger">
@@ -135,19 +90,13 @@ const SellOutInputComponent = () => {
                     </Form.Group>
                   </Col>
                   <Col xs="auto">
-                    {/* {!errors.file && (
-                      <Nav.Link href="/dataReview"> */}
                     <Button
                       variant="primary"
                       className="btn-upload"
                       type="submit"
-                      // onClick={() => {
-                      //   <DataReview />;
-                      // }}
                     >
                       Upload
                     </Button>
-                    {/* </Nav.Link> */}
                   </Col>
                 </Row>
               </Form>
@@ -163,53 +112,6 @@ const SellOutInputComponent = () => {
         <div className="estimate-header">
           <Form.Check type="checkbox" id="estimate" label="Is Estimate" />
         </div>
-
-        {/* <Container fluid>
-          <Row>
-            <Col xs="auto" className="col-md-2">
-              <Form.Select size="sm">
-                <option>Select Partner</option>
-                <option value="Amazon">Amazon</option>
-                <option>Flipkart</option>
-              </Form.Select>
-            </Col>
-            <Col xs="auto" className="col-md-2">
-              <Form.Select size="sm">
-                <option>Select Model</option>
-                <option>Amazon</option>
-                <option>Flipkart</option>
-              </Form.Select>
-            </Col>
-            <Col xs="auto" className="col-md-2">
-              <Form.Select size="sm">
-                <option>Select Country</option>
-                <option>Amazon</option>
-                <option>Flipkart</option>
-              </Form.Select>
-            </Col>
-            <Col xs="auto" className="col-md-2">
-              <Form.Select size="sm">
-                <option>Select Zone</option>
-                <option>Amazon</option>
-                <option>Flipkart</option>
-              </Form.Select>
-            </Col>
-            <Col xs="auto" className="col-md-2">
-              <Form.Select size="sm">
-                <option>Select Period</option>
-                <option>Amazon</option>
-                <option>Flipkart</option>
-              </Form.Select>
-            </Col>
-            <Col className="col-md-2">
-              <Form>
-                <Button variant="primary" size="md" className="btn-add">
-                  Add
-                </Button>
-              </Form>
-            </Col>
-          </Row>
-        </Container> */}
       </Container>
       <SellOutDataComponent />
     </>
