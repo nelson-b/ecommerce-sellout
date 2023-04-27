@@ -1,87 +1,77 @@
 import React, { useState } from "react";
-import { Nav, Navbar, NavDropdown, Container, Image } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-import logo from "./../../images/schneider-electric-logo.png";
+import {Nav,  Navbar, NavDropdown, Container, Image, Badge, Button, Toast,
+  ToastContainer } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import logo from './../../images/schneider-electric-logo.png'
 import loginUserPic from "./../../images/loginUser.jpg";
 import { AiFillBell } from "react-icons/ai";
 import "./menu.component.css";
 import SellOutInputComponent from "../dataInput/batchInput.component.js";
 
-function MyMenu(args) {
-  const toggle = () => {
-    toggleNavbar(!isOpen);
-  };
+function MyMenu(args){
 
-  const handleSelect = (eventKey) => setLoggedInUsrName(eventKey);
-  const [selectedKey, SetKey] = useState("home");
   const [username, setLoggedInUsrName] = useState("Jean-Pascal");
-  const [isOpen, toggleNavbar] = useState(false);
+  const [showNotifiation, setshowNotification] = useState(false);
+  const [notificationCount, setnotificationCount] = useState(1); //currently set with test values
 
-  return (
-    <>
-      <Navbar bg="dark" expand="lg" collapseOnSelect fixed="top" variant="dark">
-        <Container fluid>
-          <Navbar.Brand href="/">
+  //set current notification count
+  const setNotification = (value) => setnotificationCount(value);
+  //set username
+  const setUsername = (usrname) => setLoggedInUsrName(usrname);
+  //show/hide notification
+  const toggleShowNotification = () => {
+    setshowNotification(!showNotifiation);
+    setnotificationCount(0);
+  }
+
+  const [position, setPosition] = useState('top-start');
+
+    return (
+    <Navbar bg="light" collapseOnSelect variant="light">
+      <Container fluid>
+        <Navbar.Brand>
+          <Nav.Link href="/">
             <img alt="logo" src={logo} style={{ height: 70, width: 200 }} />
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbarScroll" />
-          <Navbar.Collapse id="navbarScroll">
-            <Nav
-              variant="features"
-              activeKey={selectedKey}
-              onSelect={handleSelect}
-              className="me-auto my-2 my-lg-0"
-              style={{ maxHeight: "100px" }}
-              navbarScroll
-            >
-              <Nav.Item>
-                <Nav.Link eventKey="home" href="/">
-                  Home
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="busplit" href="/">
-                  BU Split
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="datainput" href="/dataInput">
-                  Data Input
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="partner" href="/">
-                  Partner
-                </Nav.Link>
-              </Nav.Item>
-            </Nav>
-            <Nav>
-              <Nav.Link>
-                <AiFillBell />
-              </Nav.Link>
-              <NavDropdown
-                title={
-                  <div className="pull-right">
-                    <Image
-                      src={loginUserPic}
-                      style={{ height: 30, width: 30, padding: 5 }}
-                      roundedCircle
-                    ></Image>
-                    {username}
-                  </div>
-                }
-                className="pull-right"
-                id="navbarScrollingDropdown"
-              >
+          </Nav.Link>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="me-auto">
+        </Nav>
+        <Nav>
+            <Nav.Link>
+              <Button size="lg" variant="light" onClick={toggleShowNotification}>
+                <AiFillBell/><Badge pill bg="danger">{ notificationCount }</Badge>
+              </Button>
+              <ToastContainer containerPosition="position-relative">
+              <Toast show={showNotifiation} onClose={toggleShowNotification}>
+                <Toast.Header>
+                  <img
+                    src="holder.js/20x20?text=%20"
+                    className="rounded me-2"
+                    alt=""
+                  />
+                  <strong className="me-auto">Notifications</strong>
+                  <small>11 mins ago</small>
+                </Toast.Header>
+                <Toast.Body>You have got one inbox message!!</Toast.Body>
+              </Toast>
+              </ToastContainer>
+            </Nav.Link>
+            <NavDropdown onClick={() => setshowNotification(false)} align="end" title={
+                    <div>
+                        <Image src={loginUserPic} style={{ height: 35, width: 35, padding:6 }} roundedCircle></Image>
+                        <b>{username}</b>
+                    </div>
+                  } className="pull-right" id="navbarScrollingDropdown">
                 <NavDropdown.Item href="/action1">Action 1</NavDropdown.Item>
                 <NavDropdown.Item href="/action2">Action 2</NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </>
-  );
+             </NavDropdown>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+    );
 }
 
 export default MyMenu;
