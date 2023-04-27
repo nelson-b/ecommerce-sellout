@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import LoginComponent from "./components/login/login.component.js";
 import ErrorPageComponent from "./components/error-page.component.js";
 import HomeComponent from "./components/home.component.js";
-import SellOutInputComponent from "./components/dataInput/sellOutInput.component.js";
+import DataInputComponent from "./components/dataInput/parentInput.component.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import DataReview from "./components/dataReview/dataReview.component.js";
@@ -19,7 +19,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<LoginComponent />} />
-          <Route path="/dataInput" element={<SellOutInputComponent />} />
+          <Route path="/dataInput" element={<DataInputComponent />} />
           <Route path="/dataReview" element={<DataReview />} />
           <Route path="/" element={<HomeComponent />} />
           <Route path="*" element={<ErrorPageComponent />} />

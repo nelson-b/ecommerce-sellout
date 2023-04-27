@@ -1,13 +1,12 @@
 import { Form, Row, Col, Button, Container, Nav } from "react-bootstrap";
-import "./sellOutInput.component.css";
-import SellOutDataComponent from "./sellOutData.component";
+import "./parentInput.component.css";
 import DataReviewComponent from "../dataReview/dataReview.component";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import * as xlsx from "xlsx";
 
-const SellOutInputComponent = () => {
+const BatchInputComponent = () => {
   const navigate = useNavigate();
 
   const {
@@ -108,14 +107,9 @@ const SellOutInputComponent = () => {
             </Col>
           </Row>
         </Container>
-
-        <div className="estimate-header">
-          <Form.Check type="checkbox" id="estimate" label="Is Estimate" />
-        </div>
       </Container>
-      <SellOutDataComponent />
     </>
   );
 };
 
-export default SellOutInputComponent;
+export default BatchInputComponent;

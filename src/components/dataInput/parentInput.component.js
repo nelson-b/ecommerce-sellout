@@ -2,13 +2,13 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useState, useMemo } from "react";
-import { Button, Row, Col } from "react-bootstrap";
+import { Button, Row, Col,Form } from "react-bootstrap";
 import { month } from "../constant";
-import "./sellOutInput.component.css";
-import axios from "axios";
-import { useForm } from "react-hook-form";
+import "./parentInput.component.css";
+import BatchInputComponent from "./batchInput.component";
+import MyMenu from "../menu/menu.component.js";
 
-const SellOutDataComponent = () => {
+const DataInputComponent = () => {
   const getData = [
     {
       zone: "Zone 1",
@@ -203,6 +203,12 @@ const SellOutDataComponent = () => {
 
   return (
     <>
+      <MyMenu/>
+      <div className="padding:5;">
+      <BatchInputComponent/>
+      <div className="estimate-header">
+        <Form.Check type="checkbox" id="estimate" label="Is Estimate" />
+      </div>
       <div className="ag-theme-alpine" style={{ height: 400, margin: "25px" }}>
         <AgGridReact
           rowData={rowData}
@@ -212,7 +218,6 @@ const SellOutDataComponent = () => {
           pagination={true}
           paginationAutoPageSize={true}
           animateRows={true}
-          // onGridReady={onGridReady}
         ></AgGridReact>
         <Row style={{ float: "right", marginRight: "10px", marginTop: "20px" }}>
           <Col xs="auto">
@@ -242,8 +247,9 @@ const SellOutDataComponent = () => {
           </Col>
         </Row>
       </div>
+      </div>
     </>
   );
 };
 
-export default SellOutDataComponent;
+export default DataInputComponent;

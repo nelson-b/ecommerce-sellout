@@ -5,7 +5,7 @@ import logo from "./../../images/schneider-electric-logo.png";
 import loginUserPic from "./../../images/loginUser.jpg";
 import { AiFillBell } from "react-icons/ai";
 import "./menu.component.css";
-import SellOutInputComponent from "../dataInput/sellOutInput.component.js";
+import SellOutInputComponent from "../dataInput/batchInput.component.js";
 
 function MyMenu(args) {
   const toggle = () => {
