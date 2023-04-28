@@ -1,0 +1,41 @@
+/* .sell-out-input-header {
+} */
+
+.sell-out-input-upload {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  height: 70px;
+}
+
+.file-upload-position {
+  margin-top: 7px;
+}
+
+.estimate-header {
+  margin: 20px 12px;
+  display: flex;
+  justify-content: right;
+}
+
+.input-header {
+  margin: 20px 12px;
+}
+
+.btn-add {
+  width: 100px;
+  height: 40px;
+  margin-top: -5px;
+}
+
+.btn-upload {
+  width: 100px;
+  height: 40px;
+  margin-top: -1px;
+}
+
+.btn-download {
+  width: 200px;
+  height: 40px;
+  margin-top: -1px;
+}

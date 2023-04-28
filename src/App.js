@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import {  BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ErrorPageComponent from "./components/error-page.component.js";
 import HomeComponent from "./components/home.component.js";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import DataInputComponent from "./components/dataInput/parentInput.component.js";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import DataReview from "./components/dataReview/dataReview.component.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,8 +17,10 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          <Route exact path="/" element={ <HomeComponent/> } />
-          <Route path="*" element={ <ErrorPageComponent/> } />
+          <Route path="/dataInput" element={<DataInputComponent />} />
+          <Route path="/dataReview" element={<DataReview />} />
+          <Route path="/" element={<HomeComponent />} />
+          <Route path="*" element={<ErrorPageComponent />} />
         </Routes>
       </Router>
     </div>
