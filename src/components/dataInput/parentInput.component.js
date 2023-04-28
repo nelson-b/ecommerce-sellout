@@ -45,8 +45,6 @@ const DataInputComponent = () => {
   ];
 
   const [rowData, setRowData] = useState(getData);
-  // const [gridColumnApi, setGridColumnApi] = useState(null);
-  // const [gridApi, setGridApi] = useState(null);
 
   const columnDefs = [
     {
@@ -54,32 +52,28 @@ const DataInputComponent = () => {
       field: "zone",
       sortable: true,
       filter: true,
-      pinned: "left",
-      // width: 130,
+      pinned: "left"
     },
     {
       headerName: "Country",
       field: "country",
       sortable: true,
       filter: true,
-      pinned: "left",
-      // width: 130,
+      pinned: "left"
     },
     {
       headerName: "Partner",
       field: "partner",
       sortable: true,
       filter: true,
-      pinned: "left",
-      // width: 150,
+      pinned: "left"
     },
     {
       headerName: "Model",
       field: "model",
       sortable: true,
       filter: true,
-      pinned: "left",
-      // width: 100,
+      pinned: "left"
     },
     {
       headerName: "Status",
@@ -181,8 +175,6 @@ const DataInputComponent = () => {
   const handleCancel = () => {
     setRowData(getData);
   };
-
-  // console.log(rowData);
 
   const onCellValueChanged = (e) => {
     setRowData(

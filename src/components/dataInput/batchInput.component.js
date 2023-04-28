@@ -3,10 +3,11 @@ import "./parentInput.component.css";
 import DataReviewComponent from "../dataReview/dataReview.component";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as xlsx from "xlsx";
+import { batchUploadType } from "./batchUploadType";
 
-const BatchInputComponent = () => {
+function BatchInputComponent() {
   const navigate = useNavigate();
 
   const {
@@ -20,7 +21,10 @@ const BatchInputComponent = () => {
     reValidateMode: "onChange",
   });
 
-  const[fileData, setFileData] = useState(null);
+  const[fileData, setFileData] = useState([]);
+
+  // useEffect(() => {
+  // },[]);
 
   const onSubmit = (data) => {
     const file = data.file[0];
@@ -46,12 +50,16 @@ const BatchInputComponent = () => {
             const worksheet = workbook.Sheets[sheetName];
             const json = xlsx.utils.sheet_to_json(worksheet);
             console.log('Reading excel: ', json);
-            setFileData(json);
+            json.forEach((i)=>{
+              fileData.push([{
+                Partner: i.Partner
+              }])
+            });
         };
         reader.readAsArrayBuffer(data.file[0]);
       }
         //navigate("/dataReview");
-        console.log(fileData);
+        console.log('Reading excel useState: ', fileData);
     }
   };
 
