@@ -1,0 +1,38 @@
+.sell-out-header {
+    font-weight: 500;
+    font-size: 16px;
+    margin-left: 20px;
+}
+.currency-mode {
+    color: grey;
+    font-size: 14px;
+    font-weight: 400;
+}
+.historical-data {
+    margin-right: 20px;
+    background-color: lightgrey;
+    border: 2px solid grey;
+    border-radius: 6px;
+    font-size: 14px;
+    color: grey;
+}
+.data {
+    margin: 7px 17px 7px 17px;
+}
+
+.example-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  #myGrid {
+    flex: 1 1 0px;
+    width: 100%;
+  }
+  
+  .example-header {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 13px;
+    margin-bottom: 5px;
+  }
