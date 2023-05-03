@@ -1,14 +1,18 @@
+'use strict';
+
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { useState, useMemo } from "react";
-import { Button, Row, Col,Form } from "react-bootstrap";
+import { useState, useMemo, useCallback, useRef } from "react";
+import { Button, Row, Col, Container } from "react-bootstrap";
 import { month } from "../constant";
 import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
 import MyMenu from "../menu/menu.component.js";
+import "ag-grid-community";
 
-const DataInputComponent = () => {
+function DataInputComponent (){
+  const gridRef = useRef(null);
   const getData = [
     {
       zone: "Zone 1",
@@ -17,6 +21,16 @@ const DataInputComponent = () => {
       model: "E1",
       status: "Active",
       currency: "INR",
+      Jan23_E: "true",
+      Feb23_E: "false",
+      Mar23_E: "false",
+      Apr23_E: "true",
+      May23_E: "true",
+      Jan23: 23,
+      Feb23: 56,
+      Mar23: 67,
+      Apr23: 46,
+      May23: 64
     },
     {
       zone: "Zone 2",
@@ -25,6 +39,16 @@ const DataInputComponent = () => {
       model: "E2",
       status: "Active",
       currency: "USD",
+      Jan23_E: "false",
+      Feb23_E: "false",
+      Mar23_E: "true",
+      Apr23_E: "false",
+      May23_E: "true",
+      Jan23: 23,
+      Feb23: 56,
+      Mar23: 67,
+      Apr23: 46,
+      May23: 64
     },
     {
       zone: "Zone 1",
@@ -33,6 +57,16 @@ const DataInputComponent = () => {
       model: "E2",
       status: "Active",
       currency: "Euro",
+      Jan23_E: "true",
+      Feb23_E: "false",
+      Mar23_E: "true",
+      Apr23_E: "false",
+      May23_E: "false",
+      Jan23: 23,
+      Feb23: 56,
+      Mar23: 67,
+      Apr23: 46,
+      May23: 64
     },
     {
       zone: "Zone 2",
@@ -41,6 +75,16 @@ const DataInputComponent = () => {
       model: "E2",
       status: "Inactive",
       currency: "USD",
+      Jan23_E: "false",
+      Feb23_E: "true",
+      Mar23_E: "false",
+      Apr23_E: "false",
+      May23_E: "true",
+      Jan23: 23,
+      Feb23: 56,
+      Mar23: 67,
+      Apr23: 46,
+      May23: 64
     },
   ];
 
@@ -101,6 +145,22 @@ const DataInputComponent = () => {
     }),
     []
   );
+  
+  //fn set is estimated
+  const fnSetIsEstimated = (params, monthWithYearField) =>{
+    let monthYrKey = monthWithYearField + '_E';
+    var filterMonths = Object.keys(params.data)
+    .filter(key => [monthYrKey].includes(key))
+    .reduce((obj, key) => {
+      obj[key] = params.data[key];
+      return obj;
+    }, {});
+
+    var isEstimated = (filterMonths[monthYrKey] == 'true');
+    if (isEstimated == true)
+      return { backgroundColor: "pink" };
+    return { backgroundColor: "white" };
+  }
 
   const currentDate = new Date();
 
@@ -115,20 +175,21 @@ const DataInputComponent = () => {
     );
     const monthName = month[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
-    const monthWithYear = monthName + " " + year;
+    const monthWithYearHeader = monthName + " " + year;
+    const monthWithYearField = monthName + year;
+    const monthWithYearAEFlagField = monthName + year +'_E';
 
     // to make sure user entered number only
     const checkNumericValue = (params) => {
       const newValInt = Number(params.newValue.toFixed(2));
-      const valueChanged = params.data[monthWithYear] !== newValInt;
-
+      const valueChanged = params.data[monthWithYearField] !== newValInt;
       if (valueChanged) {
-        params.data[monthWithYear] =
+        params.data[monthWithYearField] =
           newValInt >= 0
             ? newValInt
             : params.oldValue !== undefined
             ? params.oldValue
-            : "";
+            : 0;
       }
 
       return valueChanged;
@@ -139,13 +200,23 @@ const DataInputComponent = () => {
     i == 1
       ? columnDefs.push(
           {
-            headerName: monthWithYear,
-            field: monthWithYear,
+            headerName: monthWithYearHeader,
+            field: monthWithYearField,
             editable: true,
             singleClickEdit: true,
             minWidth: 100,
+            // valueGetter: (params) => (params.value === undefined || params.value === null) ? 0: Number(params.value),
             valueParser: (params) => Number(params.newValue),
-            valueSetter: checkNumericValue
+            valueSetter: checkNumericValue,
+            cellStyle: params => {
+              //return { backgroundColor: "pink" }
+              return fnSetIsEstimated(params, monthWithYearField);
+            },
+            // cellRenderer: params => params.value === "" ? 0 : params.value
+          },
+          {
+            field: monthWithYearAEFlagField,
+            hide: true
           },
           {
             headerName: "Editor's Comment",
@@ -156,20 +227,23 @@ const DataInputComponent = () => {
           }
         )
       : columnDefs.push({
-          headerName: monthWithYear,
-          field: monthWithYear,
+          headerName: monthWithYearHeader,
+          field: monthWithYearField,
           editable: true,
           singleClickEdit: true,
           minWidth: 100,
+          // valueGetter: (params) => (params.value === undefined || params.value === null) ? 0: Number(params.value),
           valueParser: (params) => Number(params.newValue),
-          valueSetter: checkNumericValue
+          valueSetter: checkNumericValue,
+          cellStyle: params => {
+             return fnSetIsEstimated(params, monthWithYearField);
+          },
+          // cellRenderer: params => params.value === "" ? 0 : params.value
         });
   }
 
   const handleSave = () => {
     setRowData(rowData);
-    console.log("Save Clicked");
-    console.log(rowData);
   };
 
   const handleCancel = () => {
@@ -191,55 +265,80 @@ const DataInputComponent = () => {
       })
     );
   };
-  // To be used when API is available
+
+  const onCellDoubleClicked  = (params)=>{
+    const colId = params.column.getId();
+    console.log(params.data.Jan23 > 0);
+    switch(colId){
+      case 'Jan23':
+        if(params.data.Jan23 > 0) {
+          params.data.Jan23_E = true;
+        }
+    }
+  };
+
+  const onSelectionChanged = useCallback((event) => {
+    var rowCount = event.api.getSelectedNodes().length;
+    console.log('selection changed, ' + rowCount + ' rows selected');
+  }, []);
 
   return (
     <>
-      <MyMenu/>
-      <div className="padding:5;">
-      <BatchInputComponent/>
-      <div className="estimate-header">
-        <Form.Check type="checkbox" id="estimate" label="Is Estimate" />
-      </div>
-      <div className="ag-theme-alpine" style={{ height: 400, margin: "25px" }}>
-        <AgGridReact
-          rowData={rowData}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          onCellValueChanged={onCellValueChanged}
-          pagination={true}
-          paginationAutoPageSize={true}
-          animateRows={true}
-        ></AgGridReact>
-        <Row style={{ float: "right", marginRight: "10px", marginTop: "20px" }}>
-          <Col xs="auto">
-            <Button
-              variant="primary"
-              className="btn-upload"
-              onClick={handleCancel}
-            >
-              Cancel
-            </Button>
-          </Col>
-          <Col xs="auto">
-            <Button
-              variant="primary"
-              className="btn-upload"
-              onClick={() => {
-                handleSave();
-              }}
-            >
-              Save
-            </Button>
-          </Col>
-          <Col>
-            <Button variant="secondary" className="btn-upload">
-              Next
-            </Button>
-          </Col>
+      <Container fluid>
+        <Row>
+          <MyMenu/>
         </Row>
-      </div>
-      </div>
+        <Row>
+          <BatchInputComponent/>
+        </Row>
+        <Row className="justify-content-md-right">
+          <Col xs={6} md={2} style={{disply:'flex', justifyContent:'right'}}><Button variant="success">Mark estimated</Button>{' '}</Col>
+          <Col xs={6} md={2} style={{disply:'flex', justifyContent:'right'}}><Button variant="success">Mark actual</Button>{' '}</Col>
+        </Row>
+        <br></br>
+        <Row className="ag-theme-alpine" style={{ height: 300 }}>
+          <AgGridReact
+            ref={gridRef}
+            rowData={rowData}
+            columnDefs={columnDefs}
+            defaultColDef={defaultColDef}
+            onCellValueChanged={onCellValueChanged}
+            pagination={true}
+            paginationAutoPageSize={true}
+            animateRows={true}
+            onCellDoubleClicked={onCellDoubleClicked}
+            // onRowSelected = {onRowSelected}
+            // getRowId={getRowId}          
+          ></AgGridReact>
+          </Row>
+          <Row style={{ float: "right", marginRight: "10px", marginTop: "20px" }}>
+            <Col xs="auto">
+              <Button
+                variant="primary"
+                className="btn-upload"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+            </Col>
+            <Col xs="auto">
+              <Button
+                variant="primary"
+                className="btn-upload"
+                onClick={() => {
+                  handleSave();
+                }}
+              >
+                Save
+              </Button>
+            </Col>
+            <Col>
+              <Button variant="secondary" className="btn-upload">
+                Next
+              </Button>
+            </Col>
+          </Row>
+      </Container>
     </>
   );
 };
