@@ -1,64 +1,31 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
-import { Button, Row, Col, Stack } from "react-bootstrap";
+import {
+  Button,
+  Row,
+  Col,
+  Stack,
+  ToggleButton,
+  ButtonGroup
+} from "react-bootstrap";
 import "./dataReview.css";
 import { month } from "../constant";
 import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import data from "../../data/dataReview.json";
+import dataEuro from "../../data/dataReviewEuro.json";
 
-function DataReviewComponent({ excelData }) {
-  function getData() {
-    return [
-      {
-        Country: "Ireland",
-        Partner: "Partner C",
-        Model: "2016",
-        BU: 10,
-        Status: "Active",
-        Jan23: "20",
-        Feb23: "34",
-        Mar23: "45",
-        Apr23: "878",
-      },
-      {
-        Country: "India",
-        Partner: "Partner A",
-        Model: "2016",
-        BU: 2,
-        Status: "Inactive",
-        Jan23: "20",
-        Feb23: "34",
-        Mar23: "45",
-        Apr23: "878",
-      },
-      {
-        Country: "Germany",
-        Partner: "Partner C",
-        Model: "2016",
-        BU: 2,
-        Status: "Active",
-        Jan23: "20",
-        Feb23: "34",
-        Mar23: "45",
-        Apr23: "878",
-      },
-      {
-        Country: "France",
-        Partner: "Partner F",
-        Model: "2016",
-        BU: 10,
-        Status: "Active",
-        Jan23: "20",
-        Feb23: "34",
-        Mar23: "45",
-        Apr23: "878",
-      },
-    ];
-  }
+function DataReviewComponent({}) {
+  const [rowData, setRowData] = useState(data);
+  const [radioValue, setRadioValue] = useState("1");
 
-  const [rowData, setRowData] = useState(getData());
+  const radios = [
+    { name: "Reporting Currency", value: "1" },
+    { name: "Euro", value: "2" },
+  ];
+
   const columnDefs = [
     {
       field: "Country",
@@ -79,14 +46,15 @@ function DataReviewComponent({ excelData }) {
     {
       field: "Model",
       minWidth: 130,
-      filter: "agNumberColumnFilter",
+      filter: true,
       sortable: true,
     },
     {
       field: "BU",
-      minWidth: 70,
+      minWidth: 100,
       filter: "agNumberColumnFilter",
       sortable: true,
+      aggFunc: "sum",
     },
     {
       headerName: "Status",
@@ -114,12 +82,16 @@ function DataReviewComponent({ excelData }) {
   const autoGroupColumnDef = useMemo(() => {
     return {
       headerName: "Zone",
+      minWidth: 220,
       filter: true,
       sortable: true,
       aggFunc: "sum",
-      minWidth: 220,
       cellRenderer: "agGroupCellRenderer",
-    }
+      cellRendererParams: {
+        suppressCount: true,
+        checkbox: true,
+      },
+    };
   }, []);
 
   const currentDate = new Date();
@@ -159,28 +131,30 @@ function DataReviewComponent({ excelData }) {
             field: monthWithYearValue,
             editable: true,
             singleClickEdit: true,
-            aggFunc: "sum",
             minWidth: 100,
+            aggFunc: "sum",
             valueParser: (params) => Number(params.newValue),
             valueSetter: checkNumericValue,
           },
           {
             headerName: "vat. VM vs LM (value)",
-            field: "comment",
-            editable: true,
-            filter: true,
-            sortable: true,
-            singleClickEdit: true,
+            field: "vatVMvsLvalue",
             minWidth: 200,
+            editable: true,
+            singleClickEdit: true,
+            aggFunc: "sum",
+            filter: "agNumberColumnFilter",
+            sortable: true,
           },
           {
             headerName: "vat. VM vs LM (%)",
-            field: "comment",
-            editable: true,
-            filter: true,
-            sortable: true,
-            singleClickEdit: true,
+            field: "vatVMvsLM",
             minWidth: 170,
+            editable: true,
+            filter: "agNumberColumnFilter",
+            sortable: true,
+            aggFunc: "sum",
+            singleClickEdit: true,
           }
         )
       : columnDefs.push({
@@ -196,13 +170,59 @@ function DataReviewComponent({ excelData }) {
           valueSetter: checkNumericValue,
         });
   }
-  
+
+  const previousYear = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() - 12,
+    1
+  );
+  const prevMonth = month[previousYear.getMonth()];
+  const prevYear = String(previousYear.getFullYear()).slice(-2);
+
+  const prevYearwithMonthValue = prevMonth + "" + prevYear;
+  const prevYearwithMonthLabel = prevMonth + " " + prevYear;
+
+  if (previousYear !== prevYear && prevMonth !== 0);
+  " "
+    ? columnDefs.push(
+        {
+          headerName: prevYearwithMonthLabel,
+          field: prevYearwithMonthValue,
+          editable: true,
+          singleClickEdit: true,
+          minWidth: 100,
+          aggFunc: "sum",
+          valueParser: (params) => Number(params.newValue),
+        },
+        {
+          headerName: "vat. VM vs LM (value)",
+          field: "vatVMvsLvalue",
+          minWidth: 200,
+          editable: true,
+          singleClickEdit: true,
+          aggFunc: "sum",
+          filter: "agNumberColumnFilter",
+          sortable: true,
+        }
+      )
+    : columnDefs.push({
+        headerName: prevYearwithMonthLabel,
+        field: prevYearwithMonthValue,
+        editable: true,
+        sortable: true,
+        filter: "agNumberColumnFilter",
+        aggFunc: "sum",
+        singleClickEdit: true,
+        minWidth: 100,
+        valueParser: (params) => Number(params.newValue),
+      });
+
   const handleCancel = () => {
-    setRowData(getData);
+    setRowData(data);
   };
 
   const handleEdit = () => {
-    setRowData(rowData);
+    setRowData(data);
   };
 
   const handleConfirm = () => {
@@ -211,26 +231,51 @@ function DataReviewComponent({ excelData }) {
     console.log(rowData);
   };
 
+  const onGridReady = useCallback((params) => {
+    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
+      .then((resp) => data)
+      .then((data) => setRowData(data));
+  }, []);
+
   return (
     <>
       <MyMenu />
-      <Stack direction="horizontal" gap={4}>
-        <div className="mt-3 sell-out-header">Sell Out Data Review</div>
-        <div className="mt-3 ms-auto">
-          <Row className="currency-mode">CURRENCY MODE</Row>
-          <Col></Col>
-        </div>
-        <div className="mt-3 historical-data">
-          <div className="data">Historical Data</div>
-        </div>
-      </Stack>
+      <div className="mt-3">
+        <Stack direction="horizontal" gap={4}>
+          <div className="sell-out-header">Sell Out Data Review</div>
+          <div className="mt-0 ms-auto">
+            <Row className="currency-mode">CURRENCY MODE</Row>
+            <Col>
+              <ButtonGroup>
+                {radios.map((radio, idx) => (
+                  <ToggleButton
+                    key={idx}
+                    id={`radio-${idx}`}
+                    type="radio"
+                    variant={idx % 2 ? "outline-success" : "outline-danger"}
+                    name="radio"
+                    value={radio.value}
+                    checked={radioValue === radio.value}
+                    onChange={(e) => setRadioValue(e.currentTarget.value)}
+                  >
+                    {radio.name}
+                  </ToggleButton>
+                ))}
+              </ButtonGroup>
+            </Col>
+          </div>
+          <div className="historical-data">
+            <div className="data">Historical Data</div>
+          </div>
+        </Stack>
+      </div>
 
       <div
         className="ag-theme-alpine"
         style={{ height: 400, margin: "7px 20px 0px 20px" }}
       >
         <AgGridReact
-          rowData={rowData}
+          rowData={radioValue == 1 ? data : dataEuro}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           autoGroupColumnDef={autoGroupColumnDef}
@@ -240,6 +285,7 @@ function DataReviewComponent({ excelData }) {
           suppressAggFuncInHeader={true}
           groupIncludeTotalFooter={true}
           groupIncludeFooter={true}
+          onGridReady={onGridReady}
         ></AgGridReact>
         <div className="">
           <Row style={{ float: "right", marginTop: "10px" }}>
@@ -265,7 +311,8 @@ function DataReviewComponent({ excelData }) {
             </Col>
             <Col>
               <Button
-                variant="dark"
+                // variant="dark"
+                variant="outline-secondary"
                 className="btn-upload"
                 onClick={() => {
                   handleConfirm();
