@@ -78,10 +78,13 @@ function BatchInputComponent({ getData, selectedCol }) {
   //   return obj;
   // };
   // const propsToDelete = [selectedCol[0].field, selectedCol[1].field, selectedCol[3].field, selectedCol[4].field, selectedCol[5].field];
+  // console.log('propsToDelete', propsToDelete);
+
   // const eData = [...getData]
-  // const tableData = eData.map((row) => {
+  // const tableData = getData.map((row) => {
   //   return removedProps(row, propsToDelete);
   // });
+  // console.log('tableData',tableData);
 
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -90,7 +93,10 @@ function BatchInputComponent({ getData, selectedCol }) {
   const exportToExcel = async (exportedData) => {
     const ws = xlsx.utils.json_to_sheet(exportedData);
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-    const excelBuffer = xlsx.write(wb, { bookType: "xlsx", type: "array" });
+    const excelBuffer = xlsx.write(wb, {
+      bookType: "Excel Report",
+      type: "array",
+    });
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, fileExtension);
   };
@@ -99,7 +105,6 @@ function BatchInputComponent({ getData, selectedCol }) {
     <>
       <Container fluid>
         <h5 className="input-header">Sell Out Data Input</h5>
-
         <Container className="sell-out-input-upload">
           <Row>
             <Col xs="auto" className="align-item-center file-upload-position">
