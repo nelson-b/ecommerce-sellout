@@ -1,0 +1,46 @@
+.sell-out-header {
+  font-weight: 500;
+  font-size: 20px;
+  margin-left: 20px;
+  margin-top: 30px;
+}
+
+.currency-mode {
+  color: grey;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0px 45px;
+}
+
+.historical-data {
+  margin-right: 20px;
+  background-color: lightgrey;
+  border: 2px solid grey;
+  border-radius: 6px;
+  font-size: 14px;
+  color: grey;
+  margin-top: 16px;
+}
+
+.data {
+  margin: 5px 17px 5px 17px;
+}
+
+#myGrid {
+  flex: 1 1 0px;
+  width: 100%;
+}
+
+.btn-group {
+  height: 30px !important;
+}
+
+.btn-group>.btn-check:checked+.btn {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.btn-group>.btn {
+  display: flex !important;
+  align-items: center !important;
+}
