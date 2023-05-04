@@ -9,15 +9,18 @@ import { month } from "../constant";
 import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
 import MyMenu from "../menu/menu.component.js";
-import "ag-grid-community";
+// import "ag-grid-community";
+import 'ag-grid-enterprise';
+
 
 function DataInputComponent (){
   const gridRef = useRef(null);
   const getData = [
     {
+      id: "Partner A",
       zone: "Zone 1",
       country: "Country A",
-      partner: "Partner C",
+      partner: "Partner A",
       model: "E1",
       status: "Active",
       currency: "INR",
@@ -33,9 +36,10 @@ function DataInputComponent (){
       May23: 64
     },
     {
+      id: "Partner B",
       zone: "Zone 2",
       country: "Country B",
-      partner: "Partner C",
+      partner: "Partner B",
       model: "E2",
       status: "Active",
       currency: "USD",
@@ -51,9 +55,10 @@ function DataInputComponent (){
       May23: 64
     },
     {
+      id: "Partner C",
       zone: "Zone 1",
       country: "Country C",
-      partner: "Partner B",
+      partner: "Partner C",
       model: "E2",
       status: "Active",
       currency: "Euro",
@@ -69,9 +74,10 @@ function DataInputComponent (){
       May23: 64
     },
     {
+      id: "Partner D",
       zone: "Zone 2",
       country: "Country B",
-      partner: "Partner C",
+      partner: "Partner D",
       model: "E2",
       status: "Inactive",
       currency: "USD",
@@ -88,22 +94,30 @@ function DataInputComponent (){
     },
   ];
 
-  const [rowData, setRowData] = useState(getData);
+  const [rowData, setRowData] = useState(null);
 
   const columnDefs = [
+    {
+      field: "id",
+      hide: true
+    },
     {
       headerName: "Zone",
       field: "zone",
       sortable: true,
       filter: true,
-      pinned: "left"
+      pinned: "left",
+      suppressNavigable: true,
+      cellClass: 'no-border'
     },
     {
       headerName: "Country",
       field: "country",
       sortable: true,
       filter: true,
-      pinned: "left"
+      pinned: "left",
+      suppressNavigable: true,
+      cellClass: 'no-border'
     },
     {
       headerName: "Partner",
@@ -142,6 +156,11 @@ function DataInputComponent (){
     () => ({
       resizable: true,
       flex: 1,
+      minWidth:50,
+      suppressSizeToFit:true,
+      editable: true,
+      sortable: true,
+      filter: true
     }),
     []
   );
@@ -162,6 +181,20 @@ function DataInputComponent (){
     return { backgroundColor: "white" };
   }
 
+  const onCellDoubleClicked  = useCallback((params, monthWithYearField) => {
+    console.log('onCellDoubleClicked',params);
+    if(params.data){
+    let monthYrCol = monthWithYearField + '_E';
+    console.log('monthYrCol', monthYrCol);
+    console.log('params.data.partner', params.data.partner);
+    console.log('gridRef', gridRef);
+    var rowNode = gridRef.current.api.getRowNode(params.data.partner);
+    // var rowNode = params.node;
+    console.log('rowNode prev', rowNode);
+    rowNode.setDataValue(monthYrCol, true);
+    console.log('rowNode curr', rowNode);
+  }});
+
   const currentDate = new Date();
 
   const currentMonth = currentDate.getMonth();
@@ -181,6 +214,7 @@ function DataInputComponent (){
 
     // to make sure user entered number only
     const checkNumericValue = (params) => {
+      console.log('checkNumericValue');
       const newValInt = Number(params.newValue.toFixed(2));
       const valueChanged = params.data[monthWithYearField] !== newValInt;
       if (valueChanged) {
@@ -205,14 +239,13 @@ function DataInputComponent (){
             editable: true,
             singleClickEdit: true,
             minWidth: 100,
-            // valueGetter: (params) => (params.value === undefined || params.value === null) ? 0: Number(params.value),
             valueParser: (params) => Number(params.newValue),
             valueSetter: checkNumericValue,
             cellStyle: params => {
-              //return { backgroundColor: "pink" }
               return fnSetIsEstimated(params, monthWithYearField);
             },
-            // cellRenderer: params => params.value === "" ? 0 : params.value
+            enableRangeSelection: true,
+            onCellDoubleClicked:params => { onCellDoubleClicked(params, monthWithYearField)}
           },
           {
             field: monthWithYearAEFlagField,
@@ -232,13 +265,13 @@ function DataInputComponent (){
           editable: true,
           singleClickEdit: true,
           minWidth: 100,
-          // valueGetter: (params) => (params.value === undefined || params.value === null) ? 0: Number(params.value),
           valueParser: (params) => Number(params.newValue),
           valueSetter: checkNumericValue,
           cellStyle: params => {
              return fnSetIsEstimated(params, monthWithYearField);
           },
-          // cellRenderer: params => params.value === "" ? 0 : params.value
+          enableRangeSelection: true,
+          onCellDoubleClicked:params => { onCellDoubleClicked(params, monthWithYearField)}
         });
   }
 
@@ -250,36 +283,46 @@ function DataInputComponent (){
     setRowData(getData);
   };
 
-  const onCellValueChanged = (e) => {
-    setRowData(
-      rowData.map((obj) => {
-        if (
-          e.data.zone === obj.zone &&
-          e.data.country === obj.country &&
-          e.data.partner === obj.partner &&
-          e.data.model === obj.model &&
-          e.data.status === obj.status
-        ) {
-          return e.data;
-        } else return obj;
-      })
-    );
-  };
+  // const onCellValueChanged = (e) => {
+  //   setRowData(
+  //     rowData.map((obj) => {
+  //       if (
+  //         e.data.zone === obj.zone &&
+  //         e.data.country === obj.country &&
+  //         e.data.partner === obj.partner &&
+  //         e.data.model === obj.model &&
+  //         e.data.status === obj.status
+  //       ) {
+  //         return e.data;
+  //       } else return obj;
+  //     })
+  //   );
+  // };
 
-  const onCellDoubleClicked  = (params)=>{
-    const colId = params.column.getId();
-    console.log(params.data.Jan23 > 0);
-    switch(colId){
-      case 'Jan23':
-        if(params.data.Jan23 > 0) {
-          params.data.Jan23_E = true;
-        }
-    }
-  };
+  // callback tells the grid to use the 'id' attribute for IDs, IDs should always be strings
+  const getRowId = useMemo(() => {
+    return (params) => {
+      return params.data.id;
+    };
+  }, []);
 
-  const onSelectionChanged = useCallback((event) => {
-    var rowCount = event.api.getSelectedNodes().length;
-    console.log('selection changed, ' + rowCount + ' rows selected');
+  const markEstimated = useCallback((newGroup) => {
+    const selectedCells = gridRef.current.api.getCellRanges();
+    const selectedNodes = gridRef.current.api.getSelectedNodes();
+    console.log('get selected cells', selectedCells);
+    console.log('get selected nodes', selectedNodes);
+  });
+  
+  const markActual = () =>
+  {
+    
+  }
+
+  const onGridReady = useCallback((params) => {
+    console.log('onGridReady')
+    fetch('https://www.ag-grid.com/example-assets/olympic-winners.json')
+      .then((resp) => getData)
+      .then((data) => setRowData(data));
   }, []);
 
   return (
@@ -291,9 +334,9 @@ function DataInputComponent (){
         <Row>
           <BatchInputComponent/>
         </Row>
-        <Row className="justify-content-md-right">
-          <Col xs={6} md={2} style={{disply:'flex', justifyContent:'right'}}><Button variant="success">Mark estimated</Button>{' '}</Col>
-          <Col xs={6} md={2} style={{disply:'flex', justifyContent:'right'}}><Button variant="success">Mark actual</Button>{' '}</Col>
+        <Row className="justify-content-end">
+          <Col md={2}><Button className="btn-md" onClick={()=>markEstimated()} variant="success">Mark estimated</Button>{' '}</Col>
+          <Col md={2}><Button className="btn-md" onClick={()=>markActual()} variant="success">Mark actual</Button>{' '}</Col>
         </Row>
         <br></br>
         <Row className="ag-theme-alpine" style={{ height: 300 }}>
@@ -302,13 +345,16 @@ function DataInputComponent (){
             rowData={rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
-            onCellValueChanged={onCellValueChanged}
+            // onCellValueChanged={onCellValueChanged}
             pagination={true}
             paginationAutoPageSize={true}
             animateRows={true}
-            onCellDoubleClicked={onCellDoubleClicked}
+            // onCellDoubleClicked={onCellDoubleClicked}
+            rowSelection={'multiple'}
             // onRowSelected = {onRowSelected}
-            // getRowId={getRowId}          
+            getRowId={getRowId}  
+            enableRangeSelection={true}
+            onGridReady={onGridReady}
           ></AgGridReact>
           </Row>
           <Row style={{ float: "right", marginRight: "10px", marginTop: "20px" }}>
