@@ -27,34 +27,28 @@ function DataReviewComponent({}) {
   ];
 
   const columnDefs = [
+    { field: 'Zone', rowGroup: true, hide: true },
+    {
+      field: "Partner",
+      headerName: "Partner",
+      filter: true,
+      sortable: true,
+      pinned: "left"
+    },
     {
       field: "Country",
       headerName: "Country",
       rowGroup: true,
       filter: true,
       sortable: true,
-      minWidth: 120,
-    },
-    {
-      field: "Partner",
-      headerName: "Partner",
-      rowGroup: true,
-      filter: true,
-      minWidth: 120,
-      sortable: true,
+      pinned: "left"
     },
     {
       field: "Model",
-      minWidth: 130,
+      rowGroup: true,
       filter: true,
       sortable: true,
-    },
-    {
-      field: "BU",
-      minWidth: 100,
-      filter: "agNumberColumnFilter",
-      sortable: true,
-      aggFunc: "sum",
+      pinned: "left"
     },
     {
       headerName: "Status",
@@ -81,11 +75,11 @@ function DataReviewComponent({}) {
 
   const autoGroupColumnDef = useMemo(() => {
     return {
-      headerName: "Zone",
+      headerName: "Filter Criteria Zone",
       minWidth: 220,
       filter: true,
       sortable: true,
-      aggFunc: "sum",
+      pinned: "left",
       cellRenderer: "agGroupCellRenderer",
       cellRendererParams: {
         suppressCount: true,
@@ -272,7 +266,7 @@ function DataReviewComponent({}) {
 
       <div
         className="ag-theme-alpine"
-        style={{ height: 400, margin: "7px 20px 0px 20px" }}
+        style={{ height: 450, margin: "7px 20px 0px 20px" }}
       >
         <AgGridReact
           rowData={radioValue == 1 ? data : dataEuro}
@@ -285,6 +279,7 @@ function DataReviewComponent({}) {
           suppressAggFuncInHeader={true}
           groupIncludeTotalFooter={true}
           groupIncludeFooter={true}
+          groupDefaultExpanded={-1}
           onGridReady={onGridReady}
         ></AgGridReact>
         <div className="">
