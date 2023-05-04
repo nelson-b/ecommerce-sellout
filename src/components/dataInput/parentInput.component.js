@@ -103,7 +103,6 @@ const DataInputComponent = () => {
   );
 
   const currentDate = new Date();
-
   const currentMonth = currentDate.getMonth();
   const currentYear = String(currentDate.getFullYear()).slice(-2);
 
@@ -197,7 +196,7 @@ const DataInputComponent = () => {
     <>
       <MyMenu/>
       <div className="padding:5;">
-      <BatchInputComponent/>
+      <BatchInputComponent getData={getData} selectedCol={columnDefs}/>
       <div className="estimate-header">
         <Form.Check type="checkbox" id="estimate" label="Is Estimate" />
       </div>
