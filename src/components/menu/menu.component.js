@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import {Nav,  Navbar, NavDropdown, Container, Image, Badge, Button, Toast,
-  ToastContainer } from 'react-bootstrap';
+import { Nav,  Navbar, NavDropdown, Container, Image, Badge, Button, Toast, ToastContainer } 
+from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from './../../images/schneider-electric-logo.png'
 import loginUserPic from "./../../images/loginUser.jpg";
@@ -65,7 +65,7 @@ function MyMenu(args){
                     </div>
                   } className="pull-right" id="navbarScrollingDropdown">
                 <NavDropdown.Item href="/action1">Action 1</NavDropdown.Item>
-                <NavDropdown.Item href="/action2">Action 2</NavDropdown.Item>
+              <NavDropdown.Item href="/action2">Action 2</NavDropdown.Item>
              </NavDropdown>
           </Nav>
         </Navbar.Collapse>
