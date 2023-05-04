@@ -177,7 +177,7 @@ function DataInputComponent (){
 
     var isEstimated = (filterMonths[monthYrKey] == 'true');
     if (isEstimated == true)
-      return { backgroundColor: "pink" };
+      return { backgroundColor: "#EEB265" };
     return { backgroundColor: "white" };
   }
 
@@ -282,22 +282,6 @@ function DataInputComponent (){
   const handleCancel = () => {
     setRowData(getData);
   };
-
-  // const onCellValueChanged = (e) => {
-  //   setRowData(
-  //     rowData.map((obj) => {
-  //       if (
-  //         e.data.zone === obj.zone &&
-  //         e.data.country === obj.country &&
-  //         e.data.partner === obj.partner &&
-  //         e.data.model === obj.model &&
-  //         e.data.status === obj.status
-  //       ) {
-  //         return e.data;
-  //       } else return obj;
-  //     })
-  //   );
-  // };
 
   // callback tells the grid to use the 'id' attribute for IDs, IDs should always be strings
   const getRowId = useMemo(() => {
