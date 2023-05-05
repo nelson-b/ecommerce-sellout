@@ -11,8 +11,9 @@
       "Apr23": 78,
       "May23": 45,
       "vatVMvsLvalue": 340,
-      "vatVMvsLM": 30,
-      "May22": 40
+      "vatVMvsLM": "30%",
+      "May22": 40,
+      "vatVMValue": 43
     },
     {
       "Zone": "Zone5",
@@ -26,8 +27,9 @@
       "Apr23": 78,
       "May23": 45,
       "vatVMvsLvalue": 340,
-      "vatVMvsLM": 30,
-      "May22": 40
+      "vatVMvsLM": "30%",
+      "May22": 40,
+      "vatVMValue": 49
     },
     {
       "Zone": "Zone6",
@@ -41,8 +43,9 @@
       "Apr23": 78,
       "May23": 75,
       "vatVMvsLvalue": 340,
-      "vatVMvsLM": 77,
-      "May22": 60
+      "vatVMvsLM": "77%",
+      "May22": 60,
+      "vatVMValue": 56
     },
     {
       "Zone": "Zone6",
@@ -56,8 +59,9 @@
       "Apr23": 178,
       "May23": 67,
       "vatVMvsLvalue": 340,
-      "vatVMvsLM": 89,
-      "May22": 80
+      "vatVMvsLM": "89",
+      "May22": 80,
+      "vatVMValue": 79
     },
     {
       "Zone": "Zone7",
@@ -71,7 +75,8 @@
       "Apr23": 308,
       "May23": 78,
       "vatVMvsLvalue": 340,
-      "vatVMvsLM": 66,
-      "May22": 30
+      "vatVMvsLM": "66%",
+      "May22": 30,
+      "vatVMValue": 40
     }
   ]

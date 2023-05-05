@@ -9,7 +9,7 @@
   color: grey;
   font-size: 14px;
   font-weight: 400;
-  margin: 0px 45px;
+  margin: 0px 0px;
 }
 
 .historical-data {
@@ -24,6 +24,10 @@
 
 .data {
   margin: 5px 17px 5px 17px;
+}
+
+.ag-grid-table {
+  max-width: 100%;
 }
 
 #myGrid {
@@ -43,4 +47,19 @@
 .btn-group>.btn {
   display: flex !important;
   align-items: center !important;
+}
+
+.ag-header {
+  background-color: aliceblue !important;
+}
+.ag-theme-alpine .ag-header-cell-menu-button:hover {
+  color: black !important;
+}
+.ag-icon-menu::before {
+  cursor: pointer;
+}
+
+.ag-theme-alpine {
+  /* --ag-selected-row-background-color: #CCFFFF !important; */
+  --ag-odd-row-background-color: #f3f3f3 !important;
 }

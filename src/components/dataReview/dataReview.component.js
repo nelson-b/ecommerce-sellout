@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import {
   Button,
@@ -6,7 +7,8 @@ import {
   Col,
   Stack,
   ToggleButton,
-  ButtonGroup
+  ButtonGroup,
+  Modal,
 } from "react-bootstrap";
 import "./dataReview.css";
 import { month } from "../constant";
@@ -16,24 +18,37 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import data from "../../data/dataReview.json";
 import dataEuro from "../../data/dataReviewEuro.json";
+import CancelModal from "../modal/cancelModal";
 
 function DataReviewComponent({}) {
+  const navigate = useNavigate();
   const [rowData, setRowData] = useState(data);
   const [radioValue, setRadioValue] = useState("1");
+  const [showModal, setShowModal] = useState(false);
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const radios = [
-    { name: "Reporting Currency", value: "1" },
+    { name: "Local", value: "1" },
     { name: "Euro", value: "2" },
   ];
 
   const columnDefs = [
-    { field: 'Zone', rowGroup: true, hide: true },
+    { field: "Zone", rowGroup: true, hide: true },
     {
       field: "Partner",
       headerName: "Partner",
       filter: true,
       sortable: true,
-      pinned: "left"
+      pinned: "left",
+      width: 120,
+      suppressSizeToFit: true,
     },
     {
       field: "Country",
@@ -41,21 +56,27 @@ function DataReviewComponent({}) {
       rowGroup: true,
       filter: true,
       sortable: true,
-      pinned: "left"
+      pinned: "left",
+      width: 120,
+      suppressSizeToFit: true,
     },
     {
       field: "Model",
       rowGroup: true,
-      filter: true,
       sortable: true,
-      pinned: "left"
+      filter: true,
+      pinned: "left",
+      width: 100,
+      suppressSizeToFit: true,
     },
     {
       headerName: "Status",
       field: "Status",
-      minWidth: 100,
       filter: true,
       sortable: true,
+      pinned: "left",
+      width: 100,
+      suppressSizeToFit: true,
       cellStyle: (params) => {
         if (params.value === "Active") {
           return { color: "green" };
@@ -70,13 +91,15 @@ function DataReviewComponent({}) {
     return {
       flex: 1,
       resizable: true,
+      sortable: true,
+      filter: true,
+      suppressSizeToFit: true,
     };
   }, []);
 
   const autoGroupColumnDef = useMemo(() => {
     return {
       headerName: "Filter Criteria Zone",
-      minWidth: 220,
       filter: true,
       sortable: true,
       pinned: "left",
@@ -190,7 +213,7 @@ function DataReviewComponent({}) {
         },
         {
           headerName: "vat. VM vs LM (value)",
-          field: "vatVMvsLvalue",
+          field: "vatVMValue",
           minWidth: 200,
           editable: true,
           singleClickEdit: true,
@@ -211,18 +234,12 @@ function DataReviewComponent({}) {
         valueParser: (params) => Number(params.newValue),
       });
 
-  const handleCancel = () => {
-    setRowData(data);
-  };
-
   const handleEdit = () => {
-    setRowData(data);
+    navigate("/dataInput");
   };
 
   const handleConfirm = () => {
     setRowData(rowData);
-    console.log("Save Clicked");
-    console.log(rowData);
   };
 
   const onGridReady = useCallback((params) => {
@@ -265,8 +282,8 @@ function DataReviewComponent({}) {
       </div>
 
       <div
-        className="ag-theme-alpine"
-        style={{ height: 450, margin: "7px 20px 0px 20px" }}
+        className="ag-theme-alpine ag-grid-table"
+        style={{ height: 370, margin: "7px 20px 0px 20px" }}
       >
         <AgGridReact
           rowData={radioValue == 1 ? data : dataEuro}
@@ -283,31 +300,36 @@ function DataReviewComponent({}) {
           onGridReady={onGridReady}
         ></AgGridReact>
         <div className="">
-          <Row style={{ float: "right", marginTop: "10px" }}>
+          <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
             <Col xs="auto">
               <Button
-                variant="outline-secondary"
+                variant="outline-warning"
                 className="btn-upload"
-                onClick={handleCancel}
+                onClick={handleShowModal}
               >
                 Cancel
               </Button>
+              <CancelModal
+                show={showModal}
+                handleClose={handleCloseModal}
+                handleConfirm={handleCloseModal}
+                body={"Are you sure you want to cancel the review."}
+                button1={"Cancel"}
+                button2={"Confirm"}
+              />
             </Col>
             <Col xs="auto">
               <Button
-                variant="outline-secondary"
+                variant="outline-success"
                 className="btn-upload"
-                onClick={() => {
-                  handleEdit();
-                }}
+                onClick={handleEdit}
               >
                 Edit
               </Button>
             </Col>
             <Col>
               <Button
-                // variant="dark"
-                variant="outline-secondary"
+                variant="success"
                 className="btn-upload"
                 onClick={() => {
                   handleConfirm();

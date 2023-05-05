@@ -7,10 +7,12 @@ import React, { useState, useEffect } from "react";
 import * as xlsx from "xlsx";
 import * as FileSaver from "file-saver";
 import { batchUploadType } from "./batchUploadType";
+import ReportData from "../../data/downloadReport.json";
 
 function BatchInputComponent({ getData, selectedCol }) {
-  console.log("getData", getData);
-  console.log("selectedCol", selectedCol);
+  // console.log("getData", getData);
+  // console.log("selectedCol", selectedCol);
+  // console.log("ReportData", ReportData);
 
   const navigate = useNavigate();
 
@@ -94,7 +96,7 @@ function BatchInputComponent({ getData, selectedCol }) {
     const ws = xlsx.utils.json_to_sheet(exportedData);
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = xlsx.write(wb, {
-      bookType: "Excel Report",
+      bookType: "xlsx",
       type: "array",
     });
     const data = new Blob([excelBuffer], { type: fileType });
@@ -131,7 +133,7 @@ function BatchInputComponent({ getData, selectedCol }) {
                   </Col>
                   <Col xs="auto">
                     <Button
-                      variant="primary"
+                      variant="success"
                       className="btn-upload"
                       type="submit"
                     >
@@ -143,9 +145,9 @@ function BatchInputComponent({ getData, selectedCol }) {
             </Col>
             <Col xs="auto">
               <Button
-                variant="secondary"
+                variant="outline-success"
                 className="btn-download"
-                onClick={(e) => exportToExcel(getData)}
+                onClick={(e) => exportToExcel(ReportData)}
               >
                 Download Template
               </Button>
