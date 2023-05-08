@@ -12,7 +12,6 @@ import MyMenu from "../menu/menu.component.js";
 // import "ag-grid-community";
 import 'ag-grid-enterprise';
 
-
 function DataInputComponent (){
   const gridRef = useRef(null);
   const getData = [
@@ -24,16 +23,16 @@ function DataInputComponent (){
       model: "E1",
       status: "Active",
       currency: "INR",
-      Jan23_E: "true",
-      Feb23_E: "false",
-      Mar23_E: "false",
-      Apr23_E: "true",
-      May23_E: "true",
-      Jan23: 23,
-      Feb23: 56,
-      Mar23: 67,
-      Apr23: 46,
-      May23: 64
+      Jan_E: true,
+      Feb_E: false,
+      Mar_E: false,
+      Apr_E: true,
+      May_E: true,
+      Jan: 23,
+      Feb: 56,
+      Mar: 67,
+      Apr: 46,
+      May: 64
     },
     {
       id: "Partner B",
@@ -43,16 +42,16 @@ function DataInputComponent (){
       model: "E2",
       status: "Active",
       currency: "USD",
-      Jan23_E: "false",
-      Feb23_E: "false",
-      Mar23_E: "true",
-      Apr23_E: "false",
-      May23_E: "true",
-      Jan23: 23,
-      Feb23: 56,
-      Mar23: 67,
-      Apr23: 46,
-      May23: 64
+      Jan_E: true,
+      Feb_E: false,
+      Mar_E: false,
+      Apr_E: true,
+      May_E: true,
+      Jan: 23,
+      Feb: 56,
+      Mar: 67,
+      Apr: 46,
+      May: 64
     },
     {
       id: "Partner C",
@@ -62,16 +61,16 @@ function DataInputComponent (){
       model: "E2",
       status: "Active",
       currency: "Euro",
-      Jan23_E: "true",
-      Feb23_E: "false",
-      Mar23_E: "true",
-      Apr23_E: "false",
-      May23_E: "false",
-      Jan23: 23,
-      Feb23: 56,
-      Mar23: 67,
-      Apr23: 46,
-      May23: 64
+      Jan_E: true,
+      Feb_E: false,
+      Mar_E: false,
+      Apr_E: true,
+      May_E: true,
+      Jan: 23,
+      Feb: 56,
+      Mar: 67,
+      Apr: 46,
+      May: 64
     },
     {
       id: "Partner D",
@@ -81,16 +80,16 @@ function DataInputComponent (){
       model: "E2",
       status: "Inactive",
       currency: "USD",
-      Jan23_E: "false",
-      Feb23_E: "true",
-      Mar23_E: "false",
-      Apr23_E: "false",
-      May23_E: "true",
-      Jan23: 23,
-      Feb23: 56,
-      Mar23: 67,
-      Apr23: 46,
-      May23: 64
+      Jan_E: true,
+      Feb_E: false,
+      Mar_E: false,
+      Apr_E: true,
+      May_E: true,
+      Jan: 23,
+      Feb: 56,
+      Mar: 67,
+      Apr: 46,
+      May: 64
     },
   ];
 
@@ -99,6 +98,10 @@ function DataInputComponent (){
   const columnDefs = [
     {
       field: "id",
+      hide: true
+    },
+    {
+      field: "year",
       hide: true
     },
     {
@@ -175,24 +178,93 @@ function DataInputComponent (){
       return obj;
     }, {});
 
-    var isEstimated = (filterMonths[monthYrKey] == 'true');
+    var isEstimated = (filterMonths[monthYrKey] == true);
     if (isEstimated == true)
       return { backgroundColor: "#EEB265" };
     return { backgroundColor: "white" };
   }
 
-  const onCellDoubleClicked  = useCallback((params, monthWithYearField) => {
+  const onCellDoubleClicked  = useCallback((params, monthField) => {
     console.log('onCellDoubleClicked',params);
     if(params.data){
-    let monthYrCol = monthWithYearField + '_E';
-    console.log('monthYrCol', monthYrCol);
+    // let monthYrCol = monthWithYearField + '_E';
+    // console.log('monthYrCol', monthYrCol);
     console.log('params.data.partner', params.data.partner);
     console.log('gridRef', gridRef);
     var rowNode = gridRef.current.api.getRowNode(params.data.partner);
+    
+    const itemsToUpdate = [];
+    gridRef.current.api.forEachNodeAfterFilterAndSort(function (
+      rowNode,
+      index
+    ) 
+    {
+        console.log('index', index);
+        const data = rowNode.data;
+        console.log('selectedNodes.data',rowNode.data)
+
+        // const currentDate = new Date();
+        // const currentYear = currentDate.getUTCFullYear();
+
+        switch(monthField){
+          case ('Jan'):
+            data.Jan_E = !data.Jan_E
+            break;
+          case ('Feb'):
+            data.Feb_E = !data.Feb_E
+            break;
+          case ('Mar'):
+            data.Mar_E = !data.Mar_E
+            break;
+          case ('Apr'):
+            data.Apr_E = !data.Apr_E
+            break;
+          case ('May'):
+            data.May_E = !data.May_E
+            break;
+          case ('Jun'):
+            data.Jun_E = !data.Jun_E
+            break;
+          case ('Jul'):
+            data.Jul_E = !data.Jul_E
+            break;
+          case ('Aug'):
+            data.Aug_E = !data.Aug_E
+            break;
+          case ('Sep'):
+            data.Sep_E = !data.Sep_E
+            break;
+          case ('Oct'):
+            data.Oct_E = !data.Oct_E
+            break;
+          case ('Nov' ):
+            data.Nov_E = !data.Nov_E
+            break;
+          case ('Dec' ):
+            data.Dec_E = !data.Dec_E
+            break;
+        }
+        // var filterMonths = Object.keys(rowNode.data)
+        // .filter(key => [monthYrCol].includes(key))
+        // .reduce((obj, key) => {
+        //   obj[key] = params.data[key];
+        //   return obj;
+        // }, {});
+
+        // console.log('filterMonths', filterMonths);
+
+        // console.log('prev data.monthYrCol', data.monthYrCol);
+        // data.monthYrCol = !data.monthYrCol;
+        // console.log('curr data.monthYrCol', data.monthYrCol);
+        itemsToUpdate.push(data);
+    });
+    const res = gridRef.current.api.applyTransaction({ update: itemsToUpdate });
+    console.log('itemsToUpdate', res);
+
     // var rowNode = params.node;
-    console.log('rowNode prev', rowNode);
-    rowNode.setDataValue(monthYrCol, true);
-    console.log('rowNode curr', rowNode);
+    // console.log('rowNode prev', rowNode);
+    // rowNode.setDataValue(monthYrCol, true);
+    // console.log('rowNode curr', rowNode);
   }});
 
   const currentDate = new Date();
@@ -208,9 +280,9 @@ function DataInputComponent (){
     );
     const monthName = month[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
-    const monthWithYearHeader = monthName + " " + year;
-    const monthWithYearField = monthName + year;
-    const monthWithYearAEFlagField = monthName + year +'_E';
+    const monthWithYearHeader = monthName;
+    const monthWithYearField = monthName;
+    const monthWithYearAEFlagField = monthName + '_E';
 
     // to make sure user entered number only
     const checkNumericValue = (params) => {
@@ -295,11 +367,42 @@ function DataInputComponent (){
     const selectedNodes = gridRef.current.api.getSelectedNodes();
     console.log('get selected cells', selectedCells);
     console.log('get selected nodes', selectedNodes);
+    const itemsToUpdate = [];
+    gridRef.current.api.forEachNodeAfterFilterAndSort(function (
+      selectedNodes,
+      index
+    ) 
+    {
+        console.log('index', index);
+        const data = selectedNodes.data;
+        console.log('selectedNodes.data',selectedNodes.data)
+        data.Jan23_E = true;
+        itemsToUpdate.push(data);
+    });
+    const res = gridRef.current.api.applyTransaction({ update: itemsToUpdate });
+    console.log('itemsToUpdate', res);
   });
   
   const markActual = () =>
   {
-    
+    const selectedCells = gridRef.current.api.getCellRanges();
+    const selectedNodes = gridRef.current.api.getSelectedNodes();
+    console.log('get selected cells', selectedCells);
+    console.log('get selected nodes', selectedNodes);
+    const itemsToUpdate = [];
+    gridRef.current.api.forEachNodeAfterFilterAndSort(function (
+      selectedNodes,
+      index
+    ) 
+    {
+        console.log('index', index);
+        const data = selectedNodes.data;
+        console.log('selectedNodes.data',selectedNodes.data)
+        data.Jan23_E = false;
+        itemsToUpdate.push(data);
+    });
+    const res = gridRef.current.api.applyTransaction({ update: itemsToUpdate });
+    console.log('itemsToUpdate', res);
   }
 
   const onGridReady = useCallback((params) => {
@@ -329,13 +432,10 @@ function DataInputComponent (){
             rowData={rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
-            // onCellValueChanged={onCellValueChanged}
             pagination={true}
             paginationAutoPageSize={true}
             animateRows={true}
-            // onCellDoubleClicked={onCellDoubleClicked}
             rowSelection={'multiple'}
-            // onRowSelected = {onRowSelected}
             getRowId={getRowId}  
             enableRangeSelection={true}
             onGridReady={onGridReady}
@@ -346,8 +446,7 @@ function DataInputComponent (){
               <Button
                 variant="primary"
                 className="btn-upload"
-                onClick={handleCancel}
-              >
+                onClick={handleCancel}>
                 Cancel
               </Button>
             </Col>
