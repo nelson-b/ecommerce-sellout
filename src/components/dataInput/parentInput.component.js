@@ -1,6 +1,7 @@
-'use strict';
+"use strict";
 
 import { AgGridReact } from "ag-grid-react";
+import { useNavigate } from "react-router-dom";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useState, useMemo, useCallback, useRef } from "react";
@@ -9,10 +10,25 @@ import { month } from "../constant";
 import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
 import MyMenu from "../menu/menu.component.js";
+import CancelModal from "../modal/cancelModal";
 // import "ag-grid-community";
-import 'ag-grid-enterprise';
+import "ag-grid-enterprise";
+import active from "../../images/active.png";
+import closed from "../../images/closed.png";
 
-function DataInputComponent (){
+function DataInputComponent() {
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [show, setShow] = useState(false);
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   const gridRef = useRef(null);
   const getData = [
     {
@@ -40,7 +56,7 @@ function DataInputComponent (){
       country: "Country B",
       partner: "Partner B",
       model: "E2",
-      status: "Active",
+      status: "Close",
       currency: "USD",
       Jan_E: false,
       Feb_E: false,
@@ -78,7 +94,7 @@ function DataInputComponent (){
       country: "Country B",
       partner: "Partner D",
       model: "E2",
-      status: "Inactive",
+      status: "Close",
       currency: "USD",
       Jan_E: false,
       Feb_E: false,
@@ -92,13 +108,12 @@ function DataInputComponent (){
       May: 64
     },
   ];
-
   const [rowData, setRowData] = useState(null);
 
   const columnDefs = [
     {
       field: "id",
-      hide: true
+      hide: true,
     },
     {
       field: "year",
@@ -111,7 +126,7 @@ function DataInputComponent (){
       filter: true,
       pinned: "left",
       suppressNavigable: true,
-      cellClass: 'no-border',
+      cellClass: "no-border",
       editable: false
     },
     {
@@ -121,6 +136,8 @@ function DataInputComponent (){
       filter: true,
       pinned: "left",
       suppressNavigable: true,
+      width: 140,
+      suppressSizeToFit: true,
       cellClass: 'no-border',
       editable: false
     },
@@ -130,6 +147,8 @@ function DataInputComponent (){
       sortable: true,
       filter: true,
       pinned: "left",
+      width: 140,
+      suppressSizeToFit: true,
       editable: false
     },
     {
@@ -138,6 +157,8 @@ function DataInputComponent (){
       sortable: true,
       filter: true,
       pinned: "left",
+      width: 120,
+      suppressSizeToFit: true,
       editable: false
     },
     {
@@ -145,12 +166,14 @@ function DataInputComponent (){
       field: "status",
       minWidth: 100,
       editable: false,
-      cellStyle: (params) => {
-        if (params.value === "Active") {
-          return { color: "green" };
-        } else {
-          return { color: "darkorange" };
-        }
+      cellRenderer: (params) => {
+        const Status = params.value;
+        return (
+          <div>
+            {Status === 'Active' && <img src={active} alt="active" style= {{width: "80px"}} />}
+            {Status === 'Close' && <img src={closed} alt="closed" style= {{width: "80px"}}/>}
+          </div>
+        );
       },
     },
     {
@@ -165,29 +188,30 @@ function DataInputComponent (){
     () => ({
       resizable: true,
       flex: 1,
+      editable: true,
       minWidth:50,
       suppressSizeToFit:true,
       sortable: true,
-      filter: true
+      filter: true,
     }),
     []
   );
-  
+
   //fn set is estimated
   const fnSetIsEstimated = (params, monthField) =>{
     let monthYrKey = monthField + '_E';
     var filterMonths = Object.keys(params.data)
-    .filter(key => [monthYrKey].includes(key))
-    .reduce((obj, key) => {
-      obj[key] = params.data[key];
-      return obj;
-    }, {});
+      .filter((key) => [monthYrKey].includes(key))
+      .reduce((obj, key) => {
+        obj[key] = params.data[key];
+        return obj;
+      }, {});
 
     var isEstimated = (filterMonths[monthYrKey] == true);
     if (isEstimated == true)
       return { backgroundColor: "#EEB265" };
     return { backgroundColor: "white" };
-  }
+  };
 
   // const toggleAEDoubleClicked  = useCallback((params, monthField) => {
   //   console.log('onCellDoubleClicked',params);
@@ -251,7 +275,6 @@ function DataInputComponent (){
   // }});
 
   const currentDate = new Date();
-
   const currentMonth = currentDate.getMonth();
   const currentYear = String(currentDate.getFullYear()).slice(-2);
 
@@ -269,7 +292,7 @@ function DataInputComponent (){
 
     // to make sure user entered number only
     const checkNumericValue = (params) => {
-      console.log('checkNumericValue');
+      console.log("checkNumericValue");
       const newValInt = Number(params.newValue.toFixed(2));
       const valueChanged = params.data[monthField] !== newValInt;
       if (valueChanged) {
@@ -433,20 +456,24 @@ function DataInputComponent (){
   });
 
   const onGridReady = useCallback((params) => {
-    console.log('onGridReady')
-    fetch('https://www.ag-grid.com/example-assets/olympic-winners.json')
+    console.log("onGridReady");
+    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
       .then((resp) => getData)
       .then((data) => setRowData(data));
   }, []);
+
+  const handleNavigation = () => {
+    navigate("/dataReview");
+  };
 
   return (
     <>
       <Container fluid>
         <Row>
-          <MyMenu/>
+          <MyMenu />
         </Row>
         <Row>
-          <BatchInputComponent/>
+          <BatchInputComponent />
         </Row>
         <Row className="justify-content-end">
           <Col md={2}>
@@ -478,16 +505,22 @@ function DataInputComponent (){
           <Row style={{ float: "right", marginRight: "10px", marginTop: "20px" }}>
             <Col xs="auto">
               <Button
-                variant="primary"
-                className="btn-upload"
-                onClick={handleCancel}>
+                className="btn-upload cancel-header"
+                onClick={handleShowModal}>
                 Cancel
               </Button>
+              <CancelModal
+                show={showModal}
+                handleClose={handleCloseModal}
+                handleConfirm={handleCloseModal}
+                body={"Are you sure you want to cancel the input."}
+                button1={"Cancel"}
+                button2={"Confirm"}
+              />
             </Col>
             <Col xs="auto">
               <Button
-                variant="primary"
-                className="btn-upload"
+                className="btn-upload edit-header"
                 onClick={() => {
                   handleSave();
                 }}
@@ -496,14 +529,17 @@ function DataInputComponent (){
               </Button>
             </Col>
             <Col>
-              <Button variant="secondary" className="btn-upload">
-                Next
+              <Button className="btn-upload save-header"
+               onClick={() => {
+                  handleNavigation();
+                }}>
+                   Next
               </Button>
             </Col>
           </Row>
       </Container>
     </>
   );
-};
+}
 
 export default DataInputComponent;
