@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import ErrorPageComponent from "./components/error-page.component.js";
 import PartnerComponent from "./components/partner.component.js";
-import MyMenu from "./components/menu.component.js";
 import HomeComponent from "./components/home.component.js";
-import { createBrowserHistory as createHistory } from "history";
+import DataInputComponent from "./components/dataInput/parentInput.component.js";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-
-const history = createHistory();
+import DataReview from "./components/dataReview/dataReview.component.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,16 +15,16 @@ function App() {
     setIsOpen(!isOpen);
   };
 
-  const MissingPage = () => <h1>404 - Page not found</h1>;
-
   return (
     <div className="App">
-      <Router history={history}>
-        <MyMenu />
+      <Router>
         <Routes>
+          <Route path="/dataInput" element={<DataInputComponent />} />
+          <Route path="/dataReview" element={<DataReview />} />
           <Route path="/" element={<HomeComponent />} />
-          <Route path="/addPartner" exact element={<PartnerComponent />} />
-          <Route path="*" element={<MissingPage />} />
+          <Route path="*" element={<ErrorPageComponent />} />
+          <Route path="/addPartner" exact element={<PartnerComponent isCreatedModule={true} />} />
+          <Route path="/updatePartner" exact element={<PartnerComponent isCreatedModule={false}/>} />
         </Routes>
       </Router>
     </div>
