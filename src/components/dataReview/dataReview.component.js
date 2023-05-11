@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import {
   Button,
@@ -6,7 +7,7 @@ import {
   Col,
   Stack,
   ToggleButton,
-  ButtonGroup
+  ButtonGroup,
 } from "react-bootstrap";
 import "./dataReview.css";
 import { month } from "../constant";
@@ -16,10 +17,24 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import data from "../../data/dataReview.json";
 import dataEuro from "../../data/dataReviewEuro.json";
+import CancelModal from "../modal/cancelModal";
+import footerTotalReview from "./footerTotalReview";
+import active from "../../images/active.png";
+import closed from "../../images/closed.png";
 
 function DataReviewComponent({}) {
-  const [rowData, setRowData] = useState(data);
+  const navigate = useNavigate();
+  const [rowData, setRowData] = useState();
   const [radioValue, setRadioValue] = useState("1");
+  const [showModal, setShowModal] = useState(false);
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -27,41 +42,50 @@ function DataReviewComponent({}) {
   ];
 
   const columnDefs = [
-    { field: 'Zone', rowGroup: true, hide: true },
+    { field: "Zone", rowGroup: true, hide: true },
     {
       field: "Partner",
       headerName: "Partner",
       filter: true,
       sortable: true,
-      pinned: "left"
+      pinned: "left",
+      width: 120,
+      suppressSizeToFit: true,
     },
     {
       field: "Country",
-      headerName: "Country",
       rowGroup: true,
+      hide: true,
       filter: true,
       sortable: true,
-      pinned: "left"
+      pinned: "left",
+      width: 120,
+      suppressSizeToFit: true,
     },
     {
       field: "Model",
       rowGroup: true,
-      filter: true,
+      hide: true,
       sortable: true,
-      pinned: "left"
+      filter: true,
+      pinned: "left",
+      width: 100,
+      suppressSizeToFit: true,
     },
     {
       headerName: "Status",
       field: "Status",
-      minWidth: 100,
-      filter: true,
-      sortable: true,
-      cellStyle: (params) => {
-        if (params.value === "Active") {
-          return { color: "green" };
-        } else {
-          return { color: "darkorange" };
-        }
+      pinned: "left",
+      width: 110,
+      suppressSizeToFit: true,
+      cellRenderer: (params) => {
+        const Status = params.value;
+        return (
+          <div>
+            {Status === 'Active' && <img src={active} alt="active" style= {{width: "80px"}} />}
+            {Status === 'Close' && <img src={closed} alt="closed" style= {{width: "80px"}}/>}
+          </div>
+        );
       },
     },
   ];
@@ -70,23 +94,54 @@ function DataReviewComponent({}) {
     return {
       flex: 1,
       resizable: true,
+      filter: true,
+      sortable: true,
+      suppressSizeToFit: true,
     };
   }, []);
 
   const autoGroupColumnDef = useMemo(() => {
     return {
-      headerName: "Filter Criteria Zone",
-      minWidth: 220,
-      filter: true,
-      sortable: true,
+      // headerName: "Filter Criteria Zone",
+      minWidth: 200,
+      filterValueGetter: (params) => {
+        if (params.node) {
+          var colGettingGrouped = params.colDef.showRowGroup + "";
+          return params.api.getValue(colGettingGrouped, params.node);
+        }
+      },
       pinned: "left",
       cellRenderer: "agGroupCellRenderer",
       cellRendererParams: {
         suppressCount: true,
         checkbox: true,
+        innerRenderer: footerTotalReview,
       },
     };
   }, []);
+
+  const getRowStyle = (params) => {
+    if (params.node.aggData) {
+      return { fontWeight: "bold" };
+    }
+  };
+
+  const setIsEstimated = (params, monthWithYearValue) => {
+    if (params.data != undefined) {
+      let monthYrKey = monthWithYearValue + "_E";
+      var filterMonths = Object.keys(params.data)
+        .filter((key) => [monthYrKey].includes(key))
+        .reduce((obj, key) => {
+          obj[key] = params.data[key];
+          return obj;
+        }, {});
+
+      var isEstimated = filterMonths[monthYrKey] === "true";
+      if (isEstimated === true) return { backgroundColor: "#EEB265" };
+    } else {
+      return { backgroundColor: "white" };
+    }
+  };
 
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
@@ -101,14 +156,15 @@ function DataReviewComponent({}) {
     const monthName = month[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
     const monthWithYearLabel = monthName + " " + year;
-    const monthWithYearValue = monthName + "" + year;
+    const monthWithYearValue = monthName + year;
+    const monthAndYearAEFlagField = monthName + year + "_E";
 
     // to make sure user entered number only
     const checkNumericValue = (params) => {
       const newValInt = Number(params.newValue.toFixed(2));
-      const valueChanged = params.data[monthWithYearLabel] !== newValInt;
+      const valueChanged = params.data[monthWithYearValue] !== newValInt;
       if (valueChanged) {
-        params.data[monthWithYearLabel] =
+        params.data[monthWithYearValue] =
           newValInt >= 0
             ? newValInt
             : params.oldValue !== undefined
@@ -127,8 +183,16 @@ function DataReviewComponent({}) {
             singleClickEdit: true,
             minWidth: 100,
             aggFunc: "sum",
+            sortable: true,
             valueParser: (params) => Number(params.newValue),
             valueSetter: checkNumericValue,
+            cellStyle: (params) => {
+              return setIsEstimated(params, monthWithYearValue);
+            },
+          },
+          {
+            field: monthAndYearAEFlagField,
+            hide: true,
           },
           {
             headerName: "vat. VM vs LM (value)",
@@ -162,6 +226,9 @@ function DataReviewComponent({}) {
           minWidth: 100,
           valueParser: (params) => Number(params.newValue),
           valueSetter: checkNumericValue,
+          cellStyle: (params) => {
+            return setIsEstimated(params, monthWithYearValue);
+          },
         });
   }
 
@@ -173,8 +240,9 @@ function DataReviewComponent({}) {
   const prevMonth = month[previousYear.getMonth()];
   const prevYear = String(previousYear.getFullYear()).slice(-2);
 
-  const prevYearwithMonthValue = prevMonth + "" + prevYear;
+  const prevYearwithMonthValue = prevMonth + prevYear;
   const prevYearwithMonthLabel = prevMonth + " " + prevYear;
+  const euroMonthAndYearAEFlagField = prevMonth + prevYear + "_E";
 
   if (previousYear !== prevYear && prevMonth !== 0);
   " "
@@ -186,11 +254,19 @@ function DataReviewComponent({}) {
           singleClickEdit: true,
           minWidth: 100,
           aggFunc: "sum",
+          sortable: true,
           valueParser: (params) => Number(params.newValue),
+          cellStyle: (params) => {
+            return setIsEstimated(params, prevYearwithMonthValue);
+          },
+        },
+        {
+          field: euroMonthAndYearAEFlagField,
+          hide: true,
         },
         {
           headerName: "vat. VM vs LM (value)",
-          field: "vatVMvsLvalue",
+          field: "vatVMValue",
           minWidth: 200,
           editable: true,
           singleClickEdit: true,
@@ -209,20 +285,17 @@ function DataReviewComponent({}) {
         singleClickEdit: true,
         minWidth: 100,
         valueParser: (params) => Number(params.newValue),
+        cellStyle: (params) => {
+          return setIsEstimated(params, prevYearwithMonthValue);
+        },
       });
 
-  const handleCancel = () => {
-    setRowData(data);
-  };
-
   const handleEdit = () => {
-    setRowData(data);
+    navigate("/dataInput");
   };
 
   const handleConfirm = () => {
     setRowData(rowData);
-    console.log("Save Clicked");
-    console.log(rowData);
   };
 
   const onGridReady = useCallback((params) => {
@@ -246,7 +319,7 @@ function DataReviewComponent({}) {
                     key={idx}
                     id={`radio-${idx}`}
                     type="radio"
-                    variant={idx % 2 ? "outline-success" : "outline-danger"}
+                    variant={idx % 2 ? "outline-success" : "outline-success"}
                     name="radio"
                     value={radio.value}
                     checked={radioValue === radio.value}
@@ -258,22 +331,24 @@ function DataReviewComponent({}) {
               </ButtonGroup>
             </Col>
           </div>
-          <div className="historical-data">
-            <div className="data">Historical Data</div>
+          <div className="historical-header">
+            <Button className="btn-lg historical-data">Historical Data</Button>
           </div>
         </Stack>
       </div>
 
       <div
-        className="ag-theme-alpine"
-        style={{ height: 450, margin: "7px 20px 0px 20px" }}
+        className="ag-theme-alpine ag-grid-table"
+        style={{ height: 370, margin: "7px 20px 0px 20px" }}
       >
         <AgGridReact
           rowData={radioValue == 1 ? data : dataEuro}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           autoGroupColumnDef={autoGroupColumnDef}
-          groupDisplayType={"singleColumn"}
+          // groupDisplayType={'custom'}
+          // groupDisplayType={"singleColumn"}
+          groupHideOpenParents={true}
           showOpenedGroup={true}
           animateRows={true}
           suppressAggFuncInHeader={true}
@@ -281,39 +356,39 @@ function DataReviewComponent({}) {
           groupIncludeFooter={true}
           groupDefaultExpanded={-1}
           onGridReady={onGridReady}
+          getRowStyle={getRowStyle}
         ></AgGridReact>
         <div className="">
-          <Row style={{ float: "right", marginTop: "10px" }}>
+          <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
             <Col xs="auto">
               <Button
-                variant="outline-secondary"
-                className="btn-upload"
-                onClick={handleCancel}
+                className="btn-upload cancel-header"
+                onClick={handleShowModal}
               >
                 Cancel
               </Button>
+              <CancelModal
+                show={showModal}
+                handleClose={handleCloseModal}
+                handleConfirm={handleCloseModal}
+                body={"Are you sure you want to cancel the review."}
+                button1={"Cancel"}
+                button2={"Confirm"}
+              />
             </Col>
             <Col xs="auto">
-              <Button
-                variant="outline-secondary"
-                className="btn-upload"
-                onClick={() => {
-                  handleEdit();
-                }}
-              >
+              <Button className="btn-upload edit-header" onClick={handleEdit}>
                 Edit
               </Button>
             </Col>
             <Col>
               <Button
-                // variant="dark"
-                variant="outline-secondary"
-                className="btn-upload"
+                className="btn-upload save-header"
                 onClick={() => {
                   handleConfirm();
                 }}
               >
-                Confirm
+                Save
               </Button>
             </Col>
           </Row>
