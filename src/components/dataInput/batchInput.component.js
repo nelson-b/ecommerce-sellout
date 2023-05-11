@@ -9,11 +9,7 @@ import * as FileSaver from "file-saver";
 import { batchUploadType } from "./batchUploadType";
 import ReportData from "../../data/downloadReport.json";
 
-function BatchInputComponent({ getData, selectedCol }) {
-  // console.log("getData", getData);
-  // console.log("selectedCol", selectedCol);
-  // console.log("ReportData", ReportData);
-
+function BatchInputComponent({}) {
   const navigate = useNavigate();
 
   const {
@@ -28,9 +24,6 @@ function BatchInputComponent({ getData, selectedCol }) {
   });
 
   const [fileData, setFileData] = useState([]);
-
-  // useEffect(() => {
-  // },[]);
 
   const onSubmit = (data) => {
     const file = data.file[0];
@@ -66,7 +59,7 @@ function BatchInputComponent({ getData, selectedCol }) {
         };
         reader.readAsArrayBuffer(data.file[0]);
       }
-      //navigate("/dataReview");
+      // navigate("/dataReview");
       console.log("Reading excel useState: ", fileData);
     }
   };
@@ -74,19 +67,6 @@ function BatchInputComponent({ getData, selectedCol }) {
   const onError = (error) => {
     console.log("ERROR:::", error);
   };
-
-  // const removedProps = (obj, propsArray) => {
-  //   propsArray.forEach((prop) => delete obj[prop]);
-  //   return obj;
-  // };
-  // const propsToDelete = [selectedCol[0].field, selectedCol[1].field, selectedCol[3].field, selectedCol[4].field, selectedCol[5].field];
-  // console.log('propsToDelete', propsToDelete);
-
-  // const eData = [...getData]
-  // const tableData = getData.map((row) => {
-  //   return removedProps(row, propsToDelete);
-  // });
-  // console.log('tableData',tableData);
 
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -133,8 +113,7 @@ function BatchInputComponent({ getData, selectedCol }) {
                   </Col>
                   <Col xs="auto">
                     <Button
-                      variant="success"
-                      className="btn-upload"
+                      className="btn-upload save-header"
                       type="submit"
                     >
                       Upload
@@ -145,8 +124,7 @@ function BatchInputComponent({ getData, selectedCol }) {
             </Col>
             <Col xs="auto">
               <Button
-                variant="outline-success"
-                className="btn-download"
+                className="btn-download edit-header"
                 onClick={(e) => exportToExcel(ReportData)}
               >
                 Download Template

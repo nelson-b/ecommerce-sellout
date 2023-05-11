@@ -15,10 +15,10 @@ import { Button, Modal} from "react-bootstrap";
       >
         <Modal.Body>{body}</Modal.Body>
         <Modal.Footer>
-          <Button className="border-3" variant="outline-warning" onClick={handleClose}>
+          <Button className="border-3 cancel-header" onClick={handleClose}>
             {button1}
           </Button>
-          <Button className="border-3" variant="success" onClick={handleConfirm}>
+          <Button className="border-3 save-header" onClick={handleConfirm}>
             {button2}
           </Button>
         </Modal.Footer>

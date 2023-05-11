@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useState, useMemo, useCallback, useRef } from "react";
-import { Button, Row, Col, Container, Modal } from "react-bootstrap";
+import { Button, Row, Col, Container, Form } from "react-bootstrap";
 import { month } from "../constant";
 import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
@@ -343,23 +343,21 @@ function DataInputComponent() {
           <MyMenu />
         </Row>
         <Row>
-          <BatchInputComponent getData={getData} selectedCol={columnDefs} />
+          <BatchInputComponent />
         </Row>
         <Row className="justify-content-end">
           <Col md={2}>
             <Button
-              className="btn-md"
+              className="btn-md save-header"
               onClick={() => markEstimated()}
-              variant="success"
             >
               Mark estimated
             </Button>{" "}
           </Col>
           <Col md={2}>
             <Button
-              className="btn-md"
+              className="btn-md save-header"
               onClick={() => markActual()}
-              variant="success"
             >
               Mark actual
             </Button>{" "}
@@ -387,8 +385,7 @@ function DataInputComponent() {
         <Row  className="mb-3" style={{ float: "right", marginRight: "10px", marginTop: "10px" }}>
           <Col xs="auto">
             <Button
-              variant="outline-warning"
-              className="btn-upload"
+              className="btn-upload cancel-header"
               onClick={handleShowModal}
             >
               Cancel
@@ -404,8 +401,7 @@ function DataInputComponent() {
           </Col>
           <Col xs="auto">
             <Button
-              variant="outline-success"
-              className="btn-upload"
+              className="btn-upload edit-header"
               onClick={() => {
                 handleSave();
               }}
@@ -415,20 +411,13 @@ function DataInputComponent() {
           </Col>
           <Col>
             <Button
-              variant="success"
-              className="btn-upload"
-              onClick={handleShow}
+              className="btn-upload save-header"
+              onClick={() => {
+                handleNavigation();
+              }}
             >
               Next
             </Button>
-            <CancelModal
-              show={show}
-              handleClose={handleClose}
-              handleConfirm={handleNavigation}
-              body={"Are you sure you want to go without Estimated value select?."}
-              button1={"Cancel"}
-              button2={"Next"}
-            />
           </Col>
         </Row>
       </Container>
