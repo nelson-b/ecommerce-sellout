@@ -127,7 +127,8 @@ function DataInputComponent() {
       pinned: "left",
       suppressNavigable: true,
       cellClass: "no-border",
-      editable: false
+      editable: false,
+      width: 100
     },
     {
       headerName: "Country",
@@ -142,7 +143,7 @@ function DataInputComponent() {
       editable: false
     },
     {
-      headerName: "Partner",
+      headerName: "Partner Account Name",
       field: "partner",
       sortable: true,
       filter: true,
@@ -162,9 +163,17 @@ function DataInputComponent() {
       editable: false
     },
     {
+      headerName: "Currency of Reporting",
+      field: "currency",
+      width: 100,
+      editable: false,
+      pinned: "left",
+    },
+    {
       headerName: "Status",
       field: "status",
-      minWidth: 100,
+      width: 110,
+      pinned: "left",
       editable: false,
       cellRenderer: (params) => {
         const Status = params.value;
@@ -175,12 +184,6 @@ function DataInputComponent() {
           </div>
         );
       },
-    },
-    {
-      headerName: "Currency of Reporting",
-      field: "currency",
-      minWidth: 100,
-      editable: false
     },
   ];
 

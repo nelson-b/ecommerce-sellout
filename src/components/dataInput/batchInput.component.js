@@ -90,7 +90,7 @@ function BatchInputComponent({}) {
         <Container className="sell-out-input-upload">
           <Row>
             <Col xs="auto" className="align-item-center file-upload-position">
-              <Form.Label>EXCEL FILE UPLOAD</Form.Label>
+              <Form.Label>BATCH UPLOAD</Form.Label>
             </Col>
             <Col xs="auto">
               <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
