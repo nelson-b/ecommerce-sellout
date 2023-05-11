@@ -13,6 +13,8 @@ import MyMenu from "../menu/menu.component.js";
 import CancelModal from "../modal/cancelModal";
 // import "ag-grid-community";
 import "ag-grid-enterprise";
+import active from "../../images/active.png";
+import closed from "../../images/closed.png";
 
 function DataInputComponent() {
   const navigate = useNavigate();
@@ -25,14 +27,6 @@ function DataInputComponent() {
 
   const handleCloseModal = () => {
     setShowModal(false);
-  };
-
-  const handleShow = () => {
-    setShow(true);
-  };
-
-  const handleClose = () => {
-    setShow(false);
   };
 
   const gridRef = useRef(null);
@@ -100,7 +94,7 @@ function DataInputComponent() {
       country: "Country B",
       partner: "Partner D",
       model: "E2",
-      status: "Inactive",
+      status: "Close",
       currency: "USD",
       Jan23_E: "false",
       Feb23_E: "true",
@@ -123,6 +117,10 @@ function DataInputComponent() {
       hide: true,
     },
     {
+      field: "year",
+      hide: true
+    },
+    {
       headerName: "Zone",
       field: "zone",
       sortable: true,
@@ -130,6 +128,7 @@ function DataInputComponent() {
       pinned: "left",
       suppressNavigable: true,
       cellClass: "no-border",
+      editable: false
     },
     {
       headerName: "Country",
@@ -138,9 +137,10 @@ function DataInputComponent() {
       filter: true,
       pinned: "left",
       suppressNavigable: true,
-      cellClass: "no-border",
       width: 140,
       suppressSizeToFit: true,
+      cellClass: 'no-border',
+      editable: false
     },
     {
       headerName: "Partner",
@@ -150,6 +150,7 @@ function DataInputComponent() {
       pinned: "left",
       width: 140,
       suppressSizeToFit: true,
+      editable: false
     },
     {
       headerName: "Model",
@@ -159,23 +160,28 @@ function DataInputComponent() {
       pinned: "left",
       width: 120,
       suppressSizeToFit: true,
+      editable: false
     },
     {
       headerName: "Status",
       field: "status",
       minWidth: 100,
-      cellStyle: (params) => {
-        if (params.value === "Active") {
-          return { color: "green" };
-        } else {
-          return { color: "darkorange" };
-        }
+      editable: false,
+      cellRenderer: (params) => {
+        const Status = params.value;
+        return (
+          <div>
+            {Status === 'Active' && <img src={active} alt="active" style= {{width: "80px"}} />}
+            {Status === 'Close' && <img src={closed} alt="closed" style= {{width: "80px"}}/>}
+          </div>
+        );
       },
     },
     {
       headerName: "Currency of Reporting",
       field: "currency",
       minWidth: 100,
+      editable: false
     },
   ];
 
@@ -183,9 +189,9 @@ function DataInputComponent() {
     () => ({
       resizable: true,
       flex: 1,
-      minWidth: 50,
-      suppressSizeToFit: true,
       editable: true,
+      minWidth:50,
+      suppressSizeToFit:true,
       sortable: true,
       filter: true,
     }),
@@ -193,8 +199,8 @@ function DataInputComponent() {
   );
 
   //fn set is estimated
-  const fnSetIsEstimated = (params, monthWithYearField) => {
-    let monthYrKey = monthWithYearField + "_E";
+  const fnSetIsEstimated = (params, monthField) =>{
+    let monthYrKey = monthField + '_E';
     var filterMonths = Object.keys(params.data)
       .filter((key) => [monthYrKey].includes(key))
       .reduce((obj, key) => {
@@ -202,25 +208,72 @@ function DataInputComponent() {
         return obj;
       }, {});
 
-    var isEstimated = filterMonths[monthYrKey] == "true";
-    if (isEstimated == true) return { backgroundColor: "#EEB265" };
+    var isEstimated = (filterMonths[monthYrKey] == true);
+    if (isEstimated == true)
+      return { backgroundColor: "#EEB265" };
     return { backgroundColor: "white" };
   };
 
-  const onCellDoubleClicked = useCallback((params, monthWithYearField) => {
-    console.log("onCellDoubleClicked", params);
-    if (params.data) {
-      let monthYrCol = monthWithYearField + "_E";
-      console.log("monthYrCol", monthYrCol);
-      console.log("params.data.partner", params.data.partner);
-      console.log("gridRef", gridRef);
-      var rowNode = gridRef.current.api.getRowNode(params.data.partner);
-      // var rowNode = params.node;
-      console.log("rowNode prev", rowNode);
-      rowNode.setDataValue(monthYrCol, true);
-      console.log("rowNode curr", rowNode);
-    }
-  });
+  // const toggleAEDoubleClicked  = useCallback((params, monthField) => {
+  //   console.log('onCellDoubleClicked',params);
+  //   if(params.data){
+  //     console.log('params.data.partner', params.data.partner);
+  //     console.log('gridRef', gridRef);
+  //     var rowNode = gridRef.current.api.getRowNode(params.data.partner);
+    
+  //     const itemsToUpdate = [];
+  //     gridRef.current.api.forEachNodeAfterFilterAndSort(function (
+  //       rowNode,
+  //       index
+  //     ) 
+  //     {
+  //         console.log('index', index);
+  //         const data = rowNode.data;
+  //         console.log('selectedNodes.data',rowNode.data)
+
+  //         switch(monthField){
+  //           case ('Jan'):
+  //             data.Jan_E = !data.Jan_E
+  //             break;
+  //           case ('Feb'):
+  //             data.Feb_E = !data.Feb_E
+  //             break;
+  //           case ('Mar'):
+  //             data.Mar_E = !data.Mar_E
+  //             break;
+  //           case ('Apr'):
+  //             data.Apr_E = !data.Apr_E
+  //             break;
+  //           case ('May'):
+  //             data.May_E = !data.May_E
+  //             break;
+  //           case ('Jun'):
+  //             data.Jun_E = !data.Jun_E
+  //             break;
+  //           case ('Jul'):
+  //             data.Jul_E = !data.Jul_E
+  //             break;
+  //           case ('Aug'):
+  //             data.Aug_E = !data.Aug_E
+  //             break;
+  //           case ('Sep'):
+  //             data.Sep_E = !data.Sep_E
+  //             break;
+  //           case ('Oct'):
+  //             data.Oct_E = !data.Oct_E
+  //             break;
+  //           case ('Nov' ):
+  //             data.Nov_E = !data.Nov_E
+  //             break;
+  //           case ('Dec' ):
+  //             data.Dec_E = !data.Dec_E
+  //             break;
+  //         }
+  //         itemsToUpdate.push(data);
+  //   });
+  //   const res = gridRef.current.api.applyTransaction({ update: itemsToUpdate });
+  //   console.log('itemsToUpdate', res);
+  // }});
 
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
@@ -234,17 +287,17 @@ function DataInputComponent() {
     );
     const monthName = month[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
-    const monthWithYearHeader = monthName + " " + year;
-    const monthWithYearField = monthName + year;
-    const monthWithYearAEFlagField = monthName + year + "_E";
+    const monthHeader = monthName + year;
+    const monthField = monthName + year;
+    const monthAEFlagField = monthName + '_E';
 
     // to make sure user entered number only
     const checkNumericValue = (params) => {
       console.log("checkNumericValue");
       const newValInt = Number(params.newValue.toFixed(2));
-      const valueChanged = params.data[monthWithYearField] !== newValInt;
+      const valueChanged = params.data[monthField] !== newValInt;
       if (valueChanged) {
-        params.data[monthWithYearField] =
+        params.data[monthField] =
           newValInt >= 0
             ? newValInt
             : params.oldValue !== undefined
@@ -260,24 +313,22 @@ function DataInputComponent() {
     i == 1
       ? columnDefs.push(
           {
-            headerName: monthWithYearHeader,
-            field: monthWithYearField,
+            headerName: monthHeader,
+            field: monthField,
             editable: true,
             singleClickEdit: true,
             minWidth: 100,
             valueParser: (params) => Number(params.newValue),
             valueSetter: checkNumericValue,
-            cellStyle: (params) => {
-              return fnSetIsEstimated(params, monthWithYearField);
+            cellStyle: params => {
+              return fnSetIsEstimated(params, monthField);
             },
             enableRangeSelection: true,
-            onCellDoubleClicked: (params) => {
-              onCellDoubleClicked(params, monthWithYearField);
-            },
+            // onCellDoubleClicked: params => { toggleAEDoubleClicked(params, monthField) }
           },
           {
-            field: monthWithYearAEFlagField,
-            hide: true,
+            field: monthAEFlagField,
+            hide: true
           },
           {
             headerName: "Editor's Comment",
@@ -288,25 +339,29 @@ function DataInputComponent() {
           }
         )
       : columnDefs.push({
-          headerName: monthWithYearHeader,
-          field: monthWithYearField,
+          headerName: monthHeader,
+          field: monthField,
           editable: true,
           singleClickEdit: true,
           minWidth: 100,
           valueParser: (params) => Number(params.newValue),
           valueSetter: checkNumericValue,
-          cellStyle: (params) => {
-            return fnSetIsEstimated(params, monthWithYearField);
+          cellStyle: params => {
+             return fnSetIsEstimated(params, monthField);
           },
           enableRangeSelection: true,
-          onCellDoubleClicked: (params) => {
-            onCellDoubleClicked(params, monthWithYearField);
-          },
+          // onCellDoubleClicked:params => { toggleAEDoubleClicked(params, monthField)}
         });
   }
 
-  const handleSave = () => {
+  const handleSave = (e) => {
+    e.preventDefault();
     setRowData(rowData);
+  };
+
+  const handleCancel = (e) => {
+    e.preventDefault();
+    setRowData(getData);
   };
 
   // callback tells the grid to use the 'id' attribute for IDs, IDs should always be strings
@@ -316,14 +371,90 @@ function DataInputComponent() {
     };
   }, []);
 
-  const markEstimated = useCallback((newGroup) => {
+  const toggleActualEstimate = useCallback((isEstimate) => {
     const selectedCells = gridRef.current.api.getCellRanges();
-    const selectedNodes = gridRef.current.api.getSelectedNodes();
-    console.log("get selected cells", selectedCells);
-    console.log("get selected nodes", selectedNodes);
-  });
+    const itemsToUpdate = [];
+    selectedCells.forEach((currRow, currIndex)=>{
+      //row level loop
+      currRow.columns.forEach((currCol, currIndex)=>{
+        //col level loop
+        for(let i = currRow.startRow.rowIndex; i < currRow.endRow.rowIndex+1; i++){
+          gridRef.current.api.forEachNodeAfterFilterAndSort(function (
+            rowNodes,
+            index
+          ) 
+          {
+            if(index===i){
+              let data = rowNodes.data;
+              let monthField = currCol.colId;
 
-  const markActual = () => {};
+              if(monthField != undefined){
+                switch(monthField){
+                  case ('Jan'):
+                    console.log('Jan');
+                    data.Jan_E = isEstimate;
+                    console.log(data.Jan_E);
+                    break;
+                  case ('Feb'):
+                    console.log('Feb');
+                    data.Feb_E = isEstimate;
+                    console.log(data.Feb_E);
+                    break;
+                  case ('Mar'):
+                    console.log('Mar');
+                    data.Mar_E = isEstimate;
+                    break;
+                  case ('Apr'):
+                    console.log('Apr');
+                    data.Apr_E = isEstimate;
+                    break;
+                  case ('May'):
+                    console.log('May');
+                    data.May_E = isEstimate;
+                    break;
+                  case ('Jun'):
+                    console.log('Jun');
+                    data.Jun_E = isEstimate;
+                    break;
+                  case ('Jul'):
+                    console.log('Jul');
+                    data.Jul_E = isEstimate;
+                    break;
+                  case ('Aug'):
+                    console.log('Aug');
+                    data.Aug_E = isEstimate;
+                    break;
+                  case ('Sep'):
+                    console.log('Sep');
+                    data.Sep_E = isEstimate;
+                    break;
+                  case ('Oct'):
+                    console.log('Oct');
+                    data.Oct_E = isEstimate;
+                    break;
+                  case ('Oct'):
+                    console.log('Oct');
+                    data.Nov_E = isEstimate;
+                    break;
+                  case ('Dec'):
+                    console.log('Dec');
+                    data.Dec_E = isEstimate;
+                    break;
+                }              
+              }              
+              itemsToUpdate.push(data);
+            }
+          });
+        };
+      });
+    });
+    const res = gridRef.current.api.applyTransaction({ update: itemsToUpdate });
+    gridRef.current.api.redrawRows();
+  }, []);
+
+  const fnIsEstimated = useCallback((param) => {
+    toggleActualEstimate(param.target.checked);
+  });
 
   const onGridReady = useCallback((params) => {
     console.log("onGridReady");
@@ -347,21 +478,13 @@ function DataInputComponent() {
         </Row>
         <Row className="justify-content-end">
           <Col md={2}>
-            <Button
-              className="btn-md save-header"
-              onClick={() => markEstimated()}
-            >
-              Mark estimated
-            </Button>{" "}
+            <Form.Check
+              label='Is Estimated'
+              id='lblIsEstimate' 
+              onChange={fnIsEstimated}/>
           </Col>
-          <Col md={2}>
-            <Button
-              className="btn-md save-header"
-              onClick={() => markActual()}
-            >
-              Mark actual
-            </Button>{" "}
-          </Col>
+          {/* <Col md={2}><Button className="btn-md" onClick={()=>toggleActualEstimate(true)} variant="success">Mark estimated</Button>{' '}</Col>
+          <Col md={2}><Button className="btn-md" onClick={()=>toggleActualEstimate(false)} variant="success">Mark actual</Button>{' '}</Col> */}
         </Row>
         <br></br>
         <Row className="ag-theme-alpine" style={{ height: 300 }}>
@@ -370,56 +493,51 @@ function DataInputComponent() {
             rowData={rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
-            // onCellValueChanged={onCellValueChanged}
             pagination={true}
             paginationAutoPageSize={true}
             animateRows={true}
-            // onCellDoubleClicked={onCellDoubleClicked}
-            rowSelection={"multiple"}
-            // onRowSelected = {onRowSelected}
-            getRowId={getRowId}
+            rowSelection={'multiple'}
+            getRowId={getRowId}  
             enableRangeSelection={true}
+            suppressCopySingleCellRanges={true}
             onGridReady={onGridReady}
           ></AgGridReact>
-        </Row>
-        <Row  className="mb-3" style={{ float: "right", marginRight: "10px", marginTop: "10px" }}>
-          <Col xs="auto">
-            <Button
-              className="btn-upload cancel-header"
-              onClick={handleShowModal}
-            >
-              Cancel
-            </Button>
-            <CancelModal
-              show={showModal}
-              handleClose={handleCloseModal}
-              handleConfirm={handleCloseModal}
-              body={"Are you sure you want to cancel the input."}
-              button1={"Cancel"}
-              button2={"Confirm"}
-            />
-          </Col>
-          <Col xs="auto">
-            <Button
-              className="btn-upload edit-header"
-              onClick={() => {
-                handleSave();
-              }}
-            >
-              Save
-            </Button>
-          </Col>
-          <Col>
-            <Button
-              className="btn-upload save-header"
-              onClick={() => {
-                handleNavigation();
-              }}
-            >
-              Next
-            </Button>
-          </Col>
-        </Row>
+          </Row>
+          <Row style={{ float: "right", marginRight: "10px", marginTop: "20px" }}>
+            <Col xs="auto">
+              <Button
+                className="btn-upload cancel-header"
+                onClick={handleShowModal}>
+                Cancel
+              </Button>
+              <CancelModal
+                show={showModal}
+                handleClose={handleCloseModal}
+                handleConfirm={handleCloseModal}
+                body={"Are you sure you want to cancel the input."}
+                button1={"Cancel"}
+                button2={"Confirm"}
+              />
+            </Col>
+            <Col xs="auto">
+              <Button
+                className="btn-upload edit-header"
+                onClick={() => {
+                  handleSave();
+                }}
+              >
+                Save
+              </Button>
+            </Col>
+            <Col>
+              <Button className="btn-upload save-header"
+               onClick={() => {
+                  handleNavigation();
+                }}>
+                   Next
+              </Button>
+            </Col>
+          </Row>
       </Container>
     </>
   );
