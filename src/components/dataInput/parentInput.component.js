@@ -39,16 +39,16 @@ function DataInputComponent() {
       model: "E1",
       status: "Active",
       currency: "INR",
-      Jan23_E: "true",
-      Feb23_E: "false",
-      Mar23_E: "false",
-      Apr23_E: "true",
-      May23_E: "true",
-      Jan23: 23,
-      Feb23: 56,
-      Mar23: 67,
-      Apr23: 46,
-      May23: 64,
+      Jan_E: true,
+      Feb_E: false,
+      Mar_E: false,
+      Apr_E: false,
+      May_E: false,
+      Jan: 23,
+      Feb: 56,
+      Mar: 67,
+      Apr: 46,
+      May: 64
     },
     {
       id: "Partner B",
@@ -56,18 +56,18 @@ function DataInputComponent() {
       country: "Country B",
       partner: "Partner B",
       model: "E2",
-      status: "Active",
+      status: "Close",
       currency: "USD",
-      Jan23_E: "false",
-      Feb23_E: "false",
-      Mar23_E: "true",
-      Apr23_E: "false",
-      May23_E: "true",
-      Jan23: 23,
-      Feb23: 56,
-      Mar23: 67,
-      Apr23: 46,
-      May23: 64,
+      Jan_E: false,
+      Feb_E: false,
+      Mar_E: false,
+      Apr_E: false,
+      May_E: false,
+      Jan: 23,
+      Feb: 56,
+      Mar: 67,
+      Apr: 46,
+      May: 64
     },
     {
       id: "Partner C",
@@ -77,16 +77,16 @@ function DataInputComponent() {
       model: "E2",
       status: "Active",
       currency: "Euro",
-      Jan23_E: "true",
-      Feb23_E: "false",
-      Mar23_E: "true",
-      Apr23_E: "false",
-      May23_E: "false",
-      Jan23: 23,
-      Feb23: 56,
-      Mar23: 67,
-      Apr23: 46,
-      May23: 64,
+      Jan_E: false,
+      Feb_E: false,
+      Mar_E: false,
+      Apr_E: false,
+      May_E: true,
+      Jan: 23,
+      Feb: 56,
+      Mar: 67,
+      Apr: 46,
+      May: 64
     },
     {
       id: "Partner D",
@@ -96,19 +96,18 @@ function DataInputComponent() {
       model: "E2",
       status: "Close",
       currency: "USD",
-      Jan23_E: "false",
-      Feb23_E: "true",
-      Mar23_E: "false",
-      Apr23_E: "false",
-      May23_E: "true",
-      Jan23: 23,
-      Feb23: 56,
-      Mar23: 67,
-      Apr23: 46,
-      May23: 64,
+      Jan_E: false,
+      Feb_E: false,
+      Mar_E: false,
+      Apr_E: false,
+      May_E: false,
+      Jan: 23,
+      Feb: 56,
+      Mar: 67,
+      Apr: 46,
+      May: 64
     },
   ];
-
   const [rowData, setRowData] = useState(null);
 
   const columnDefs = [
@@ -288,7 +287,7 @@ function DataInputComponent() {
     const monthName = month[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
     const monthHeader = monthName + year;
-    const monthField = monthName + year;
+    const monthField = monthName;
     const monthAEFlagField = monthName + '_E';
 
     // to make sure user entered number only
