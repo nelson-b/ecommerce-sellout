@@ -23,7 +23,7 @@ function BatchInputComponent({}) {
     reValidateMode: "onChange",
   });
 
-  const[fileData, setFileData] = useState([]);
+  const [fileData, setFileData] = useState([]);
 
   const onSubmit = (data) => {
     const file = data.file[0];
@@ -112,10 +112,7 @@ function BatchInputComponent({}) {
                     </Form.Group>
                   </Col>
                   <Col xs="auto">
-                    <Button
-                      variant="primary"
-                      className="btn-upload save-header"
-                      type="submit"
+                    <Button className="save-header" type="submit">
                       Upload
                     </Button>
                   </Col>
@@ -124,8 +121,8 @@ function BatchInputComponent({}) {
             </Col>
             <Col xs="auto">
               <Button
-              size="lg"
-                className=" edit-header"
+                size="lg"
+                className="edit-header"
                 onClick={(e) => exportToExcel(ReportData)}
               >
                 Download Template

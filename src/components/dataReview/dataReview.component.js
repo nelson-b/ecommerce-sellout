@@ -417,7 +417,10 @@ function DataReviewComponent({}) {
               </Button>
             </Col>
             <Col xs="auto">
-              <Button className="btn-upload edit-header" onClick={handleEdit}>
+              <Button
+                className="edit-header"
+                onClick={(e) => handleEdit()}
+                >
                 Edit
               </Button>
             </Col>
