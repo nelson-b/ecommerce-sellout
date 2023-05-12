@@ -116,7 +116,6 @@ function BatchInputComponent({}) {
                       variant="primary"
                       className="btn-upload save-header"
                       type="submit"
-                    >
                       Upload
                     </Button>
                   </Col>
