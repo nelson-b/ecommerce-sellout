@@ -479,16 +479,15 @@ function DataInputComponent() {
           <BatchInputComponent />
         </Row>
         <Row className="justify-content-end">
-          <Col md={2}>
+          <Col md={2} className="estimate-container">
             <Form.Check
-              label='Is Estimated'
+              label='Is Estimate'
               id='lblIsEstimate' 
               onChange={fnIsEstimated}/>
           </Col>
           {/* <Col md={2}><Button className="btn-md" onClick={()=>toggleActualEstimate(true)} variant="success">Mark estimated</Button>{' '}</Col>
           <Col md={2}><Button className="btn-md" onClick={()=>toggleActualEstimate(false)} variant="success">Mark actual</Button>{' '}</Col> */}
         </Row>
-        <br></br>
         <Row className="ag-theme-alpine" style={{ height: 300 }}>
           <AgGridReact
             ref={gridRef}
@@ -505,7 +504,7 @@ function DataInputComponent() {
             onGridReady={onGridReady}
           ></AgGridReact>
           </Row>
-          <Row style={{ float: "right", marginRight: "10px", marginTop: "20px" }}>
+          <Row className="mb-3" style={{ float: "right", marginRight: "10px", marginTop: "10px" }}>
             <Col xs="auto">
               <Button
                 className="btn-upload cancel-header"

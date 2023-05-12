@@ -1,27 +1,30 @@
-/* .sell-out-input-header {
-} */
-
 .sell-out-input-upload {
   display: flex;
   justify-content: center;
-  margin-bottom: 25px;
-  height: 50px;
+  margin-bottom: 20px;
+  height: 35px;
 }
 
-.file-upload-position {
+.file-upload-container {
   margin-top: 7px;
   font-weight: 600;
   color: #626469;
 }
 
-.estimate-header {
-  margin: 20px 12px;
-  display: flex;
-  justify-content: right;
+.estimate-container {
+  color: #1E1E1E;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 5px;
 }
 
-.input-header {
-  margin: 20px 12px;
+.sell-out-input-header {
+  margin: 20px 0px 0px 0px;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 0px;
+  color: #1E1E1E;
+  text-transform: uppercase;
 }
 
 .btn-add {

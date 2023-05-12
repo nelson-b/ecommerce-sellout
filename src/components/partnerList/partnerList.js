@@ -17,8 +17,11 @@ function PartnerList() {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
 
-  const handleClick = () => {
-    navigate("/dataInput");
+  const handlePartnerEdit = () => {
+    navigate("/updatePartner");
+  };
+  const handleCreate = () => {
+    navigate("/addPartner");
   };
 
   const columnDefs = [
@@ -35,8 +38,8 @@ function PartnerList() {
             <img
               src={partnerEdit}
               alt="partner"
-              onClick={handleClick}
-              style={{ height: "20px", width: "20px" , cursor: "pointer"}}
+              onClick={handlePartnerEdit}
+              style={{ height: "20px", width: "20px", cursor: "pointer" }}
             />
           </div>
         );
@@ -64,7 +67,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressNavigable: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "partner Group",
@@ -74,7 +77,7 @@ function PartnerList() {
       filter: true,
       suppressNavigable: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Partner ID",
@@ -83,7 +86,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Status",
@@ -111,7 +114,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Business Type",
@@ -120,7 +123,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "E2 Playbook Type",
@@ -129,7 +132,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Activation Date",
@@ -138,7 +141,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Model Type",
@@ -147,7 +150,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Currency of Sellout Reporting",
@@ -156,7 +159,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Data Collection Type",
@@ -165,7 +168,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "BOPP Type",
@@ -174,7 +177,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Marketplace Seller",
@@ -183,7 +186,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Schneider Electric Entity",
@@ -192,7 +195,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "GTM Type",
@@ -201,7 +204,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Partner Sellout Margin",
@@ -210,7 +213,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Partner URL",
@@ -219,7 +222,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Editor",
@@ -228,7 +231,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Backup Editor",
@@ -237,7 +240,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Approver 1",
@@ -246,7 +249,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
     {
       headerName: "Approver 2",
@@ -255,7 +258,7 @@ function PartnerList() {
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
-      editable: true,
+      editable: false,
     },
   ];
 
@@ -275,15 +278,15 @@ function PartnerList() {
         </Row>
         <Row>
           <Col>
-            <div className="sell-out-header">Sell Out Partner List</div>
+            <div className="sell-out-partner-header">Sell Out Partner List</div>
           </Col>
           <Col md={2} className="partner-container">
             <Button
-            size="lg"
+              size="md"
               className="partner-header save-header"
-              //   onClick={() => {
-              //     handleCreate();
-              //   }}
+              onClick={() => {
+                handleCreate();
+              }}
             >
               Create Partner
             </Button>
@@ -292,7 +295,7 @@ function PartnerList() {
         <>
           <div
             className="ag-theme-alpine ag-grid-table"
-            style={{ height: 350, margin: "7px 20px 0px 20px" }}
+            style={{ height: 350, margin: "7px 0px 0px 0px" }}
           >
             <AgGridReact
               className="ag-theme-alpine"

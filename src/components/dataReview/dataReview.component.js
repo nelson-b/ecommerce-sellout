@@ -364,14 +364,14 @@ function DataReviewComponent({}) {
             </Col>
           </div>
           <div className="historical-header">
-            <Button className="btn-lg historical-data">Historical Data</Button>
+            <Button className="btn-md historical-data">Historical Data</Button>
           </div>
         </Stack>
       </div>
 
-      <div
+      <Row
         className="ag-theme-alpine ag-grid-table"
-        style={{ height: 370, margin: "7px 20px 0px 20px" }}
+        style={{ height: 370, margin: "20px 0px 0px 0px" }}
       >
         <AgGridReact
           rowData={radioValue == 1 ? data : dataEuro}
@@ -390,11 +390,11 @@ function DataReviewComponent({}) {
           onGridReady={onGridReady}
           getRowStyle={getRowStyle}
         ></AgGridReact>
-        <div className="">
+        <div>
           <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
             <Col xs="auto">
               <Button
-                className="btn-upload cancel-header"
+                className="cancel-header"
                 onClick={handleShowModal}
               >
                 Cancel
@@ -410,7 +410,7 @@ function DataReviewComponent({}) {
             </Col>
             <Col xs="auto">
               <Button
-                className="btn-upload edit-header"
+                className="edit-header"
                 onClick={(e) => handleExport()}
                 >
                 Export
@@ -423,7 +423,7 @@ function DataReviewComponent({}) {
             </Col>
             <Col>
               <Button
-                className="btn-upload save-header"
+                className="save-header"
                 onClick={() => {
                   handleConfirm();
                 }}
@@ -433,7 +433,7 @@ function DataReviewComponent({}) {
             </Col>
           </Row>
         </div>
-      </div>
+      </Row>
     </>
   );
 }

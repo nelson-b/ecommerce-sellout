@@ -1,7 +1,7 @@
 .sell-out-header {
   font-weight: 600;
-  font-size: 22px;
-  margin-left: 20px;
+  font-size: 20px;
+  margin-left: 10px;
   margin-top: 30px;
   letter-spacing: 0px;
   color: #1E1E1E;
@@ -12,11 +12,11 @@
   color: grey;
   font-size: 14px;
   font-weight: 400;
-  margin: 0px 0px;
+  margin: 0px 40px;
 }
 
 .historical-header {
-  margin-right: 20px;
+  margin-right: 10px;
   margin-top: 16px;
   font-size: 14px;
   color: #FFFFFF;
@@ -41,7 +41,6 @@
 }
 
 .cancel-header {
-  border: 2px solid var(--unnamed-color-e47f00);
   background: #FFFFFF 0% 0% no-repeat padding-box;
   border: 2px solid #E47F00;
   border-radius: 8px;
@@ -117,10 +116,6 @@
   border: 2px solid #EBF7FD;
   border-radius: 8px;
   color: #FFFFFF;
-}
-
-.ag-grid-table {
-  max-width: 100%;
 }
 
 #myGrid {

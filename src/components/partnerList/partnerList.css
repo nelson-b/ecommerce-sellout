@@ -1,8 +1,18 @@
 
+.sell-out-partner-header {
+    font-weight: 600;
+    font-size: 20px;
+    margin-left: 0px;
+    margin-top: 30px;
+    letter-spacing: 0px;
+    color: #1E1E1E;
+    text-transform: uppercase;
+  }
+
 .partner-container {
+    display: flex;
     justify-content: end;
-    margin: 35px 7px 5px 0px;
-    width: 180px;
+    margin: 35px 0px 10px 0px;
 }
 .partner-header {
     height: 50px;

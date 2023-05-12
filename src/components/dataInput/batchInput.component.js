@@ -86,10 +86,10 @@ function BatchInputComponent({}) {
   return (
     <>
       <Container fluid>
-        <h5 className="input-header">Sell Out Data Input</h5>
+        <h5 className="sell-out-input-header">Sell Out Data Input</h5>
         <Container className="sell-out-input-upload">
           <Row>
-            <Col xs="auto" className="align-item-center file-upload-position">
+            <Col xs="auto" className="align-item-center file-upload-container">
               <Form.Label>BATCH UPLOAD</Form.Label>
             </Col>
             <Col xs="auto">
@@ -114,8 +114,6 @@ function BatchInputComponent({}) {
                   <Col xs="auto">
                     <Button
                       variant="primary"
-                      className="btn-upload"
-                      type="submit">
                       className="btn-upload save-header"
                       type="submit"
                     >
@@ -127,7 +125,8 @@ function BatchInputComponent({}) {
             </Col>
             <Col xs="auto">
               <Button
-                className="btn-download edit-header"
+              size="lg"
+                className=" edit-header"
                 onClick={(e) => exportToExcel(ReportData)}
               >
                 Download Template
