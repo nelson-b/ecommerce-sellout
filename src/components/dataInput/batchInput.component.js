@@ -23,7 +23,7 @@ function BatchInputComponent({}) {
     reValidateMode: "onChange",
   });
 
-  const[fileData, setFileData] = useState([]);
+  const [fileData, setFileData] = useState([]);
 
   const onSubmit = (data) => {
     const file = data.file[0];
@@ -86,11 +86,11 @@ function BatchInputComponent({}) {
   return (
     <>
       <Container fluid>
-        <h5 className="input-header">Sell Out Data Input</h5>
+        <h5 className="sell-out-input-header">Sell Out Data Input</h5>
         <Container className="sell-out-input-upload">
           <Row>
-            <Col xs="auto" className="align-item-center file-upload-position">
-              <Form.Label>EXCEL FILE UPLOAD</Form.Label>
+            <Col xs="auto" className="align-item-center file-upload-container">
+              <Form.Label>BATCH UPLOAD</Form.Label>
             </Col>
             <Col xs="auto">
               <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
@@ -112,12 +112,7 @@ function BatchInputComponent({}) {
                     </Form.Group>
                   </Col>
                   <Col xs="auto">
-                    <Button
-                      variant="primary"
-                      className="btn-upload"
-                      type="submit">
-                      className="btn-upload save-header"
-                      type="submit"
+                    <Button className="save-header" type="submit">
                       Upload
                     </Button>
                   </Col>
@@ -126,7 +121,8 @@ function BatchInputComponent({}) {
             </Col>
             <Col xs="auto">
               <Button
-                className="btn-download edit-header"
+                size="lg"
+                className="edit-header"
                 onClick={(e) => exportToExcel(ReportData)}
               >
                 Download Template

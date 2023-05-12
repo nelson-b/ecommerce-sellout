@@ -8,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import DataReview from "./components/dataReview/dataReview.component.js";
+import PartnerList from "./components/partnerList/partnerList.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +22,7 @@ function App() {
         <Routes>
           <Route path="/dataInput" element={<DataInputComponent />} />
           <Route path="/dataReview" element={<DataReview />} />
+          <Route path="/partnerList" element={<PartnerList />} />
           <Route path="/" element={<HomeComponent />} />
           <Route path="*" element={<ErrorPageComponent />} />
           <Route path="/addPartner" exact element={<PartnerComponent isCreatedModule={true} />} />

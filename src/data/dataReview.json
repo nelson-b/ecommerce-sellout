@@ -5,6 +5,7 @@
       "Partner": "Partner A",
       "Model": "E1",
       "Status": "Active",
+      "currency": "INR",
       "Jan23_E": "true",
       "Feb23_E": "false",
       "Mar23_E": "true",
@@ -19,7 +20,8 @@
       "vatVMvsLvalue": -34,
       "vatVMvsLM": "-9.8%",
       "May22": 40.0,
-      "vatVMValue": 25
+      "PreVMValue": 25,
+      "PreVMvsLM": "-9.8%"
     },
     {
       "Zone": "Zone1",
@@ -27,6 +29,7 @@
       "Partner": "Partner B",
       "Model": "E1",
       "Status": "Close",
+      "currency": "BRL",
       "Jan23_E": "false",
       "Feb23_E": "true",
       "Mar23_E": "false",
@@ -41,7 +44,8 @@
       "vatVMvsLvalue": 70,
       "vatVMvsLM": "10%",
       "May22": 46.0,
-      "vatVMValue": 50
+      "PreVMValue": 50,
+      "PreVMvsLM": "8.8%"
     },
     {
       "Zone": "Zone2",
@@ -49,6 +53,7 @@
       "Partner": "Partner C",
       "Model": "E1",
       "Status": "Close",
+      "currency": "INR",
       "Jan23_E": "true",
       "Feb23_E": "false",
       "Mar23_E": "true",
@@ -63,7 +68,8 @@
       "vatVMvsLvalue": 140,
       "vatVMvsLM": "77%",
       "May22": 60.0,
-      "vatVMValue": 30
+      "PreVMValue": 30,
+      "PreVMvsLM": "7.8%"
     },
     {
       "Zone": "Zone2",
@@ -71,6 +77,7 @@
       "Partner": "Partner F",
       "Model": "E2",
       "Status": "Active",
+      "currency": "BRL",
       "Jan23_E": "false",
       "Feb23_E": "true",
       "Mar23_E": "false",
@@ -85,7 +92,8 @@
       "vatVMvsLvalue": 340,
       "vatVMvsLM": "77%%",
       "May22": 60.0,
-      "vatVMValue": 56
+      "PreVMValue": 25,
+      "PreVMvsLM": "6.8%"    
     },
     {
       "Zone": "Zone3",
@@ -93,6 +101,7 @@
       "Partner": "Partner D",
       "Model": "E1",
       "Status": "Active",
+      "currency": "Euro",
       "Jan23_E": "true",
       "Feb23_E": "false",
       "Mar23_E": "true",
@@ -107,7 +116,8 @@
       "vatVMvsLvalue": 340,
       "vatVMvsLM": "89%",
       "May22": 80.0,
-      "vatVMValue": 49
+      "PreVMValue": 75,
+      "PreVMvsLM": "5.8%"
     },
     {
       "Zone": "Zone3",
@@ -115,6 +125,7 @@
       "Partner": "Partner G",
       "Model": "E2",
       "Status": "Close",
+      "currency": "INR",
       "Jan23_E": "false",
       "Feb23_E": "true",
       "Mar23_E": "false",
@@ -129,7 +140,8 @@
       "vatVMvsLvalue": 340,
       "vatVMvsLM": "89%",
       "May22": 80.0,
-      "vatVMValue": 90
+      "PreVMValue": 95,
+      "PreVMvsLM": "9.8%"    
     },
     {
       "Zone": "Zone4",
@@ -137,6 +149,7 @@
       "Partner": "Partner E",
       "Model": "E1",
       "Status": "Active",
+      "currency": "BRL",
       "Jan23_E": "true",
       "Feb23_E": "false",
       "Mar23_E": "true",
@@ -151,7 +164,8 @@
       "vatVMvsLvalue": 340,
       "vatVMvsLM": "56%",
       "May22": 30.0,
-      "vatVMValue": 89
+      "PreVMValue": 45,
+      "PreVMvsLM": "4.8%"    
     },
     {
       "Zone": "Zone4",
@@ -159,6 +173,7 @@
       "Partner": "Partner H",
       "Model": "E2",
       "Status": "Close",
+      "currency": "INR",
       "Jan23_E": "false",
       "Feb23_E": "true",
       "Mar23_E": "false",
@@ -173,7 +188,8 @@
       "vatVMvsLvalue": 340,
       "vatVMvsLM": "56%",
       "May22": 30.0,
-      "vatVMValue": 90
+      "PreVMValue": 70,
+      "PreVMvsLM": "6.8%"    
     },
     {
       "Zone": "Zone4",
@@ -181,6 +197,7 @@
       "Partner": "Partner J",
       "Model": "E1",
       "Status": "Active",
+      "currency": "BRL",
       "Jan23_E": "true",
       "Feb23_E": "false",
       "Mar23_E": "true",
@@ -195,6 +212,7 @@
       "vatVMvsLvalue": 40,
       "vatVMvsLM": "86%",
       "May22": 36.0,
-      "vatVMValue": 43
+      "PreVMValue": 65,
+      "PreVMvsLM": "-9.8%"    
     }
   ]

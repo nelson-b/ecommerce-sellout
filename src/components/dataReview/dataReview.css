@@ -1,19 +1,22 @@
 .sell-out-header {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 20px;
-  margin-left: 20px;
+  margin-left: 10px;
   margin-top: 30px;
+  letter-spacing: 0px;
+  color: #1E1E1E;
+  text-transform: uppercase;
 }
 
 .currency-mode {
   color: grey;
   font-size: 14px;
   font-weight: 400;
-  margin: 0px 0px;
+  margin: 0px 40px;
 }
 
 .historical-header {
-  margin-right: 20px;
+  margin-right: 10px;
   margin-top: 16px;
   font-size: 14px;
   color: #FFFFFF;
@@ -38,7 +41,6 @@
 }
 
 .cancel-header {
-  border: 2px solid var(--unnamed-color-e47f00);
   background: #FFFFFF 0% 0% no-repeat padding-box;
   border: 2px solid #E47F00;
   border-radius: 8px;
@@ -100,7 +102,7 @@
   font-weight: 500;
 }
 
-.save-header:hover{
+.save-header:hover {
   border: 2px solid var(--unnamed-color-ebf7fd);
   background: #009530 0% 0% no-repeat padding-box;
   border: 2px solid #EBF7FD;
@@ -108,16 +110,12 @@
   color: #FFFFFF;
 }
 
-.save-header:active:focus{
+.save-header:active:focus {
   border: 2px solid var(--unnamed-color-ebf7fd);
   background: #009530 0% 0% no-repeat padding-box;
   border: 2px solid #EBF7FD;
   border-radius: 8px;
   color: #FFFFFF;
-}
-
-.ag-grid-table {
-  max-width: 100%;
 }
 
 #myGrid {
@@ -140,7 +138,7 @@
 }
 
 .ag-header {
-  background-color: aliceblue !important;
+  background-color: #ebf7fd !important;
 }
 
 .ag-theme-alpine .ag-header-cell-menu-button:hover {
