@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ErrorPageComponent from "./components/error-page.component.js";
+import PartnerComponent from "./components/partner.component.js";
 import HomeComponent from "./components/home.component.js";
 import DataInputComponent from "./components/dataInput/parentInput.component.js";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import DataReview from "./components/dataReview/dataReview.component.js";
@@ -23,6 +25,8 @@ function App() {
           <Route path="/partnerList" element={<PartnerList />} />
           <Route path="/" element={<HomeComponent />} />
           <Route path="*" element={<ErrorPageComponent />} />
+          <Route path="/addPartner" exact element={<PartnerComponent isCreatedModule={true} />} />
+          <Route path="/updatePartner" exact element={<PartnerComponent isCreatedModule={false}/>} />
         </Routes>
       </Router>
     </div>

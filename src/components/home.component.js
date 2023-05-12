@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { sellOutData } from "../actions/selloutaction";
+import { retrieveSellOutData } from "../actions/selloutaction";
 import MyMenu from "./menu/menu.component.js";
 import { Breadcrumb, BreadcrumbItem, Container, Row } from "react-bootstrap";
 import { BiHome } from 'react-icons/bi';
@@ -22,4 +22,4 @@ function Home(){
     );
 }
 
-export default connect(null, { sellOutData })(Home);
+export default connect(null, { retrieveSellOutData })(Home);

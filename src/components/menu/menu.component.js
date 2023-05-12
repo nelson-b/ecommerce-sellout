@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Nav,  Navbar, NavDropdown, Container, Image, Badge, Button, Toast, ToastContainer } 
 from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import logo from './../../images/schneider-electric-logo.png'
+import logo from './../../images/schneider-electric-logo.svg'
 import loginUserPic from "./../../images/loginUser.jpg";
 import { AiFillBell } from "react-icons/ai";
 import "./menu.component.css";
@@ -40,8 +40,8 @@ function MyMenu(args){
         </Nav>
         <Nav>
             <Nav.Link>
-              <Button size="lg" variant="light" onClick={toggleShowNotification}>
-                <AiFillBell/><Badge pill bg="danger">{ notificationCount }</Badge>
+              <Button size="lg" variant="light">
+                <AiFillBell onClick={toggleShowNotification}/><Badge pill bg="danger">{ notificationCount }</Badge>
               </Button>
               <ToastContainer containerPosition="position-relative">
               <Toast show={showNotifiation} onClose={toggleShowNotification}>

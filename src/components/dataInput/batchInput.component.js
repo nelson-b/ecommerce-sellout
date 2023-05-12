@@ -1,9 +1,9 @@
-import { Form, Row, Col, Button, Container, Nav } from "react-bootstrap";
+import { Form, Row, Col, Button, Container } from "react-bootstrap";
 import "./parentInput.component.css";
 import DataReviewComponent from "../dataReview/dataReview.component";
 import { get, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as xlsx from "xlsx";
 import * as FileSaver from "file-saver";
 import { batchUploadType } from "./batchUploadType";
@@ -23,7 +23,7 @@ function BatchInputComponent({}) {
     reValidateMode: "onChange",
   });
 
-  const [fileData, setFileData] = useState([]);
+  const[fileData, setFileData] = useState([]);
 
   const onSubmit = (data) => {
     const file = data.file[0];
@@ -113,6 +113,9 @@ function BatchInputComponent({}) {
                   </Col>
                   <Col xs="auto">
                     <Button
+                      variant="primary"
+                      className="btn-upload"
+                      type="submit">
                       className="btn-upload save-header"
                       type="submit"
                     >
