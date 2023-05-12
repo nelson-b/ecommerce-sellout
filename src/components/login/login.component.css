@@ -1,0 +1,41 @@
+.LoginApp {
+    border: 2px solid #d3d3d3;
+    border-radius: .7em;
+    margin-bottom: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    padding: 1em;
+    text-align: left;
+    width: 600px;
+  }
+  
+  .Loginform {
+    padding: 1em;
+  }
+  
+  label {
+    font-weight: 600;
+  } 
+
+  .logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .cardPanel {
+    padding: 10px;
+    width: 300px;
+    margin-top: 100px;
+    background-color: #F5F5F5;
+    border-color: #3DCD58;
+  }
+
+  .formField{
+    width: 250px;
+    border-color: #41923E;
+  }
+
+  .btn{
+    width: 250px;
+  }
