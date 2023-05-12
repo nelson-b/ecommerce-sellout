@@ -127,7 +127,8 @@ function DataInputComponent() {
       pinned: "left",
       suppressNavigable: true,
       cellClass: "no-border",
-      editable: false
+      editable: false,
+      width: 100
     },
     {
       headerName: "Country",
@@ -142,7 +143,7 @@ function DataInputComponent() {
       editable: false
     },
     {
-      headerName: "Partner",
+      headerName: "Partner Account Name",
       field: "partner",
       sortable: true,
       filter: true,
@@ -162,9 +163,17 @@ function DataInputComponent() {
       editable: false
     },
     {
+      headerName: "Currency of Reporting",
+      field: "currency",
+      width: 100,
+      editable: false,
+      pinned: "left",
+    },
+    {
       headerName: "Status",
       field: "status",
-      minWidth: 100,
+      width: 110,
+      pinned: "left",
       editable: false,
       cellRenderer: (params) => {
         const Status = params.value;
@@ -175,12 +184,6 @@ function DataInputComponent() {
           </div>
         );
       },
-    },
-    {
-      headerName: "Currency of Reporting",
-      field: "currency",
-      minWidth: 100,
-      editable: false
     },
   ];
 
@@ -476,16 +479,15 @@ function DataInputComponent() {
           <BatchInputComponent />
         </Row>
         <Row className="justify-content-end">
-          <Col md={2}>
+          <Col md={2} className="estimate-container">
             <Form.Check
-              label='Is Estimated'
+              label='Is Estimate'
               id='lblIsEstimate' 
               onChange={fnIsEstimated}/>
           </Col>
           {/* <Col md={2}><Button className="btn-md" onClick={()=>toggleActualEstimate(true)} variant="success">Mark estimated</Button>{' '}</Col>
           <Col md={2}><Button className="btn-md" onClick={()=>toggleActualEstimate(false)} variant="success">Mark actual</Button>{' '}</Col> */}
         </Row>
-        <br></br>
         <Row className="ag-theme-alpine" style={{ height: 300 }}>
           <AgGridReact
             ref={gridRef}
@@ -502,7 +504,7 @@ function DataInputComponent() {
             onGridReady={onGridReady}
           ></AgGridReact>
           </Row>
-          <Row style={{ float: "right", marginRight: "10px", marginTop: "20px" }}>
+          <Row className="mb-3" style={{ float: "right", marginRight: "10px", marginTop: "10px" }}>
             <Col xs="auto">
               <Button
                 className="btn-upload cancel-header"

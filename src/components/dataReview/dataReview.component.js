@@ -21,6 +21,8 @@ import CancelModal from "../modal/cancelModal";
 import footerTotalReview from "./footerTotalReview";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
+import * as xlsx from "xlsx";
+import * as FileSaver from "file-saver";
 
 function DataReviewComponent({}) {
   const navigate = useNavigate();
@@ -44,33 +46,45 @@ function DataReviewComponent({}) {
   const columnDefs = [
     { field: "Zone", rowGroup: true, hide: true },
     {
-      field: "Partner",
+      field: "Partner Account Name",
       headerName: "Partner",
       filter: true,
       sortable: true,
       pinned: "left",
-      width: 120,
+      width: 100,
       suppressSizeToFit: true,
     },
     {
+      headerName: "Country",
       field: "Country",
       rowGroup: true,
       hide: true,
       filter: true,
       sortable: true,
       pinned: "left",
-      width: 120,
       suppressSizeToFit: true,
+      editable: false
     },
     {
+      headerName: "Model",
       field: "Model",
       rowGroup: true,
       hide: true,
       sortable: true,
       filter: true,
       pinned: "left",
-      width: 100,
       suppressSizeToFit: true,
+      editable: false
+    },
+    {
+      headerName: "Currency of Reporting",
+      field: "currency",
+      sortable: true,
+      filter: true,
+      pinned: "left",
+      width: 120,
+      suppressSizeToFit: true,
+      editable: false,
     },
     {
       headerName: "Status",
@@ -82,8 +96,12 @@ function DataReviewComponent({}) {
         const Status = params.value;
         return (
           <div>
-            {Status === 'Active' && <img src={active} alt="active" style= {{width: "80px"}} />}
-            {Status === 'Close' && <img src={closed} alt="closed" style= {{width: "80px"}}/>}
+            {Status === "Active" && (
+              <img src={active} alt="active" style={{ width: "80px" }} />
+            )}
+            {Status === "Close" && (
+              <img src={closed} alt="closed" style={{ width: "80px" }} />
+            )}
           </div>
         );
       },
@@ -103,7 +121,7 @@ function DataReviewComponent({}) {
   const autoGroupColumnDef = useMemo(() => {
     return {
       // headerName: "Filter Criteria Zone",
-      minWidth: 200,
+      width: 160,
       filterValueGetter: (params) => {
         if (params.node) {
           var colGettingGrouped = params.colDef.showRowGroup + "";
@@ -195,7 +213,7 @@ function DataReviewComponent({}) {
             hide: true,
           },
           {
-            headerName: "vat. VM vs LM (value)",
+            headerName: "vat. CM vs LM (value)",
             field: "vatVMvsLvalue",
             minWidth: 200,
             editable: true,
@@ -205,7 +223,7 @@ function DataReviewComponent({}) {
             sortable: true,
           },
           {
-            headerName: "vat. VM vs LM (%)",
+            headerName: "vat. CM vs LM (%)",
             field: "vatVMvsLM",
             minWidth: 170,
             editable: true,
@@ -265,8 +283,18 @@ function DataReviewComponent({}) {
           hide: true,
         },
         {
-          headerName: "vat. VM vs LM (value)",
-          field: "vatVMValue",
+          headerName: "vat. CM vs LY (value)",
+          field: "PreVMValue",
+          minWidth: 200,
+          editable: true,
+          singleClickEdit: true,
+          aggFunc: "sum",
+          filter: "agNumberColumnFilter",
+          sortable: true,
+        },
+        {
+          headerName: "vat. CM vs CM vs LY (%)",
+          field: "PreVMvsLM",
           minWidth: 200,
           editable: true,
           singleClickEdit: true,
@@ -295,6 +323,10 @@ function DataReviewComponent({}) {
   };
 
   const handleConfirm = () => {
+    setRowData(rowData);
+  };
+
+  const handleExport = () => {
     setRowData(rowData);
   };
 
@@ -332,14 +364,14 @@ function DataReviewComponent({}) {
             </Col>
           </div>
           <div className="historical-header">
-            <Button className="btn-lg historical-data">Historical Data</Button>
+            <Button className="btn-md historical-data">Historical Data</Button>
           </div>
         </Stack>
       </div>
 
-      <div
+      <Row
         className="ag-theme-alpine ag-grid-table"
-        style={{ height: 370, margin: "7px 20px 0px 20px" }}
+        style={{ height: 370, margin: "20px 0px 0px 0px" }}
       >
         <AgGridReact
           rowData={radioValue == 1 ? data : dataEuro}
@@ -358,11 +390,11 @@ function DataReviewComponent({}) {
           onGridReady={onGridReady}
           getRowStyle={getRowStyle}
         ></AgGridReact>
-        <div className="">
+        <div>
           <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
             <Col xs="auto">
               <Button
-                className="btn-upload cancel-header"
+                className="cancel-header"
                 onClick={handleShowModal}
               >
                 Cancel
@@ -377,13 +409,24 @@ function DataReviewComponent({}) {
               />
             </Col>
             <Col xs="auto">
-              <Button className="btn-upload edit-header" onClick={handleEdit}>
+              <Button
+                className="edit-header"
+                onClick={(e) => handleExport()}
+                >
+                Export
+              </Button>
+            </Col>
+            <Col xs="auto">
+              <Button
+                className="edit-header"
+                onClick={(e) => handleEdit()}
+                >
                 Edit
               </Button>
             </Col>
             <Col>
               <Button
-                className="btn-upload save-header"
+                className="save-header"
                 onClick={() => {
                   handleConfirm();
                 }}
@@ -393,7 +436,7 @@ function DataReviewComponent({}) {
             </Col>
           </Row>
         </div>
-      </div>
+      </Row>
     </>
   );
 }

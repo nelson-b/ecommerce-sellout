@@ -5,6 +5,7 @@
       "Partner": "Partner I",
       "Model": "E6",
       "Status": "Active",
+      "currency": "BRL",
       "Jan23_E": "false",
       "Feb23_E": "true",
       "Mar23_E": "false",
@@ -19,7 +20,8 @@
       "vatVMvsLvalue": 340,
       "vatVMvsLM": "30%",
       "May22": 40,
-      "vatVMValue": 43
+      "PreVMValue": 90,
+      "PreVMvsLM": "3.8%"
     },
     {
       "Zone": "Zone5",
@@ -27,6 +29,7 @@
       "Partner": "Partner Z",
       "Model": "E2",
       "Status": "Active",
+      "currency": "INR",
       "Jan23_E": "false",
       "Feb23_E": "true",
       "Mar23_E": "false",
@@ -41,7 +44,8 @@
       "vatVMvsLvalue": 340,
       "vatVMvsLM": "30%",
       "May22": 40,
-      "vatVMValue": 49
+      "PreVMValue": 45,
+      "PreVMvsLM": "5.8%"
     },
     {
       "Zone": "Zone6",
@@ -49,6 +53,7 @@
       "Partner": "Partner F",
       "Model": "E5",
       "Status": "Close",
+      "currency": "BRL",
       "Jan23_E": "false",
       "Feb23_E": "true",
       "Mar23_E": "false",
@@ -63,14 +68,16 @@
       "vatVMvsLvalue": 340,
       "vatVMvsLM": "77%",
       "May22": 60,
-      "vatVMValue": 56
-    },
+      "PreVMValue": 65,
+      "PreVMvsLM": "7.8%"   
+     },
     {
       "Zone": "Zone6",
       "Country": "Europe",
       "Partner": "Partner E",
       "Model": "E5",
       "Status": "Active",
+      "currency": "Euo",
       "Jan23_E": "false",
       "Feb23_E": "true",
       "Mar23_E": "false",
@@ -85,7 +92,8 @@
       "vatVMvsLvalue": 340,
       "vatVMvsLM": "89",
       "May22": 80,
-      "vatVMValue": 79
+      "PreVMValue": 75,
+      "PreVMvsLM": "6.8%"
     },
     {
       "Zone": "Zone7",
@@ -93,6 +101,7 @@
       "Partner": "Partner D",
       "Model": "E4",
       "Status": "Active",
+      "currency": "BRL",
       "Jan23_E": "false",
       "Feb23_E": "true",
       "Mar23_E": "false",
@@ -107,6 +116,7 @@
       "vatVMvsLvalue": 340,
       "vatVMvsLM": "66%",
       "May22": 30,
-      "vatVMValue": 40
+      "PreVMValue": 45,
+      "PreVMvsLM": "-9.8%"
     }
   ]

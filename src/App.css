@@ -1,9 +1,3 @@
-.btn-md{
-  width: 100%;
-}
-
-.container { margin: 50px auto 40px auto; width: 600px; text-align: center; }
-
 .create-partner-wrapper {
   border: 1px solid rgb(150, 149, 149);
   margin: 10px;
@@ -11,34 +5,15 @@
   border-radius: 5px;
 }
 
-.fieldProp{
-  width: 225px;
-}
-
-.nav-link {
-  display: initial;
-}
-
-.cardPanel{
-  padding: 10px;
-}
-
 .create-partner-header {
   margin-top: 5px;
   padding-left: 10px;
 }
 
-.btn-cancel {
-  color: grey;
-  background-color: rgb(248, 250, 252);
+.field-Prop {
+  width: 225px;
 }
 
-.btn-create-partner {
-  float: right;
-}
-
-.btn {
-  margin: 10px;
-  width: 100px;
-  height: 40px;
+.card-Panel {
+  padding: 10px;
 }
