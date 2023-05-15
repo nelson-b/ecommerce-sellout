@@ -11,3 +11,7 @@
 .toast-container {
     right: 25px;
 }
+
+.btn .white{
+    background-color: white;
+}
