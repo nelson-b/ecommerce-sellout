@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
 import { createSellOutData } from "../actions/selloutaction";
+import { useLocation } from 'react-router-dom';
 import {
   Button,
   Col,
@@ -15,8 +16,13 @@ import {
 import MyMenu from "./menu/menu.component.js";
 import { BiHome, BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
+import Home from "../images/home-icon.png";
+import partnerData from "../data/partnerList.json";
 
 function PartnerComponent(props) {
+  const location = useLocation();
+  const id = new URLSearchParams(location.search).get('id');
+  
   const initialState = {
     partner_name: "",
     country: "",
@@ -48,6 +54,8 @@ function PartnerComponent(props) {
 
   const [formData, setFormData] = useState(initialState);
 
+  const data = partnerData.find((e)=> e.partnerID === id);
+
   const onSubmit = (data) => {
     console.log("form data", data);
   };
@@ -75,8 +83,11 @@ function PartnerComponent(props) {
       <Row>
         <Breadcrumb>
           <Breadcrumb.Item href="/" style={{ fontWeight: "bold" }}>
-            <BiHome />
-            Home
+            <img
+              src={Home}
+              alt="home"
+              style={{ height: "20px", width: "80px", cursor: "pointer" }}
+            />
           </Breadcrumb.Item>
           <span> &nbsp;{">"}</span>
           {props.isCreatedModule ? (
@@ -118,6 +129,7 @@ function PartnerComponent(props) {
                         id="partner_name"
                         name="partner_name"
                         disabled={!props.isCreatedModule}
+                        value={data?.partnerID}
                         type="text"
                         {...register("partner_name", {
                           required: "Partner name is required",
@@ -242,6 +254,7 @@ function PartnerComponent(props) {
                         name="partner_id"
                         disabled
                         type="text"
+                        value={data?.partnerID}
                       />
                     </Col>
                     <Col>
@@ -321,6 +334,7 @@ function PartnerComponent(props) {
                         id="url_address_partner"
                         name="url_address_partner"
                         type="url"
+                        value={data?.partnerURL}
                         {...register("url_address_partner", {
                           required: "URL Address of Partner is required",
                         })}
@@ -392,6 +406,7 @@ function PartnerComponent(props) {
                         id="partnerSellOutMargin"
                         name="partnerSellOutMargin"
                         type="number"
+                        value={data?.partnerMargin}
                         {...register("partnerSellOutMargin", {
                           required: "Partner Sellout Margin is required",
                         })}
@@ -499,6 +514,7 @@ function PartnerComponent(props) {
                         name="editor"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.editor}
                       />
                     </Col>
                     <Col>
@@ -512,6 +528,7 @@ function PartnerComponent(props) {
                         name="editor"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.backup}
                       />
                     </Col>
                     <Col>
@@ -524,6 +541,7 @@ function PartnerComponent(props) {
                         name="approver1"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.Approver1}
                       />
                     </Col>
                     <Col>
@@ -536,6 +554,7 @@ function PartnerComponent(props) {
                         name="approver2"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.Approver2}
                       />
                     </Col>
                   </Row>

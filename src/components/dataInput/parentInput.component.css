@@ -19,7 +19,6 @@
 }
 
 .sell-out-input-header {
-  margin: 20px 0px 0px 0px;
   font-weight: 600;
   font-size: 20px;
   letter-spacing: 0px;
@@ -36,7 +35,7 @@
 .btn-upload {
   width: 100px;
   height: 40px;
-  margin-top: -1px;
+  margin-top: 0px;
 }
 
 .btn-download {

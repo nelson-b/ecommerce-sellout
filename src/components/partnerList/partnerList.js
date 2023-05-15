@@ -4,12 +4,13 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo, useCallback, useRef } from "react";
-import { Button, Row, Col, Container } from "react-bootstrap";
+import { Button, Row, Col, Container, Breadcrumb } from "react-bootstrap";
 import MyMenu from "../menu/menu.component.js";
 import { AgGridReact } from "ag-grid-react";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
 import partnerEdit from "../../images/partner-edit.png";
+import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
 import "../partnerList/partnerList.css";
 
@@ -17,9 +18,10 @@ function PartnerList() {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
 
-  const handlePartnerEdit = () => {
-    navigate("/updatePartner");
+  const handlePartnerEdit = (params) => {
+    navigate(`/updatePartner?id=${params.data.partnerID}`);
   };
+
   const handleCreate = () => {
     navigate("/addPartner");
   };
@@ -33,12 +35,13 @@ function PartnerList() {
       width: 80,
       cellRenderer: (params) => {
         const Status = params.value;
+        console.log("params data", params);
         return (
           <div>
             <img
               src={partnerEdit}
               alt="partner"
-              onClick={handlePartnerEdit}
+              onClick={(e) => handlePartnerEdit(params)}
               style={{ height: "20px", width: "20px", cursor: "pointer" }}
             />
           </div>
@@ -276,6 +279,17 @@ function PartnerList() {
         <Row>
           <MyMenu />
         </Row>
+        <div>
+          <Breadcrumb>
+            <Breadcrumb.Item href="/">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </div>
         <Row>
           <Col>
             <div className="sell-out-partner-header">Sell Out Partner List</div>
