@@ -18,13 +18,13 @@ import { useForm } from "react-hook-form";
 
 function PartnerComponent(props) {
   const initialState = {
-    partner_name: "",
+    platform_name: "",
     country: "",
     partnerGroup: "",
     electricEntity: "",
-    marketplace_seller: "",
+    reseller_seller: "",
     activation_date: "",
-    business_type: "",
+    partner_acc_name: "",
     model_type: "",
     url_address_partner: "",
     currency: "",
@@ -99,8 +99,8 @@ function PartnerComponent(props) {
                 <Form.Group className="mb-4">
                   <Row>
                     <Col>
-                      <Form.Label size="sm" htmlFor="partner_name">
-                        Partner Name
+                      <Form.Label size="sm" htmlFor="platform_name">
+                        Platform Name
                       </Form.Label>
                       &nbsp;
                       <OverlayTrigger
@@ -115,14 +115,13 @@ function PartnerComponent(props) {
                       </OverlayTrigger>
                       <Form.Control
                         size="sm"
-                        id="partner_name"
-                        name="partner_name"
+                        id="platform_name"
+                        name="platform_name"
                         disabled={!props.isCreatedModule}
                         type="text"
-                        {...register("partner_name", {
-                          required: "Partner name is required",
+                        {...register("platform_name", {
+                          required: "Platform name is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
                       />
                       {errors.partner_name && (
                         <Form.Text className="text-danger">
@@ -141,7 +140,6 @@ function PartnerComponent(props) {
                         {...register("country", {
                           required: "Country is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
                       >
                         <option></option>
                         <option value={"India"}>India</option>
@@ -167,7 +165,6 @@ function PartnerComponent(props) {
                         {...register("partnerGroup", {
                           required: "Partner group is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
                       >
                         <option></option>
                         <option>Partner 1</option>
@@ -191,7 +188,6 @@ function PartnerComponent(props) {
                         {...register("electricEntity", {
                           required: "Schneider Electric Entity is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
                       >
                         <option></option>
                         <option>Entity 1</option>
@@ -205,26 +201,26 @@ function PartnerComponent(props) {
                       )}
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="marketplcseller">
-                        Marketplace Seller
+                      <Form.Label size="sm" htmlFor="reseller_seller">
+                        Reseller Name
                       </Form.Label>
                       <Form.Select
                         size="sm"
-                        id="marketplcseller"
-                        name="marketplcseller"
-                        {...register("marketplcseller", {
+                        id="reseller_seller"
+                        name="reseller_seller"
+                        {...register("reseller_seller", {
                           required: "Marketplace Seller is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
+                        
                       >
                         <option></option>
                         <option>Seller 1</option>
                         <option>Seller 2</option>
                         <option>Seller 3</option>
                       </Form.Select>
-                      {errors.marketplcseller && (
+                      {errors.reseller_seller && (
                         <Form.Text className="text-danger">
-                          {errors.marketplcseller.message}
+                          {errors.reseller_seller.message}
                         </Form.Text>
                       )}
                     </Col>
@@ -233,7 +229,7 @@ function PartnerComponent(props) {
                 <Form.Group className="mb-4">
                   <Row>
                     <Col>
-                      <Form.Label size="sm" htmlFor="marketplcseller">
+                      <Form.Label size="sm" htmlFor="partner_id">
                         Partner ID
                       </Form.Label>
                       <Form.Control
@@ -243,6 +239,18 @@ function PartnerComponent(props) {
                         disabled
                         type="text"
                       />
+                    </Col>
+                    <Col>
+                      <Form.Label size="sm" htmlFor="partner_acc_name">
+                        Partner Account Name
+                      </Form.Label>
+                      <Form.Control
+                        size="sm"
+                        id="partner_acc_name"
+                        name="partner_acc_name"
+                        type="text"
+                        disabled
+                        ></Form.Control>
                     </Col>
                     <Col>
                       <Form.Label size="sm" htmlFor="activation_date">
@@ -257,7 +265,7 @@ function PartnerComponent(props) {
                         {...register("activation_date", {
                           required: "Activation Date is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
+                        
                       />
                       {errors.activation_date && (
                         <Form.Text className="text-danger">
@@ -296,7 +304,7 @@ function PartnerComponent(props) {
                         size="sm"
                         id="model_type"
                         name="model_type"
-                        // onChange={(e) => onChangeHandler(e)}
+                        
                         {...register("model_type", {
                           required: "Model Type is required",
                         })}
@@ -312,7 +320,11 @@ function PartnerComponent(props) {
                         </Form.Text>
                       )}
                     </Col>
-                    <Col>
+                  </Row>
+                </Form.Group>
+                <Form.Group className="mb-4">
+                  <Row>
+                  <Col>
                       <Form.Label size="sm" htmlFor="url_address_partner">
                         URL Address of Partner
                       </Form.Label>
@@ -324,7 +336,6 @@ function PartnerComponent(props) {
                         {...register("url_address_partner", {
                           required: "URL Address of Partner is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
                       />
                       {errors.url_address_partner && (
                         <Form.Text className="text-danger">
@@ -332,10 +343,6 @@ function PartnerComponent(props) {
                         </Form.Text>
                       )}
                     </Col>
-                  </Row>
-                </Form.Group>
-                <Form.Group className="mb-4">
-                  <Row>
                     <Col>
                       <Form.Label size="sm" htmlFor="currency">
                         Currency of Sellout Reporting
@@ -347,7 +354,7 @@ function PartnerComponent(props) {
                         {...register("currency", {
                           required: "Currency of Sellout Reporting is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
+                        
                       >
                         <option></option>
                         <option>AUD</option>
@@ -371,7 +378,7 @@ function PartnerComponent(props) {
                         {...register("data_collection_type", {
                           required: "Data Collection Type is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
+                        
                       >
                         <option></option>
                         <option>Actual Sellout</option>
@@ -395,7 +402,7 @@ function PartnerComponent(props) {
                         {...register("partnerSellOutMargin", {
                           required: "Partner Sellout Margin is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
+                        
                       />
                       {errors.partnerSellOutMargin && (
                         <Form.Text className="text-danger">
@@ -414,7 +421,7 @@ function PartnerComponent(props) {
                         {...register("playbook_type", {
                           required: "E2 Playbook Type is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
+                        
                       >
                         <option></option>
                         <option value={"type1"}>Type 1</option>
@@ -427,18 +434,23 @@ function PartnerComponent(props) {
                         </Form.Text>
                       )}
                     </Col>
-                    <Col>
+                  </Row>
+                </Form.Group>
+                <Form.Group className="mb-4">
+                  <Row className="justify-content-left">
+                  <Col className="justify-content-left">
                       <Form.Label size="sm" htmlFor="bopp_type">
                         Bopp Type
                       </Form.Label>
                       <Form.Select
                         size="sm"
                         id="bopp_type"
+                        className="field-Prop"
                         name="bopp_type"
                         {...register("bopp_type", {
                           required: "Bopp Type is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
+                        
                       >
                         <option></option>
                         <option value={"Adopter"}>Adopter</option>
@@ -452,11 +464,7 @@ function PartnerComponent(props) {
                         </Form.Text>
                       )}
                     </Col>
-                  </Row>
-                </Form.Group>
-                <Form.Group className="mb-4">
-                  <Row>
-                    <Col>
+                    <Col className="justify-content-left">
                       <Form.Label size="sm" htmlFor="gtm_type">
                         GTM Type
                       </Form.Label>
@@ -468,7 +476,7 @@ function PartnerComponent(props) {
                         {...register("gtm_type", {
                           required: "GTM Type is required",
                         })}
-                        // onChange={(e) => onChangeHandler(e)}
+                        
                       >
                         <option></option>
                         <option>Direct</option>

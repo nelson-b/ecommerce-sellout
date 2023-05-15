@@ -168,11 +168,7 @@ function BatchInputComponent({}) {
             setFileError([]);
             setShowErrorModal(false);
             setShowSuccessModal(true);
-            setTimeout(function() {
-              navigate('/dataReview');
-            }
-            .bind(this),
-            3000);
+            setTimeout(()=>navigate('/dataReview'), 3000);
           }
 
           errorJson = [];
@@ -254,8 +250,7 @@ function BatchInputComponent({}) {
               <Button
                 size="lg"
                 className="edit-header"
-                onClick={(e) => exportToExcel(ReportData)}
-              >
+                onClick={(e) => exportToExcel(ReportData)}>
                 Download Template
               </Button>
             </Col>
