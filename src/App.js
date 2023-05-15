@@ -9,6 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import DataReview from "./components/dataReview/dataReview.component.js";
 import PartnerList from "./components/partnerList/partnerList.js";
+import LoginComponent from "./components/login/login.component.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +28,7 @@ function App() {
           <Route path="*" element={<ErrorPageComponent />} />
           <Route path="/addPartner" exact element={<PartnerComponent isCreatedModule={true} />} />
           <Route path="/updatePartner" exact element={<PartnerComponent isCreatedModule={false}/>} />
+          <Route path="/login" element={ <LoginComponent/> } />
         </Routes>
       </Router>
     </div>
