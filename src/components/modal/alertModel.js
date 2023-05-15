@@ -21,8 +21,8 @@ import { Button, Modal, Alert} from "react-bootstrap";
                 <tbody>
                     {body.content.map((row, index) => {
                         return <tr key={index}>
-                            return <td>{row}</td>
-                        </tr>
+                                <td>{row}</td>
+                               </tr>
                     })}
                 </tbody>
             </table>

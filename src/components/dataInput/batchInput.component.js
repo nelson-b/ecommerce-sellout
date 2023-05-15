@@ -156,8 +156,18 @@ function BatchInputComponent({}) {
               }
           });
 
-          console.log('errorJson',errorJson);
-          setFileError(errorJson);
+          if(errorJson){
+            console.log('errorJson', errorJson);
+            setFileError(errorJson);
+            setShowErrorModal(true);
+          }
+          else
+          {
+            setFileError([]);
+            setShowErrorModal(false);
+          }
+
+          errorJson = [];
         };
 
         reader.readAsArrayBuffer(data.file[0]);
