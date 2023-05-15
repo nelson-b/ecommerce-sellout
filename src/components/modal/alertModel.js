@@ -13,7 +13,7 @@ import { Button, Modal, Alert} from "react-bootstrap";
         size="md"
         centered
       >
-        <Modal.Header closeButton></Modal.Header>
+        <Modal.Header closeButton><h1>{body.headerLabel}</h1></Modal.Header>
         <Modal.Body>
           <Alert variant={body.variant}>
             <Alert.Heading>{body.header}</Alert.Heading>

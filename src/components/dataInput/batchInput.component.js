@@ -44,14 +44,16 @@ function BatchInputComponent({}) {
   };
 
   const successmsg = {
+    headerLabel: "Success....",
     variant: "success",
     header: 'Data has been saved successfully!!',
-    content: ['Navigating you to the Data review page.....']
+    content: ['Navigating you to the Sell out data review page.....']
   }
 
   const errormsg = {
+    headerLabel: "Error....",
     variant: "danger",
-    header: "There are errors while processing",
+    header: "There are below errors while processing. Please recitify and retry",
     content: fileError
   }
 
@@ -78,7 +80,7 @@ function BatchInputComponent({}) {
           let sheetName = workbook.SheetNames[0];
           let worksheet = workbook.Sheets[sheetName];
           let json = xlsx.utils.sheet_to_json(worksheet);
-          const errorJson = [];
+          let errorJson = [];
           console.log("Reading excel: ", json);
           setFileData(json);
           fileData.forEach((i) => {
@@ -156,15 +158,21 @@ function BatchInputComponent({}) {
               }
           });
 
-          if(errorJson){
-            console.log('errorJson', errorJson);
+          if(errorJson.length > 0){
             setFileError(errorJson);
             setShowErrorModal(true);
+            setShowSuccessModal(false);
           }
           else
           {
             setFileError([]);
             setShowErrorModal(false);
+            setShowSuccessModal(true);
+            setTimeout(function() {
+              navigate('/dataReview');
+            }
+            .bind(this),
+            3000);
           }
 
           errorJson = [];
