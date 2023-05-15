@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useState, useMemo, useCallback, useRef } from "react";
-import { Button, Row, Col, Container, Form } from "react-bootstrap";
+import { Button, Row, Col, Container, Form, Breadcrumb } from "react-bootstrap";
 import { month } from "../constant";
 import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
@@ -15,6 +15,7 @@ import CancelModal from "../modal/cancelModal";
 import "ag-grid-enterprise";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
+import Home from "../../images/home-icon.png";
 
 function DataInputComponent() {
   const navigate = useNavigate();
@@ -35,77 +36,137 @@ function DataInputComponent() {
       id: "Partner A",
       zone: "Zone 1",
       country: "Country A",
-      partner: "Partner A",
+      PartnerAccountName: "Partner A",
       model: "E1",
       status: "Active",
       currency: "INR",
-      Jan_E: true,
-      Feb_E: false,
-      Mar_E: false,
-      Apr_E: false,
-      May_E: false,
+      Jan_Estimated: "",
       Jan: 23,
+      Feb_Estimated: true,
       Feb: 56,
+      Mar_Estimated: "",
       Mar: 67,
+      Apr_Estimated: "",
       Apr: 46,
-      May: 64
+      May_Estimated: true,
+      May: 39,
+      Jun_Estimated: "",
+      Jun: "",
+      Jul_Estimated: "",
+      Jul: "",
+      Aug_Estimated: true,
+      Aug: "",
+      Sep_Estimated: true,
+      Sep: "",
+      Oct_Estimated: "",
+      Oct: "",
+      Nov_Estimated: true,
+      Nov: "",
+      Dec_Estimated: "",
+      Dec: "",
+      GrandTotal: 106.2,
     },
     {
       id: "Partner B",
       zone: "Zone 2",
       country: "Country B",
-      partner: "Partner B",
+      PartnerAccountName: "Partner B",
       model: "E2",
       status: "Close",
       currency: "USD",
-      Jan_E: false,
-      Feb_E: false,
-      Mar_E: false,
-      Apr_E: false,
-      May_E: false,
+      Jan_Estimated: true,
       Jan: 23,
+      Feb_Estimated: "",
       Feb: 56,
+      Mar_Estimated: "",
       Mar: 67,
+      Apr_Estimated: true,
       Apr: 46,
-      May: 64
+      May_Estimated: "",
+      May: 79,
+      Jun_Estimated: true,
+      Jun: "",
+      Jul_Estimated: "",
+      Jul: "",
+      Aug_Estimated: true,
+      Aug: "",
+      Sep_Estimated: "",
+      Sep: "",
+      Oct_Estimated: "",
+      Oct: "",
+      Nov_Estimated: true,
+      Nov: "",
+      Dec_Estimated: "true",
+      Dec: "",
+      GrandTotal: 106.2,
     },
     {
       id: "Partner C",
       zone: "Zone 1",
       country: "Country C",
-      partner: "Partner C",
+      PartnerAccountName: "Partner C",
       model: "E2",
       status: "Active",
       currency: "Euro",
-      Jan_E: false,
-      Feb_E: false,
-      Mar_E: false,
-      Apr_E: false,
-      May_E: true,
+      Jan_Estimated: "",
       Jan: 23,
+      Feb_Estimated: "",
       Feb: 56,
+      Mar_Estimated: "",
       Mar: 67,
+      Apr_Estimated: true,
       Apr: 46,
-      May: 64
+      May_Estimated: "",
+      May: 45,
+      Jun_Estimated: "",
+      Jun: "",
+      Jul_Estimated: true,
+      Jul: "",
+      Aug_Estimated: true,
+      Aug: 67,
+      Sep_Estimated: "",
+      Sep: "",
+      Oct_Estimated: true,
+      Oct: "",
+      Nov_Estimated: "",
+      Nov: "",
+      Dec_Estimated: "",
+      Dec: "",
+      GrandTotal: 106.2,
     },
     {
       id: "Partner D",
       zone: "Zone 2",
       country: "Country B",
-      partner: "Partner D",
+      PartnerAccountName: "Partner D",
       model: "E2",
       status: "Close",
       currency: "USD",
-      Jan_E: false,
-      Feb_E: false,
-      Mar_E: false,
-      Apr_E: false,
-      May_E: false,
+      Jan_Estimated: true,
       Jan: 23,
+      Feb_Estimated: "",
       Feb: 56,
+      Mar_Estimated: "",
       Mar: 67,
+      Apr_Estimated: true,
       Apr: 46,
-      May: 64
+      May_Estimated: "",
+      May: 56,
+      Jun_Estimated: true,
+      Jun: "",
+      Jul_Estimated: "",
+      Jul: "",
+      Aug_Estimated: "",
+      Aug: "",
+      Sep_Estimated: true,
+      Sep: "",
+      Oct_Estimated: "",
+      Oct: "",
+      Nov_Estimated: true,
+      Nov: "",
+      Dec_Estimated: "",
+      Dec: "",
+      GrandTotal: 106.2,
     },
   ];
   const [rowData, setRowData] = useState(null);
@@ -117,7 +178,7 @@ function DataInputComponent() {
     },
     {
       field: "year",
-      hide: true
+      hide: true,
     },
     {
       headerName: "Zone",
@@ -128,7 +189,7 @@ function DataInputComponent() {
       suppressNavigable: true,
       cellClass: "no-border",
       editable: false,
-      width: 100
+      width: 100,
     },
     {
       headerName: "Country",
@@ -139,18 +200,18 @@ function DataInputComponent() {
       suppressNavigable: true,
       width: 140,
       suppressSizeToFit: true,
-      cellClass: 'no-border',
-      editable: false
+      cellClass: "no-border",
+      editable: false,
     },
     {
       headerName: "Partner Account Name",
-      field: "partner",
+      field: "PartnerAccountName",
       sortable: true,
       filter: true,
       pinned: "left",
       width: 140,
       suppressSizeToFit: true,
-      editable: false
+      editable: false,
     },
     {
       headerName: "Model",
@@ -160,7 +221,7 @@ function DataInputComponent() {
       pinned: "left",
       width: 120,
       suppressSizeToFit: true,
-      editable: false
+      editable: false,
     },
     {
       headerName: "Currency of Reporting",
@@ -179,8 +240,12 @@ function DataInputComponent() {
         const Status = params.value;
         return (
           <div>
-            {Status === 'Active' && <img src={active} alt="active" style= {{width: "80px"}} />}
-            {Status === 'Close' && <img src={closed} alt="closed" style= {{width: "80px"}}/>}
+            {Status === "Active" && (
+              <img src={active} alt="active" style={{ width: "80px" }} />
+            )}
+            {Status === "Close" && (
+              <img src={closed} alt="closed" style={{ width: "80px" }} />
+            )}
           </div>
         );
       },
@@ -192,8 +257,8 @@ function DataInputComponent() {
       resizable: true,
       flex: 1,
       editable: true,
-      minWidth:50,
-      suppressSizeToFit:true,
+      minWidth: 50,
+      suppressSizeToFit: true,
       sortable: true,
       filter: true,
     }),
@@ -201,8 +266,8 @@ function DataInputComponent() {
   );
 
   //fn set is estimated
-  const fnSetIsEstimated = (params, monthField) =>{
-    let monthYrKey = monthField + '_E';
+  const fnSetIsEstimated = (params, monthField) => {
+    let monthYrKey = monthField + "_Estimated";
     var filterMonths = Object.keys(params.data)
       .filter((key) => [monthYrKey].includes(key))
       .reduce((obj, key) => {
@@ -210,72 +275,10 @@ function DataInputComponent() {
         return obj;
       }, {});
 
-    var isEstimated = (filterMonths[monthYrKey] == true);
-    if (isEstimated == true)
-      return { backgroundColor: "#EEB265" };
+    var isEstimated = filterMonths[monthYrKey] == true;
+    if (isEstimated == true) return { backgroundColor: "#EEB265" };
     return { backgroundColor: "white" };
   };
-
-  // const toggleAEDoubleClicked  = useCallback((params, monthField) => {
-  //   console.log('onCellDoubleClicked',params);
-  //   if(params.data){
-  //     console.log('params.data.partner', params.data.partner);
-  //     console.log('gridRef', gridRef);
-  //     var rowNode = gridRef.current.api.getRowNode(params.data.partner);
-    
-  //     const itemsToUpdate = [];
-  //     gridRef.current.api.forEachNodeAfterFilterAndSort(function (
-  //       rowNode,
-  //       index
-  //     ) 
-  //     {
-  //         console.log('index', index);
-  //         const data = rowNode.data;
-  //         console.log('selectedNodes.data',rowNode.data)
-
-  //         switch(monthField){
-  //           case ('Jan'):
-  //             data.Jan_E = !data.Jan_E
-  //             break;
-  //           case ('Feb'):
-  //             data.Feb_E = !data.Feb_E
-  //             break;
-  //           case ('Mar'):
-  //             data.Mar_E = !data.Mar_E
-  //             break;
-  //           case ('Apr'):
-  //             data.Apr_E = !data.Apr_E
-  //             break;
-  //           case ('May'):
-  //             data.May_E = !data.May_E
-  //             break;
-  //           case ('Jun'):
-  //             data.Jun_E = !data.Jun_E
-  //             break;
-  //           case ('Jul'):
-  //             data.Jul_E = !data.Jul_E
-  //             break;
-  //           case ('Aug'):
-  //             data.Aug_E = !data.Aug_E
-  //             break;
-  //           case ('Sep'):
-  //             data.Sep_E = !data.Sep_E
-  //             break;
-  //           case ('Oct'):
-  //             data.Oct_E = !data.Oct_E
-  //             break;
-  //           case ('Nov' ):
-  //             data.Nov_E = !data.Nov_E
-  //             break;
-  //           case ('Dec' ):
-  //             data.Dec_E = !data.Dec_E
-  //             break;
-  //         }
-  //         itemsToUpdate.push(data);
-  //   });
-  //   const res = gridRef.current.api.applyTransaction({ update: itemsToUpdate });
-  //   console.log('itemsToUpdate', res);
-  // }});
 
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
@@ -291,7 +294,7 @@ function DataInputComponent() {
     const year = String(date.getFullYear()).slice(-2);
     const monthHeader = monthName + year;
     const monthField = monthName;
-    const monthAEFlagField = monthName + '_E';
+    const monthAEFlagField = monthName + "_Estimated";
 
     // to make sure user entered number only
     const checkNumericValue = (params) => {
@@ -322,7 +325,7 @@ function DataInputComponent() {
             minWidth: 100,
             valueParser: (params) => Number(params.newValue),
             valueSetter: checkNumericValue,
-            cellStyle: params => {
+            cellStyle: (params) => {
               return fnSetIsEstimated(params, monthField);
             },
             enableRangeSelection: true,
@@ -330,7 +333,7 @@ function DataInputComponent() {
           },
           {
             field: monthAEFlagField,
-            hide: true
+            hide: true,
           },
           {
             headerName: "Editor's Comment",
@@ -348,8 +351,8 @@ function DataInputComponent() {
           minWidth: 100,
           valueParser: (params) => Number(params.newValue),
           valueSetter: checkNumericValue,
-          cellStyle: params => {
-             return fnSetIsEstimated(params, monthField);
+          cellStyle: (params) => {
+            return fnSetIsEstimated(params, monthField);
           },
           enableRangeSelection: true,
           // onCellDoubleClicked:params => { toggleAEDoubleClicked(params, monthField)}
@@ -376,78 +379,81 @@ function DataInputComponent() {
   const toggleActualEstimate = useCallback((isEstimate) => {
     const selectedCells = gridRef.current.api.getCellRanges();
     const itemsToUpdate = [];
-    selectedCells.forEach((currRow, currIndex)=>{
+    selectedCells.forEach((currRow, currIndex) => {
       //row level loop
-      currRow.columns.forEach((currCol, currIndex)=>{
+      currRow.columns.forEach((currCol, currIndex) => {
         //col level loop
-        for(let i = currRow.startRow.rowIndex; i < currRow.endRow.rowIndex+1; i++){
+        for (
+          let i = currRow.startRow.rowIndex;
+          i < currRow.endRow.rowIndex + 1;
+          i++
+        ) {
           gridRef.current.api.forEachNodeAfterFilterAndSort(function (
             rowNodes,
             index
-          ) 
-          {
-            if(index===i){
+          ) {
+            if (index === i) {
               let data = rowNodes.data;
               let monthField = currCol.colId;
 
-              if(monthField != undefined){
-                switch(monthField){
-                  case ('Jan'):
-                    console.log('Jan');
-                    data.Jan_E = isEstimate;
-                    console.log(data.Jan_E);
+              if (monthField != undefined) {
+                switch (monthField) {
+                  case "Jan":
+                    console.log("Jan");
+                    data.Jan_Estimated = isEstimate;
+                    console.log(data.Jan_Estimated);
                     break;
-                  case ('Feb'):
-                    console.log('Feb');
-                    data.Feb_E = isEstimate;
-                    console.log(data.Feb_E);
+                  case "Feb":
+                    console.log("Feb");
+                    data.Feb_Estimated = isEstimate;
+                    console.log(data.Feb_Estimated);
                     break;
-                  case ('Mar'):
-                    console.log('Mar');
-                    data.Mar_E = isEstimate;
+                  case "Mar":
+                    console.log("Mar");
+                    data.Mar_Estimated = isEstimate;
                     break;
-                  case ('Apr'):
-                    console.log('Apr');
-                    data.Apr_E = isEstimate;
+                  case "Apr":
+                    console.log("Apr");
+                    data.Apr_Estimated = isEstimate;
                     break;
-                  case ('May'):
-                    console.log('May');
-                    data.May_E = isEstimate;
+                  case "May":
+                    console.log("May");
+                    data.May_Estimated = isEstimate;
                     break;
-                  case ('Jun'):
-                    console.log('Jun');
-                    data.Jun_E = isEstimate;
+                  case "Jun":
+                    console.log("Jun");
+                    data.Jun_Estimated = isEstimate;
                     break;
-                  case ('Jul'):
-                    console.log('Jul');
-                    data.Jul_E = isEstimate;
+                  case "Jul":
+                    console.log("Jul");
+                    data.Jul_Estimated = isEstimate;
                     break;
-                  case ('Aug'):
-                    console.log('Aug');
-                    data.Aug_E = isEstimate;
+                  case "Aug":
+                    console.log("Aug");
+                    data.Aug_Estimated = isEstimate;
                     break;
-                  case ('Sep'):
-                    console.log('Sep');
-                    data.Sep_E = isEstimate;
+                  case "Sep":
+                    console.log("Sep");
+                    data.Sep_Estimated = isEstimate;
                     break;
-                  case ('Oct'):
-                    console.log('Oct');
-                    data.Oct_E = isEstimate;
+                  case "Oct":
+                    console.log("Oct");
+                    data.Oct_Estimated = isEstimate;
                     break;
-                  case ('Oct'):
-                    console.log('Oct');
-                    data.Nov_E = isEstimate;
+                  case "Oct":
+                    console.log("Oct");
+                    data.Nov_Estimated = isEstimate;
                     break;
-                  case ('Dec'):
-                    console.log('Dec');
-                    data.Dec_E = isEstimate;
+                  case "Dec":
+                    console.log("Dec");
+                    data.Dec_Estimated = isEstimate;
                     break;
-                }              
-              }              
+                }
+              }
               itemsToUpdate.push(data);
             }
           });
-        };
+        }
       });
     });
     const res = gridRef.current.api.applyTransaction({ update: itemsToUpdate });
@@ -476,17 +482,25 @@ function DataInputComponent() {
           <MyMenu />
         </Row>
         <Row>
-          <BatchInputComponent />
+          <Breadcrumb>
+            <Breadcrumb.Item href="/">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <BatchInputComponent getData={getData} />
         </Row>
         <Row className="justify-content-end">
           <Col md={2} className="estimate-container">
             <Form.Check
-              label='Is Estimate'
-              id='lblIsEstimate' 
-              onChange={fnIsEstimated}/>
+              label="Is Estimate"
+              id="lblIsEstimate"
+              onChange={fnIsEstimated}
+            />
           </Col>
-          {/* <Col md={2}><Button className="btn-md" onClick={()=>toggleActualEstimate(true)} variant="success">Mark estimated</Button>{' '}</Col>
-          <Col md={2}><Button className="btn-md" onClick={()=>toggleActualEstimate(false)} variant="success">Mark actual</Button>{' '}</Col> */}
         </Row>
         <Row className="ag-theme-alpine" style={{ height: 300 }}>
           <AgGridReact
@@ -497,48 +511,54 @@ function DataInputComponent() {
             pagination={true}
             paginationAutoPageSize={true}
             animateRows={true}
-            rowSelection={'multiple'}
-            getRowId={getRowId}  
+            // rowSelection={'multiple'}
+            getRowId={getRowId}
             enableRangeSelection={true}
             suppressCopySingleCellRanges={true}
             onGridReady={onGridReady}
           ></AgGridReact>
-          </Row>
-          <Row className="mb-3" style={{ float: "right", marginRight: "10px", marginTop: "10px" }}>
-            <Col xs="auto">
-              <Button
-                className="btn-upload cancel-header"
-                onClick={handleShowModal}>
-                Cancel
-              </Button>
-              <CancelModal
-                show={showModal}
-                handleClose={handleCloseModal}
-                handleConfirm={handleCloseModal}
-                body={"Are you sure you want to cancel the input."}
-                button1={"Cancel"}
-                button2={"Confirm"}
-              />
-            </Col>
-            <Col xs="auto">
-              <Button
-                className="btn-upload edit-header"
-                onClick={() => {
-                  handleSave();
-                }}
-              >
-                Save
-              </Button>
-            </Col>
-            <Col>
-              <Button className="btn-upload save-header"
-               onClick={() => {
-                  handleNavigation();
-                }}>
-                   Next
-              </Button>
-            </Col>
-          </Row>
+        </Row>
+        <Row
+          className="mb-3"
+          style={{ float: "right", marginRight: "10px", marginTop: "10px" }}
+        >
+          <Col xs="auto">
+            <Button
+              className="btn-upload cancel-header"
+              onClick={handleShowModal}
+            >
+              Cancel
+            </Button>
+            <CancelModal
+              show={showModal}
+              handleClose={handleCloseModal}
+              handleConfirm={handleCloseModal}
+              body={"Are you sure you want to cancel the input."}
+              button1={"Cancel"}
+              button2={"Confirm"}
+            />
+          </Col>
+          <Col xs="auto">
+            <Button
+              className="btn-upload edit-header"
+              onClick={() => {
+                handleSave();
+              }}
+            >
+              Save
+            </Button>
+          </Col>
+          <Col>
+            <Button
+              className="btn-upload save-header"
+              onClick={() => {
+                handleNavigation();
+              }}
+            >
+              Next
+            </Button>
+          </Col>
+        </Row>
       </Container>
     </>
   );

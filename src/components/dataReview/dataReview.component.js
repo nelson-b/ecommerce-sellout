@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import {
@@ -8,6 +8,8 @@ import {
   Stack,
   ToggleButton,
   ButtonGroup,
+  Breadcrumb,
+  Container,
 } from "react-bootstrap";
 import "./dataReview.css";
 import { month } from "../constant";
@@ -15,16 +17,19 @@ import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import { exportParams } from "ag-grid-community";
 import data from "../../data/dataReview.json";
 import dataEuro from "../../data/dataReviewEuro.json";
 import CancelModal from "../modal/cancelModal";
 import footerTotalReview from "./footerTotalReview";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
+import Home from "../../images/home-icon.png";
 import * as xlsx from "xlsx";
 import * as FileSaver from "file-saver";
 
 function DataReviewComponent({}) {
+  const gridRef = useRef();
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const [radioValue, setRadioValue] = useState("1");
@@ -44,10 +49,14 @@ function DataReviewComponent({}) {
   ];
 
   const columnDefs = [
-    { field: "Zone", rowGroup: true, hide: true },
     {
-      field: "Partner Account Name",
-      headerName: "Partner",
+      field: "Zone",
+      rowGroup: true,
+      hide: true,
+    },
+    {
+      headerName: "Partner Account Name",
+      field: "Partner",
       filter: true,
       sortable: true,
       pinned: "left",
@@ -63,7 +72,7 @@ function DataReviewComponent({}) {
       sortable: true,
       pinned: "left",
       suppressSizeToFit: true,
-      editable: false
+      editable: false,
     },
     {
       headerName: "Model",
@@ -74,7 +83,7 @@ function DataReviewComponent({}) {
       filter: true,
       pinned: "left",
       suppressSizeToFit: true,
-      editable: false
+      editable: false,
     },
     {
       headerName: "Currency of Reporting",
@@ -110,11 +119,17 @@ function DataReviewComponent({}) {
 
   const defaultColDef = useMemo(() => {
     return {
+      cellClassRules: {
+        greenBackground: (params) => {
+          return params.node.footer;
+        },
+      },
       flex: 1,
       resizable: true,
       filter: true,
       sortable: true,
       suppressSizeToFit: true,
+      // headerRowHeight: 50,
     };
   }, []);
 
@@ -326,9 +341,39 @@ function DataReviewComponent({}) {
     setRowData(rowData);
   };
 
-  const handleExport = () => {
-    setRowData(rowData);
-  };
+  const excelStyles = useMemo(() => {
+    return [
+      {
+        id: "header",
+        alignment: {
+          vertical: "Center",
+        },
+        font: {
+          bold: true,
+          color: "#ffffff",
+        },
+        interior: {
+          color: "#009530",
+          pattern: "Solid",
+        },
+      },
+      {
+        id: "greenBackground",
+        interior: {
+          color: "#b5e6b5",
+          pattern: "Solid",
+        },
+      },
+    ];
+  }, []);
+
+  const handleExport = useCallback(() => {
+    const params = {
+      fileName: "Sell out Data Review.xlsx",
+      sheetName: "Data Review",
+    };
+    gridRef.current.api.exportDataAsExcel(params);
+  }, []);
 
   const onGridReady = useCallback((params) => {
     fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
@@ -338,105 +383,125 @@ function DataReviewComponent({}) {
 
   return (
     <>
-      <MyMenu />
-      <div className="mt-3">
-        <Stack direction="horizontal" gap={4}>
-          <div className="sell-out-header">Sell Out Data Review</div>
-          <div className="mt-0 ms-auto">
-            <Row className="currency-mode">CURRENCY MODE</Row>
-            <Col>
-              <ButtonGroup>
-                {radios.map((radio, idx) => (
-                  <ToggleButton
-                    key={idx}
-                    id={`radio-${idx}`}
-                    type="radio"
-                    variant={idx % 2 ? "outline-success" : "outline-success"}
-                    name="radio"
-                    value={radio.value}
-                    checked={radioValue === radio.value}
-                    onChange={(e) => setRadioValue(e.currentTarget.value)}
-                  >
-                    {radio.name}
-                  </ToggleButton>
-                ))}
-              </ButtonGroup>
-            </Col>
-          </div>
-          <div className="historical-header">
-            <Button className="btn-md historical-data">Historical Data</Button>
-          </div>
-        </Stack>
-      </div>
-
-      <Row
-        className="ag-theme-alpine ag-grid-table"
-        style={{ height: 370, margin: "20px 0px 0px 0px" }}
-      >
-        <AgGridReact
-          rowData={radioValue == 1 ? data : dataEuro}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          autoGroupColumnDef={autoGroupColumnDef}
-          // groupDisplayType={'custom'}
-          // groupDisplayType={"singleColumn"}
-          groupHideOpenParents={true}
-          showOpenedGroup={true}
-          animateRows={true}
-          suppressAggFuncInHeader={true}
-          groupIncludeTotalFooter={true}
-          groupIncludeFooter={true}
-          groupDefaultExpanded={-1}
-          onGridReady={onGridReady}
-          getRowStyle={getRowStyle}
-        ></AgGridReact>
+      <Container fluid>
+        <Row>
+          <MyMenu />
+        </Row>
         <div>
-          <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
-            <Col xs="auto">
-              <Button
-                className="cancel-header"
-                onClick={handleShowModal}
-              >
-                Cancel
-              </Button>
-              <CancelModal
-                show={showModal}
-                handleClose={handleCloseModal}
-                handleConfirm={handleCloseModal}
-                body={"Are you sure you want to cancel the review."}
-                button1={"Cancel"}
-                button2={"Confirm"}
+          <Breadcrumb>
+            <Breadcrumb.Item href="/">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
               />
-            </Col>
-            <Col xs="auto">
-              <Button
-                className="edit-header"
-                onClick={(e) => handleExport()}
-                >
-                Export
-              </Button>
-            </Col>
-            <Col xs="auto">
-              <Button
-                className="edit-header"
-                onClick={(e) => handleEdit()}
-                >
-                Edit
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                className="save-header"
-                onClick={() => {
-                  handleConfirm();
-                }}
-              >
-                Save
-              </Button>
-            </Col>
-          </Row>
+            </Breadcrumb.Item>
+          </Breadcrumb>
         </div>
-      </Row>
+        <div>
+          <Stack direction="horizontal" gap={4}>
+            <div className="sell-out-header">Sell Out Data Review</div>
+            <div className="mt-0 ms-auto">
+              <Row className="currency-mode">CURRENCY MODE</Row>
+              <Col>
+                <ButtonGroup>
+                  {radios.map((radio, idx) => (
+                    <ToggleButton
+                      key={idx}
+                      id={`radio-${idx}`}
+                      type="radio"
+                      variant={idx % 2 ? "outline-success" : "outline-success"}
+                      name="radio"
+                      value={radio.value}
+                      checked={radioValue === radio.value}
+                      onChange={(e) => setRadioValue(e.currentTarget.value)}
+                    >
+                      {radio.name}
+                    </ToggleButton>
+                  ))}
+                </ButtonGroup>
+              </Col>
+            </div>
+            <div className="historical-header">
+              <Button className="btn-md historical-data">
+                Historical Data
+              </Button>
+            </div>
+          </Stack>
+        </div>
+
+        <Row
+          className="ag-theme-alpine ag-grid-table"
+          style={{ height: 370, marginTop: "10px" }}
+        >
+          <AgGridReact
+            ref={gridRef}
+            rowData={radioValue == 1 ? data : dataEuro}
+            columnDefs={columnDefs}
+            defaultColDef={defaultColDef}
+            autoGroupColumnDef={autoGroupColumnDef}
+            // groupDisplayType={'custom'}
+            // groupDisplayType={"singleColumn"}
+            groupHideOpenParents={true}
+            showOpenedGroup={true}
+            animateRows={true}
+            suppressAggFuncInHeader={true}
+            groupIncludeTotalFooter={true}
+            groupIncludeFooter={true}
+            groupDefaultExpanded={-1}
+            onGridReady={onGridReady}
+            getRowStyle={getRowStyle}
+            excelStyles={excelStyles}
+            rowSelection={"single"}
+          ></AgGridReact>
+          <div>
+            <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
+              <Col xs="auto">
+                <Button
+                  className="btn-upload cancel-header"
+                  onClick={handleShowModal}
+                >
+                  Cancel
+                </Button>
+                <CancelModal
+                  show={showModal}
+                  handleClose={handleCloseModal}
+                  handleConfirm={handleCloseModal}
+                  body={"Are you sure you want to cancel the review."}
+                  button1={"Cancel"}
+                  button2={"Confirm"}
+                />
+              </Col>
+              <Col xs="auto">
+                <Button
+                  className="btn-upload edit-header"
+                  onClick={(e) => handleExport()}
+                >
+                  Export
+                </Button>
+              </Col>
+              <Col xs="auto">
+                <Button
+                  className="btn-upload edit-header"
+                  onClick={(e) => handleEdit()}
+                >
+                  Edit
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  className="btn-upload save-header"
+                  onClick={() => {
+                    handleConfirm();
+                  }}
+                >
+                  Save
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        </Row>
+      </Container>
     </>
   );
 }

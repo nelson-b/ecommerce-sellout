@@ -7,7 +7,7 @@
         "Country": "US",
         "BusinessType": "IT",
         "playbookType": "Booster",
-        "activation": "12/01/2020",
+        "activation": "12-01-2020",
         "ModelType": "E2-MP",
         "currency": "USD",
         "dataCollection": "ACtual",
@@ -16,11 +16,11 @@
         "schneider": "NA",
         "gtm": "Direct",
         "partnerMargin": "5.00%",
-        "partnerURL": "",
-        "editor": "",
-        "backup": "",
-        "Approver1": "",
-        "Approver2": ""
+        "partnerURL": "www.kadapa.com",
+        "editor": "editor",
+        "backup": "backup editor",
+        "Approver1": "Approver1",
+        "Approver2": "Approver2"
     },
     {
         "PartnerAccount": "Partner 2",
