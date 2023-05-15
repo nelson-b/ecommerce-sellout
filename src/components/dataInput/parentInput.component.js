@@ -11,7 +11,6 @@ import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
 import MyMenu from "../menu/menu.component.js";
 import CancelModal from "../modal/cancelModal";
-// import "ag-grid-community";
 import "ag-grid-enterprise";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
@@ -216,67 +215,6 @@ function DataInputComponent() {
     return { backgroundColor: "white" };
   };
 
-  // const toggleAEDoubleClicked  = useCallback((params, monthField) => {
-  //   console.log('onCellDoubleClicked',params);
-  //   if(params.data){
-  //     console.log('params.data.partner', params.data.partner);
-  //     console.log('gridRef', gridRef);
-  //     var rowNode = gridRef.current.api.getRowNode(params.data.partner);
-    
-  //     const itemsToUpdate = [];
-  //     gridRef.current.api.forEachNodeAfterFilterAndSort(function (
-  //       rowNode,
-  //       index
-  //     ) 
-  //     {
-  //         console.log('index', index);
-  //         const data = rowNode.data;
-  //         console.log('selectedNodes.data',rowNode.data)
-
-  //         switch(monthField){
-  //           case ('Jan'):
-  //             data.Jan_E = !data.Jan_E
-  //             break;
-  //           case ('Feb'):
-  //             data.Feb_E = !data.Feb_E
-  //             break;
-  //           case ('Mar'):
-  //             data.Mar_E = !data.Mar_E
-  //             break;
-  //           case ('Apr'):
-  //             data.Apr_E = !data.Apr_E
-  //             break;
-  //           case ('May'):
-  //             data.May_E = !data.May_E
-  //             break;
-  //           case ('Jun'):
-  //             data.Jun_E = !data.Jun_E
-  //             break;
-  //           case ('Jul'):
-  //             data.Jul_E = !data.Jul_E
-  //             break;
-  //           case ('Aug'):
-  //             data.Aug_E = !data.Aug_E
-  //             break;
-  //           case ('Sep'):
-  //             data.Sep_E = !data.Sep_E
-  //             break;
-  //           case ('Oct'):
-  //             data.Oct_E = !data.Oct_E
-  //             break;
-  //           case ('Nov' ):
-  //             data.Nov_E = !data.Nov_E
-  //             break;
-  //           case ('Dec' ):
-  //             data.Dec_E = !data.Dec_E
-  //             break;
-  //         }
-  //         itemsToUpdate.push(data);
-  //   });
-  //   const res = gridRef.current.api.applyTransaction({ update: itemsToUpdate });
-  //   console.log('itemsToUpdate', res);
-  // }});
-
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
   const currentYear = String(currentDate.getFullYear()).slice(-2);
@@ -376,11 +314,11 @@ function DataInputComponent() {
   const toggleActualEstimate = useCallback((isEstimate) => {
     const selectedCells = gridRef.current.api.getCellRanges();
     const itemsToUpdate = [];
-    selectedCells.forEach((currRow, currIndex)=>{
+    selectedCells.forEach((currRow, currIndex) => {
       //row level loop
-      currRow.columns.forEach((currCol, currIndex)=>{
+      currRow.columns.forEach((currCol, currIndex) => {
         //col level loop
-        for(let i = currRow.startRow.rowIndex; i < currRow.endRow.rowIndex+1; i++){
+        for(let i = currRow.startRow.rowIndex; i < currRow.endRow.rowIndex + 1; i++) {
           gridRef.current.api.forEachNodeAfterFilterAndSort(function (
             rowNodes,
             index
@@ -485,8 +423,6 @@ function DataInputComponent() {
               id='lblIsEstimate' 
               onChange={fnIsEstimated}/>
           </Col>
-          {/* <Col md={2}><Button className="btn-md" onClick={()=>toggleActualEstimate(true)} variant="success">Mark estimated</Button>{' '}</Col>
-          <Col md={2}><Button className="btn-md" onClick={()=>toggleActualEstimate(false)} variant="success">Mark actual</Button>{' '}</Col> */}
         </Row>
         <Row className="ag-theme-alpine" style={{ height: 300 }}>
           <AgGridReact
