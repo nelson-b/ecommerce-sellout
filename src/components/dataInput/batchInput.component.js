@@ -1,14 +1,14 @@
 import { Form, Row, Col, Button, Container } from "react-bootstrap";
 import "./parentInput.component.css";
-import { useForm } from "react-hook-form";
+import { get, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import * as xlsx from "xlsx";
 import FileSaver from "file-saver";
 import ReportData from "../../data/downloadReport.json";
 import AlertModel from "../modal/alertModel";
 
-function BatchInputComponent({}) {
+function BatchInputComponent({ getData }) {
   const navigate = useNavigate();
 
   const {
@@ -185,19 +185,33 @@ function BatchInputComponent({}) {
     console.log("ERROR:::", error);
   };
 
-  const fileType =
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-  const fileExtension = ".xlsx";
+  const readMeData = [
+    ["Read me Demo"],
+    [
+          "1. In this we acn able to see Zone, Country, Partner, Modal level fields",
+    ],
+    [     "2. We ahve Estimated and Actual values of Months"],
+    [     "3. Example: Jan to Dec estimated and actual values"],
+    [
+          "4. If the value is TRUE then its a estimated value otherwise its a actual value",
+    ],
+  ];
 
   const exportToExcel = async (exportedData) => {
-    const ws = xlsx.utils.json_to_sheet(exportedData);
-    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-    const excelBuffer = xlsx.write(wb, {
-      bookType: "xlsx",
-      type: "array",
+    const tempData = exportedData.map((e) => {
+      const { id, status, ...rest } = e;
+      return rest;
     });
-    const data = new Blob([excelBuffer], { type: fileType });
-    FileSaver.saveAs(data, fileExtension);
+
+    const workbook = xlsx.utils.book_new();
+    const readmeDataWithoutHeader = readMeData.slice(0);
+    const sheet1 = xlsx.utils.aoa_to_sheet(readmeDataWithoutHeader);
+    xlsx.utils.book_append_sheet(workbook, sheet1, "Read Me");
+
+    const sheet2 = xlsx.utils.json_to_sheet(tempData);
+    xlsx.utils.book_append_sheet(workbook, sheet2, "Sell out Data Input");
+
+    xlsx.writeFile(workbook, "Sell out Data Input.xlsx");
   };
 
   return (
@@ -229,7 +243,7 @@ function BatchInputComponent({}) {
                     </Form.Group>
                   </Col>
                   <Col xs="auto">
-                    <Button className="save-header" type="submit">
+                    <Button className=" btn-upload save-header" type="submit">
                       Upload
                     </Button>
                     <AlertModel
@@ -250,7 +264,8 @@ function BatchInputComponent({}) {
               <Button
                 size="lg"
                 className="edit-header"
-                onClick={(e) => exportToExcel(ReportData)}>
+                onClick={(e) => exportToExcel(getData)}
+              >
                 Download Template
               </Button>
             </Col>

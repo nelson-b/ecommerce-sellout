@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Nav,  Navbar, NavDropdown, Container, Image, Badge, Button, Toast, ToastContainer } 
-from 'react-bootstrap';
+import { Nav,  Navbar, NavDropdown, Container, Image, Badge, Button, Toast,
+  ToastContainer, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from './../../images/schneider-electric-logo.svg'
 import loginUserPic from "./../../images/loginUser.jpg";
@@ -26,7 +26,7 @@ function MyMenu(args){
   const [position, setPosition] = useState('top-start');
 
     return (
-    <Navbar bg="light" collapseOnSelect variant="light">
+    <Navbar bg="white" collapseOnSelect variant="light">
       <Container fluid>
         <Navbar.Brand>
           <Nav.Link href="/">
