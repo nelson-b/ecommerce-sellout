@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useMemo } from "react";
 import * as xlsx from "xlsx";
 import FileSaver from "file-saver";
-import ReportData from "../../data/downloadReport.json";
 import AlertModel from "../modal/alertModel";
 
 function BatchInputComponent({ getData }) {
