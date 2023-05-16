@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
-import { createSellOutData } from "../actions/selloutaction";
+import { createSellOutData } from "../../actions/selloutaction";
 import {
   Button,
   Col,
@@ -12,9 +12,10 @@ import {
   Tooltip,
   OverlayTrigger,
 } from "react-bootstrap";
-import MyMenu from "./menu/menu.component.js";
+import MyMenu from "../menu/menu.component.js";
 import { BiHome, BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
+import "./partner.component.css";
 
 function PartnerComponent(props) {
   const initialState = {
@@ -437,56 +438,54 @@ function PartnerComponent(props) {
                   </Row>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                  <Row className="justify-content-left">
-                  <Col className="justify-content-left">
-                      <Form.Label size="sm" htmlFor="bopp_type">
-                        Bopp Type
-                      </Form.Label>
-                      <Form.Select
-                        size="sm"
-                        id="bopp_type"
-                        className="field-Prop"
-                        name="bopp_type"
-                        {...register("bopp_type", {
-                          required: "Bopp Type is required",
-                        })}
-                        
-                      >
-                        <option></option>
-                        <option value={"Adopter"}>Adopter</option>
-                        <option value={"Leader"}>Leader</option>
-                        <option value={"Novice"}>Novice</option>
-                        <option value={"Rising Stars"}>Rising Stars</option>
-                      </Form.Select>
-                      {errors.bopp_type && (
-                        <Form.Text className="text-danger">
-                          {errors.bopp_type.message}
-                        </Form.Text>
-                      )}
+                    <Row className="justify-content-left partnerRow">
+                    <Col>
+                        <Form.Label size="sm" htmlFor="bopp_type">
+                          Bopp Type
+                        </Form.Label>
+                        <Form.Select
+                          size="sm"
+                          id="bopp_type"
+                          className="field-Prop"
+                          name="bopp_type"
+                          {...register("bopp_type", {
+                            required: "Bopp Type is required",
+                          })}                        
+                        >
+                          <option></option>
+                          <option value={"Adopter"}>Adopter</option>
+                          <option value={"Leader"}>Leader</option>
+                          <option value={"Novice"}>Novice</option>
+                          <option value={"Rising Stars"}>Rising Stars</option>
+                        </Form.Select>
+                        {errors.bopp_type && (
+                          <Form.Text className="text-danger">
+                            {errors.bopp_type.message}
+                          </Form.Text>
+                        )}
                     </Col>
-                    <Col className="justify-content-left">
-                      <Form.Label size="sm" htmlFor="gtm_type">
-                        GTM Type
-                      </Form.Label>
-                      <Form.Select
-                        size="sm"
-                        className="field-Prop"
-                        id="gtm_type"
-                        name="gtm_type"
-                        {...register("gtm_type", {
-                          required: "GTM Type is required",
-                        })}
-                        
-                      >
-                        <option></option>
-                        <option>Direct</option>
-                        <option>Indirect</option>
-                      </Form.Select>
-                      {errors.gtm_type && (
-                        <Form.Text className="text-danger">
-                          {errors.gtm_type.message}
-                        </Form.Text>
-                      )}
+                    <Col>
+                        <Form.Label size="sm" htmlFor="gtm_type">
+                          GTM Type
+                        </Form.Label>
+                        <Form.Select
+                          size="sm"
+                          className="field-Prop"
+                          id="gtm_type"
+                          name="gtm_type"
+                          {...register("gtm_type", {
+                            required: "GTM Type is required",
+                          })}
+                        >
+                          <option></option>
+                          <option>Direct</option>
+                          <option>Indirect</option>
+                        </Form.Select>
+                        {errors.gtm_type && (
+                          <Form.Text className="text-danger">
+                            {errors.gtm_type.message}
+                          </Form.Text>
+                        )}
                     </Col>
                   </Row>
                 </Form.Group>
