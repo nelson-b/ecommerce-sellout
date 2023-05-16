@@ -4,7 +4,9 @@ import { get, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useMemo } from "react";
 import * as xlsx from "xlsx";
-import * as FileSaver from "file-saver";
+import FileSaver from "file-saver";
+import ReportData from "../../data/downloadReport.json";
+import AlertModel from "../modal/alertModel";
 
 function BatchInputComponent({ getData }) {
   const navigate = useNavigate();
@@ -20,7 +22,40 @@ function BatchInputComponent({ getData }) {
     reValidateMode: "onChange",
   });
 
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [fileData, setFileData] = useState([]);
+  const [fileError, setFileError] = useState([]);
+
+  const handleShowSuccessModal = () => {
+    setShowSuccessModal(true);
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+  };
+
+  const handleShowErrorModal = () => {
+    setShowErrorModal(true);
+  };
+
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
+  };
+
+  const successmsg = {
+    headerLabel: "Success....",
+    variant: "success",
+    header: 'Data has been saved successfully!!',
+    content: ['Navigating you to the Sell out data review page.....']
+  }
+
+  const errormsg = {
+    headerLabel: "Error....",
+    variant: "danger",
+    header: "There are below errors while processing. Please recitify and retry",
+    content: fileError
+  }
 
   const onSubmit = (data) => {
     const file = data.file[0];
@@ -37,27 +72,112 @@ function BatchInputComponent({ getData }) {
       return;
     } else {
       if (data.file) {
-        const reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = (e) => {
           console.log("reader onload");
-          const result = e.target.result;
-          const workbook = xlsx.read(result, { type: "array" });
-          const sheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[sheetName];
-          const json = xlsx.utils.sheet_to_json(worksheet);
+          let result = e.target.result;
+          let workbook = xlsx.read(result, { type: "array" });
+          let sheetName = workbook.SheetNames[0];
+          let worksheet = workbook.Sheets[sheetName];
+          let json = xlsx.utils.sheet_to_json(worksheet);
+          let errorJson = [];
           console.log("Reading excel: ", json);
-          json.forEach((i) => {
-            fileData.push([
-              {
-                Partner: i.Partner,
-              },
-            ]);
+          setFileData(json);
+          fileData.forEach((i) => {
+              if(i.Jan){
+                if(isNaN(i.Jan)){
+                  errorJson.push('There should be number for Jan month at partner : ' + i.Partner);
+                  console.log('There should be number for Jan month at partner : ' + i.Partner);
+                }
+              }
+              if(i.Feb){
+                if(isNaN(i.Feb)){
+                  errorJson.push('There should be number for Feb month at partner : ' + i.Partner);
+                  console.log('There should be number for Feb at partner : ' + i.Partner);
+                }
+              }
+              if(i.Mar){
+                if(isNaN(i.Mar)){
+                  errorJson.push('There should be number for Mar month at partner : ' + i.Partner);
+                  console.log('There should be number for Mar month at partner : ' + i.Partner);
+                }
+              }
+              if(i.Apr){
+                if(isNaN(i.Apr)){
+                  errorJson.push('There should be number at Apr at partner : ' + i.Partner);
+                  console.log('There should be number at Apr at partner : ' + i.Partner);
+                }
+              }
+              if(i.May){
+                if(isNaN(i.May)){
+                  errorJson.push('There should be number at May at partner : ' + i.Partner);
+                  console.log('There should be number at May at partner : ' + i.Partner);
+                }
+              }
+              if(i.Jun){
+                if(isNaN(i.Jun)){
+                  errorJson.push('There should be number at Jun at partner : ' + i.Partner);
+                  console.log('There should be number at Jun at partner : ' + i.Partner);
+                }
+              }
+              if(i.Jul){
+                if(isNaN(i.Jul)){
+                  errorJson.push('There should be number at Jul at partner : ' + i.Partner);
+                  console.log('There should be number at Jul at partner : ' + i.Partner);
+                }
+              }
+              if(i.Aug){
+                if(isNaN(i.Aug)){
+                  errorJson.push('There should be number at Jul at partner : ' + i.Partner);
+                  console.log('There should be number at Aug at partner : ' + i.Partner);
+                }
+              }
+              if(i.Sep){
+                if(isNaN(i.Sep)){
+                  errorJson.push('There should be number at Jul at partner : ' + i.Partner);
+                  console.log('There should be number at Sep at partner : ' + i.Partner);
+                }
+              }
+              if(i.Oct){
+                if(isNaN(i.Oct)){
+                  errorJson.push('There should be number at Oct at partner : ' + i.Partner);
+                  console.log('There should be number at Oct at partner : ' + i.Partner);
+                }
+              }
+              if(i.Nov){
+                if(isNaN(i.Nov)){
+                  errorJson.push('There should be number at Nov at partner : ' + i.Partner);
+                  console.log('There should be number at Nov at partner : ' + i.Partner);
+                }
+              }
+              if(i.Dec){
+                if(isNaN(i.Dec)){
+                  errorJson.push('There should be number at Dec at partner : ' + i.Partner);
+                  console.log('There should be number at Dec at partner : ' + i.Partner);
+                }
+              }
           });
+
+          if(errorJson.length > 0){
+            setFileError(errorJson);
+            setShowErrorModal(true);
+            setShowSuccessModal(false);
+          }
+          else
+          {
+            setFileError([]);
+            setShowErrorModal(false);
+            setShowSuccessModal(true);
+            setTimeout(()=>navigate('/dataReview'), 3000);
+          }
+
+          errorJson = [];
         };
+
         reader.readAsArrayBuffer(data.file[0]);
       }
-      // navigate("/dataReview");
       console.log("Reading excel useState: ", fileData);
+      console.log('fileError',fileError);
     }
   };
 
@@ -140,6 +260,16 @@ function BatchInputComponent({ getData }) {
                     <Button className=" btn-upload save-header" type="submit">
                       Upload
                     </Button>
+                    <AlertModel
+                      show={ showSuccessModal }
+                      handleClose={ handleCloseSuccessModal }
+                      body={ successmsg }
+                    />
+                    <AlertModel
+                      show={ showErrorModal }uu
+                      handleClose={ handleCloseErrorModal }
+                      body={ errormsg }
+                    />
                   </Col>
                 </Row>
               </Form>
