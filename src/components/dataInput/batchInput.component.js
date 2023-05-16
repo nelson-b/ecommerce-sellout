@@ -216,6 +216,7 @@ function BatchInputComponent({ getData }) {
       return rest;
     });
 
+    const currentDate = new Date();
     const workbook = xlsx.utils.book_new();
     const readmeDataWithoutHeader = readMeData.slice(0);
     const sheet1 = xlsx.utils.aoa_to_sheet(readmeDataWithoutHeader);
@@ -223,8 +224,19 @@ function BatchInputComponent({ getData }) {
 
     const sheet2 = xlsx.utils.json_to_sheet(tempData);
     xlsx.utils.book_append_sheet(workbook, sheet2, "Sell out Data Input");
+    console.log('workbook', workbook);
+    
+    var i;
+    for (i = 1; i <= workbook.Sheets["Sell out Data Input"].length; i++) {
+      workbook.Sheets["Sell out Data Input"]["A"+i].s = {
+      fill: {
+        patternType: "solid",
+        bgColor: { rgb: "009E4D" }
+      }
+      };
+    }
 
-    xlsx.writeFile(workbook, "Sell out Data Input.xlsx");
+    xlsx.writeFile(workbook, "Sell out Data Input"+ currentDate.getFullYear()+".xlsx");
   };
 
   return (
