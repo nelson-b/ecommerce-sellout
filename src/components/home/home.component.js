@@ -1,31 +1,218 @@
-import React from "react";
+import React, { useCallback, useMemo, useState, useRef } from "react";
 import { connect } from "react-redux";
 import { sellOutData } from "../../actions/selloutaction";
 import MyMenu from "../menu/menu.component.js";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import './home.component.css';
+import { useNavigate } from "react-router-dom";
+import "./home.component.css";
 import PerformanceOverview from "./po.component";
+import { AgGridReact } from "ag-grid-react";
+import dataOverview from "../../data/dataOverview.json";
+import footerTotalReview from "../dataReview/footerTotalReview";
 
-function Home(){
-    return(
-        <>
-            <Container fluid>
-                <Row>
-                    <MyMenu/>
-                </Row>
-                <Row className="justify-content-end">
-                    <Col md={2}><Button className="button-block" size="lg" variant="success">Data Review</Button>{''}</Col>
-                    <Col md={2}><Button className="button-block" size="lg" variant="success">BU Split</Button>{''}</Col>
-                    <Col md={2}><Button className="button-block" size="lg" variant="success">Data Input</Button>{''}</Col>
-                    <Col md={2}><Button className="button-block" size="lg" variant="success">Partner Data</Button>{''}</Col>
-                </Row>
-                <br/>
-                <Row>
-                    <PerformanceOverview/>
-                </Row>
-            </Container>
-        </>
-    );
+function Home() {
+  const gridRef = useRef();
+  const navigate = useNavigate();
+
+  const [rowData, setRowData] = useState();
+
+  const dataInputNavigation = () => {
+    navigate("/dataInput");
+  };
+
+  const dataReviewNavigation = () => {
+    navigate("/dataReview");
+  };
+
+  const partnerDataNavigation = () => {
+    navigate("/addPartner");
+  };
+
+  const columnDefs = [
+    {
+      headerName: "Scope",
+      spanHeaderHeight: true,
+      children: [
+        {
+          field: "Country",
+          width: 150,
+          rowGroup: true,
+          hide: true,
+        },
+        { field: "Model", width: 100 },
+      ],
+    },
+    {
+      field: "YTD Sellout Value ()In K EUR",
+      spanHeaderHeight: true,
+      aggFunc: "sum",
+    },
+    {
+      field: "Sellout Growth Vs Last Year()In K EUR",
+      spanHeaderHeight: true,
+      aggFunc: 'sum',
+      cellStyle: function (params) {
+        console.log("paarams", params);
+        if (params.value < "0%") {
+          return { color: "#b10043", fontWeight: "bold" };
+        } else if (params.value > "0%") {
+          return { color: "#009530", fontWeight: "bold" };
+        } else {
+          return null;
+        }
+      },
+    },
+    {
+      field: "Partners Accounts To Complete",
+      spanHeaderHeight: true,
+      aggFunc: "sum",
+      cellStyle: function (params) {
+        console.log("paarams", params);
+        if (params.value > "0") {
+          return { color: "#e47f00", fontWeight: "bold" };
+        } else if (params.value == 0) {
+          return { color: "#009530", fontWeight: "bold" };
+        } else {
+          return null;
+        }
+      },
+    },
+    {
+      field: "Accounts Rejected by Approvers",
+      spanHeaderHeight: true,
+      aggFunc: "sum",
+      cellStyle: function (params) {
+        console.log("paarams", params);
+        if (params.value > "0") {
+          return { color: "#b10043", fontWeight: "bold" };
+        } else if (params.value == 0) {
+          return { color: "#009530", fontWeight: "bold" };
+        } else {
+          return null;
+        }
+      },
+    },
+  ];
+
+  const defaultColDef = useMemo(() => {
+    return {
+      sortable: true,
+      filter: true,
+      resizable: true,
+      minWidth: 100,
+      flex: 1,
+    };
+  }, []);
+
+  const defaultExcelExportParams = useMemo(() => {
+    return {
+      headerName: "Country",
+      allColumns: true,
+      cellRendererParams: {
+        suppressCount: true,
+        innerRenderer: footerTotalReview,
+      },
+    };
+  }, []);
+
+  const getRowStyle = (params) => {
+    if (params.node.aggData) {
+      return { fontWeight: "bold" };
+    }
+  };
+
+  const onGridReady = useCallback((params) => {
+    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
+      .then((resp) => resp.json())
+      .then((data) => setRowData(data));
+  }, []);
+
+  return (
+    <>
+      <Container fluid>
+        <Row>
+          <MyMenu />
+        </Row>
+        <Row>
+          <div>
+            <Row className="mb-4" style={{ float: "right", marginTop: "10px" }}>
+              <Col xs="auto">
+                <Button
+                  className="btn-data save-header"
+                  onClick={() => {
+                    dataReviewNavigation();
+                  }}
+                >
+                  Data Review
+                </Button>
+              </Col>
+              <Col xs="auto">
+                <Button className="btn-data save-header">BU Split</Button>
+              </Col>
+              <Col xs="auto">
+                <Button
+                  className="btn-data save-header"
+                  onClick={() => {
+                    dataInputNavigation();
+                  }}
+                >
+                  Data Input
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  className="btn-data save-header"
+                  onClick={() => {
+                    partnerDataNavigation();
+                  }}
+                >
+                  Partner Data
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        </Row>
+        <Row>
+          <PerformanceOverview />
+        </Row>
+        <Row className="overview-container">
+          <div className="sell-out-home-header">Data Input Overview</div>
+          <Row
+            className="ag-theme-alpine ag-grid-table"
+            style={{ height: 300, width: 1000, marginTop: "10px" }}
+          >
+            <AgGridReact
+              ref={gridRef}
+              rowData={dataOverview}
+              columnDefs={columnDefs}
+              defaultColDef={defaultColDef}
+              autoGroupColumnDef={defaultExcelExportParams}
+              showOpenedGroup={false}
+              animateRows={true}
+              suppressAggFuncInHeader={true}
+              groupIncludeTotalFooter={false}
+              groupIncludeFooter={true}
+              groupDefaultExpanded={-1}
+              getRowStyle={getRowStyle}
+              onGridReady={onGridReady}
+            ></AgGridReact>
+          </Row>
+        </Row>
+        <Row className="bottom-container">
+          <Col className="window-container">
+            <div className="window-header">
+              Sell Out Data Input Window Is Open Till 16th May 18:00 UTC
+            </div>
+          </Col>
+          <Col>
+            <div className="window-header">
+              New Partner Creation request has been approved
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </>
+  );
 }
 
 export default connect(null, null)(Home);

@@ -66,15 +66,29 @@ function BatchInputComponent({ getData }) {
   };
 
   const readMeData = [
-    ["Read me Demo"],
+    ["How to use this template"],
     [
-          "1. In this we acn able to see Zone, Country, Partner, Modal level fields",
+      "1. Please verify the partner name, channel, Model and correct the values in case of any invalid data.",
     ],
-    [     "2. We ahve Estimated and Actual values of Months"],
-    [     "3. Example: Jan to Dec estimated and actual values"],
     [
-          "4. If the value is TRUE then its a estimated value otherwise its a actual value",
+      "2. If the value mentioned as True means it is estimated value. If nothing mentioned, by Default values treated as actuals. ",
     ],
+    [
+      "3. For each month, we have a flag field with suffix IsEstimated for each month (e.g Jan_IsEstimated) to indicate values as Actual or Estimate. ",
+    ],
+    [
+      "4. Zone, Country, Partner and Model fields are text fields. All alpha numeric characters are allowed (e.g A-Z, 1, 2, & % etc)",
+    ],
+    [
+      "5. Partner field should be unique for each record. It would be used as identifier for each record.",
+    ],
+    [
+      "6. Fill only the data from the previous 6 months to the current reporting month for the current academic year.",
+    ],
+    [
+      "7. All months field can have only numbers with precision of maximum 2 decimals allowed.",
+    ],
+    ["8. Please verify the values in each cell before the upload"],
   ];
 
   const exportToExcel = async (exportedData) => {
