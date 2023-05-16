@@ -11,7 +11,6 @@ import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
 import MyMenu from "../menu/menu.component.js";
 import CancelModal from "../modal/cancelModal";
-// import "ag-grid-community";
 import "ag-grid-enterprise";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
