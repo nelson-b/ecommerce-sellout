@@ -1,4 +1,83 @@
-.button-block {
-    min-width: 100%;
-    width: 100%;
+.input-container {
+    margin-right: 10px;
+}
+
+.sell-out-home-header {
+    letter-spacing: 0.32px;
+    color: #626469;
+    font-size: 26px;
+    font-weight: 500;
+    margin-top: 20px;
+}
+
+.overview-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.overview-header {
+    letter-spacing: 0.32px;
+    color: #626469;
+    font-weight: 500;
+    font-size: 24px;
+}
+
+.btn-data {
+    width: 180px;
+    height: 40px;
+    margin-top: 0px;
+}
+
+.card-header {
+    color: #000000;
+    font-weight: 500;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    margin-top: -7px;
+}
+
+.card-body-header {
+    color: #626469;
+    font-weight: 500;
+    font-size: 26px;
+    display: flex;
+    justify-content: center;
+}
+
+.task-header {
+    color: #626469;
+    font-weight: 400;
+    font-size: 14px;
+}
+.number-header {
+    color: #000000;
+    font-weight: 600;
+    font-size: 16px;
+    margin: 10px 10px 0px 10px;
+    justify-content: space-between;
+}
+
+.card-header {
+    background-color: white !important;
+    border-bottom: 0px !important;
+}
+
+.bottom-container {
+    background-color: #FFD100;
+    height: 40px;
+    margin-bottom: 20px;
+}
+.window-container {
+    border-right: 1px solid #707070;
+}
+.window-header {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    color: #000000;
+    font-size: 16px;
+    font-weight: 500;
 }

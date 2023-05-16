@@ -228,8 +228,8 @@ function DataReviewComponent({}) {
             hide: true,
           },
           {
-            headerName: "vat. CM vs LM (value)",
-            field: "vatVMvsLvalue",
+            headerName: "var. CM vs LM (value)",
+            field: "varVMvsLvalue",
             minWidth: 200,
             editable: true,
             singleClickEdit: true,
@@ -238,8 +238,8 @@ function DataReviewComponent({}) {
             sortable: true,
           },
           {
-            headerName: "vat. CM vs LM (%)",
-            field: "vatVMvsLM",
+            headerName: "var. CM vs LM (%)",
+            field: "varVMvsLM",
             minWidth: 170,
             editable: true,
             filter: "agNumberColumnFilter",
@@ -298,7 +298,7 @@ function DataReviewComponent({}) {
           hide: true,
         },
         {
-          headerName: "vat. CM vs LY (value)",
+          headerName: "var. CM vs LY (value)",
           field: "PreVMValue",
           minWidth: 200,
           editable: true,
@@ -308,7 +308,7 @@ function DataReviewComponent({}) {
           sortable: true,
         },
         {
-          headerName: "vat. CM vs CM vs LY (%)",
+          headerName: "var. CM vs CM vs LY (%)",
           field: "PreVMvsLM",
           minWidth: 200,
           editable: true,
@@ -440,8 +440,6 @@ function DataReviewComponent({}) {
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}
-            // groupDisplayType={'custom'}
-            // groupDisplayType={"singleColumn"}
             groupHideOpenParents={true}
             showOpenedGroup={true}
             animateRows={true}
