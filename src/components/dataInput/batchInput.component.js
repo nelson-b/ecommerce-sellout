@@ -3,7 +3,8 @@ import "./parentInput.component.css";
 import { get, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useMemo } from "react";
-import * as xlsx from "xlsx";
+// import * as xlsx from "xlsx";
+import * as xlsx from "xlsx-js-style";
 import FileSaver from "file-saver";
 import AlertModel from "../modal/alertModel";
 
@@ -217,6 +218,7 @@ function BatchInputComponent({ getData }) {
     });
 
     const currentDate = new Date();
+
     const workbook = xlsx.utils.book_new();
     const readmeDataWithoutHeader = readMeData.slice(0);
     const sheet1 = xlsx.utils.aoa_to_sheet(readmeDataWithoutHeader);
@@ -225,18 +227,140 @@ function BatchInputComponent({ getData }) {
     const sheet2 = xlsx.utils.json_to_sheet(tempData);
     xlsx.utils.book_append_sheet(workbook, sheet2, "Sell out Data Input");
     console.log('workbook', workbook);
-    
-    var i;
-    for (i = 1; i <= workbook.Sheets["Sell out Data Input"].length; i++) {
-      workbook.Sheets["Sell out Data Input"]["A"+i].s = {
-      fill: {
-        patternType: "solid",
-        bgColor: { rgb: "009E4D" }
-      }
-      };
-    }
+    console.log('workbook sheets["Sell out Data Input"]["A1"]', workbook.Sheets["Sell out Data Input"]["A1"]);
+    console.log('convert Object.keys(params.data): ',Object.keys(workbook.Sheets["Sell out Data Input"]));
 
-    xlsx.writeFile(workbook, "Sell out Data Input"+ currentDate.getFullYear()+".xlsx");
+    //style excel header with green bgcolor and white forecolor
+    workbook.Sheets["Sell out Data Input"]["A1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["B1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["C1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["D1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["E1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["F1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["G1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["H1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["I1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["J1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["K1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["L1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["M1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["N1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["O1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["P1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["Q1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["R1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["S1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["T1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["U1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["V1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["W1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["X1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["Y1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["Z1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["AA1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["AB1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["AC1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["AD1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["AE1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+    workbook.Sheets["Sell out Data Input"]["AF1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
+      font: { bold: true, color: { rgb: "FFFFFF" }}
+    };
+
+    xlsx.writeFile(workbook, "Sell out Data Input" + currentDate.getFullYear() + ".xlsx");
   };
 
   return (
