@@ -3,10 +3,10 @@ import "./parentInput.component.css";
 import { get, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useMemo } from "react";
-// import * as xlsx from "xlsx";
 import * as xlsx from "xlsx-js-style";
 import FileSaver from "file-saver";
 import AlertModel from "../modal/alertModel";
+import { month } from "../constant";
 
 function BatchInputComponent({ getData }) {
   const navigate = useNavigate();
@@ -21,11 +21,25 @@ function BatchInputComponent({ getData }) {
     reValidateMode: "onSubmit",
     reValidateMode: "onChange",
   });
+  
+  const initialState = {
+    fileData: ''
+  };
+  
+  const [formData, setFormData] = useState(initialState);
+
+  const onChangeHandler = (e) => {
+    console.log('e',e);
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+    console.log('formData',formData);
+  };
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [fileData, setFileData] = useState([]);
   const [fileError, setFileError] = useState([]);
+  const [showShouldUpdModal, setShowShouldUpdModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const handleShowSuccessModal = () => {
     setShowSuccessModal(true);
@@ -43,6 +57,14 @@ function BatchInputComponent({ getData }) {
     setShowErrorModal(false);
   };
 
+  const handleShowShouldUpdModal = () => {
+    setShowShouldUpdModal(true);
+  };
+
+  const handleCloseShouldUpdModal = () => {
+    setShowShouldUpdModal(false);
+  };
+
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
@@ -57,21 +79,64 @@ function BatchInputComponent({ getData }) {
     content: fileError
   }
 
-  const onSubmit = (data) => {
-    const file = data.file[0];
-    console.log("file", file);
+  const shouldUpdateMsg={
+    headerLabel: "Warning....",
+    variant: "warning",
+    header: 'Do you wish to update the existing data!!',
+    content: ['Your previous data would be lost if you update it with new data']
+  }
 
+  const ShouldUpdate = () =>{
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      const currentYear = String(currentDate.getFullYear()).slice(-2);
+
+      console.log('getData', getData);
+
+      for (let i = 7; i > 0; i--) 
+      {
+        let date = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth() - (i - 1), 
+          1
+        );
+        
+        const monthName = month[date.getMonth()];
+        const year = String(date.getFullYear()).slice(-2);
+        const monthField = monthName+'_Amount';
+
+        if (currentYear !== year && currentMonth !== 0) continue;
+
+        let data = getData.filter(item => item[monthField] != '');
+        console.log('data', data);
+
+        if(data.length > 0){
+          console.log('show data already exist popup');
+          setShowShouldUpdModal(true);
+          return;
+        }
+      }
+      postBatchData();
+  }
+
+  const postBatchData = () => {
+    console.log('selectedFile', selectedFile);
+    const file = selectedFile.fileData[0];
+    
     if (
       file.type !==
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     ) {
-      setError("file", {
+      setError("fileData", {
         type: "filetype",
         message: "Only Excel files are valid for upload.",
       });
       return;
     } else {
-      if (data.file) {
+      var res = ShouldUpdate();
+      res ? setShowShouldUpdModal(true):setShowShouldUpdModal(false);
+
+      if (formData.file) {
         let reader = new FileReader();
         reader.onload = (e) => {
           console.log("reader onload");
@@ -82,8 +147,9 @@ function BatchInputComponent({ getData }) {
           let json = xlsx.utils.sheet_to_json(worksheet);
           let errorJson = [];
           console.log("Reading excel: ", json);
+          
           setFileData(json);
-          fileData.forEach((i) => {
+            fileData.forEach((i) => {
               if(i.Jan){
                 if(isNaN(i.Jan)){
                   errorJson.push('There should be number for Jan month at partner : ' + i.Partner);
@@ -174,11 +240,15 @@ function BatchInputComponent({ getData }) {
           errorJson = [];
         };
 
-        reader.readAsArrayBuffer(data.file[0]);
+        reader.readAsArrayBuffer(formData.file[0]);
       }
       console.log("Reading excel useState: ", fileData);
       console.log('fileError',fileError);
     }
+  }
+
+  const onSubmit = (data) => {
+    ShouldUpdate(data);
   };
 
   const onError = (error) => {
@@ -376,17 +446,21 @@ function BatchInputComponent({ getData }) {
               <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
                 <Row>
                   <Col xs="auto">
-                    <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Group className="mb-3">
                       <Form.Control
                         type="file"
+                        id="fileData"
                         accept=".xlsx,.xls"
-                        {...register("file", {
+                        name="fileData"
+                        value={selectedFile}
+                        onChange={(e) => setSelectedFile(e.target.files[0])}
+                        {...register("fileData", {
                           required: "Excel file is required",
                         })}
                       />
-                      {errors.file && (
+                      {errors.fileData && (
                         <Form.Text className="text-danger">
-                          {errors.file.message}
+                          {errors.fileData.message}
                         </Form.Text>
                       )}
                     </Form.Group>
@@ -401,9 +475,17 @@ function BatchInputComponent({ getData }) {
                       body={ successmsg }
                     />
                     <AlertModel
-                      show={ showErrorModal }uu
+                      show={ showErrorModal }
                       handleClose={ handleCloseErrorModal }
                       body={ errormsg }
+                    />
+                    <AlertModel
+                      show={ showShouldUpdModal }
+                      handleClose={ handleCloseShouldUpdModal }
+                      body={ shouldUpdateMsg }
+                      handleConfirm={ postBatchData }
+                      button1Label = {'Confirm'}
+                      button2Label = {'Cancel'}
                     />
                   </Col>
                 </Row>

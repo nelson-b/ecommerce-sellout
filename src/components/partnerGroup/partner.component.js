@@ -25,6 +25,7 @@ function PartnerComponent(props) {
     electricEntity: "",
     reseller_seller: "",
     activation_date: "",
+    business_type:"",
     partner_acc_name: "",
     model_type: "",
     url_address_partner: "",
@@ -34,7 +35,8 @@ function PartnerComponent(props) {
     playbook_type: "",
     bopp_type: "",
     gtm_type: "",
-    deactivation_date:""
+    deactivation_date:"",
+    deactivation_reason:""
   };
 
   const {
@@ -51,6 +53,7 @@ function PartnerComponent(props) {
   const [formData, setFormData] = useState(initialState);
 
   const onSubmit = (data) => {
+    console.log('formData', formData);
     console.log("form data", data);
   };
 
@@ -62,8 +65,7 @@ function PartnerComponent(props) {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const createPartnerHandler = () => {
-    console.log(formData);
+  const createPartnerHandler = () => {    
     setFormData(initialState);
   };
 
@@ -94,7 +96,12 @@ function PartnerComponent(props) {
         </Breadcrumb>
       </Row>
       <Row>
-        <h5 className="create-partner-header">Create New Partner</h5>
+      {props.isCreatedModule && (
+        <h5 className="partner-header">Create New Partner</h5>
+      )}
+      {!props.isCreatedModule && (
+        <h5 className="partner-header">Update Partner</h5>
+      )}
         <Container fluid>
           <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
             <Row>
@@ -245,18 +252,39 @@ function PartnerComponent(props) {
                       <Form.Label size="sm" htmlFor="partner_acc_name">
                         Partner Account Name
                       </Form.Label>
+                      &nbsp;
+                      <OverlayTrigger
+                        placement="right"
+                        overlay={tooltip(
+                          "Partner name + 3 letters for country"
+                        )}
+                      >
+                        <span>
+                          <BiHelpCircle />
+                        </span>
+                      </OverlayTrigger>
                       <Form.Control
                         size="sm"
                         id="partner_acc_name"
                         name="partner_acc_name"
                         type="text"
-                        disabled
-                        ></Form.Control>
+                        disabled>
+                      </Form.Control>
                     </Col>
                     <Col>
                       <Form.Label size="sm" htmlFor="activation_date">
                         Activation Date
                       </Form.Label>
+                      &nbsp;
+                      <OverlayTrigger
+                        placement="right"
+                        overlay={tooltip(
+                          "dd-mm-yyyy"
+                        )}>
+                        <span>
+                          <BiHelpCircle />
+                        </span>
+                      </OverlayTrigger>
                       <Form.Control
                         size="sm"
                         id="activation_date"
@@ -265,8 +293,7 @@ function PartnerComponent(props) {
                         type="date"
                         {...register("activation_date", {
                           required: "Activation Date is required",
-                        })}
-                        
+                        })}                        
                       />
                       {errors.activation_date && (
                         <Form.Text className="text-danger">
@@ -282,7 +309,7 @@ function PartnerComponent(props) {
                         size="sm"
                         id="business_type"
                         name="business_type"
-                        //onChange={(e) => onChangeHandler(e)}
+                        // onChange={(e) => onChangeHandler(e)}
                         {...register("business_type", {
                           required: "Business Type is required",
                         })}>
@@ -327,6 +354,16 @@ function PartnerComponent(props) {
                       <Form.Label size="sm" htmlFor="url_address_partner">
                         URL Address of Partner
                       </Form.Label>
+                      &nbsp;
+                      <OverlayTrigger
+                        placement="right"
+                        overlay={tooltip(
+                          "Enter valid Partner URL"
+                        )}>
+                        <span>
+                          <BiHelpCircle />
+                        </span>
+                      </OverlayTrigger>
                       <Form.Control
                         size="sm"
                         id="url_address_partner"
@@ -334,6 +371,10 @@ function PartnerComponent(props) {
                         type="url"
                         {...register("url_address_partner", {
                           required: "URL Address of Partner is required",
+                          pattern: {
+                            value: "(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?",
+                            message: 'URL format incorrect'
+                          }
                         })}
                       />
                       {errors.url_address_partner && (
@@ -392,6 +433,16 @@ function PartnerComponent(props) {
                       <Form.Label size="sm" htmlFor="partnerSellOutMargin">
                         Partner Sellout Margin (%)
                       </Form.Label>
+                      &nbsp;
+                      <OverlayTrigger
+                        placement="right"
+                        overlay={tooltip(
+                          "% with 2 decimals"
+                        )}>
+                        <span>
+                          <BiHelpCircle />
+                        </span>
+                      </OverlayTrigger>
                       <Form.Control
                         size="sm"
                         id="partnerSellOutMargin"
@@ -400,7 +451,6 @@ function PartnerComponent(props) {
                         {...register("partnerSellOutMargin", {
                           required: "Partner Sellout Margin is required",
                         })}
-                        
                       />
                       {errors.partnerSellOutMargin && (
                         <Form.Text className="text-danger">
@@ -489,6 +539,16 @@ function PartnerComponent(props) {
                       <Form.Label size="sm" htmlFor="deactivation_date">
                         Deactivation Date
                       </Form.Label>
+                      &nbsp;
+                      <OverlayTrigger
+                        placement="right"
+                        overlay={tooltip(
+                          "dd-mm-yyyy"
+                        )}>
+                        <span>
+                          <BiHelpCircle />
+                        </span>
+                      </OverlayTrigger>
                       <Form.Control
                         size="sm"
                         id="deactivation_date"
@@ -504,7 +564,31 @@ function PartnerComponent(props) {
                           {errors.deactivation_date.message}
                         </Form.Text>
                       )}
-                    </Col>
+                    </Col>                    
+                    )}
+                    {!props.isCreatedModule &&(
+                      <Col>
+                        <Form.Label size="sm" htmlFor="deactivation_reason">
+                          Deactivation reason
+                        </Form.Label>
+                        <Form.Select
+                          size="sm"
+                          className="field-Prop"
+                          id="deactivation_reason"
+                          name="deactivation_reason"
+                          {...register("deactivation_reason", {
+                            required: "GTM Type is required",
+                          })}>
+                            <option value="">N/A</option>
+                            <option>Partner not working with SE anymore</option>
+                            <option>Acquired by/ integrated in one of our other partners</option>
+                        </Form.Select>
+                        {errors.deactivation_reason && (
+                        <Form.Text className="text-danger">
+                          {errors.deactivation_reason.message}
+                        </Form.Text>
+                        )}
+                      </Col>
                     )}
                   </Row>
                 </Form.Group>
