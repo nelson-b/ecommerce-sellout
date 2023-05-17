@@ -34,6 +34,7 @@ function PartnerComponent(props) {
     playbook_type: "",
     bopp_type: "",
     gtm_type: "",
+    deactivation_date:""
   };
 
   const {
@@ -80,11 +81,12 @@ function PartnerComponent(props) {
             Home
           </Breadcrumb.Item>
           <span> &nbsp;{">"}</span>
-          {props.isCreatedModule ? (
+          {props.isCreatedModule && (
             <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
               &nbsp;Create Partner
             </Breadcrumb.Item>
-          ) : (
+          )}
+          {!props.isCreatedModule && (
             <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
               &nbsp;Update Partner
             </Breadcrumb.Item>
@@ -124,9 +126,9 @@ function PartnerComponent(props) {
                           required: "Platform name is required",
                         })}
                       />
-                      {errors.partner_name && (
+                      {errors.platform_name && (
                         <Form.Text className="text-danger">
-                          {errors.partner_name.message}
+                          {errors.platform_name.message}
                         </Form.Text>
                       )}
                     </Col>
@@ -142,7 +144,7 @@ function PartnerComponent(props) {
                           required: "Country is required",
                         })}
                       >
-                        <option></option>
+                        <option value="">N/A</option>
                         <option value={"India"}>India</option>
                         <option value={"USA"}>USA</option>
                         <option value={"France"}>France</option>
@@ -167,7 +169,7 @@ function PartnerComponent(props) {
                           required: "Partner group is required",
                         })}
                       >
-                        <option></option>
+                        <option value="">N/A</option>
                         <option>Partner 1</option>
                         <option>Partner 2</option>
                         <option>Partner 3</option>
@@ -190,7 +192,7 @@ function PartnerComponent(props) {
                           required: "Schneider Electric Entity is required",
                         })}
                       >
-                        <option></option>
+                        <option value="">N/A</option>
                         <option>Entity 1</option>
                         <option>Entity 2</option>
                         <option>Entity 3</option>
@@ -210,11 +212,9 @@ function PartnerComponent(props) {
                         id="reseller_seller"
                         name="reseller_seller"
                         {...register("reseller_seller", {
-                          required: "Marketplace Seller is required",
-                        })}
-                        
-                      >
-                        <option></option>
+                          required: "Reseller Name is required",
+                        })}>
+                        <option value="">N/A</option>
                         <option>Seller 1</option>
                         <option>Seller 2</option>
                         <option>Seller 3</option>
@@ -285,9 +285,8 @@ function PartnerComponent(props) {
                         //onChange={(e) => onChangeHandler(e)}
                         {...register("business_type", {
                           required: "Business Type is required",
-                        })}
-                      >
-                        <option></option>
+                        })}>
+                        <option value="">N/A</option>
                         <option>Electrical</option>
                         <option>Solar</option>
                       </Form.Select>
@@ -305,12 +304,11 @@ function PartnerComponent(props) {
                         size="sm"
                         id="model_type"
                         name="model_type"
-                        
                         {...register("model_type", {
                           required: "Model Type is required",
                         })}
                       >
-                        <option></option>
+                        <option value="">N/A</option>
                         <option>E1 - Dist</option>
                         <option>E2</option>
                         <option>E3</option>
@@ -357,7 +355,7 @@ function PartnerComponent(props) {
                         })}
                         
                       >
-                        <option></option>
+                        <option value="">N/A</option>
                         <option>AUD</option>
                         <option>INR</option>
                         <option>USD</option>
@@ -379,9 +377,8 @@ function PartnerComponent(props) {
                         {...register("data_collection_type", {
                           required: "Data Collection Type is required",
                         })}
-                        
                       >
-                        <option></option>
+                        <option value="">N/A</option>
                         <option>Actual Sellout</option>
                         <option>Estimated Sellout</option>
                       </Form.Select>
@@ -424,7 +421,7 @@ function PartnerComponent(props) {
                         })}
                         
                       >
-                        <option></option>
+                        <option value="">N/A</option>
                         <option value={"type1"}>Type 1</option>
                         <option value={"type2"}>Type 2</option>
                         <option value={"type3"}>Type 3</option>
@@ -438,7 +435,7 @@ function PartnerComponent(props) {
                   </Row>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                    <Row className="justify-content-left partnerRow">
+                    <Row className={(props.isCreatedModule?"partnerRowCreate": "partnerRowUpdate")}>
                     <Col>
                         <Form.Label size="sm" htmlFor="bopp_type">
                           Bopp Type
@@ -452,7 +449,7 @@ function PartnerComponent(props) {
                             required: "Bopp Type is required",
                           })}                        
                         >
-                          <option></option>
+                          <option value="">N/A</option>
                           <option value={"Adopter"}>Adopter</option>
                           <option value={"Leader"}>Leader</option>
                           <option value={"Novice"}>Novice</option>
@@ -477,7 +474,7 @@ function PartnerComponent(props) {
                             required: "GTM Type is required",
                           })}
                         >
-                          <option></option>
+                          <option value="">N/A</option>
                           <option>Direct</option>
                           <option>Indirect</option>
                         </Form.Select>
@@ -487,6 +484,28 @@ function PartnerComponent(props) {
                           </Form.Text>
                         )}
                     </Col>
+                    {!props.isCreatedModule &&(
+                    <Col>
+                      <Form.Label size="sm" htmlFor="deactivation_date">
+                        Deactivation Date
+                      </Form.Label>
+                      <Form.Control
+                        size="sm"
+                        id="deactivation_date"
+                        name="deactivation_date"
+                        className="field-Prop"
+                        type="date"
+                        {...register("deactivation_date", {
+                          required: "Deactivation Date is required",
+                        })}                        
+                      />
+                      {errors.deactivation_date && (
+                        <Form.Text className="text-danger">
+                          {errors.deactivation_date.message}
+                        </Form.Text>
+                      )}
+                    </Col>
+                    )}
                   </Row>
                 </Form.Group>
               </Card>
