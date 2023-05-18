@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { createSellOutData } from "../../actions/selloutaction";
 import {
@@ -42,7 +42,6 @@ function PartnerComponent(props) {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm({
     mode: "onTouched",
@@ -50,23 +49,12 @@ function PartnerComponent(props) {
     reValidateMode: "onChange",
   });
 
-  const [formData, setFormData] = useState(initialState);
-
   const onSubmit = (data) => {
-    console.log('formData', formData);
     console.log("form data", data);
   };
 
   const onError = (error) => {
     console.log("ERROR:::", error);
-  };
-
-  const onChangeHandler = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
-
-  const createPartnerHandler = () => {    
-    setFormData(initialState);
   };
 
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
@@ -309,7 +297,6 @@ function PartnerComponent(props) {
                         size="sm"
                         id="business_type"
                         name="business_type"
-                        // onChange={(e) => onChangeHandler(e)}
                         {...register("business_type", {
                           required: "Business Type is required",
                         })}>
@@ -372,7 +359,7 @@ function PartnerComponent(props) {
                         {...register("url_address_partner", {
                           required: "URL Address of Partner is required",
                           pattern: {
-                            value: "(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?",
+                            value: /^((https?|ftp|smtp|http):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/i,
                             message: 'URL format incorrect'
                           }
                         })}
