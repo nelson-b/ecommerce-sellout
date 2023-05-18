@@ -281,7 +281,9 @@ function DataInputComponent() {
 
   //fn set is estimated
   const fnSetIsEstimated = (params, monthField) => {
-    let monthYrKey = monthField + "_Estimated";
+    console.log('params', params);
+    console.log('monthField', monthField);
+    let monthYrKey = monthField.replace('_Amount','') + "_Estimated";
     var filterMonths = Object.keys(params.data)
       .filter((key) => [monthYrKey].includes(key))
       .reduce((obj, key) => {
@@ -379,9 +381,9 @@ function DataInputComponent() {
   const toggleActualEstimate = useCallback((isEstimate) => {
     const selectedCells = gridRef.current.api.getCellRanges();
     const itemsToUpdate = [];
-    selectedCells.forEach((currRow, currIndex) => {
+    selectedCells.forEach((currRow) => {
       //row level loop
-      currRow.columns.forEach((currCol, currIndex) => {
+      currRow.columns.forEach((currCol) => {
         //col level loop
         for (
           let i = currRow.startRow.rowIndex;
@@ -398,53 +400,53 @@ function DataInputComponent() {
 
               if (monthField != undefined) {
                 switch (monthField) {
-                  case "Jan":
+                  case "Jan_Amount":
                     console.log("Jan");
                     data.Jan_Estimated = isEstimate;
                     console.log(data.Jan_Estimated);
                     break;
-                  case "Feb":
+                  case "Feb_Amount":
                     console.log("Feb");
                     data.Feb_Estimated = isEstimate;
                     console.log(data.Feb_Estimated);
                     break;
-                  case "Mar":
+                  case "Mar_Amount":
                     console.log("Mar");
                     data.Mar_Estimated = isEstimate;
                     break;
-                  case "Apr":
+                  case "Apr_Amount":
                     console.log("Apr");
                     data.Apr_Estimated = isEstimate;
                     break;
-                  case "May":
+                  case "May_Amount":
                     console.log("May");
                     data.May_Estimated = isEstimate;
                     break;
-                  case "Jun":
+                  case "Jun_Amount":
                     console.log("Jun");
                     data.Jun_Estimated = isEstimate;
                     break;
-                  case "Jul":
+                  case "Jul_Amount":
                     console.log("Jul");
                     data.Jul_Estimated = isEstimate;
                     break;
-                  case "Aug":
+                  case "Aug_Amount":
                     console.log("Aug");
                     data.Aug_Estimated = isEstimate;
                     break;
-                  case "Sep":
+                  case "Sep_Amount":
                     console.log("Sep");
                     data.Sep_Estimated = isEstimate;
                     break;
-                  case "Oct":
+                  case "Oct_Amount":
                     console.log("Oct");
                     data.Oct_Estimated = isEstimate;
                     break;
-                  case "Oct":
+                  case "Oct_Amount":
                     console.log("Oct");
                     data.Nov_Estimated = isEstimate;
                     break;
-                  case "Dec":
+                  case "Dec_Amount":
                     console.log("Dec");
                     data.Dec_Estimated = isEstimate;
                     break;
