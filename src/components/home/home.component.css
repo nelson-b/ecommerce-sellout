@@ -25,9 +25,20 @@
 }
 
 .btn-data {
-    width: 180px;
+    width: 160px;
     height: 40px;
     margin-top: 0px;
+}
+
+.btn-split {
+    width: 120px;
+    height: 40px;
+    margin-top: 0px;
+}
+
+.btn-approve {
+    width: 230px;
+    height: 40px;
 }
 
 .card-header {

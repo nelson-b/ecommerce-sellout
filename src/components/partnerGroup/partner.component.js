@@ -12,12 +12,18 @@ import {
   Tooltip,
   OverlayTrigger,
 } from "react-bootstrap";
+import { useLocation } from 'react-router-dom';
 import MyMenu from "../menu/menu.component.js";
 import { BiHome, BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
+import Home from "../../images/home-icon.png";
+import partnerData from "../../data/partnerList.json";
 import "./partner.component.css";
 
 function PartnerComponent(props) {
+  const location = useLocation();
+  const id = new URLSearchParams(location.search).get('id');
+
   const initialState = {
     platform_name: "",
     country: "",
@@ -48,6 +54,7 @@ function PartnerComponent(props) {
   });
 
   const [formData, setFormData] = useState(initialState);
+  const data = partnerData.find((e)=> e.partnerID === id);
 
   const onSubmit = (data) => {
     console.log("form data", data);
@@ -75,9 +82,12 @@ function PartnerComponent(props) {
       </Row>
       <Row>
         <Breadcrumb>
-          <Breadcrumb.Item href="/" style={{ fontWeight: "bold" }}>
-            <BiHome />
-            Home
+          <Breadcrumb.Item href="/">
+            <img
+              src={Home}
+              alt="home"
+              style={{ height: "20px", width: "80px", cursor: "pointer" }}
+            />
           </Breadcrumb.Item>
           <span> &nbsp;{">"}</span>
           {props.isCreatedModule ? (
@@ -120,6 +130,7 @@ function PartnerComponent(props) {
                         name="platform_name"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.partnerID}
                         {...register("platform_name", {
                           required: "Platform name is required",
                         })}
@@ -212,7 +223,6 @@ function PartnerComponent(props) {
                         {...register("reseller_seller", {
                           required: "Marketplace Seller is required",
                         })}
-                        
                       >
                         <option></option>
                         <option>Seller 1</option>
@@ -239,6 +249,7 @@ function PartnerComponent(props) {
                         name="partner_id"
                         disabled
                         type="text"
+                        value={data?.partnerID}
                       />
                     </Col>
                     <Col>
@@ -251,7 +262,7 @@ function PartnerComponent(props) {
                         name="partner_acc_name"
                         type="text"
                         disabled
-                        ></Form.Control>
+                      ></Form.Control>
                     </Col>
                     <Col>
                       <Form.Label size="sm" htmlFor="activation_date">
@@ -266,7 +277,6 @@ function PartnerComponent(props) {
                         {...register("activation_date", {
                           required: "Activation Date is required",
                         })}
-                        
                       />
                       {errors.activation_date && (
                         <Form.Text className="text-danger">
@@ -305,7 +315,6 @@ function PartnerComponent(props) {
                         size="sm"
                         id="model_type"
                         name="model_type"
-                        
                         {...register("model_type", {
                           required: "Model Type is required",
                         })}
@@ -325,7 +334,7 @@ function PartnerComponent(props) {
                 </Form.Group>
                 <Form.Group className="mb-4">
                   <Row>
-                  <Col>
+                    <Col>
                       <Form.Label size="sm" htmlFor="url_address_partner">
                         URL Address of Partner
                       </Form.Label>
@@ -334,6 +343,7 @@ function PartnerComponent(props) {
                         id="url_address_partner"
                         name="url_address_partner"
                         type="url"
+                        value={data?.partnerURL}
                         {...register("url_address_partner", {
                           required: "URL Address of Partner is required",
                         })}
@@ -355,7 +365,6 @@ function PartnerComponent(props) {
                         {...register("currency", {
                           required: "Currency of Sellout Reporting is required",
                         })}
-                        
                       >
                         <option></option>
                         <option>AUD</option>
@@ -379,7 +388,6 @@ function PartnerComponent(props) {
                         {...register("data_collection_type", {
                           required: "Data Collection Type is required",
                         })}
-                        
                       >
                         <option></option>
                         <option>Actual Sellout</option>
@@ -403,7 +411,6 @@ function PartnerComponent(props) {
                         {...register("partnerSellOutMargin", {
                           required: "Partner Sellout Margin is required",
                         })}
-                        
                       />
                       {errors.partnerSellOutMargin && (
                         <Form.Text className="text-danger">
@@ -422,7 +429,6 @@ function PartnerComponent(props) {
                         {...register("playbook_type", {
                           required: "E2 Playbook Type is required",
                         })}
-                        
                       >
                         <option></option>
                         <option value={"type1"}>Type 1</option>
@@ -438,54 +444,54 @@ function PartnerComponent(props) {
                   </Row>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                    <Row className="justify-content-left partnerRow">
+                  <Row className="justify-content-left partnerRow">
                     <Col>
-                        <Form.Label size="sm" htmlFor="bopp_type">
-                          Bopp Type
-                        </Form.Label>
-                        <Form.Select
-                          size="sm"
-                          id="bopp_type"
-                          className="field-Prop"
-                          name="bopp_type"
-                          {...register("bopp_type", {
-                            required: "Bopp Type is required",
-                          })}                        
-                        >
-                          <option></option>
-                          <option value={"Adopter"}>Adopter</option>
-                          <option value={"Leader"}>Leader</option>
-                          <option value={"Novice"}>Novice</option>
-                          <option value={"Rising Stars"}>Rising Stars</option>
-                        </Form.Select>
-                        {errors.bopp_type && (
-                          <Form.Text className="text-danger">
-                            {errors.bopp_type.message}
-                          </Form.Text>
-                        )}
+                      <Form.Label size="sm" htmlFor="bopp_type">
+                        Bopp Type
+                      </Form.Label>
+                      <Form.Select
+                        size="sm"
+                        id="bopp_type"
+                        className="field-Prop"
+                        name="bopp_type"
+                        {...register("bopp_type", {
+                          required: "Bopp Type is required",
+                        })}
+                      >
+                        <option></option>
+                        <option value={"Adopter"}>Adopter</option>
+                        <option value={"Leader"}>Leader</option>
+                        <option value={"Novice"}>Novice</option>
+                        <option value={"Rising Stars"}>Rising Stars</option>
+                      </Form.Select>
+                      {errors.bopp_type && (
+                        <Form.Text className="text-danger">
+                          {errors.bopp_type.message}
+                        </Form.Text>
+                      )}
                     </Col>
                     <Col>
-                        <Form.Label size="sm" htmlFor="gtm_type">
-                          GTM Type
-                        </Form.Label>
-                        <Form.Select
-                          size="sm"
-                          className="field-Prop"
-                          id="gtm_type"
-                          name="gtm_type"
-                          {...register("gtm_type", {
-                            required: "GTM Type is required",
-                          })}
-                        >
-                          <option></option>
-                          <option>Direct</option>
-                          <option>Indirect</option>
-                        </Form.Select>
-                        {errors.gtm_type && (
-                          <Form.Text className="text-danger">
-                            {errors.gtm_type.message}
-                          </Form.Text>
-                        )}
+                      <Form.Label size="sm" htmlFor="gtm_type">
+                        GTM Type
+                      </Form.Label>
+                      <Form.Select
+                        size="sm"
+                        className="field-Prop"
+                        id="gtm_type"
+                        name="gtm_type"
+                        {...register("gtm_type", {
+                          required: "GTM Type is required",
+                        })}
+                      >
+                        <option></option>
+                        <option>Direct</option>
+                        <option>Indirect</option>
+                      </Form.Select>
+                      {errors.gtm_type && (
+                        <Form.Text className="text-danger">
+                          {errors.gtm_type.message}
+                        </Form.Text>
+                      )}
                     </Col>
                   </Row>
                 </Form.Group>
@@ -506,6 +512,7 @@ function PartnerComponent(props) {
                         name="editor"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.editor}
                       />
                     </Col>
                     <Col>
@@ -519,6 +526,7 @@ function PartnerComponent(props) {
                         name="editor"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.backup}
                       />
                     </Col>
                     <Col>
@@ -531,6 +539,7 @@ function PartnerComponent(props) {
                         name="approver1"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.Approver1}
                       />
                     </Col>
                     <Col>
@@ -543,6 +552,7 @@ function PartnerComponent(props) {
                         name="approver2"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.Approver2}
                       />
                     </Col>
                   </Row>
