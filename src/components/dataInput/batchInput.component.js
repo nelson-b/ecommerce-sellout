@@ -1,4 +1,4 @@
-import { Form, Row, Col, Button, Container } from "react-bootstrap";
+import { Form, FormControl, Row, Col, Button, Container } from "react-bootstrap";
 import "./parentInput.component.css";
 import { get, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -22,16 +22,28 @@ function BatchInputComponent({ getData }) {
     reValidateMode: "onChange",
   });
   
-  const initialState = {
-    fileData: ''
+  // const initialState = {
+  //   fileData: ''
+  // };
+  
+  // const [formData, setFormData] = useState(initialState);
+
+  // const onChangeHandler = (e) => {
+  //   console.log('e',e);
+  //   setFormData({ ...formData, [e.target.id]: e.target.value });
+  //   console.log('formData',formData);
+  // };
+
+  const handleChange=({target})=> {
+    console.log('target', target);
+    setSelectedFile(target);
+    // target.value = ''
   };
   
-  const [formData, setFormData] = useState(initialState);
-
-  const onChangeHandler = (e) => {
-    console.log('e',e);
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-    console.log('formData',formData);
+  const handleClick = event => {
+    console.log('event', event);
+    // const { target = {} } = event || {};
+    setSelectedFile(event.target.files);
   };
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -91,8 +103,6 @@ function BatchInputComponent({ getData }) {
       const currentMonth = currentDate.getMonth();
       const currentYear = String(currentDate.getFullYear()).slice(-2);
 
-      console.log('getData', getData);
-
       for (let i = 7; i > 0; i--) 
       {
         let date = new Date(
@@ -121,7 +131,7 @@ function BatchInputComponent({ getData }) {
 
   const postBatchData = () => {
     console.log('selectedFile', selectedFile);
-    const file = selectedFile.fileData[0];
+    const file = selectedFile.file[0];
     
     if (
       file.type !==
@@ -136,7 +146,7 @@ function BatchInputComponent({ getData }) {
       var res = ShouldUpdate();
       res ? setShowShouldUpdModal(true):setShowShouldUpdModal(false);
 
-      if (formData.file) {
+      if (selectedFile.file) {
         let reader = new FileReader();
         reader.onload = (e) => {
           console.log("reader onload");
@@ -240,15 +250,16 @@ function BatchInputComponent({ getData }) {
           errorJson = [];
         };
 
-        reader.readAsArrayBuffer(formData.file[0]);
+        reader.readAsArrayBuffer(selectedFile.file[0]);
       }
       console.log("Reading excel useState: ", fileData);
       console.log('fileError',fileError);
     }
   }
 
-  const onSubmit = (data) => {
-    ShouldUpdate(data);
+  const onSubmit = (frmData) => {
+    setSelectedFile(frmData);
+    ShouldUpdate();
   };
 
   const onError = (error) => {
@@ -449,18 +460,17 @@ function BatchInputComponent({ getData }) {
                     <Form.Group className="mb-3">
                       <Form.Control
                         type="file"
-                        id="fileData"
                         accept=".xlsx,.xls"
-                        name="fileData"
-                        value={selectedFile}
-                        onChange={(e) => setSelectedFile(e.target.files[0])}
-                        {...register("fileData", {
+                        // value={selectedFile}
+                        onClick={handleClick}
+                        onChange={handleChange}
+                        {...register("file", {
                           required: "Excel file is required",
                         })}
                       />
-                      {errors.fileData && (
+                      {errors.file && (
                         <Form.Text className="text-danger">
-                          {errors.fileData.message}
+                          {errors.file.message}
                         </Form.Text>
                       )}
                     </Form.Group>
@@ -495,8 +505,7 @@ function BatchInputComponent({ getData }) {
               <Button
                 size="lg"
                 className="edit-header"
-                onClick={(e) => exportToExcel(getData)}
-              >
+                onClick={(e) => exportToExcel(getData)}>
                 Download Template
               </Button>
             </Col>
