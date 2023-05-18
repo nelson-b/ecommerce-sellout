@@ -369,7 +369,7 @@ function DataReviewApprover({}) {
                   className="btn-upload edit-header"
                   onClick={(e) => handleConfirm()}
                 >
-                  Svae
+                  Save
                 </Button>
               </Col>
               <Col>
