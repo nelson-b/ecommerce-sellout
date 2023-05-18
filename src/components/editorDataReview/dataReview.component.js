@@ -35,14 +35,6 @@ function DataReviewComponent({}) {
   const [radioValue, setRadioValue] = useState("1");
   const [showModal, setShowModal] = useState(false);
 
-  const handleShowModal = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
   const radios = [
     { name: "Reporting Currency", value: "1" },
     { name: "Euro", value: "2" },
@@ -60,7 +52,7 @@ function DataReviewComponent({}) {
       filter: true,
       sortable: true,
       pinned: "left",
-      width: 100,
+      width: 150,
       suppressSizeToFit: true,
     },
     {
@@ -91,7 +83,7 @@ function DataReviewComponent({}) {
       sortable: true,
       filter: true,
       pinned: "left",
-      width: 120,
+      width: 140,
       suppressSizeToFit: true,
       editable: false,
     },
@@ -108,7 +100,7 @@ function DataReviewComponent({}) {
             {Status === "Active" && (
               <img src={active} alt="active" style={{ width: "80px" }} />
             )}
-            {Status === "Close" && (
+            {Status === "Closed" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )}
           </div>
@@ -119,6 +111,9 @@ function DataReviewComponent({}) {
 
   const defaultColDef = useMemo(() => {
     return {
+      // initialWidth: 200,
+      wrapHeaderText: true,
+      autoHeaderHeight: true,
       cellClassRules: {
         greenBackground: (params) => {
           return params.node.footer;
@@ -135,7 +130,6 @@ function DataReviewComponent({}) {
 
   const autoGroupColumnDef = useMemo(() => {
     return {
-      // headerName: "Filter Criteria Zone",
       width: 160,
       filterValueGetter: (params) => {
         if (params.node) {
@@ -147,7 +141,6 @@ function DataReviewComponent({}) {
       cellRenderer: "agGroupCellRenderer",
       cellRendererParams: {
         suppressCount: true,
-        checkbox: true,
         innerRenderer: footerTotalReview,
       },
     };
@@ -192,33 +185,18 @@ function DataReviewComponent({}) {
     const monthWithYearValue = monthName + year;
     const monthAndYearAEFlagField = monthName + year + "_E";
 
-    // to make sure user entered number only
-    const checkNumericValue = (params) => {
-      const newValInt = Number(params.newValue.toFixed(2));
-      const valueChanged = params.data[monthWithYearValue] !== newValInt;
-      if (valueChanged) {
-        params.data[monthWithYearValue] =
-          newValInt >= 0
-            ? newValInt
-            : params.oldValue !== undefined
-            ? params.oldValue
-            : "";
-      }
-      return valueChanged;
-    };
     if (currentYear !== year && currentMonth !== 0) continue;
     i == 1
       ? columnDefs.push(
           {
             headerName: monthWithYearLabel,
             field: monthWithYearValue,
-            editable: true,
+            editable: false,
             singleClickEdit: true,
             minWidth: 100,
             aggFunc: "sum",
             sortable: true,
             valueParser: (params) => Number(params.newValue),
-            valueSetter: checkNumericValue,
             cellStyle: (params) => {
               return setIsEstimated(params, monthWithYearValue);
             },
@@ -230,35 +208,48 @@ function DataReviewComponent({}) {
           {
             headerName: "var. CM vs LM (value)",
             field: "varVMvsLvalue",
-            minWidth: 200,
-            editable: true,
+            minWidth: 120,
+            editable: false,
             singleClickEdit: true,
-            aggFunc: "sum",
             filter: "agNumberColumnFilter",
             sortable: true,
+            // valueGetter: calculateDifference,
+            aggFunc: "sum",
+            cellStyle: function (params) {
+              if (params.value < 0 || params.value > 0 || params.value == 0) {
+                return { color: "#009530", fontWeight: "bold" };
+              }
+            },
           },
           {
             headerName: "var. CM vs LM (%)",
             field: "varVMvsLM",
-            minWidth: 170,
-            editable: true,
+            minWidth: 120,
+            editable: false,
             filter: "agNumberColumnFilter",
             sortable: true,
             aggFunc: "sum",
             singleClickEdit: true,
+            valueFormatter: (params) => {
+              return params.value + "%";
+            },
+            cellStyle: function (params) {
+                if (params.value < 0  || params.value > 0  || params.value == 0) {
+                return { color: "#009530", fontWeight: "bold" };
+              }
+            },
           }
         )
       : columnDefs.push({
           headerName: monthWithYearLabel,
           field: monthWithYearValue,
-          editable: true,
+          editable: false,
           sortable: true,
           filter: "agNumberColumnFilter",
           aggFunc: "sum",
           singleClickEdit: true,
           minWidth: 100,
           valueParser: (params) => Number(params.newValue),
-          valueSetter: checkNumericValue,
           cellStyle: (params) => {
             return setIsEstimated(params, monthWithYearValue);
           },
@@ -271,6 +262,7 @@ function DataReviewComponent({}) {
     1
   );
   const prevMonth = month[previousYear.getMonth()];
+  console.log("prevMonth", prevMonth);
   const prevYear = String(previousYear.getFullYear()).slice(-2);
 
   const prevYearwithMonthValue = prevMonth + prevYear;
@@ -283,7 +275,7 @@ function DataReviewComponent({}) {
         {
           headerName: prevYearwithMonthLabel,
           field: prevYearwithMonthValue,
-          editable: true,
+          editable: false,
           singleClickEdit: true,
           minWidth: 100,
           aggFunc: "sum",
@@ -300,28 +292,41 @@ function DataReviewComponent({}) {
         {
           headerName: "var. CM vs LY (value)",
           field: "PreVMValue",
-          minWidth: 200,
-          editable: true,
+          minWidth: 120,
+          editable: false,
           singleClickEdit: true,
           aggFunc: "sum",
           filter: "agNumberColumnFilter",
           sortable: true,
+          cellStyle: function (params) {
+            if (params.value < 0 || params.value > 0 || params.value == 0) {
+              return { color: "#b10043", fontWeight: "bold" };
+            }
+          },
         },
         {
           headerName: "var. CM vs CM vs LY (%)",
           field: "PreVMvsLM",
-          minWidth: 200,
-          editable: true,
+          minWidth: 120,
+          editable: false,
           singleClickEdit: true,
           aggFunc: "sum",
           filter: "agNumberColumnFilter",
           sortable: true,
+          valueFormatter: (params) => {
+            return params.value + "%";
+          },
+          cellStyle: function (params) {
+            if (params.value < 0 || params.value > 0 || params.value == 0) {
+              return { color: "#b10043", fontWeight: "bold" };
+            }
+          },
         }
       )
     : columnDefs.push({
         headerName: prevYearwithMonthLabel,
         field: prevYearwithMonthValue,
-        editable: true,
+        editable: false,
         sortable: true,
         filter: "agNumberColumnFilter",
         aggFunc: "sum",
@@ -333,6 +338,45 @@ function DataReviewComponent({}) {
         },
       });
 
+  columnDefs.push(
+    {
+      headerName: "Ambition Data",
+      field: "ambition",
+      editable: false,
+      singleClickEdit: true,
+      minWidth: 200,
+      aggFunc: "sum",
+      sortable: true,
+    },
+    {
+      headerName: "System Comments",
+      field: "systemComments",
+      editable: false,
+      singleClickEdit: true,
+      minWidth: 200,
+      aggFunc: "sum",
+      sortable: true,
+    },
+    {
+      headerName: "Editor Comments",
+      field: "editorComments",
+      editable: true,
+      singleClickEdit: true,
+      minWidth: 200,
+      aggFunc: "sum",
+      sortable: true,
+    },
+    {
+      headerName: "Approver Comments",
+      field: "approverComments",
+      editable: false,
+      singleClickEdit: true,
+      minWidth: 200,
+      aggFunc: "sum",
+      sortable: true,
+    }
+  );
+
   const handleEdit = () => {
     navigate("/dataInput");
   };
@@ -340,6 +384,10 @@ function DataReviewComponent({}) {
   const handleConfirm = () => {
     setRowData(rowData);
   };
+
+  const handleDtaInputNavigation = () => {
+    navigate("/dataInput");
+  }
 
   const excelStyles = useMemo(() => {
     return [
@@ -453,22 +501,16 @@ function DataReviewComponent({}) {
             rowSelection={"single"}
           ></AgGridReact>
           <div>
-            <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
+            <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
               <Col xs="auto">
                 <Button
                   className="btn-upload cancel-header"
-                  onClick={handleShowModal}
+                  onClick={() => {
+                    handleDtaInputNavigation();
+                  }}
                 >
                   Cancel
                 </Button>
-                <CancelModal
-                  show={showModal}
-                  handleClose={handleCloseModal}
-                  handleConfirm={handleCloseModal}
-                  body={"Are you sure you want to cancel the review."}
-                  button1={"Cancel"}
-                  button2={"Confirm"}
-                />
               </Col>
               <Col xs="auto">
                 <Button

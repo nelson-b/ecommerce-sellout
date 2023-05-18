@@ -19,14 +19,18 @@ import Home from "../../images/home-icon.png";
 function DataInputComponent() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [show, setShow] = useState(false);
 
-  const handleShowModal = () => {
-    setShowModal(true);
+  const handleInputNavigation = () => {
+    navigate("/editorHome");
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
+  };
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    setRowData(rowData);
   };
 
   const gridRef = useRef(null);
@@ -213,7 +217,7 @@ function DataInputComponent() {
       sortable: true,
       filter: true,
       pinned: "left",
-      width: 140,
+      width: 150,
       suppressSizeToFit: true,
       editable: false,
     },
@@ -263,6 +267,8 @@ function DataInputComponent() {
   const defaultColDef = useMemo(
     () => ({
       resizable: true,
+      wrapHeaderText: true,
+      autoHeaderHeight: true,
       flex: 1,
       editable: true,
       minWidth: 50,
@@ -307,7 +313,6 @@ function DataInputComponent() {
 
     // to make sure user entered number only
     const checkNumericValue = (params) => {
-      console.log("checkNumericValue");
       const newValInt = Number(params.newValue.toFixed(2));
       const valueChanged = params.data[monthField] !== newValInt;
       if (valueChanged) {
@@ -318,12 +323,10 @@ function DataInputComponent() {
             ? params.oldValue
             : 0;
       }
-
       return valueChanged;
     };
     
     if (currentYear !== year && currentMonth !== 0) continue;
-
     i == 1
       ? columnDefs.push(
           {
@@ -365,16 +368,6 @@ function DataInputComponent() {
           enableRangeSelection: true,
         });
   }
-
-  const handleSave = (e) => {
-    e.preventDefault();
-    setRowData(rowData);
-  };
-
-  const handleCancel = (e) => {
-    e.preventDefault();
-    setRowData(getData);
-  };
 
   // callback tells the grid to use the 'id' attribute for IDs, IDs should always be strings
   const getRowId = useMemo(() => {
@@ -526,23 +519,17 @@ function DataInputComponent() {
         </Row>
         <Row
           className="mb-3"
-          style={{ float: "right", marginRight: "10px", marginTop: "10px" }}
+          style={{ float: "right", marginRight: "10px", marginTop: "20px" }}
         >
           <Col xs="auto">
             <Button
               className="btn-upload cancel-header"
-              onClick={handleShowModal}
+              onClick={() => {
+                handleInputNavigation();
+              }}
             >
               Cancel
             </Button>
-            <CancelModal
-              show={showModal}
-              handleClose={handleCloseModal}
-              handleConfirm={handleCloseModal}
-              body={"Are you sure you want to cancel the input."}
-              button1={"Cancel"}
-              button2={"Confirm"}
-            />
           </Col>
           <Col xs="auto">
             <Button

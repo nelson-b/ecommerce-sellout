@@ -51,22 +51,7 @@ function PartnerList() {
     {
       headerName: "Partner Account Name",
       field: "PartnerAccount",
-      width: 120,
-      //   cellStyle: { whiteSpace: "normal", lineHeight: "1.2" },
-      //   cellRenderer: (params) => {
-      //     return (
-      //       <div
-      //         style={{
-      //           whiteSpace: "normal",
-      //           lineHeight: "1.2",
-      //           overflow: "hidden",
-      //           textOverflow: "ellipsis",
-      //         }}
-      //       >
-      //         {params.value}
-      //       </div>
-      //     );
-      //   },
+      width: 150,
       sortable: true,
       filter: true,
       suppressNavigable: true,
@@ -75,7 +60,7 @@ function PartnerList() {
     {
       headerName: "partner Group",
       field: "partnerGroup",
-      width: 120,
+      width: 140,
       sortable: true,
       filter: true,
       suppressNavigable: true,
@@ -131,7 +116,7 @@ function PartnerList() {
     {
       headerName: "E2 Playbook Type",
       field: "playbookType",
-      width: 120,
+      width: 150,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -158,7 +143,7 @@ function PartnerList() {
     {
       headerName: "Currency of Sellout Reporting",
       field: "currency",
-      width: 120,
+      width: 170,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -167,7 +152,7 @@ function PartnerList() {
     {
       headerName: "Data Collection Type",
       field: "dataCollection",
-      width: 120,
+      width: 150,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -194,7 +179,7 @@ function PartnerList() {
     {
       headerName: "Schneider Electric Entity",
       field: "schneider",
-      width: 130,
+      width: 150,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -203,7 +188,7 @@ function PartnerList() {
     {
       headerName: "GTM Type",
       field: "gtm",
-      width: 120,
+      width: 100,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -212,7 +197,7 @@ function PartnerList() {
     {
       headerName: "Partner Sellout Margin",
       field: "partnerMargin",
-      width: 120,
+      width: 170,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -239,7 +224,7 @@ function PartnerList() {
     {
       headerName: "Backup Editor",
       field: "backup",
-      width: 120,
+      width: 140,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -269,6 +254,9 @@ function PartnerList() {
     () => ({
       resizable: true,
       sortable: true,
+      filter: true,
+      wrapHeaderText: true,
+      autoHeaderHeight: true,
     }),
     []
   );
