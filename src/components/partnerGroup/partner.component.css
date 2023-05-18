@@ -1,7 +1,16 @@
-.partnerRow{
-    max-width: 565px;
+.partnerRowCreate{
+    max-width: 647px;
 }
 
 .field-Prop{
-    width: 257px;
+    width: 292px;
+}
+
+.partnerRowUpdate {
+    max-width: 1280px;
+}
+
+.partner-header {
+    margin-top: 5px;
+    padding-left: 10px;
 }
