@@ -12,13 +12,19 @@ import {
   Tooltip,
   OverlayTrigger,
 } from "react-bootstrap";
+import { useLocation } from 'react-router-dom';
 import MyMenu from "../menu/menu.component.js";
 import { BiHome, BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
+import Home from "../../images/home-icon.png";
+import partnerData from "../../data/partnerList.json";
 import "./partner.component.css";
 import { CreatePartnerData } from "../../actions/partneraction";
 
 function PartnerComponent(props) {
+  const location = useLocation();
+  const id = new URLSearchParams(location.search).get('id');
+
   const initialState = {
     platform_name: "",
     country: "",
@@ -50,6 +56,9 @@ function PartnerComponent(props) {
     reValidateMode: "onChange",
   });
 
+  const [formData, setFormData] = useState(initialState);
+  const data = partnerData.find((e)=> e.partnerID === id);
+
   const onSubmit = (data) => {
     console.log("form data", data);
   };
@@ -78,9 +87,12 @@ function PartnerComponent(props) {
       </Row>
       <Row>
         <Breadcrumb>
-          <Breadcrumb.Item href="/" style={{ fontWeight: "bold" }}>
-            <BiHome />
-            Home
+          <Breadcrumb.Item href="/">
+            <img
+              src={Home}
+              alt="home"
+              style={{ height: "20px", width: "80px", cursor: "pointer" }}
+            />
           </Breadcrumb.Item>
           <span> &nbsp;{">"}</span>
           {props.isCreatedModule && (
@@ -129,6 +141,7 @@ function PartnerComponent(props) {
                         name="platform_name"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.partnerID}
                         {...register("platform_name", {
                           required: "Platform name is required",
                         })}
@@ -246,6 +259,7 @@ function PartnerComponent(props) {
                         name="partner_id"
                         disabled
                         type="text"
+                        value={data?.partnerID}
                       />
                     </Col>
                     <Col>
@@ -349,7 +363,7 @@ function PartnerComponent(props) {
                 </Form.Group>
                 <Form.Group className="mb-4">
                   <Row>
-                  <Col>
+                    <Col>
                       <Form.Label size="sm" htmlFor="url_address_partner">
                         URL Address of Partner
                       </Form.Label>
@@ -368,6 +382,7 @@ function PartnerComponent(props) {
                         id="url_address_partner"
                         name="url_address_partner"
                         type="url"
+                        value={data?.partnerURL}
                         {...register("url_address_partner", {
                           required: "URL Address of Partner is required",
                           pattern: {
@@ -393,7 +408,6 @@ function PartnerComponent(props) {
                         {...register("currency", {
                           required: "Currency of Sellout Reporting is required",
                         })}
-                        
                       >
                         <option value="">N/A</option>
                         <option>AUD</option>
@@ -468,7 +482,6 @@ function PartnerComponent(props) {
                         {...register("playbook_type", {
                           required: "E2 Playbook Type is required",
                         })}
-                        
                       >
                         <option value="">N/A</option>
                         <option value={"type1"}>Type 1</option>
@@ -608,6 +621,7 @@ function PartnerComponent(props) {
                         name="editor"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.editor}
                       />
                     </Col>
                     <Col>
@@ -621,6 +635,7 @@ function PartnerComponent(props) {
                         name="editor"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.backup}
                       />
                     </Col>
                     <Col>
@@ -633,6 +648,7 @@ function PartnerComponent(props) {
                         name="approver1"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.Approver1}
                       />
                     </Col>
                     <Col>
@@ -645,6 +661,7 @@ function PartnerComponent(props) {
                         name="approver2"
                         disabled={!props.isCreatedModule}
                         type="text"
+                        value={data?.Approver2}
                       />
                     </Col>
                   </Row>

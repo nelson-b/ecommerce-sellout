@@ -17,11 +17,15 @@
       "Mar23": 94,
       "Apr23": 78,
       "May23": 45,
-      "varVMvsLvalue": 340,
-      "varVMvsLM": "30%",
+      "varVMvsLvalue": 0,
+      "varVMvsLM": 30,
       "May22": 40,
       "PreVMValue": 90,
-      "PreVMvsLM": "3.8%"
+      "PreVMvsLM": 3.8,
+      "ambition": "",
+      "systemComments": "",
+      "editorComments": "",
+      "approverComments": ""
     },
     {
       "Zone": "Zone5",
@@ -41,18 +45,22 @@
       "Mar23": 94,
       "Apr23": 78,
       "May23": 45,
-      "varVMvsLvalue": 340,
-      "varVMvsLM": "30%",
+      "varVMvsLvalue": 0,
+      "varVMvsLM": 30,
       "May22": 40,
       "PreVMValue": 45,
-      "PreVMvsLM": "5.8%"
+      "PreVMvsLM": 5.8,
+      "ambition": "",
+      "systemComments": "",
+      "editorComments": "",
+      "approverComments": ""
     },
     {
       "Zone": "Zone6",
       "Country": "Europe",
       "Partner": "Partner F",
       "Model": "E5",
-      "Status": "Close",
+      "Status": "Closed",
       "currency": "BRL",
       "Jan23_E": "false",
       "Feb23_E": "true",
@@ -66,10 +74,14 @@
       "Apr23": 78,
       "May23": 75,
       "varVMvsLvalue": 340,
-      "varVMvsLM": "77%",
+      "varVMvsLM": 77,
       "May22": 60,
       "PreVMValue": 65,
-      "PreVMvsLM": "7.8%"   
+      "PreVMvsLM": 7.8,
+      "ambition": "",
+      "systemComments": "",
+      "editorComments": "",
+      "approverComments": ""
      },
     {
       "Zone": "Zone6",
@@ -90,10 +102,14 @@
       "Apr23": 178,
       "May23": 67,
       "varVMvsLvalue": 340,
-      "varVMvsLM": "89",
+      "varVMvsLM": 89,
       "May22": 80,
       "PreVMValue": 75,
-      "PreVMvsLM": "6.8%"
+      "PreVMvsLM": 6.8,
+      "ambition": "",
+      "systemComments": "",
+      "editorComments": "",
+      "approverComments": ""
     },
     {
       "Zone": "Zone7",
@@ -114,9 +130,13 @@
       "Apr23": 308,
       "May23": 78,
       "varVMvsLvalue": 340,
-      "varVMvsLM": "66%",
+      "varVMvsLM": 66,
       "May22": 30,
       "PreVMValue": 45,
-      "PreVMvsLM": "-9.8%"
+      "PreVMvsLM": -9.8,  
+      "ambition": "",
+      "systemComments": "",
+      "editorComments": "",
+      "approverComments": ""
     }
   ]
