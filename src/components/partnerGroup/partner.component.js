@@ -16,13 +16,14 @@ import MyMenu from "../menu/menu.component.js";
 import { BiHome, BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import "./partner.component.css";
+import { CreatePartnerData } from "../../actions/partneraction";
 
 function PartnerComponent(props) {
   const initialState = {
     platform_name: "",
     country: "",
     partnerGroup: "",
-    electricEntity: "",
+    se_electricEntity: "",
     reseller_seller: "",
     activation_date: "",
     business_type:"",
@@ -58,6 +59,17 @@ function PartnerComponent(props) {
   };
 
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
+
+  //create api
+  const savePartner = (data) => {
+    CreatePartnerData(data)
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((e) => {
+      console.log(e);
+    });  
+  }
 
   return (
     <Container fluid>
@@ -176,14 +188,14 @@ function PartnerComponent(props) {
                       )}
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="electricEntity">
+                      <Form.Label size="sm" htmlFor="se_electricEntity">
                         Schneider Electric Entity
                       </Form.Label>
                       <Form.Select
                         size="sm"
-                        id="electricEntity"
-                        name="electricEntity"
-                        {...register("electricEntity", {
+                        id="se_electricEntity"
+                        name="se_electricEntity"
+                        {...register("se_electricEntity", {
                           required: "Schneider Electric Entity is required",
                         })}
                       >
@@ -192,9 +204,9 @@ function PartnerComponent(props) {
                         <option>Entity 2</option>
                         <option>Entity 3</option>
                       </Form.Select>
-                      {errors.electricEntity && (
+                      {errors.se_electricEntity && (
                         <Form.Text className="text-danger">
-                          {errors.electricEntity.message}
+                          {errors.se_electricEntity.message}
                         </Form.Text>
                       )}
                     </Col>
