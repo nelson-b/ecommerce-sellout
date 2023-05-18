@@ -295,9 +295,10 @@ function DataInputComponent() {
   for (let i = 7; i > 0; i--) {
     let date = new Date(
       currentDate.getFullYear(),
-      currentDate.getMonth() - (i - 1),
+      currentDate.getMonth() - (i - 1), 
       1
     );
+    console.log('date', date);
     const monthName = month[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
     const monthHeader = monthName+' ' + year;
@@ -320,7 +321,7 @@ function DataInputComponent() {
 
       return valueChanged;
     };
-
+    
     if (currentYear !== year && currentMonth !== 0) continue;
 
     i == 1
@@ -337,7 +338,6 @@ function DataInputComponent() {
               return fnSetIsEstimated(params, monthField);
             },
             enableRangeSelection: true,
-            // onCellDoubleClicked: params => { toggleAEDoubleClicked(params, monthField) }
           },
           {
             field: monthAEFlagField,
@@ -363,7 +363,6 @@ function DataInputComponent() {
             return fnSetIsEstimated(params, monthField);
           },
           enableRangeSelection: true,
-          // onCellDoubleClicked:params => { toggleAEDoubleClicked(params, monthField)}
         });
   }
 
@@ -519,7 +518,6 @@ function DataInputComponent() {
             pagination={true}
             paginationAutoPageSize={true}
             animateRows={true}
-            // rowSelection={'multiple'}
             getRowId={getRowId}
             enableRangeSelection={true}
             suppressCopySingleCellRanges={true}
