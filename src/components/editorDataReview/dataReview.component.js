@@ -132,7 +132,7 @@ function DataReviewComponent({}) {
       };
     }, []);
 
-    const getCMLMValues = (params) => {
+  const getCMLMValues = (params) => {
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth();
       let date = new Date(
@@ -171,6 +171,44 @@ function DataReviewComponent({}) {
     return undefined;
   }
 
+  const getCMLYValues = (params) => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    let date = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1
+    );
+
+    const currMonthName = month[date.getMonth()];
+    const curryear = String(date.getFullYear()).slice(-2);
+    const currmonthCYField = currMonthName + curryear;
+    const currmonthLYField = currMonthName + (curryear - 1);
+    
+    if(params.data){
+        var filterCurrMonthCY = Object.keys(params.data)
+          .filter((key) => [currmonthCYField].includes(key))
+          .reduce((obj, key) => {
+            obj[key] = params.data[key];
+            return obj;
+          }, {});
+        
+        var filterCurrMonthLY = Object.keys(params.data)
+        .filter((key) => [currmonthLYField].includes(key))
+        .reduce((obj, key) => {
+          obj[key] = params.data[key];
+          return obj;
+        }, {});
+
+        let ret = {
+          CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
+          CurrentMonthLY: filterCurrMonthLY[currmonthLYField]
+        }
+        return ret;
+    }
+    return undefined;
+  }
+
   const setVarCMvsLMCalc = (params) =>  {
     let resp = getCMLMValues(params);
     
@@ -182,13 +220,32 @@ function DataReviewComponent({}) {
 
   const setVarCMvsLMCalcPerc = (params) =>  {
     let resp = getCMLMValues(params);
-    console.log(resp);
     if(resp != undefined){
       if(resp.LastMonth!=0){
-        return Math.round(((resp.CurrentMonth - resp.LastMonth)/resp.LastMonth)*100)
+        return Math.round(((resp.CurrentMonth - resp.LastMonth)/resp.LastMonth)*100);
       }
     }
-    return 0; 
+    return 0;
+  }
+
+  const setVarCMvsLYCalc = (params) => {
+      let resp = getCMLYValues(params);
+      if(resp != undefined){
+        return (resp.CurrentMonthCY - resp.CurrentMonthLY);
+      }
+      return 0;
+  }
+
+  const setVarCMvsLYCalcPerc = (params) => {
+    let resp = getCMLYValues(params);
+    console.log('setVarCMvsLYCalcPerc',resp);
+    if(resp != undefined){
+      if(resp.CurrentMonthLY!=0){
+        console.log('calc', Math.round(((resp.CurrentMonthCY - resp.CurrentMonthLY)/resp.CurrentMonthLY)*100));
+        return Math.round(((resp.CurrentMonthCY - resp.CurrentMonthLY)/resp.CurrentMonthLY)*100);
+      }
+    }
+    return 0;
   }
 
   const getRowStyle = (params) => {
@@ -265,8 +322,11 @@ function DataReviewComponent({}) {
             aggFunc: "sum",
             suppressMenu: true,
             cellStyle: function (params) {
-              if (params.value < 0 || params.value > 0 || params.value == 0) {
+              if (params.value >= 0) {
                 return { color: "#009530", fontWeight: "bold" };
+              }
+              else if (params.value < 0) {
+                return { color: "#B10043", fontWeight: "bold" };
               }
             },
           },
@@ -285,9 +345,12 @@ function DataReviewComponent({}) {
               return params.value + "%";
             },
             cellStyle: function (params) {
-                if (params.value < 0  || params.value > 0  || params.value == 0) {
-                return { color: "#009530", fontWeight: "bold" };
-              }
+                if (params.value >= 0) {
+                  return { color: "#009530", fontWeight: "bold" };
+                }
+                else if (params.value < 0) {
+                  return { color: "#B10043", fontWeight: "bold" };
+                }
             },
           }
         )
@@ -353,9 +416,13 @@ function DataReviewComponent({}) {
           filter: "agNumberColumnFilter",
           sortable: true,
           suppressMenu: true,
+          valueGetter: params => { return setVarCMvsLYCalc(params) },
           cellStyle: function (params) {
-            if (params.value < 0 || params.value > 0 || params.value == 0) {
-              return { color: "#b10043", fontWeight: "bold" };
+            if (params.value >= 0) {
+              return { color: "#009530", fontWeight: "bold" };
+            }
+            else if (params.value < 0) {
+              return { color: "#B10043", fontWeight: "bold" };
             }
           },
         },
@@ -369,12 +436,16 @@ function DataReviewComponent({}) {
           filter: "agNumberColumnFilter",
           sortable: true,
           suppressMenu: true,
+          valueGetter: params => { return setVarCMvsLYCalcPerc(params) },
           valueFormatter: (params) => {
             return params.value + "%";
           },
           cellStyle: function (params) {
-            if (params.value < 0 || params.value > 0 || params.value == 0) {
-              return { color: "#b10043", fontWeight: "bold" };
+            if (params.value >= 0) {
+              return { color: "#009530", fontWeight: "bold" };
+            }
+            else if (params.value < 0) {
+              return { color: "#B10043", fontWeight: "bold" };
             }
           },
         }
