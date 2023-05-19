@@ -110,8 +110,7 @@ function DataReviewComponent({}) {
       resizable: true,
       filter: true,
       sortable: true,
-      suppressSizeToFit: true,
-      // headerRowHeight: 50,
+      suppressSizeToFit: true
     };
   }, []);
 
@@ -144,6 +143,8 @@ function DataReviewComponent({}) {
     const currMonthName = month[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
     const monthField = currMonthName+'_Amount';
+
+    
   }
 
   const getRowStyle = (params) => {
