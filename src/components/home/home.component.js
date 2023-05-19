@@ -27,7 +27,7 @@ function Home(props) {
   };
 
   const partnerDataNavigation = () => {
-    navigate("/addPartner");
+    navigate("/partnerList");
   };
 
   const approverReviewNavigation = () => {
@@ -50,7 +50,7 @@ function Home(props) {
       field: "YTD Sellout Value (In K EUR)",
       spanHeaderHeight: true,
       aggFunc: "sum",
-      minWidth: 170,
+      minWidth: 160,
     },
     {
       field: "Sellout Growth Vs Last Year",
@@ -62,7 +62,7 @@ function Home(props) {
       },
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#b10043", fontWeight: "bold" };
+          return { color: "#ff0000", fontWeight: "bold" };
         } else if (params.value > "0") {
           return { color: "#009530", fontWeight: "bold" };
         } else {
@@ -78,6 +78,8 @@ function Home(props) {
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#e47f00", fontWeight: "bold" };
+        } else if (params.value < "0") {
+          return { color: "#ff0000", fontWeight: "bold" };
         } else if (params.value == 0) {
           return { color: "#009530", fontWeight: "bold" };
         } else {
@@ -93,6 +95,8 @@ function Home(props) {
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#b10043", fontWeight: "bold" };
+        } else if (params.value < "0") {
+          return { color: "#ff0000", fontWeight: "bold" };
         } else if (params.value == 0) {
           return { color: "#009530", fontWeight: "bold" };
         } else {
@@ -132,7 +136,7 @@ function Home(props) {
       },
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#b10043", fontWeight: "bold" };
+          return { color: "#ff0000", fontWeight: "bold" };
         } else if (params.value > "0") {
           return { color: "#009530", fontWeight: "bold" };
         } else {
@@ -148,6 +152,8 @@ function Home(props) {
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#e47f00", fontWeight: "bold" };
+        } else if (params.value < "0") {
+          return { color: "#ff0000", fontWeight: "bold" };
         } else if (params.value == 0) {
           return { color: "#009530", fontWeight: "bold" };
         } else {
@@ -163,6 +169,8 @@ function Home(props) {
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#b10043", fontWeight: "bold" };
+        } else if (params.value < "0") {
+          return { color: "#ff0000", fontWeight: "bold" };
         } else if (params.value == 0) {
           return { color: "#009530", fontWeight: "bold" };
         } else {
@@ -202,7 +210,7 @@ function Home(props) {
       },
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#b10043", fontWeight: "bold" };
+          return { color: "#ff0000", fontWeight: "bold" };
         } else if (params.value > "0") {
           return { color: "#009530", fontWeight: "bold" };
         } else {
@@ -218,6 +226,8 @@ function Home(props) {
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#e47f00", fontWeight: "bold" };
+        } else if (params.value < "0") {
+          return { color: "#ff0000", fontWeight: "bold" };
         } else if (params.value == 0) {
           return { color: "#009530", fontWeight: "bold" };
         } else {
@@ -233,6 +243,8 @@ function Home(props) {
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#b10043", fontWeight: "bold" };
+        } else if (params.value < "0") {
+          return { color: "#ff0000", fontWeight: "bold" };
         } else if (params.value == 0) {
           return { color: "#009530", fontWeight: "bold" };
         } else {
@@ -250,6 +262,7 @@ function Home(props) {
       filter: true,
       resizable: true,
       flex: 1,
+      minWidth: 150,
     };
   }, []);
 
@@ -410,7 +423,7 @@ function Home(props) {
           <div className="sell-out-home-header">Data Input Overview</div>
           <Row
             className="ag-theme-alpine ag-grid-table"
-            style={{ height: 300, width: 1000, marginTop: "10px" }}
+            style={{ height: 350, width: 1110, marginTop: "10px" }}
           >
             <AgGridReact
               ref={gridRef}
