@@ -10,6 +10,11 @@
   margin-top: 5px;
 }
 
+.btn-reject {
+  height: 40px;
+  width: 100px;
+}
+
 .ag-theme-alpine .ag-icon,
 .ag-theme-alpine .ag-checkbox-input-wrapper,
 .ag-theme-alpine .ag-radio-button-input-wrapper {

@@ -16,15 +16,10 @@ import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import approverData from "../../data/reviewApprover.json";
-import approverDataEuro from "../../data/reviewApproverEuro.json";
-import footerTotalReview from "./../editorDataReview/footerTotalReview";
-import active from "../../images/active.png";
-import closed from "../../images/closed.png";
+import partnerPrevious from "../../data/partnerPreviousData.json";
 import Home from "../../images/home-icon.png";
-import "../approverDataReview/dataReviewApprover.css";
 
-function DataReviewApprover({}) {
+function PartnerQuarterApprover({}) {
   const gridRef = useRef();
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
@@ -37,28 +32,52 @@ function DataReviewApprover({}) {
     { name: "Euro", value: "2" },
   ];
 
+  const ChildMessageRenderer = (props) => {
+    const invokeParentMethod = () => {
+      props.context.methodFromParent(
+        `Row: ${props.node.rowIndex}, Col: ${props.colDef.field}`
+      );
+    };
+    return (
+      <div>
+        <div>Received Updated Values From Distributor
+        <Button
+          style={{ height: 30, width: 100, lineHeight: 0.5, margin: "0px 0px 5px 100px" }}
+          onClick={invokeParentMethod}
+          className="cancel-header btn-reject"
+        >
+          Reject
+        </Button>
+        <Button
+          style={{ height: 30, width: 100, lineHeight: 0.5, margin: " 0px 10px 5px 20px" }}
+          onClick={invokeParentMethod}
+          className="save-header btn-reject"
+        >
+          Validate
+        </Button>
+        </div>
+      </div>
+    );
+  };
+
   const columnDefs = [
     {
       field: "Zone",
-      rowGroup: true,
-      hide: true,
+      headerName: "Zone",
+      filter: true,
+      width: 140,
+      pinned: "left",
+      suppressSizeToFit: true,
+      editable: false,
+      headerCheckboxSelection: true,
+      checkboxSelection: true,
+      showDisabledCheckboxes: true,
     },
     {
       headerName: "Country",
       field: "Country",
-      rowGroup: true,
-      hide: true,
       filter: true,
-      pinned: "left",
-      suppressSizeToFit: true,
-      editable: false,
-    },
-    {
-      headerName: "Model",
-      field: "Model",
-      rowGroup: true,
-      hide: true,
-      filter: true,
+      width: 140,
       pinned: "left",
       suppressSizeToFit: true,
       editable: false,
@@ -72,155 +91,68 @@ function DataReviewApprover({}) {
       suppressSizeToFit: true,
     },
     {
-      headerName: "Currency of Reporting",
-      field: "currency",
+      headerName: "Month Impacted",
+      field: "month",
       pinned: "left",
       width: 140,
       editable: false,
-      suppressMenu: true
     },
     {
-      headerName: "Status",
-      field: "Status",
-      pinned: "left",
-      width: 110,
+      headerName: "Sellout value Approved (in KE)",
+      field: "SelloutValue",
+      editable: false,
+      minWidth: 140,
+      wrapHeaderText: true,
+      sortable: true,
       suppressMenu: true,
-      cellRenderer: (params) => {
-        const Status = params.value;
-        return (
-          <div>
-            {Status === "Active" && (
-              <img src={active} alt="active" style={{ width: "80px" }} />
-            )}
-            {Status === "Closed" && (
-              <img src={closed} alt="closed" style={{ width: "80px" }} />
-            )}
-          </div>
-        );
-      },
+    },
+    {
+      headerName: "New value (in KE)",
+      field: "newValue",
+      editable: false,
+      minWidth: 100,
+      wrapHeaderText: true,
+      sortable: true,
+      suppressMenu: true,
+    },
+    {
+      headerName: "Change in Value",
+      field: "changeValue",
+      minWidth: 90,
+      editable: false,
+      wrapHeaderText: true,
+      sortable: true,
+      suppressMenu: true,
+    },
+    {
+      headerName: "Change In %",
+      field: "change_per",
+      minWidth: 90,
+      editable: false,
+      wrapHeaderText: true,
+      sortable: true,
+      suppressMenu: true,
+    },
+    {
+      headerName: "User that made the change",
+      field: "userChange",
+      editable: false,
+      minWidth: 140,
+      wrapHeaderText: true,
+      sortable: true,
+      suppressMenu: true,
+    },
+    {
+      headerName: "Editors Comments",
+      field: "editorComments",
+      minWidth: 620,
+      editable: false,
+      wrapHeaderText: true,
+      sortable: true,
+      suppressMenu: true,
+      cellRenderer: ChildMessageRenderer,
     },
   ];
-
-  const getCurrentQuarter = () => {
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const quarter = Math.ceil(month / 3);
-    return `Q${quarter}`;
-  };
-  const quat = getCurrentQuarter();
-
-  const getQuarterMonths = (quarter) => {
-    const quarters = {
-      Q1: ["Jan", "Feb", "Mar"],
-      Q2: ["Apr", "May", "Jun"],
-      Q3: ["Jul", "Aug", "Sep"],
-      Q4: ["Oct", "Nov", "Decr"],
-    };
-    return quarters[quarter] || [];
-  };
-  const quatMonths = getQuarterMonths(quat);
-
-  quatMonths.forEach((month, index) => {
-    const currentDate = new Date();
-    const currentYear = String(currentDate.getFullYear()).slice(-2);
-    const monthValue = month + currentYear;
-    const columnDef = {
-      headerName: `${monthValue}`,
-      field: `${monthValue}`,
-      filter: true,
-      sortable: true,
-      minWidth: 100,
-      aggFunc: "sum",
-      suppressSizeToFit: true,
-      suppressMenu: true
-    };
-    columnDefs.push(columnDef);
-  });
-
-  columnDefs.push(
-    {
-      headerName: "Sellout value Current Quarter",
-      field: "Sellout",
-      editable: false,
-      minWidth: 150,
-      wrapHeaderText: true,
-      aggFunc: "sum",
-      sortable: true,
-      suppressMenu: true,
-    },
-    {
-      headerName: "YTD Sellout Value",
-      field: "YTD",
-      editable: false,
-      minWidth: 140,
-      wrapHeaderText: true,
-      aggFunc: "sum",
-      sortable: true,
-      suppressMenu: true
-    },
-    {
-      headerName: "YTD Sellout Growth",
-      field: "YTD_Growth",
-      editable: false,
-      minWidth: 150,
-      wrapHeaderText: true,
-      aggFunc: "sum",
-      sortable: true,
-      suppressMenu: true,
-      valueFormatter: (params) => {
-        return params.value + "%";
-      },
-      cellStyle: function (params) {
-        if (params.value > "0") {
-          return { color: "#009530", fontWeight: "bold" };
-        } else if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
-        } else {
-          return null;
-        }
-      },
-    },
-    {
-      headerName: "Ambition Data",
-      field: "ambition",
-      editable: false,
-      minWidth: 120,
-      wrapHeaderText: true,
-      aggFunc: "sum",
-      sortable: true,
-      suppressMenu: true
-    },
-    {
-      headerName: "System Comments",
-      field: "systemComments",
-      editable: false,
-      wrapHeaderText: true,
-      minWidth: 140,
-      aggFunc: "sum",
-      sortable: true,
-      suppressMenu: true
-    },
-    {
-      headerName: "Editor Comments",
-      field: "editorComments",
-      editable: false,
-      wrapHeaderText: true,
-      minWidth: 140,
-      aggFunc: "sum",
-      sortable: true,
-      suppressMenu: true
-    },
-    {
-      headerName: "Approver Comments",
-      field: "approverComments",
-      editable: true,
-      wrapHeaderText: true,
-      minWidth: 140,
-      aggFunc: "sum",
-      sortable: true,
-      suppressMenu: true
-    }
-  );
 
   const defaultColDef = useMemo(() => {
     return {
@@ -235,33 +167,8 @@ function DataReviewApprover({}) {
       resizable: true,
       filter: true,
       sortable: true,
-      suppressSizeToFit: true, 
+      suppressSizeToFit: true,
       suppressMenuHide: true,
-    };
-  }, []);
-
-  const autoGroupColumnDef = useMemo(() => {
-    return {
-      width: 160,
-      filterValueGetter: (params) => {
-        if (params.node) {
-          var colGettingGrouped = params.colDef.showRowGroup + "";
-          return params.api.getValue(colGettingGrouped, params.node);
-        }
-      },
-      pinned: "left",
-      cellRenderer: "agGroupCellRenderer",
-      cellRendererParams: {
-        suppressCount: true,
-        checkbox: true,
-        checkboxSelection: true,
-        innerRenderer: footerTotalReview,
-      },
-      cellRendererParams: {
-        checkbox: true,
-      },
-      headerCheckboxSelection: true,
-      headerCheckboxSelectionCurrentPageOnly: true,
     };
   }, []);
 
@@ -282,7 +189,7 @@ function DataReviewApprover({}) {
 
   const handleInvestigation = () => {
     // navigate("/editorHome", { state: { message } });
-    alert(message ? `${message} Partner Accounts Sent for Investigation` : "");
+    alert(message ? `${message} Partner Accounts Sent For Investigation` : "");
   };
 
   const handleConfirm = () => {
@@ -297,8 +204,8 @@ function DataReviewApprover({}) {
 
   const onGridReady = useCallback((params) => {
     fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => approverData)
-      .then((approverData) => setRowData(approverData));
+      .then((resp) => partnerPrevious)
+      .then((partnerPrevious) => setRowData(partnerPrevious));
   }, []);
 
   return (
@@ -319,8 +226,8 @@ function DataReviewApprover({}) {
           </Breadcrumb>
         </div>
         <div>
-          <Stack direction="horizontal" gap={4}>
-            <div className="sell-out-header">Sell Out Data Review</div>
+          <Stack direction="horizontal">
+            <div className="sell-out-header">Previous Quarter Data Review</div>
             <div className="mt-0 ms-auto">
               <Row className="currency-mode">CURRENCY MODE</Row>
               <Col>
@@ -342,11 +249,6 @@ function DataReviewApprover({}) {
                 </ButtonGroup>
               </Col>
             </div>
-            <div className="historical-header">
-              <Button className="btn-md historical-data">
-                Historical Data
-              </Button>
-            </div>
           </Stack>
         </div>
 
@@ -356,28 +258,21 @@ function DataReviewApprover({}) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={radioValue == 1 ? approverData : approverDataEuro}
+            rowData={radioValue == 1 ? partnerPrevious : partnerPrevious}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
-            autoGroupColumnDef={autoGroupColumnDef}
             groupHideOpenParents={true}
-            showOpenedGroup={true}
-            // groupDefaultExpanded={-1}
             animateRows={true}
-            suppressAggFuncInHeader={true}
-            groupIncludeTotalFooter={true}
-            groupIncludeFooter={true}
             onGridReady={onGridReady}
             getRowStyle={getRowStyle}
             rowSelection={"multiple"}
+            suppressRowClickSelection={true}
             onSelectionChanged={handleCheckboxClick}
             groupSelectsChildren={true}
-            suppressMenuHide= {true}
+            suppressMenuHide={true}
           ></AgGridReact>
           <div className="checkbox-message">
-            {message > 0
-              ? `${message} Partner Selected `
-              : ""}
+            {message > 0 ? `${message} Partner Account ` : ""}
           </div>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
@@ -399,22 +294,14 @@ function DataReviewApprover({}) {
                   Send For Investigation
                 </Button>
               </Col>
-              <Col xs="auto">
-                <Button
-                  className="btn-upload edit-header"
-                  onClick={(e) => handleSave()}
-                >
-                  Save
-                </Button>
-              </Col>
               <Col>
                 <Button
-                  className="btn-upload save-header"
+                  className="btn-data save-header"
                   onClick={() => {
                     handleConfirm();
                   }}
                 >
-                  Validate
+                  Validate All
                 </Button>
               </Col>
             </Row>
@@ -425,4 +312,4 @@ function DataReviewApprover({}) {
   );
 }
 
-export default DataReviewApprover;
+export default PartnerQuarterApprover;

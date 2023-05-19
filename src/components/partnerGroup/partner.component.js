@@ -227,23 +227,13 @@ function PartnerComponent(props) {
                       <Form.Label size="sm" htmlFor="reseller_seller">
                         Reseller Name
                       </Form.Label>
-                      <Form.Select
+                      <Form.Control
                         size="sm"
-                        id="reseller_seller"
-                        name="reseller_seller"
-                        {...register("reseller_seller", {
-                          required: "Reseller Name is required",
-                        })}>
-                        <option value="">N/A</option>
-                        <option>Seller 1</option>
-                        <option>Seller 2</option>
-                        <option>Seller 3</option>
-                      </Form.Select>
-                      {errors.reseller_seller && (
-                        <Form.Text className="text-danger">
-                          {errors.reseller_seller.message}
-                        </Form.Text>
-                      )}
+                        id="partner_id"
+                        name="partner_id"
+                        disabled
+                        type="text"
+                      />
                     </Col>
                   </Row>
                 </Form.Group>
@@ -670,10 +660,10 @@ function PartnerComponent(props) {
             )}
             <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
               <Col xs="auto">
-                <Button className="cancel-header">Cancel</Button>
+                <Button className="btn-upload cancel-header">Cancel</Button>
               </Col>
               <Col xs="auto">
-                <Button className="save-header" type="submit">
+                <Button className="btn-upload save-header" type="submit">
                   {props.isCreatedModule ? "Create" : "Update"}
                 </Button>
               </Col>

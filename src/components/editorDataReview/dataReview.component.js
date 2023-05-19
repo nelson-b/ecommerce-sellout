@@ -496,7 +496,7 @@ function DataReviewComponent({}) {
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}
             groupHideOpenParents={true}
-            // showOpenedGroup={true}
+            showOpenedGroup={true}
             // groupDefaultExpanded={-1}
             animateRows={true}
             suppressAggFuncInHeader={true}
