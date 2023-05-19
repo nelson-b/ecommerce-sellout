@@ -1,32 +1,19 @@
 import React, { useCallback, useMemo, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
-import {
-  Button,
-  Row,
-  Col,
-  Stack,
-  ToggleButton,
-  ButtonGroup,
-  Breadcrumb,
-  Container,
-} from "react-bootstrap";
+import { Button, Row, Col, Stack, ToggleButton, ButtonGroup, Breadcrumb, Container } from "react-bootstrap";
 import "./dataReview.css";
 import { month } from "../constant";
 import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { exportParams } from "ag-grid-community";
 import data from "../../data/dataReview.json";
 import dataEuro from "../../data/dataReviewEuro.json";
-import CancelModal from "../modal/cancelModal";
 import footerTotalReview from "./footerTotalReview";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
-import * as xlsx from "xlsx";
-import * as FileSaver from "file-saver";
 
 function DataReviewComponent({}) {
   const gridRef = useRef();
@@ -146,25 +133,29 @@ function DataReviewComponent({}) {
     };
   }, []);
 
+  const setVarCMvsLMCalc = (param) => {
+    
+  }
+
   const getRowStyle = (params) => {
     if (params.node.aggData) {
       return { fontWeight: "bold" };
     }
   };
 
-  const setIsEstimated = (params, monthWithYearValue) => {
+  const setIsEstimated = (params, monthField) => {
+    
     if (params.data != undefined) {
-      let monthYrKey = monthWithYearValue + "_E";
+      let monthYrKey = monthField.replace('_Amount','') + "_Estimated";
       var filterMonths = Object.keys(params.data)
         .filter((key) => [monthYrKey].includes(key))
         .reduce((obj, key) => {
           obj[key] = params.data[key];
           return obj;
         }, {});
-
-      var isEstimated = filterMonths[monthYrKey] === "true";
-      if (isEstimated === true) return { backgroundColor: "#EEB265" };
-    } else {
+  
+      var isEstimated = filterMonths[monthYrKey] == true;
+      if (isEstimated == true) return { backgroundColor: "#EEB265" };
       return { backgroundColor: "white" };
     }
   };
@@ -179,18 +170,19 @@ function DataReviewComponent({}) {
       currentDate.getMonth() - (i - 1),
       1
     );
+
     const monthName = month[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
-    const monthWithYearLabel = monthName + " " + year;
-    const monthWithYearValue = monthName + year;
-    const monthAndYearAEFlagField = monthName + year + "_E";
+    const monthHeader = monthName+' ' + year;
+    const monthField = monthName+'_Amount';
+    const monthAEFlagField = monthName + "_Estimated";
 
     if (currentYear !== year && currentMonth !== 0) continue;
     i == 1
       ? columnDefs.push(
           {
-            headerName: monthWithYearLabel,
-            field: monthWithYearValue,
+            headerName: monthHeader,
+            field: monthField,
             editable: false,
             singleClickEdit: true,
             minWidth: 100,
@@ -198,11 +190,11 @@ function DataReviewComponent({}) {
             sortable: true,
             valueParser: (params) => Number(params.newValue),
             cellStyle: (params) => {
-              return setIsEstimated(params, monthWithYearValue);
+              return setIsEstimated(params, monthField);
             },
           },
           {
-            field: monthAndYearAEFlagField,
+            field: monthAEFlagField,
             hide: true,
           },
           {
@@ -213,7 +205,7 @@ function DataReviewComponent({}) {
             singleClickEdit: true,
             filter: "agNumberColumnFilter",
             sortable: true,
-            // valueGetter: calculateDifference,
+            valueGetter: param => { return setVarCMvsLMCalc(param) },
             aggFunc: "sum",
             cellStyle: function (params) {
               if (params.value < 0 || params.value > 0 || params.value == 0) {
@@ -241,8 +233,8 @@ function DataReviewComponent({}) {
           }
         )
       : columnDefs.push({
-          headerName: monthWithYearLabel,
-          field: monthWithYearValue,
+          headerName: monthHeader,
+          field: monthField,
           editable: false,
           sortable: true,
           filter: "agNumberColumnFilter",
@@ -251,7 +243,7 @@ function DataReviewComponent({}) {
           minWidth: 100,
           valueParser: (params) => Number(params.newValue),
           cellStyle: (params) => {
-            return setIsEstimated(params, monthWithYearValue);
+            return setIsEstimated(params, monthField);
           },
         });
   }
@@ -261,6 +253,7 @@ function DataReviewComponent({}) {
     currentDate.getMonth() - 12,
     1
   );
+
   const prevMonth = month[previousYear.getMonth()];
   console.log("prevMonth", prevMonth);
   const prevYear = String(previousYear.getFullYear()).slice(-2);
