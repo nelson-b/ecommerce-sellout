@@ -325,7 +325,7 @@ function DataReviewComponent({}) {
                 return { color: "#009530", fontWeight: "bold" };
               }
               else if (params.value < 0) {
-                return { color: "#B10043", fontWeight: "bold" };
+                return { color: "#ff0000", fontWeight: "bold" };
               }
             },
           },
@@ -348,7 +348,7 @@ function DataReviewComponent({}) {
                   return { color: "#009530", fontWeight: "bold" };
                 }
                 else if (params.value < 0) {
-                  return { color: "#B10043", fontWeight: "bold" };
+                  return { color: "#ff0000", fontWeight: "bold" };
                 }
             },
           }
@@ -421,7 +421,7 @@ function DataReviewComponent({}) {
               return { color: "#009530", fontWeight: "bold" };
             }
             else if (params.value < 0) {
-              return { color: "#B10043", fontWeight: "bold" };
+              return { color: "#ff0000", fontWeight: "bold" };
             }
           },
         },
@@ -444,7 +444,7 @@ function DataReviewComponent({}) {
               return { color: "#009530", fontWeight: "bold" };
             }
             else if (params.value < 0) {
-              return { color: "#B10043", fontWeight: "bold" };
+              return { color: "#ff0000", fontWeight: "bold" };
             }
           },
         }
@@ -624,7 +624,7 @@ function DataReviewComponent({}) {
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}
             groupHideOpenParents={true}
-            // showOpenedGroup={true}
+            showOpenedGroup={true}
             // groupDefaultExpanded={-1}
             animateRows={true}
             suppressAggFuncInHeader={true}

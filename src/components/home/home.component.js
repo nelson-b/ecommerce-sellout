@@ -34,6 +34,10 @@ function Home(props) {
     navigate("/approverReview");
   };
 
+  const partnerQuarterNavigation = () => {
+    navigate("/partnerPreviousReview");
+  };
+
   const editorColDefs = [
     {
       headerName: "Scope",
@@ -43,7 +47,7 @@ function Home(props) {
           rowGroup: true,
           hide: true,
         },
-        { field: "Model" }
+        { field: "Model" },
       ],
     },
     {
@@ -348,7 +352,12 @@ function Home(props) {
                 </Col>
               ) : props.role === "approver" ? (
                 <Col xs="auto">
-                  <Button className="btn-approve save-header">
+                  <Button
+                    className="btn-approve save-header"
+                    onClick={() => {
+                      partnerQuarterNavigation();
+                    }}
+                  >
                     Previous Data Approval
                   </Button>
                 </Col>
