@@ -306,7 +306,7 @@ function DataInputComponent() {
       currentDate.getMonth() - (i - 1), 
       1
     );
-    console.log('date', date);
+    
     const monthName = month[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
     const monthHeader = monthName+' ' + year;
