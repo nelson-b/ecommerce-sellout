@@ -134,7 +134,16 @@ function DataReviewComponent({}) {
   }, []);
 
   const setVarCMvsLMCalc = (param) =>  {
-    
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    let date = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() - 1,
+      1
+    );
+    const currMonthName = month[date.getMonth()];
+    const year = String(date.getFullYear()).slice(-2);
+    const monthField = currMonthName+'_Amount';
   }
 
   const getRowStyle = (params) => {
