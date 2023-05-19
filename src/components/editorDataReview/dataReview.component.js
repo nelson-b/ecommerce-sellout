@@ -99,7 +99,6 @@ function DataReviewComponent({}) {
 
   const defaultColDef = useMemo(() => {
     return {
-      // initialWidth: 200,
       wrapHeaderText: true,
       autoHeaderHeight: true,
       cellClassRules: {
@@ -116,36 +115,80 @@ function DataReviewComponent({}) {
   }, []);
 
   const autoGroupColumnDef = useMemo(() => {
-    return {
-      width: 160,
-      filterValueGetter: (params) => {
-        if (params.node) {
-          var colGettingGrouped = params.colDef.showRowGroup + "";
-          return params.api.getValue(colGettingGrouped, params.node);
-        }
-      },
-      pinned: "left",
-      cellRenderer: "agGroupCellRenderer",
-      cellRendererParams: {
-        suppressCount: true,
-        innerRenderer: footerTotalReview,
-      },
-    };
-  }, []);
+      return {
+        width: 160,
+        filterValueGetter: (params) => {
+          if (params.node) {
+            var colGettingGrouped = params.colDef.showRowGroup + "";
+            return params.api.getValue(colGettingGrouped, params.node);
+          }
+        },
+        pinned: "left",
+        cellRenderer: "agGroupCellRenderer",
+        cellRendererParams: {
+          suppressCount: true,
+          innerRenderer: footerTotalReview,
+        },
+      };
+    }, []);
 
-  const setVarCMvsLMCalc = (param) =>  {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    let date = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() - 1,
-      1
-    );
-    const currMonthName = month[date.getMonth()];
-    const year = String(date.getFullYear()).slice(-2);
-    const monthField = currMonthName+'_Amount';
+    const getCMLMValues = (params) => {
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      let date = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
+      );
 
+      const currMonthName = month[date.getMonth()];
+      const lastMonthName = month[date.getMonth()-1];
+      const year = String(date.getFullYear()).slice(-2);
+      const currmonthField = currMonthName + year;
+      const lastmonthField = lastMonthName + year;
+      
+      if(params.data){
+        var filterCurrMonths = Object.keys(params.data)
+          .filter((key) => [currmonthField].includes(key))
+          .reduce((obj, key) => {
+            obj[key] = params.data[key];
+            return obj;
+          }, {});
+        
+        var filterLastMonths = Object.keys(params.data)
+        .filter((key) => [lastmonthField].includes(key))
+        .reduce((obj, key) => {
+          obj[key] = params.data[key];
+          return obj;
+        }, {});
+
+        let ret = {
+          CurrentMonth: filterCurrMonths[currmonthField],
+          LastMonth: filterLastMonths[lastmonthField]
+        } 
+        return ret;
+    }
+    return undefined;
+  }
+
+  const setVarCMvsLMCalc = (params) =>  {
+    let resp = getCMLMValues(params);
     
+    if(resp != undefined){
+      return (resp.CurrentMonth - resp.LastMonth);
+    }
+    return '';
+  }
+
+  const setVarCMvsLMCalcPerc = (params) =>  {
+    let resp = getCMLMValues(params);
+    console.log(resp);
+    if(resp != undefined){
+      if(resp.LastMonth!=0){
+        return Math.round(((resp.CurrentMonth - resp.LastMonth)/resp.LastMonth)*100)
+      }
+    }
+    return 0; 
   }
 
   const getRowStyle = (params) => {
@@ -217,7 +260,7 @@ function DataReviewComponent({}) {
             singleClickEdit: true,
             filter: "agNumberColumnFilter",
             sortable: true,
-            // valueGetter: param => { return setVarCMvsLMCalc(param) },
+            valueGetter: param => { return setVarCMvsLMCalc(param) },
             valueParser: (params) => Number(params.newValue),
             aggFunc: "sum",
             suppressMenu: true,
@@ -237,6 +280,7 @@ function DataReviewComponent({}) {
             aggFunc: "sum",
             singleClickEdit: true,
             suppressMenu: true,
+            valueGetter: param => { return setVarCMvsLMCalcPerc(param) },
             valueFormatter: (params) => {
               return params.value + "%";
             },
