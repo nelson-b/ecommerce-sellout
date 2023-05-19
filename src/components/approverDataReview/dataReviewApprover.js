@@ -67,7 +67,7 @@ function DataReviewApprover({}) {
       field: "Partner",
       filter: true,
       pinned: "left",
-      width: 150,
+      width: 170,
       suppressSizeToFit: true,
     },
     {
@@ -166,41 +166,19 @@ function DataReviewApprover({}) {
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true,
-      cellStyle: function (params) {
-        if (params.value > "0") {
-          return { color: "#009530", fontWeight: "bold" };
-        } else if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
-        } else if (params.value == 0) {
-          return { color: "#009530", fontWeight: "bold" };
-        } else {
-          return null;
-        }
-      },
+      suppressMenu: true
     },
     {
-      headerName: "YTD Sellout Growth Vs Last Year (%)",
+      headerName: "YTD Sellout Growth",
       field: "YTD_Growth",
       editable: false,
-      minWidth: 180,
+      minWidth: 150,
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
       valueFormatter: (params) => {
         return params.value + "%";
-      },
-      cellStyle: function (params) {
-        if (params.value > "0") {
-          return { color: "#009530", fontWeight: "bold" };
-        } else if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
-        } else if (params.value == 0) {
-          return { color: "#009530", fontWeight: "bold" };
-        } else {
-          return null;
-        }
       },
     },
     {
@@ -379,12 +357,12 @@ function DataReviewApprover({}) {
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}
             groupHideOpenParents={true}
-            showOpenedGroup={true}
+            // showOpenedGroup={true}
+            // groupDefaultExpanded={-1}
             animateRows={true}
             suppressAggFuncInHeader={true}
             groupIncludeTotalFooter={true}
             groupIncludeFooter={true}
-            groupDefaultExpanded={-1}
             onGridReady={onGridReady}
             getRowStyle={getRowStyle}
             rowSelection={"multiple"}

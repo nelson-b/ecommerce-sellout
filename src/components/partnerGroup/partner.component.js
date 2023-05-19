@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { createSellOutData } from "../../actions/selloutaction";
 import {
@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
 import "./partner.component.css";
+import { CreatePartnerData } from "../../actions/partneraction";
 
 function PartnerComponent(props) {
   const location = useLocation();
@@ -28,7 +29,7 @@ function PartnerComponent(props) {
     platform_name: "",
     country: "",
     partnerGroup: "",
-    electricEntity: "",
+    se_electricEntity: "",
     reseller_seller: "",
     activation_date: "",
     business_type:"",
@@ -48,7 +49,6 @@ function PartnerComponent(props) {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm({
     mode: "onTouched",
@@ -60,7 +60,6 @@ function PartnerComponent(props) {
   const data = partnerData.find((e)=> e.partnerID === id);
 
   const onSubmit = (data) => {
-    console.log('formData', formData);
     console.log("form data", data);
   };
 
@@ -68,15 +67,18 @@ function PartnerComponent(props) {
     console.log("ERROR:::", error);
   };
 
-  const onChangeHandler = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
-
-  const createPartnerHandler = () => {    
-    setFormData(initialState);
-  };
-
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
+
+  //create api
+  const savePartner = (data) => {
+    CreatePartnerData(data)
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((e) => {
+      console.log(e);
+    });  
+  }
 
   return (
     <Container fluid>
@@ -199,14 +201,14 @@ function PartnerComponent(props) {
                       )}
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="electricEntity">
+                      <Form.Label size="sm" htmlFor="se_electricEntity">
                         Schneider Electric Entity
                       </Form.Label>
                       <Form.Select
                         size="sm"
-                        id="electricEntity"
-                        name="electricEntity"
-                        {...register("electricEntity", {
+                        id="se_electricEntity"
+                        name="se_electricEntity"
+                        {...register("se_electricEntity", {
                           required: "Schneider Electric Entity is required",
                         })}
                       >
@@ -215,9 +217,9 @@ function PartnerComponent(props) {
                         <option>Entity 2</option>
                         <option>Entity 3</option>
                       </Form.Select>
-                      {errors.electricEntity && (
+                      {errors.se_electricEntity && (
                         <Form.Text className="text-danger">
-                          {errors.electricEntity.message}
+                          {errors.se_electricEntity.message}
                         </Form.Text>
                       )}
                     </Col>
@@ -321,7 +323,6 @@ function PartnerComponent(props) {
                         size="sm"
                         id="business_type"
                         name="business_type"
-                        // onChange={(e) => onChangeHandler(e)}
                         {...register("business_type", {
                           required: "Business Type is required",
                         })}>
@@ -385,7 +386,7 @@ function PartnerComponent(props) {
                         {...register("url_address_partner", {
                           required: "URL Address of Partner is required",
                           pattern: {
-                            value: "(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?",
+                            value: /^((https?|ftp|smtp|http):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/i,
                             message: 'URL format incorrect'
                           }
                         })}
