@@ -14,7 +14,7 @@ import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
 import "../partnerList/partnerList.css";
 
-function PartnerList() {
+function PartnerList(props) {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
 
@@ -33,6 +33,7 @@ function PartnerList() {
       hide: false,
       editable: false,
       width: 80,
+      suppressMenu: true,
       cellRenderer: (params) => {
         const Status = params.value;
         console.log("params data", params);
@@ -112,6 +113,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "E2 Playbook Type",
@@ -121,6 +123,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Activation Date",
@@ -130,6 +133,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Model Type",
@@ -139,6 +143,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Currency of Sellout Reporting",
@@ -148,6 +153,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Data Collection Type",
@@ -157,6 +163,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "BOPP Type",
@@ -166,6 +173,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Marketplace Seller",
@@ -175,6 +183,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Schneider Electric Entity",
@@ -184,6 +193,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "GTM Type",
@@ -193,6 +203,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Partner Sellout Margin",
@@ -202,6 +213,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Partner URL",
@@ -211,6 +223,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Editor",
@@ -220,6 +233,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Backup Editor",
@@ -229,6 +243,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Approver 1",
@@ -238,6 +253,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Approver 2",
@@ -247,6 +263,7 @@ function PartnerList() {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
   ];
 
@@ -302,13 +319,13 @@ function PartnerList() {
             <AgGridReact
               className="ag-theme-alpine"
               animateRows="true"
-              rowData={partnerData}
-              columnDefs={columnDefs}
+              rowData={props.role === "approver" ? partnerData: partnerData }
+              columnDefs={props.role === "approver" ? columnDefs: columnDefs }
               defaultColDef={defaultColDef}
-              //   rowHeight={48}
               enableRangeSelection="true"
               rowSelection="multiple"
               suppressRowClickSelection="true"
+              suppressMenuHide= {true}
             />
           </div>
         </>
