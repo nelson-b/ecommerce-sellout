@@ -241,7 +241,6 @@ function DataReviewComponent({}) {
     console.log('setVarCMvsLYCalcPerc',resp);
     if(resp != undefined){
       if(resp.CurrentMonthLY!=0){
-        console.log('calc', Math.round(((resp.CurrentMonthCY - resp.CurrentMonthLY)/resp.CurrentMonthLY)*100));
         return Math.round(((resp.CurrentMonthCY - resp.CurrentMonthLY)/resp.CurrentMonthLY)*100);
       }
     }
