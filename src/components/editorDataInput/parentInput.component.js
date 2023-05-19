@@ -19,13 +19,10 @@ import Home from "../../images/home-icon.png";
 function DataInputComponent() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [rowData, setRowData] = useState(null);
 
-  const handleInputNavigation = () => {
-    navigate("/editorHome");
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleClearClick = () => {
+    window.location.reload();
   };
 
   const handleSave = (e) => {
@@ -36,24 +33,24 @@ function DataInputComponent() {
   const gridRef = useRef(null);
   const getData = [
     {
-      id: "Partner A",
-      Zone: "Zone 1",
-      Country: "Country A",
-      Partner_Account_Name: "Partner A",
-      Partner_Code: "PC 1",
-      Model: "E1",
-      Currency_Of_Reporting : "INR",
+      id: "Adalbert",
+      Zone: "DACH",
+      Country: "Germany",
+      Partner_Account_Name:  "Adalbert Zajadacz (Part of DEHA) DEU",
+      Partner_Code: "Adalbert",
+      Model: "E1 - Dist",
+      Currency_Of_Reporting : "EUR",
       Status: "Active",
       Jan_Estimated: "",
-      Jan_Amount: 23,
+      Jan_Amount: 169,
       Feb_Estimated: true,
-      Feb_Amount: 56,
+      Feb_Amount: 192,
       Mar_Estimated: "",
-      Mar_Amount: 67,
+      Mar_Amount: 202,
       Apr_Estimated: "",
-      Apr_Amount: 46,
+      Apr_Amount: 346,
       May_Estimated: true,
-      May_Amount: 39,
+      May_Amount: 439,
       Jun_Estimated: "",
       Jun_Amount: "",
       Jul_Estimated: "",
@@ -68,27 +65,27 @@ function DataInputComponent() {
       Nov_Amount: "",
       Dec_Estimated: "",
       Dec_Amount: "",
-      GrandTotal: 106.2,
+      GrandTotal: 1156,
     },
     {
-      id: "Partner B",
-      Zone: "Zone 2",
-      Country: "Country B",
-      Partner_Account_Name: "Partner B",
-      Partner_Code: "PC 2",
-      Model: "E2",
-      Currency_Of_Reporting: "USD",
+      id: "AFB",
+      Zone: "DACH",
+      Country: "Germany",
+      Partner_Account_Name: "AFB eSolutions DEU",
+      Partner_Code: "AFB",
+      Model: "E1 - Dist",
+      Currency_Of_Reporting: "EUR",
       Status: "Active",
       Jan_Estimated: true,
-      Jan_Amount: 23,
+      Jan_Amount: 0,
       Feb_Estimated: "",
-      Feb_Amount: 56,
+      Feb_Amount: 0,
       Mar_Estimated: "",
-      Mar_Amount: 67,
+      Mar_Amount: 0,
       Apr_Estimated: true,
-      Apr_Amount: 46,
+      Apr_Amount: 0,
       May_Estimated: "",
-      May_Amount: 79,
+      May_Amount: 0,
       Jun_Estimated: true,
       Jun_Amount: "",
       Jul_Estimated: "",
@@ -103,33 +100,33 @@ function DataInputComponent() {
       Nov_Amount: "",
       Dec_Estimated: "true",
       Dec_Amount: "",
-      GrandTotal: 106.2,
+      GrandTotal: 0,
     },
     {
-      id: "Partner C",
-      Zone: "Zone 1",
-      Country: "Country C",
-      Partner_Account_Name: "Partner C",
-      Partner_Code: "PC 3",
-      Model: "E2",
-      Currency_Of_Reporting: "EURO",
+      id: "Ahlsell",
+      Zone: "Nordics",
+      Country: "Norway",
+      Partner_Account_Name: "Ahlsell ELKO NOR",
+      Partner_Code: "Ahlsell",
+      Model: "E1 - Dist",
+      Currency_Of_Reporting: "NOK",
       Status: "Active",
       Jan_Estimated: "",
-      Jan_Amount: 23,
+      Jan_Amount: 1705,
       Feb_Estimated: "",
-      Feb_Amount: 56,
+      Feb_Amount: 1705,
       Mar_Estimated: "",
-      Mar_Amount: 67,
+      Mar_Amount: 1710,
       Apr_Estimated: true,
-      Apr_Amount: 46,
+      Apr_Amount: 1710,
       May_Estimated: "",
-      May_Amount: 45,
+      May_Amount: 1715,
       Jun_Estimated: "",
       Jun_Amount: "",
       Jul_Estimated: true,
       Jul_Amount: "",
       Aug_Estimated: true,
-      Aug_Amount: 67,
+      Aug_Amount: "",
       Sep_Estimated: "",
       Sep_Amount: "",
       Oct_Estimated: true,
@@ -138,27 +135,27 @@ function DataInputComponent() {
       Nov_Amount: "",
       Dec_Estimated: "",
       Dec_Amount: "",
-      GrandTotal: 106.2,
+      GrandTotal: 8545,
     },
     {
-      id: "Partner D",
-      Zone: "Zone 2",
-      Country: "Country B",
-      Partner_Account_Name: "Partner D",
-      Partner_Code: "PC 4",
-      Model: "E2",
-      Currency_Of_Reporting: "USD",
+      id: "Ahlsell",
+      Zone: "Nordics",
+      Country: "Sweden",
+      Partner_Account_Name: "Ahlsell ELKO SWE",
+      Partner_Code: "Ahlsell",
+      Model: "E2 - Dist",
+      Currency_Of_Reporting: "SEK",
       Status: "Closed",
       Jan_Estimated: true,
-      Jan_Amount: 23,
+      Jan_Amount: 1515,
       Feb_Estimated: "",
-      Feb_Amount: 56,
+      Feb_Amount: 1535,
       Mar_Estimated: "",
-      Mar_Amount: 67,
+      Mar_Amount: 4665,
       Apr_Estimated: true,
-      Apr_Amount: 46,
+      Apr_Amount: 4665,
       May_Estimated: "",
-      May_Amount: 56,
+      May_Amount: 5655,
       Jun_Estimated: true,
       Jun_Amount: "",
       Jul_Estimated: "",
@@ -173,12 +170,10 @@ function DataInputComponent() {
       Nov_Amount: "",
       Dec_Estimated: "",
       Dec_Amount: "",
-      GrandTotal: 106.2,
+      GrandTotal: 18035,
     },
   ];
   
-  const [rowData, setRowData] = useState(null);
-
   const columnDefs = [
     {
       field: "id",
@@ -238,9 +233,10 @@ function DataInputComponent() {
     {
       headerName: "Currency of Reporting",
       field: "Currency_Of_Reporting",
-      width: 100,
+      width: 140,
       editable: false,
       pinned: "left",
+      suppressMenu: true
     },
     {
       headerName: "Status",
@@ -248,6 +244,7 @@ function DataInputComponent() {
       width: 110,
       pinned: "left",
       editable: false,
+      suppressMenu: true,
       cellRenderer: (params) => {
         const Status = params.value;
         return (
@@ -335,6 +332,7 @@ function DataInputComponent() {
             editable: true,
             singleClickEdit: true,
             minWidth: 100,
+            suppressMenu: true,
             valueParser: (params) => Number(params.newValue),
             valueSetter: checkNumericValue,
             cellStyle: (params) => {
@@ -352,6 +350,7 @@ function DataInputComponent() {
             editable: true,
             singleClickEdit: true,
             minWidth: 300,
+            suppressMenu: true
           }
         )
       : columnDefs.push({
@@ -366,6 +365,7 @@ function DataInputComponent() {
             return fnSetIsEstimated(params, monthField);
           },
           enableRangeSelection: true,
+          suppressMenu: true
         });
   }
 
@@ -515,6 +515,7 @@ function DataInputComponent() {
             enableRangeSelection={true}
             suppressCopySingleCellRanges={true}
             onGridReady={onGridReady}
+            suppressMenuHide= {true}
           ></AgGridReact>
         </Row>
         <Row
@@ -525,10 +526,10 @@ function DataInputComponent() {
             <Button
               className="btn-upload cancel-header"
               onClick={() => {
-                handleInputNavigation();
+                handleClearClick();
               }}
             >
-              Cancel
+              Clear
             </Button>
           </Col>
           <Col xs="auto">

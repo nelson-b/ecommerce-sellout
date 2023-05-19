@@ -17,7 +17,6 @@ import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import approverData from "../../data/reviewApprover.json";
-import CancelModal from "../modal/cancelModal";
 import footerTotalReview from "./../editorDataReview/footerTotalReview";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
@@ -29,8 +28,8 @@ function DataReviewApprover({}) {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const [radioValue, setRadioValue] = useState("1");
-  const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState(0);
+  const [updatedData, setUpdatedData] = useState(rowData);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -49,7 +48,6 @@ function DataReviewApprover({}) {
       rowGroup: true,
       hide: true,
       filter: true,
-      sortable: true,
       pinned: "left",
       suppressSizeToFit: true,
       editable: false,
@@ -59,7 +57,6 @@ function DataReviewApprover({}) {
       field: "Model",
       rowGroup: true,
       hide: true,
-      sortable: true,
       filter: true,
       pinned: "left",
       suppressSizeToFit: true,
@@ -69,7 +66,6 @@ function DataReviewApprover({}) {
       headerName: "Partner Account Name",
       field: "Partner",
       filter: true,
-      sortable: true,
       pinned: "left",
       width: 150,
       suppressSizeToFit: true,
@@ -80,12 +76,14 @@ function DataReviewApprover({}) {
       pinned: "left",
       width: 140,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Status",
       field: "Status",
       pinned: "left",
       width: 110,
+      suppressMenu: true,
       cellRenderer: (params) => {
         const Status = params.value;
         return (
@@ -133,6 +131,7 @@ function DataReviewApprover({}) {
       minWidth: 100,
       aggFunc: "sum",
       suppressSizeToFit: true,
+      suppressMenu: true
     };
     columnDefs.push(columnDef);
   });
@@ -146,6 +145,18 @@ function DataReviewApprover({}) {
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
+      suppressMenu: true,
+      cellStyle: function (params) {
+        if (params.value > "0") {
+          return { color: "#009530", fontWeight: "bold" };
+        } else if (params.value < "0") {
+          return { color: "#ff0000", fontWeight: "bold" };
+        } else if (params.value == 0) {
+          return { color: "#009530", fontWeight: "bold" };
+        } else {
+          return null;
+        }
+      },
     },
     {
       headerName: "YTD Sellout Value",
@@ -155,6 +166,18 @@ function DataReviewApprover({}) {
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
+      suppressMenu: true,
+      cellStyle: function (params) {
+        if (params.value > "0") {
+          return { color: "#009530", fontWeight: "bold" };
+        } else if (params.value < "0") {
+          return { color: "#ff0000", fontWeight: "bold" };
+        } else if (params.value == 0) {
+          return { color: "#009530", fontWeight: "bold" };
+        } else {
+          return null;
+        }
+      },
     },
     {
       headerName: "YTD Sellout Growth Vs Last Year (%)",
@@ -164,8 +187,20 @@ function DataReviewApprover({}) {
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
+      suppressMenu: true,
       valueFormatter: (params) => {
         return params.value + "%";
+      },
+      cellStyle: function (params) {
+        if (params.value > "0") {
+          return { color: "#009530", fontWeight: "bold" };
+        } else if (params.value < "0") {
+          return { color: "#ff0000", fontWeight: "bold" };
+        } else if (params.value == 0) {
+          return { color: "#009530", fontWeight: "bold" };
+        } else {
+          return null;
+        }
       },
     },
     {
@@ -176,6 +211,7 @@ function DataReviewApprover({}) {
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
+      suppressMenu: true
     },
     {
       headerName: "System Comments",
@@ -185,6 +221,7 @@ function DataReviewApprover({}) {
       minWidth: 140,
       aggFunc: "sum",
       sortable: true,
+      suppressMenu: true
     },
     {
       headerName: "Editor Comments",
@@ -194,6 +231,7 @@ function DataReviewApprover({}) {
       minWidth: 140,
       aggFunc: "sum",
       sortable: true,
+      suppressMenu: true
     },
     {
       headerName: "Approver Comments",
@@ -203,6 +241,7 @@ function DataReviewApprover({}) {
       minWidth: 140,
       aggFunc: "sum",
       sortable: true,
+      suppressMenu: true
     }
   );
 
@@ -219,7 +258,8 @@ function DataReviewApprover({}) {
       resizable: true,
       filter: true,
       sortable: true,
-      suppressSizeToFit: true,
+      suppressSizeToFit: true, 
+      suppressMenuHide: true,
     };
   }, []);
 
@@ -246,11 +286,21 @@ function DataReviewApprover({}) {
   const handleCheckboxClick = (params) => {
     const selectedRows = params.api.getSelectedRows();
     setMessage(selectedRows?.length);
-    console.log("Selected Rows:", selectedRows);
+  };
+
+  const handleSave = (params) => {
+    const gridApi = params.api;
+    const updatedRowData = gridApi.getData();
+    setRowData(updatedRowData);
   };
 
   const handleReviewNavigation = () => {
     navigate("/approverHome");
+  };
+
+  const handleInvestigation = () => {
+    // navigate("/editorHome", { state: { message } });
+    alert(message ? `${message} Partner Selected for Data Approval ` : "");
   };
 
   const handleConfirm = () => {
@@ -340,9 +390,12 @@ function DataReviewApprover({}) {
             rowSelection={"multiple"}
             onSelectionChanged={handleCheckboxClick}
             groupSelectsChildren={true}
+            suppressMenuHide= {true}
           ></AgGridReact>
           <div className="checkbox-message">
-          {message>0?`${message} Partner Selected for Data Approval `:''}
+            {message > 0
+              ? `${message} Partner Selected for Data Approval `
+              : ""}
           </div>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
@@ -359,7 +412,7 @@ function DataReviewApprover({}) {
               <Col xs="auto">
                 <Button
                   className="btn-invest edit-header"
-                  onClick={(e) => handleConfirm()}
+                  onClick={(e) => handleInvestigation(message)}
                 >
                   Send For Investigation
                 </Button>
@@ -367,7 +420,7 @@ function DataReviewApprover({}) {
               <Col xs="auto">
                 <Button
                   className="btn-upload edit-header"
-                  onClick={(e) => handleConfirm()}
+                  onClick={(e) => handleSave()}
                 >
                   Save
                 </Button>

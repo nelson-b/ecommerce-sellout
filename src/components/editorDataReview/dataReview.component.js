@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useRef } from "react";
+import React, { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import {
@@ -33,7 +33,6 @@ function DataReviewComponent({}) {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const [radioValue, setRadioValue] = useState("1");
-  const [showModal, setShowModal] = useState(false);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -86,6 +85,7 @@ function DataReviewComponent({}) {
       width: 140,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true
     },
     {
       headerName: "Status",
@@ -93,6 +93,7 @@ function DataReviewComponent({}) {
       pinned: "left",
       width: 110,
       suppressSizeToFit: true,
+      suppressMenu: true,
       cellRenderer: (params) => {
         const Status = params.value;
         return (
@@ -196,6 +197,7 @@ function DataReviewComponent({}) {
             minWidth: 100,
             aggFunc: "sum",
             sortable: true,
+            suppressMenu: true,
             valueParser: (params) => Number(params.newValue),
             cellStyle: (params) => {
               return setIsEstimated(params, monthWithYearValue);
@@ -215,6 +217,7 @@ function DataReviewComponent({}) {
             sortable: true,
             // valueGetter: calculateDifference,
             aggFunc: "sum",
+            suppressMenu: true,
             cellStyle: function (params) {
               if (params.value < 0 || params.value > 0 || params.value == 0) {
                 return { color: "#009530", fontWeight: "bold" };
@@ -230,6 +233,7 @@ function DataReviewComponent({}) {
             sortable: true,
             aggFunc: "sum",
             singleClickEdit: true,
+            suppressMenu: true,
             valueFormatter: (params) => {
               return params.value + "%";
             },
@@ -249,6 +253,7 @@ function DataReviewComponent({}) {
           aggFunc: "sum",
           singleClickEdit: true,
           minWidth: 100,
+          suppressMenu: true,
           valueParser: (params) => Number(params.newValue),
           cellStyle: (params) => {
             return setIsEstimated(params, monthWithYearValue);
@@ -280,6 +285,7 @@ function DataReviewComponent({}) {
           minWidth: 100,
           aggFunc: "sum",
           sortable: true,
+          suppressMenu: true,
           valueParser: (params) => Number(params.newValue),
           cellStyle: (params) => {
             return setIsEstimated(params, prevYearwithMonthValue);
@@ -298,6 +304,7 @@ function DataReviewComponent({}) {
           aggFunc: "sum",
           filter: "agNumberColumnFilter",
           sortable: true,
+          suppressMenu: true,
           cellStyle: function (params) {
             if (params.value < 0 || params.value > 0 || params.value == 0) {
               return { color: "#b10043", fontWeight: "bold" };
@@ -313,6 +320,7 @@ function DataReviewComponent({}) {
           aggFunc: "sum",
           filter: "agNumberColumnFilter",
           sortable: true,
+          suppressMenu: true,
           valueFormatter: (params) => {
             return params.value + "%";
           },
@@ -330,6 +338,7 @@ function DataReviewComponent({}) {
         sortable: true,
         filter: "agNumberColumnFilter",
         aggFunc: "sum",
+        suppressMenu: true,
         singleClickEdit: true,
         minWidth: 100,
         valueParser: (params) => Number(params.newValue),
@@ -347,6 +356,7 @@ function DataReviewComponent({}) {
       minWidth: 200,
       aggFunc: "sum",
       sortable: true,
+      suppressMenu: true
     },
     {
       headerName: "System Comments",
@@ -356,6 +366,7 @@ function DataReviewComponent({}) {
       minWidth: 200,
       aggFunc: "sum",
       sortable: true,
+      suppressMenu: true
     },
     {
       headerName: "Editor Comments",
@@ -365,6 +376,7 @@ function DataReviewComponent({}) {
       minWidth: 200,
       aggFunc: "sum",
       sortable: true,
+      suppressMenu: true
     },
     {
       headerName: "Approver Comments",
@@ -374,6 +386,7 @@ function DataReviewComponent({}) {
       minWidth: 200,
       aggFunc: "sum",
       sortable: true,
+      suppressMenu: true
     }
   );
 
@@ -388,6 +401,10 @@ function DataReviewComponent({}) {
   const handleDtaInputNavigation = () => {
     navigate("/dataInput");
   }
+
+  const handleSave = () => {
+    setRowData(rowData);
+  };
 
   const excelStyles = useMemo(() => {
     return [
@@ -498,7 +515,9 @@ function DataReviewComponent({}) {
             onGridReady={onGridReady}
             getRowStyle={getRowStyle}
             excelStyles={excelStyles}
-            rowSelection={"single"}
+            suppressMenuHide= {true}
+            // onCellValueChanged={handleCellValueChanged}
+            // editable={true}
           ></AgGridReact>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
@@ -532,7 +551,7 @@ function DataReviewComponent({}) {
                 <Button
                   className="btn-upload save-header"
                   onClick={() => {
-                    handleConfirm();
+                    handleSave();
                   }}
                 >
                   Save
