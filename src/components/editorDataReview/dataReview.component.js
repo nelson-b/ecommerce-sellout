@@ -133,7 +133,7 @@ function DataReviewComponent({}) {
     };
   }, []);
 
-  const setVarCMvsLMCalc = (param) => {
+  const setVarCMvsLMCalc = (param) =>  {
     
   }
 
