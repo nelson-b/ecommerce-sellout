@@ -17,6 +17,7 @@ import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import approverData from "../../data/reviewApprover.json";
+import approverDataEuro from "../../data/reviewApproverEuro.json";
 import footerTotalReview from "./../editorDataReview/footerTotalReview";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
@@ -383,6 +384,11 @@ function DataReviewApprover({}) {
         checkboxSelection: true,
         innerRenderer: footerTotalReview,
       },
+      cellRendererParams: {
+        checkbox: true,
+      },
+      headerCheckboxSelection: true,
+      headerCheckboxSelectionCurrentPageOnly: true,
     };
   }, []);
 
@@ -476,12 +482,12 @@ function DataReviewApprover({}) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={radioValue == 1 ? approverData : approverData}
+            rowData={radioValue == 1 ? approverData : approverDataEuro}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}
             groupHideOpenParents={true}
-            // showOpenedGroup={true}
+            showOpenedGroup={true}
             // groupDefaultExpanded={-1}
             animateRows={true}
             suppressAggFuncInHeader={true}
@@ -496,7 +502,7 @@ function DataReviewApprover({}) {
           ></AgGridReact>
           <div className="checkbox-message">
             {message > 0
-              ? `${message} Partner Selected for Data Approval `
+              ? `${message} Partner Selected `
               : ""}
           </div>
           <div>

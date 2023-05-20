@@ -1,0 +1,86 @@
+[
+    {
+        "Zone": "DACH",
+        "Country": "Germany",
+        "Partner": "Adalbert",
+        "month": "March",
+        "SelloutValue": 1200,
+        "newValue": 290,
+        "changeValue": 400,
+        "change_per": 28,
+        "userChange": "",
+        "editorComments": ""
+    },
+    {
+        "Zone": "Nordics",
+        "Country": "Ireland",
+        "Partner": "AFB",
+        "month": "January",
+        "SelloutValue": 1202,
+        "newValue": 980,
+        "changeValue": 500,
+        "change_per": 30,
+        "userChange": "",
+        "editorComments": ""
+    },
+    {
+        "Zone": "DACH",
+        "Country": "India",
+        "Partner": "Ahlsell",
+        "month": "February",
+        "SelloutValue": 2022,
+        "newValue": 10208,
+        "changeValue": 600,
+        "change_per": 22,
+        "userChange": "",
+        "editorComments": ""
+    },
+    {
+        "Zone": "DACH",
+        "Country": "Bengal",
+        "Partner": "Ahlsell",
+        "month": "March",
+        "SelloutValue": 1025,
+        "newValue": 290,
+        "changeValue": 260,
+        "change_per": 12,
+        "userChange": "",
+        "editorComments": ""
+    },
+    {
+        "Zone": "DACH",
+        "Country": "Germany",
+        "Partner": "Ahlsell",
+        "month": "February",
+        "SelloutValue": 1012,
+        "newValue": 908,
+        "changeValue": 200,
+        "change_per": 30,
+        "userChange": "",
+        "editorComments": ""
+    },
+    {
+        "Zone": "DACH",
+        "Country": "Bengal",
+        "Partner": "AFB",
+        "month": "March",
+        "SelloutValue": 2010,
+        "newValue": 940,
+        "changeValue": 200,
+        "change_per": 10,
+        "userChange": "",
+        "editorComments": ""
+    },
+    {
+        "Zone": "Nordics",
+        "Country": "Sweden",
+        "Partner": "AFB",
+        "month": "January",
+        "SelloutValue": 790,
+        "newValue": 309,
+        "changeValue": 809,
+        "change_per": 20,
+        "userChange": "",
+        "editorComments": ""
+    }
+]

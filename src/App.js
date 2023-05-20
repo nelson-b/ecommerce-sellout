@@ -12,6 +12,7 @@ import DataReview from "./components/editorDataReview/dataReview.component.js";
 import PartnerList from "./components/partnerList/partnerList.js";
 import LoginComponent from "./components/login/login.component.js";
 import DataReviewApprover from "./components/approverDataReview/dataReviewApprover.js";
+import PartnerQuarterApprover from "./components/approverDataReview/previousQuarterReview.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +34,7 @@ function App() {
 
           <Route path="*" element={<ErrorPageComponent />} />
           <Route path="/approverReview" element={<DataReviewApprover />} />
+          <Route path="/partnerPreviousReview" element={<PartnerQuarterApprover />} />
           <Route path="/addPartner" exact element={<PartnerComponent isCreatedModule={true} />} />
           <Route path="/updatePartner" exact element={<PartnerComponent isCreatedModule={false}/>} />
           <Route path="/login" element={ <LoginComponent/> } />
