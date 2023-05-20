@@ -27,7 +27,7 @@ function App() {
           <Route path="/dataInput" element={<DataInputComponent />} />
           <Route path="/dataReview" element={<DataReview />} />
           <Route path="/partnerList" element={<PartnerList />} />
-          <Route path="/" element={<HomeComponent />} />
+          {/* <Route path="/" element={<HomeComponent />} /> */}
           <Route path="/editorHome" element={<HomeComponent role={'editor'} />} />
           <Route path="/approverHome" element={<HomeComponent  role={'approver'}/>} />
           <Route path="/superUserHome" element={<HomeComponent  role={'superuser'}/>} />
