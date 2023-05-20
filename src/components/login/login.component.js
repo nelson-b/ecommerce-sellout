@@ -37,15 +37,24 @@ function Login() {
   const [formData, setFormData] = useState(initialState);
 
   const onSubmit = (data) => {
-    console.log("form data", data);
+    loginNavigation(data);
   };
 
   const onError = (error) => {
     console.log("ERROR:::", error);
   };
 
-  const loginNavigation = () => {
-    navigate("/");
+  const loginNavigation = (data) => {
+    if(data.username=="nelson@se.com" && data.usrpassword=="test@123"){
+      navigate("/editorHome")
+    }
+    if(data.username=="katie@se.com" && data.usrpassword=="test@123"){
+      navigate("/approverHome")
+    }
+    if(data.username=="thomas@se.com" && data.usrpassword=="test@123"){
+      navigate("/superUserHome")
+    }
+    console.log('loginNavigation', data);
   };
 
   return (
@@ -105,13 +114,9 @@ function Login() {
                 <Form.Group className="mb-4">
                   <Row className="justify-content-center mb-4">
                     <Button
-                      // variant="success"
                       className="btn-login save-header btn-create"
                       type="submit"
-                      onClick={() => {
-                        loginNavigation();
-                      }}
-                    >
+                      >
                       Login
                     </Button>
                   </Row>
