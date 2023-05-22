@@ -572,7 +572,7 @@ function DataReviewComponent({}) {
         </Row>
         <div>
           <Breadcrumb>
-            <Breadcrumb.Item href="/">
+            <Breadcrumb.Item href="/editorHome">
               <img
                 src={Home}
                 alt="home"
@@ -625,7 +625,6 @@ function DataReviewComponent({}) {
             autoGroupColumnDef={autoGroupColumnDef}
             groupHideOpenParents={true}
             showOpenedGroup={true}
-            // groupDefaultExpanded={-1}
             animateRows={true}
             suppressAggFuncInHeader={true}
             groupIncludeTotalFooter={true}
