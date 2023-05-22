@@ -1,16 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { createSellOutData } from "../../actions/selloutaction";
-import {
-  Button,
-  Col,
-  Form,
-  Row,
-  Container,
-  Breadcrumb,
-  Card,
-  Tooltip,
-  OverlayTrigger,
+import { Button, Col, Form, Row, Container, Breadcrumb, Card, Tooltip, OverlayTrigger,
 } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import MyMenu from "../menu/menu.component.js";
@@ -78,11 +69,13 @@ function PartnerComponent(props) {
     setShowErrorModal(false);
   };
 
+  const [errorRet, setErrorRet] = useState([]);
+
   const errormsg = {
     headerLabel: "Error....",
     variant: "danger",
     header: "There are below errors while processing. Please recitify and retry",
-    content: ['Please connect with IT support if required']
+    content: errorRet
   }
 
   const onSubmit = (data) => {
@@ -101,6 +94,7 @@ function PartnerComponent(props) {
       })
       .catch((e) => {
         setShowSuccessModal(false);
+        setErrorRet(e);
         setShowErrorModal(true);
         console.log(e);
       });
