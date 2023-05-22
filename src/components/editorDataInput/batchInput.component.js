@@ -1,12 +1,12 @@
-import { Form, FormControl, Row, Col, Button, Container } from "react-bootstrap";
+import { Form, Row, Col, Button, Container } from "react-bootstrap";
 import "./parentInput.component.css";
-import { get, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import * as xlsx from "xlsx-js-style";
-import FileSaver from "file-saver";
 import AlertModel from "../modal/alertModel";
 import { AllCalMonths } from "../constant";
+
 
 function BatchInputComponent({ getData }) {
   const navigate = useNavigate();
@@ -53,16 +53,8 @@ function BatchInputComponent({ getData }) {
   const [showShouldUpdModal, setShowShouldUpdModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  const handleShowSuccessModal = () => {
-    setShowSuccessModal(true);
-  };
-
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
-  };
-
-  const handleShowErrorModal = () => {
-    setShowErrorModal(true);
   };
 
   const handleCloseErrorModal = () => {

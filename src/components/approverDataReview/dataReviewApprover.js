@@ -488,7 +488,6 @@ function DataReviewApprover({}) {
             autoGroupColumnDef={autoGroupColumnDef}
             groupHideOpenParents={true}
             showOpenedGroup={true}
-            // groupDefaultExpanded={-1}
             animateRows={true}
             suppressAggFuncInHeader={true}
             groupIncludeTotalFooter={true}
