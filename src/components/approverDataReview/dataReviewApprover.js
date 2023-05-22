@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
+import { AgGridColumn } from "ag-grid-react";
 import {
   Button,
   Row,
@@ -23,14 +24,14 @@ import active from "../../images/active.png";
 import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
 import "../approverDataReview/dataReviewApprover.css";
+import customHeader from "../../components/approverDataReview/customHeader";
 
-function DataReviewApprover({}) {
+function DataReviewApprover({ props }) {
   const gridRef = useRef();
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const [radioValue, setRadioValue] = useState("1");
   const [message, setMessage] = useState(0);
-  const [updatedData, setUpdatedData] = useState(rowData);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -77,7 +78,7 @@ function DataReviewApprover({}) {
       pinned: "left",
       width: 140,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Status",
@@ -105,10 +106,10 @@ function DataReviewApprover({}) {
     const today = new Date();
     const month = today.getMonth() + 1;
     const quarter = Math.ceil(month / 3);
-    console.log('quarter', `Q${quarter}`);
+    console.log("quarter", `Q${quarter}`);
     return `Q${quarter}`;
   };
-  const quat = getCurrentQuarter();
+  const currentQuater = getCurrentQuarter();
 
   const getQuarterMonths = (quarter) => {
     const quarters = {
@@ -119,25 +120,19 @@ function DataReviewApprover({}) {
     };
     return quarters[quarter] || [];
   };
-  const quatMonths = getQuarterMonths(quat);
+  const quaterMonths = getQuarterMonths(currentQuater);
 
-  const getMonthField = (month) => {
-    const currentDate = new Date();
-    const currentYear = String(currentDate.getFullYear()).slice(-2);
-    const monthValue = month + currentYear;
-    return monthValue
-  }
+  const currentDate = new Date();
+  const currentYear = String(currentDate.getFullYear()).slice(-2);
 
-  const getPrevMonthField = (month) => {
-    const currentDate = new Date();
-    const currentYear = String(currentDate.getFullYear()-1).slice(-2);
+  const expandColumn = {
+    headerGroupComponent: customHeader,
+    children: [{ field: "", minWidth: 70, suppressMenu: true }],
+  };
+
+  quaterMonths.forEach((month, index) => {
     const monthValue = month + currentYear;
-    return monthValue
-  }
-  
-  quatMonths.forEach((month, index) => {
-    const monthValue = getMonthField(month);
-    const columnDef = {
+    const columnDef1 = {
       headerName: `${monthValue}`,
       field: `${monthValue}`,
       filter: true,
@@ -145,20 +140,36 @@ function DataReviewApprover({}) {
       minWidth: 100,
       aggFunc: "sum",
       suppressSizeToFit: true,
-      suppressMenu: true
+      suppressMenu: true,
+      columnGroupShow: "open",
     };
-    columnDefs.push(columnDef);
+    expandColumn.children.push(columnDef1);
   });
+  columnDefs.push(expandColumn);
+
+  const getMonthField = (month) => {
+    const currentDate = new Date();
+    const currentYear = String(currentDate.getFullYear()).slice(-2);
+    const monthValue = month + currentYear;
+    return monthValue;
+  };
+
+  const getPrevMonthField = (month) => {
+    const currentDate = new Date();
+    const currentYear = String(currentDate.getFullYear() - 1).slice(-2);
+    const monthValue = month + currentYear;
+    return monthValue;
+  };
 
   const getTotSellOutCurrQuatrCalc = (params) => {
     const quat = getCurrentQuarter();
     const quatMonths = getQuarterMonths(quat);
     let sellOutValArr = [];
     quatMonths.forEach((month, index) => {
-      console.log('index', index);
+      console.log("index", index);
       let fieldMonth = getMonthField(month);
-      console.log('fieldMonth', fieldMonth);
-      if(params.data){
+      console.log("fieldMonth", fieldMonth);
+      if (params.data) {
         var filterMonthCQ = Object.keys(params.data)
           .filter((key) => [fieldMonth].includes(key))
           .reduce((obj, key) => {
@@ -167,18 +178,18 @@ function DataReviewApprover({}) {
           }, {});
       }
 
-      if(filterMonthCQ){
+      if (filterMonthCQ) {
         let fieldMonthData = filterMonthCQ[fieldMonth];
         sellOutValArr = sellOutValArr.concat(fieldMonthData);
       }
     });
 
-    params.data.SelloutCQ = sellOutValArr.reduce(function(prev, current) {
-      return prev + +current
+    params.data.SelloutCQ = sellOutValArr.reduce(function (prev, current) {
+      return prev + +current;
     }, 0);
-     
+
     return params.data.SelloutCQ;
-  }
+  };
 
   const getTotalYTDSellOutGrowthCalc = (params) => {
     const currentDate = new Date();
@@ -186,10 +197,10 @@ function DataReviewApprover({}) {
 
     let YTDSellOutValArr = [];
     getYTDMonths.forEach((month, index) => {
-      console.log('index', index);
+      console.log("index", index);
       let fieldMonth = getMonthField(month);
-      console.log('fieldMonth', fieldMonth);
-      if(params.data){
+      console.log("fieldMonth", fieldMonth);
+      if (params.data) {
         var filterMonthsYTD = Object.keys(params.data)
           .filter((key) => [fieldMonth].includes(key))
           .reduce((obj, key) => {
@@ -198,21 +209,21 @@ function DataReviewApprover({}) {
           }, {});
       }
 
-      if(filterMonthsYTD){
+      if (filterMonthsYTD) {
         let fieldMonthData = filterMonthsYTD[fieldMonth];
         YTDSellOutValArr = YTDSellOutValArr.concat(fieldMonthData);
       }
     });
 
-    params.data.YTD = YTDSellOutValArr.reduce(function(prev, current) {
-      return prev + +current
+    params.data.YTD = YTDSellOutValArr.reduce(function (prev, current) {
+      return prev + +current;
     }, 0);
 
     return params.data.YTD;
-  }
+  };
 
   const getYTDSelloutGrowthPercCalc = (params) => {
-    console.log('getYTDSelloutGrowthPercCalc', params.data);
+    console.log("getYTDSelloutGrowthPercCalc", params.data);
     //YTD Sellout CY
     let YTDSelloutCY = params.data.YTD;
 
@@ -221,10 +232,10 @@ function DataReviewApprover({}) {
 
     let YTDSellOutValArrLY = [];
     getYTDMonthsLY.forEach((month, index) => {
-      console.log('index', index);
+      console.log("index", index);
       let fieldMonth = getPrevMonthField(month);
-      console.log('fieldMonth', fieldMonth);
-      if(params.data){
+      console.log("fieldMonth", fieldMonth);
+      if (params.data) {
         var filterMonthsYTDLY = Object.keys(params.data)
           .filter((key) => [fieldMonth].includes(key))
           .reduce((obj, key) => {
@@ -233,21 +244,22 @@ function DataReviewApprover({}) {
           }, {});
       }
 
-      if(filterMonthsYTDLY){
+      if (filterMonthsYTDLY) {
         let fieldMonthData = filterMonthsYTDLY[fieldMonth];
         YTDSellOutValArrLY = YTDSellOutValArrLY.concat(fieldMonthData);
       }
     });
 
-    let YTDSelloutLY = YTDSellOutValArrLY.reduce(function(prev, current) {
-      return prev + +current
+    let YTDSelloutLY = YTDSellOutValArrLY.reduce(function (prev, current) {
+      return prev + +current;
     }, 0);
 
-    params.data.YTD_Growth = ((YTDSelloutCY-YTDSelloutLY)/YTDSelloutLY)*100;
+    params.data.YTD_Growth =
+      ((YTDSelloutCY - YTDSelloutLY) / YTDSelloutLY) * 100;
     //% difference of YTD Sellout CY vs YTD Sellout LY
 
     return Math.round(params.data.YTD_Growth);
-  }
+  };
 
   columnDefs.push(
     {
@@ -259,13 +271,8 @@ function DataReviewApprover({}) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      valueGetter: params => { return getTotSellOutCurrQuatrCalc(params) },
-      cellStyle: function (params) {  
-        if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
-        } else {
-          return { color: "#009530", fontWeight: "bold" };
-        }
+      valueGetter: (params) => {
+        return getTotSellOutCurrQuatrCalc(params);
       },
     },
     {
@@ -277,13 +284,8 @@ function DataReviewApprover({}) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      valueGetter: params => { return getTotalYTDSellOutGrowthCalc(params) },
-      cellStyle: function (params) {  
-        if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
-        } else {
-          return { color: "#009530", fontWeight: "bold" };
-        }
+      valueGetter: (params) => {
+        return getTotalYTDSellOutGrowthCalc(params);
       },
     },
     {
@@ -298,14 +300,16 @@ function DataReviewApprover({}) {
       valueFormatter: (params) => {
         return params.value + "%";
       },
-      valueGetter: params => { return getYTDSelloutGrowthPercCalc(params) },
-      cellStyle: function (params) {  
+      valueGetter: (params) => {
+        return getYTDSelloutGrowthPercCalc(params);
+      },
+      cellStyle: function (params) {
         if (params.value < "0") {
           return { color: "#ff0000", fontWeight: "bold" };
         } else {
           return { color: "#009530", fontWeight: "bold" };
         }
-      }
+      },
     },
     {
       headerName: "Ambition Data",
@@ -315,7 +319,7 @@ function DataReviewApprover({}) {
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "System Comments",
@@ -325,7 +329,7 @@ function DataReviewApprover({}) {
       minWidth: 140,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Editor Comments",
@@ -335,7 +339,7 @@ function DataReviewApprover({}) {
       minWidth: 140,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Approver Comments",
@@ -345,7 +349,7 @@ function DataReviewApprover({}) {
       minWidth: 140,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
     }
   );
 
@@ -362,7 +366,7 @@ function DataReviewApprover({}) {
       resizable: true,
       filter: true,
       sortable: true,
-      suppressSizeToFit: true, 
+      suppressSizeToFit: true,
       suppressMenuHide: true,
     };
   }, []);
@@ -498,12 +502,10 @@ function DataReviewApprover({}) {
             rowSelection={"multiple"}
             onSelectionChanged={handleCheckboxClick}
             groupSelectsChildren={true}
-            suppressMenuHide= {true}
+            suppressMenuHide={true}
           ></AgGridReact>
           <div className="checkbox-message">
-            {message > 0
-              ? `${message} Partner Selected `
-              : ""}
+            {message > 0 ? `${message} Partner Selected ` : ""}
           </div>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>

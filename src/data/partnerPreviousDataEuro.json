@@ -1,0 +1,86 @@
+[
+    {
+        "Zone": "Nordics",
+        "Country": "Ireland",
+        "Partner": "AFB",
+        "month": "January",
+        "SelloutValue": 2111,
+        "newValue": 980,
+        "changeValue": 500,
+        "change_per": 20,
+        "userChange": "",
+        "editorComments": "Received Updated Values From Distributor"
+    },
+    {
+        "Zone": "Nordics",
+        "Country": "Swedan",
+        "Partner": "Ahlsell",
+        "month": "February",
+        "SelloutValue": 1122,
+        "newValue": 2108,
+        "changeValue": 700,
+        "change_per": 12,
+        "userChange": "",
+        "editorComments": "Received Updated Values From Distributor"
+    },
+    {
+        "Zone": "DACH",
+        "Country": "Finland",
+        "Partner": "Ahlsell",
+        "month": "March",
+        "SelloutValue": 2125,
+        "newValue": 590,
+        "changeValue": 360,
+        "change_per": 15,
+        "userChange": "",
+        "editorComments": ""
+    },
+    {
+        "Zone": "DACH",
+        "Country": "Germany",
+        "Partner": "Ahlsell",
+        "month": "February",
+        "SelloutValue": 1212,
+        "newValue": 1008,
+        "changeValue": 600,
+        "change_per": 30,
+        "userChange": "",
+        "editorComments": ""
+    },
+    {
+        "Zone": "DACH",
+        "Country": "Germany",
+        "Partner": "Adalbert",
+        "month": "March",
+        "SelloutValue": 2200,
+        "newValue": 390,
+        "changeValue": 200,
+        "change_per": 38,
+        "userChange": "",
+        "editorComments": ""
+    },
+    {
+        "Zone": "DACH",
+        "Country": "Norway",
+        "Partner": "AFB",
+        "month": "March",
+        "SelloutValue": 1010,
+        "newValue": 840,
+        "changeValue": 100,
+        "change_per": 20,
+        "userChange": "",
+        "editorComments": ""
+    },
+    {
+        "Zone": "Nordics",
+        "Country": "Sweden",
+        "Partner": "AFB",
+        "month": "January",
+        "SelloutValue": 990,
+        "newValue": 709,
+        "changeValue": 509,
+        "change_per": 10,
+        "userChange": "",
+        "editorComments": ""
+    }
+]
