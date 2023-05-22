@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
+import { AgGridColumn } from "ag-grid-react";
 import {
   Button,
   Row,
@@ -23,14 +24,14 @@ import active from "../../images/active.png";
 import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
 import "../approverDataReview/dataReviewApprover.css";
+import customHeader from "../../components/approverDataReview/customHeader";
 
-function DataReviewApprover({}) {
+function DataReviewApprover({ props }) {
   const gridRef = useRef();
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const [radioValue, setRadioValue] = useState("1");
   const [message, setMessage] = useState(0);
-  const [updatedData, setUpdatedData] = useState(rowData);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -77,7 +78,7 @@ function DataReviewApprover({}) {
       pinned: "left",
       width: 140,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Status",
@@ -107,7 +108,7 @@ function DataReviewApprover({}) {
     const quarter = Math.ceil(month / 3);
     return `Q${quarter}`;
   };
-  const quat = getCurrentQuarter();
+  const currentQuater = getCurrentQuarter();
 
   const getQuarterMonths = (quarter) => {
     const quarters = {
@@ -118,13 +119,19 @@ function DataReviewApprover({}) {
     };
     return quarters[quarter] || [];
   };
-  const quatMonths = getQuarterMonths(quat);
+  const quaterMonths = getQuarterMonths(currentQuater);
 
-  quatMonths.forEach((month, index) => {
-    const currentDate = new Date();
-    const currentYear = String(currentDate.getFullYear()).slice(-2);
+  const currentDate = new Date();
+  const currentYear = String(currentDate.getFullYear()).slice(-2);
+
+  const expandColumn = {
+    headerGroupComponent: customHeader,
+    children: [{ field: '', minWidth: 70, suppressMenu: true },],
+  };
+
+  quaterMonths.forEach((month, index) => {
     const monthValue = month + currentYear;
-    const columnDef = {
+    const columnDef1 = {
       headerName: `${monthValue}`,
       field: `${monthValue}`,
       filter: true,
@@ -132,10 +139,12 @@ function DataReviewApprover({}) {
       minWidth: 100,
       aggFunc: "sum",
       suppressSizeToFit: true,
-      suppressMenu: true
+      suppressMenu: true,
+      columnGroupShow: "open",
     };
-    columnDefs.push(columnDef);
+    expandColumn.children.push(columnDef1);
   });
+  columnDefs.push(expandColumn);
 
   columnDefs.push(
     {
@@ -156,7 +165,7 @@ function DataReviewApprover({}) {
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "YTD Sellout Growth",
@@ -188,7 +197,7 @@ function DataReviewApprover({}) {
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "System Comments",
@@ -198,7 +207,7 @@ function DataReviewApprover({}) {
       minWidth: 140,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Editor Comments",
@@ -208,7 +217,7 @@ function DataReviewApprover({}) {
       minWidth: 140,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Approver Comments",
@@ -218,7 +227,7 @@ function DataReviewApprover({}) {
       minWidth: 140,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
     }
   );
 
@@ -235,7 +244,7 @@ function DataReviewApprover({}) {
       resizable: true,
       filter: true,
       sortable: true,
-      suppressSizeToFit: true, 
+      suppressSizeToFit: true,
       suppressMenuHide: true,
     };
   }, []);
@@ -372,12 +381,10 @@ function DataReviewApprover({}) {
             rowSelection={"multiple"}
             onSelectionChanged={handleCheckboxClick}
             groupSelectsChildren={true}
-            suppressMenuHide= {true}
+            suppressMenuHide={true}
           ></AgGridReact>
           <div className="checkbox-message">
-            {message > 0
-              ? `${message} Partner Selected `
-              : ""}
+            {message > 0 ? `${message} Partner Selected ` : ""}
           </div>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>

@@ -50,6 +50,15 @@ function PartnerList(props) {
       },
     },
     {
+      headerName: "Platform Name",
+      field: "platformNmae",
+      width: 150,
+      sortable: true,
+      filter: true,
+      suppressNavigable: true,
+      editable: false,
+    },
+    {
       headerName: "Partner Account Name",
       field: "PartnerAccount",
       width: 150,
@@ -59,9 +68,29 @@ function PartnerList(props) {
       editable: false,
     },
     {
-      headerName: "partner Group",
-      field: "partnerGroup",
+      headerName: "Reseller Name",
+      field: "reseller",
       width: 140,
+      sortable: true,
+      filter: true,
+      suppressSizeToFit: true,
+      editable: false,
+      suppressMenu: true
+    },
+    {
+      headerName: "Schneider Electric Entity",
+      field: "schneider",
+      width: 150,
+      sortable: true,
+      filter: true,
+      suppressSizeToFit: true,
+      editable: false,
+      suppressMenu: true
+    },
+    {
+      headerName: "Partner Group",
+      field: "partnerGroup",
+      width: 150,
       sortable: true,
       filter: true,
       suppressNavigable: true,
@@ -71,7 +100,7 @@ function PartnerList(props) {
     {
       headerName: "Partner ID",
       field: "partnerID",
-      width: 120,
+      width: 150,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -169,26 +198,6 @@ function PartnerList(props) {
       headerName: "BOPP Type",
       field: "bopp",
       width: 120,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true
-    },
-    {
-      headerName: "Marketplace Seller",
-      field: "marketplace",
-      width: 140,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true
-    },
-    {
-      headerName: "Schneider Electric Entity",
-      field: "schneider",
-      width: 150,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,

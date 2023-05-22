@@ -467,12 +467,12 @@ function Home(props) {
         <Row className="bottom-container">
           <Col className="window-container">
             <div className="window-header">
-              Sell Out Data Input Window Is Open Till 16th May 18:00 UTC
+              Sell Out Data Input Window Is Open Till 20th May 18:00 UTC
             </div>
           </Col>
           <Col>
             <div className="window-header">
-              New Partner Creation request has been approved
+              Sell Out Data Input Window Will be Closed by 25th May 18:00 UTC
             </div>
           </Col>
         </Row>

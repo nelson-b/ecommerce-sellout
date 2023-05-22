@@ -17,6 +17,7 @@ import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import partnerPrevious from "../../data/partnerPreviousData.json";
+import partnerPreviousEuro from "../../data/partnerPreviousDataEuro.json";
 import Home from "../../images/home-icon.png";
 
 function PartnerQuarterApprover({}) {
@@ -25,7 +26,6 @@ function PartnerQuarterApprover({}) {
   const [rowData, setRowData] = useState();
   const [radioValue, setRadioValue] = useState("1");
   const [message, setMessage] = useState(0);
-  const [updatedData, setUpdatedData] = useState(rowData);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -33,29 +33,45 @@ function PartnerQuarterApprover({}) {
   ];
 
   const ChildMessageRenderer = (props) => {
-    const invokeParentMethod = () => {
-      props.context.methodFromParent(
-        `Row: ${props.node.rowIndex}, Col: ${props.colDef.field}`
-      );
+    const invokeReject = () => {
+      alert(props.data.Partner?.length ? `${props.data.Partner} partner Selected for reject approval` : "");
+    };
+    const invokeValidate = () => {
+      alert(props.data.Partner?.length ? `${props.data.Partner} partner selected for Validate` : "");
     };
     return (
       <div>
-        <div>Received Updated Values From Distributor
-        <Button
-          style={{ height: 30, width: 100, lineHeight: 0.5, margin: "0px 0px 5px 100px" }}
-          onClick={invokeParentMethod}
-          className="cancel-header btn-reject"
-        >
-          Reject
-        </Button>
-        <Button
-          style={{ height: 30, width: 100, lineHeight: 0.5, margin: " 0px 10px 5px 20px" }}
-          onClick={invokeParentMethod}
-          className="save-header btn-reject"
-        >
-          Validate
-        </Button>
-        </div>
+        {props.data.editorComments.length ? (
+          <div>
+            {props.data.editorComments}
+            <Button
+              style={{
+                height: 30,
+                width: 100,
+                lineHeight: 0.5,
+                margin: "0px 0px 5px 100px",
+              }}
+              onClick={invokeReject}
+              className="cancel-header btn-reject"
+            >
+              Reject
+            </Button>
+            <Button
+              style={{
+                height: 30,
+                width: 100,
+                lineHeight: 0.5,
+                margin: " 0px 10px 5px 20px",
+              }}
+              onClick={invokeValidate}
+              className="save-header btn-reject"
+            >
+              Validate
+            </Button>
+          </div>
+        ) : (
+          <div></div>
+        )}
       </div>
     );
   };
@@ -145,7 +161,7 @@ function PartnerQuarterApprover({}) {
     {
       headerName: "Editors Comments",
       field: "editorComments",
-      minWidth: 620,
+      minWidth: 650,
       editable: false,
       wrapHeaderText: true,
       sortable: true,
@@ -177,29 +193,16 @@ function PartnerQuarterApprover({}) {
     setMessage(selectedRows?.length);
   };
 
-  const handleSave = (params) => {
-    const gridApi = params.api;
-    const updatedRowData = gridApi.getData();
-    setRowData(updatedRowData);
-  };
-
   const handleReviewNavigation = () => {
     navigate("/approverHome");
   };
 
   const handleInvestigation = () => {
-    // navigate("/editorHome", { state: { message } });
     alert(message ? `${message} Partner Accounts Sent For Investigation` : "");
   };
 
   const handleConfirm = () => {
     setRowData(rowData);
-  };
-
-  const getRowStyle = (params) => {
-    if (params.node.aggData) {
-      return { fontWeight: "bold" };
-    }
   };
 
   const onGridReady = useCallback((params) => {
@@ -258,18 +261,20 @@ function PartnerQuarterApprover({}) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={radioValue == 1 ? partnerPrevious : partnerPrevious}
+            rowData={radioValue == 1 ? partnerPrevious : partnerPreviousEuro}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             groupHideOpenParents={true}
             animateRows={true}
             onGridReady={onGridReady}
-            getRowStyle={getRowStyle}
             rowSelection={"multiple"}
             suppressRowClickSelection={true}
             onSelectionChanged={handleCheckboxClick}
             groupSelectsChildren={true}
             suppressMenuHide={true}
+            // context={{
+            //   methodFromParent,
+            // }}
           ></AgGridReact>
           <div className="checkbox-message">
             {message > 0 ? `${message} Partner Account ` : ""}

@@ -12,18 +12,20 @@ import {
   Tooltip,
   OverlayTrigger,
 } from "react-bootstrap";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import MyMenu from "../menu/menu.component.js";
 import { BiHome, BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
+import { useNavigate } from "react-router-dom";
 import "./partner.component.css";
 import { CreatePartnerData } from "../../actions/partneraction";
 
 function PartnerComponent(props) {
+  const navigate = useNavigate();
   const location = useLocation();
-  const id = new URLSearchParams(location.search).get('id');
+  const id = new URLSearchParams(location.search).get("id");
 
   const initialState = {
     platform_name: "",
@@ -32,7 +34,7 @@ function PartnerComponent(props) {
     se_electricEntity: "",
     reseller_seller: "",
     activation_date: "",
-    business_type:"",
+    business_type: "",
     partner_acc_name: "",
     model_type: "",
     url_address_partner: "",
@@ -42,8 +44,8 @@ function PartnerComponent(props) {
     playbook_type: "",
     bopp_type: "",
     gtm_type: "",
-    deactivation_date:"",
-    deactivation_reason:""
+    deactivation_date: "",
+    deactivation_reason: "",
   };
 
   const {
@@ -57,7 +59,7 @@ function PartnerComponent(props) {
   });
 
   const [formData, setFormData] = useState(initialState);
-  const data = partnerData.find((e)=> e.partnerID === id);
+  const data = partnerData.find((e) => e.partnerID === id);
 
   const onSubmit = (data) => {
     console.log("form data", data);
@@ -72,13 +74,21 @@ function PartnerComponent(props) {
   //create api
   const savePartner = (data) => {
     CreatePartnerData(data)
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((e) => {
-      console.log(e);
-    });  
-  }
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const handlePatnerCancel = () => {
+    navigate("/partnerList");
+  };
+
+  const handleClearClick = () => {
+    window.location.reload();
+  };
 
   return (
     <Container fluid>
@@ -108,12 +118,12 @@ function PartnerComponent(props) {
         </Breadcrumb>
       </Row>
       <Row>
-      {props.isCreatedModule && (
-        <h5 className="partner-header">Create New Partner</h5>
-      )}
-      {!props.isCreatedModule && (
-        <h5 className="partner-header">Update Partner</h5>
-      )}
+        {props.isCreatedModule && (
+          <h5 className="partner-header">Create New Partner</h5>
+        )}
+        {!props.isCreatedModule && (
+          <h5 className="partner-header">Update Partner</h5>
+        )}
         <Container fluid>
           <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
             <Row>
@@ -141,7 +151,7 @@ function PartnerComponent(props) {
                         name="platform_name"
                         disabled={!props.isCreatedModule}
                         type="text"
-                        value={data?.partnerID}
+                        value={data?.platformNmae}
                         {...register("platform_name", {
                           required: "Platform name is required",
                         })}
@@ -233,6 +243,7 @@ function PartnerComponent(props) {
                         name="partner_id"
                         disabled
                         type="text"
+                        value={data?.reseller}
                       />
                     </Col>
                   </Row>
@@ -272,8 +283,9 @@ function PartnerComponent(props) {
                         id="partner_acc_name"
                         name="partner_acc_name"
                         type="text"
-                        disabled>
-                      </Form.Control>
+                        disabled
+                        value={data?.PartnerAccount}
+                      ></Form.Control>
                     </Col>
                     <Col>
                       <Form.Label size="sm" htmlFor="activation_date">
@@ -282,9 +294,8 @@ function PartnerComponent(props) {
                       &nbsp;
                       <OverlayTrigger
                         placement="right"
-                        overlay={tooltip(
-                          "dd-mm-yyyy"
-                        )}>
+                        overlay={tooltip("dd-mm-yyyy")}
+                      >
                         <span>
                           <BiHelpCircle />
                         </span>
@@ -297,7 +308,7 @@ function PartnerComponent(props) {
                         type="date"
                         {...register("activation_date", {
                           required: "Activation Date is required",
-                        })}                        
+                        })}
                       />
                       {errors.activation_date && (
                         <Form.Text className="text-danger">
@@ -315,7 +326,8 @@ function PartnerComponent(props) {
                         name="business_type"
                         {...register("business_type", {
                           required: "Business Type is required",
-                        })}>
+                        })}
+                      >
                         <option value="">N/A</option>
                         <option>Electrical</option>
                         <option>Solar</option>
@@ -360,9 +372,8 @@ function PartnerComponent(props) {
                       &nbsp;
                       <OverlayTrigger
                         placement="right"
-                        overlay={tooltip(
-                          "Enter valid Partner URL"
-                        )}>
+                        overlay={tooltip("Enter valid Partner URL")}
+                      >
                         <span>
                           <BiHelpCircle />
                         </span>
@@ -376,9 +387,10 @@ function PartnerComponent(props) {
                         {...register("url_address_partner", {
                           required: "URL Address of Partner is required",
                           pattern: {
-                            value: /^((https?|ftp|smtp|http):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/i,
-                            message: 'URL format incorrect'
-                          }
+                            value:
+                              /^((https?|ftp|smtp|http):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/i,
+                            message: "URL format incorrect",
+                          },
                         })}
                       />
                       {errors.url_address_partner && (
@@ -439,9 +451,8 @@ function PartnerComponent(props) {
                       &nbsp;
                       <OverlayTrigger
                         placement="right"
-                        overlay={tooltip(
-                          "% with 2 decimals"
-                        )}>
+                        overlay={tooltip("% with 2 decimals")}
+                      >
                         <span>
                           <BiHelpCircle />
                         </span>
@@ -487,88 +498,93 @@ function PartnerComponent(props) {
                   </Row>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                    <Row className={(props.isCreatedModule?"partnerRowCreate": "partnerRowUpdate")}>
+                  <Row
+                    className={
+                      props.isCreatedModule
+                        ? "partnerRowCreate"
+                        : "partnerRowUpdate"
+                    }
+                  >
                     <Col>
-                        <Form.Label size="sm" htmlFor="bopp_type">
-                          Bopp Type
-                        </Form.Label>
-                        <Form.Select
-                          size="sm"
-                          id="bopp_type"
-                          className="field-Prop"
-                          name="bopp_type"
-                          {...register("bopp_type", {
-                            required: "Bopp Type is required",
-                          })}                        
-                        >
-                          <option value="">N/A</option>
-                          <option value={"Adopter"}>Adopter</option>
-                          <option value={"Leader"}>Leader</option>
-                          <option value={"Novice"}>Novice</option>
-                          <option value={"Rising Stars"}>Rising Stars</option>
-                        </Form.Select>
-                        {errors.bopp_type && (
-                          <Form.Text className="text-danger">
-                            {errors.bopp_type.message}
-                          </Form.Text>
-                        )}
-                    </Col>
-                    <Col>
-                        <Form.Label size="sm" htmlFor="gtm_type">
-                          GTM Type
-                        </Form.Label>
-                        <Form.Select
-                          size="sm"
-                          className="field-Prop"
-                          id="gtm_type"
-                          name="gtm_type"
-                          {...register("gtm_type", {
-                            required: "GTM Type is required",
-                          })}
-                        >
-                          <option value="">N/A</option>
-                          <option>Direct</option>
-                          <option>Indirect</option>
-                        </Form.Select>
-                        {errors.gtm_type && (
-                          <Form.Text className="text-danger">
-                            {errors.gtm_type.message}
-                          </Form.Text>
-                        )}
-                    </Col>
-                    {!props.isCreatedModule &&(
-                    <Col>
-                      <Form.Label size="sm" htmlFor="deactivation_date">
-                        Deactivation Date
+                      <Form.Label size="sm" htmlFor="bopp_type">
+                        Bopp Type
                       </Form.Label>
-                      &nbsp;
-                      <OverlayTrigger
-                        placement="right"
-                        overlay={tooltip(
-                          "dd-mm-yyyy"
-                        )}>
-                        <span>
-                          <BiHelpCircle />
-                        </span>
-                      </OverlayTrigger>
-                      <Form.Control
+                      <Form.Select
                         size="sm"
-                        id="deactivation_date"
-                        name="deactivation_date"
+                        id="bopp_type"
                         className="field-Prop"
-                        type="date"
-                        {...register("deactivation_date", {
-                          required: "Deactivation Date is required",
-                        })}                        
-                      />
-                      {errors.deactivation_date && (
+                        name="bopp_type"
+                        {...register("bopp_type", {
+                          required: "Bopp Type is required",
+                        })}
+                      >
+                        <option value="">N/A</option>
+                        <option value={"Adopter"}>Adopter</option>
+                        <option value={"Leader"}>Leader</option>
+                        <option value={"Novice"}>Novice</option>
+                        <option value={"Rising Stars"}>Rising Stars</option>
+                      </Form.Select>
+                      {errors.bopp_type && (
                         <Form.Text className="text-danger">
-                          {errors.deactivation_date.message}
+                          {errors.bopp_type.message}
                         </Form.Text>
                       )}
-                    </Col>                    
+                    </Col>
+                    <Col>
+                      <Form.Label size="sm" htmlFor="gtm_type">
+                        GTM Type
+                      </Form.Label>
+                      <Form.Select
+                        size="sm"
+                        className="field-Prop"
+                        id="gtm_type"
+                        name="gtm_type"
+                        {...register("gtm_type", {
+                          required: "GTM Type is required",
+                        })}
+                      >
+                        <option value="">N/A</option>
+                        <option>Direct</option>
+                        <option>Indirect</option>
+                      </Form.Select>
+                      {errors.gtm_type && (
+                        <Form.Text className="text-danger">
+                          {errors.gtm_type.message}
+                        </Form.Text>
+                      )}
+                    </Col>
+                    {!props.isCreatedModule && (
+                      <Col>
+                        <Form.Label size="sm" htmlFor="deactivation_date">
+                          Deactivation Date
+                        </Form.Label>
+                        &nbsp;
+                        <OverlayTrigger
+                          placement="right"
+                          overlay={tooltip("dd-mm-yyyy")}
+                        >
+                          <span>
+                            <BiHelpCircle />
+                          </span>
+                        </OverlayTrigger>
+                        <Form.Control
+                          size="sm"
+                          id="deactivation_date"
+                          name="deactivation_date"
+                          className="field-Prop"
+                          type="date"
+                          {...register("deactivation_date", {
+                            required: "Deactivation Date is required",
+                          })}
+                        />
+                        {errors.deactivation_date && (
+                          <Form.Text className="text-danger">
+                            {errors.deactivation_date.message}
+                          </Form.Text>
+                        )}
+                      </Col>
                     )}
-                    {!props.isCreatedModule &&(
+                    {!props.isCreatedModule && (
                       <Col>
                         <Form.Label size="sm" htmlFor="deactivation_reason">
                           Deactivation reason
@@ -580,15 +596,18 @@ function PartnerComponent(props) {
                           name="deactivation_reason"
                           {...register("deactivation_reason", {
                             required: "GTM Type is required",
-                          })}>
-                            <option value="">N/A</option>
-                            <option>Partner not working with SE anymore</option>
-                            <option>Acquired by/ integrated in one of our other partners</option>
+                          })}
+                        >
+                          <option value="">N/A</option>
+                          <option>Partner not working with SE anymore</option>
+                          <option>
+                            Acquired by/ integrated in one of our other partners
+                          </option>
                         </Form.Select>
                         {errors.deactivation_reason && (
-                        <Form.Text className="text-danger">
-                          {errors.deactivation_reason.message}
-                        </Form.Text>
+                          <Form.Text className="text-danger">
+                            {errors.deactivation_reason.message}
+                          </Form.Text>
                         )}
                       </Col>
                     )}
@@ -659,9 +678,30 @@ function PartnerComponent(props) {
               </Row>
             )}
             <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
-              <Col xs="auto">
-                <Button className="btn-upload cancel-header">Cancel</Button>
-              </Col>
+              {props.isCreatedModule ? (
+                <Col xs="auto">
+                  <Button
+                    className="btn-upload cancel-header"
+                    onClick={() => {
+                      handlePatnerCancel();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Col>
+              ) : (
+                <Col xs="auto">
+                  <Button
+                    className="btn-upload cancel-header"
+                    onClick={() => {
+                      handleClearClick();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Col>
+              )}
+
               <Col xs="auto">
                 <Button className="btn-upload save-header" type="submit">
                   {props.isCreatedModule ? "Create" : "Update"}
