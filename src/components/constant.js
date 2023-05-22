@@ -1,4 +1,4 @@
-export const month = [
+export const AllCalMonths = [
   "Jan",
   "Feb",
   "Mar",

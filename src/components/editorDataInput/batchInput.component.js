@@ -6,7 +6,7 @@ import React, { useState, useMemo } from "react";
 import * as xlsx from "xlsx-js-style";
 import FileSaver from "file-saver";
 import AlertModel from "../modal/alertModel";
-import { month } from "../constant";
+import { AllCalMonths } from "../constant";
 
 function BatchInputComponent({ getData }) {
   const navigate = useNavigate();
@@ -111,7 +111,7 @@ function BatchInputComponent({ getData }) {
           1
         );
         
-        const monthName = month[date.getMonth()];
+        const monthName = AllCalMonths[date.getMonth()];
         const year = String(date.getFullYear()).slice(-2);
         const monthField = monthName+'_Amount';
 

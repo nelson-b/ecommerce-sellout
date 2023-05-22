@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import { Button, Row, Col, Stack, ToggleButton, ButtonGroup, Breadcrumb, Container } from "react-bootstrap";
 import "./dataReview.css";
-import { month } from "../constant";
+import { AllCalMonths } from "../constant";
 import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
@@ -141,8 +141,8 @@ function DataReviewComponent({}) {
         1
       );
 
-      const currMonthName = month[date.getMonth()];
-      const lastMonthName = month[date.getMonth()-1];
+      const currMonthName = AllCalMonths[date.getMonth()];
+      const lastMonthName = AllCalMonths[date.getMonth()-1];
       const year = String(date.getFullYear()).slice(-2);
       const currmonthField = currMonthName + year;
       const lastmonthField = lastMonthName + year;
@@ -180,7 +180,7 @@ function DataReviewComponent({}) {
       1
     );
 
-    const currMonthName = month[date.getMonth()];
+    const currMonthName = AllCalMonths[date.getMonth()];
     const curryear = String(date.getFullYear()).slice(-2);
     const currmonthCYField = currMonthName + curryear;
     const currmonthLYField = currMonthName + (curryear - 1);
@@ -281,7 +281,7 @@ function DataReviewComponent({}) {
       1
     );
 
-    const monthName = month[date.getMonth()];
+    const monthName = AllCalMonths[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
     const monthHeader = monthName+' ' + year;
     const monthField = monthName + year;
@@ -376,7 +376,7 @@ function DataReviewComponent({}) {
     1
   );
 
-  const prevMonth = month[previousYear.getMonth()];
+  const prevMonth = AllCalMonths[previousYear.getMonth()];
   console.log("prevMonth", prevMonth);
   const prevYear = String(previousYear.getFullYear()).slice(-2);
 

@@ -6,7 +6,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useState, useMemo, useCallback, useRef } from "react";
 import { Button, Row, Col, Container, Form, Breadcrumb } from "react-bootstrap";
-import { month } from "../constant";
+import { AllCalMonths } from "../constant";
 import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
 import MyMenu from "../menu/menu.component.js";
@@ -304,7 +304,7 @@ function DataInputComponent() {
       1
     );
     
-    const monthName = month[date.getMonth()];
+    const monthName = AllCalMonths[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
     const monthHeader = monthName+' ' + year;
     const monthField = monthName+'_Amount';
