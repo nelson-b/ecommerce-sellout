@@ -18,9 +18,10 @@ import { BiHome, BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
-import { useNavigate } from "react-router-dom";
 import "./partner.component.css";
 import { CreatePartnerData } from "../../actions/partneraction";
+import AlertModel from "../modal/alertModel";
+import { useNavigate } from "react-router-dom";
 
 function PartnerComponent(props) {
   const navigate = useNavigate();
@@ -29,19 +30,19 @@ function PartnerComponent(props) {
 
   const initialState = {
     platform_name: "",
-    country: "",
-    partnerGroup: "",
-    se_electricEntity: "",
-    reseller_seller: "",
+    country_code: "",
+    partner_group: "",
+    se_entity: "",
+    reseller_name: "",
     activation_date: "",
-    business_type: "",
-    partner_acc_name: "",
+    business_type:"",
+    partner_account_name: "",
     model_type: "",
-    url_address_partner: "",
-    currency: "",
+    partner_url: "",
+    trans_currency_code: "",
     data_collection_type: "",
-    partnerSellOutMargin: "",
-    playbook_type: "",
+    partner_sellout_margin: "",
+    e2_playbook_type: "",
     bopp_type: "",
     gtm_type: "",
     deactivation_date: "",
@@ -57,12 +58,52 @@ function PartnerComponent(props) {
     reValidateMode: "onSubmit",
     reValidateMode: "onChange",
   });
+  
+  // const [formData, setFormData] = useState(initialState);
+  const data = partnerData.find((e)=> e.partnerID === id);
 
-  const [formData, setFormData] = useState(initialState);
-  const data = partnerData.find((e) => e.partnerID === id);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+  };
+  const successmsg = {
+    headerLabel: "Success....",
+    variant: "success",
+    header: 'Data has been saved successfully!!',
+    content: ['Navigating you to the Partner list page.....']
+  }
+
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
+  };
+
+  const errormsg = {
+    headerLabel: "Error....",
+    variant: "danger",
+    header: "There are below errors while processing. Please recitify and retry",
+    content: ['Please connect with IT support if required']
+  }
 
   const onSubmit = (data) => {
     console.log("form data", data);
+    data.created_by = 'test123';
+    data.modified_by = 'test123';
+    data.status = 'approved';
+    data.partner_account_name = data.platform_name + data.country_code;
+
+    //create api
+    props.CreatePartnerData(data)
+      .then((data) => {
+        setShowSuccessModal(true);
+        setShowErrorModal(false);
+        setTimeout(()=>navigate('/partnerList'), 3000);
+      })
+      .catch((e) => {
+        setShowSuccessModal(false);
+        setShowErrorModal(true);
+        console.log(e);
+      });
   };
 
   const onError = (error) => {
@@ -71,17 +112,6 @@ function PartnerComponent(props) {
 
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
 
-  //create api
-  const savePartner = (data) => {
-    CreatePartnerData(data)
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
   const handlePatnerCancel = () => {
     navigate("/partnerList");
   };
@@ -89,7 +119,6 @@ function PartnerComponent(props) {
   const handleClearClick = () => {
     window.location.reload();
   };
-
   return (
     <Container fluid>
       <Row>
@@ -163,39 +192,35 @@ function PartnerComponent(props) {
                       )}
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="country">
+                      <Form.Label size="sm" htmlFor="country_code">
                         Country
                       </Form.Label>
                       <Form.Select
                         size="sm"
-                        id="country"
-                        name="country"
-                        {...register("country", {
+                        id="country_code"
+                        name="country_code"
+                        {...register("country_code", {
                           required: "Country is required",
                         })}
                       >
                         <option value="">N/A</option>
-                        <option value={"India"}>India</option>
-                        <option value={"USA"}>USA</option>
-                        <option value={"France"}>France</option>
-                        <option value={"Spain"}>Spain</option>
-                        <option value={"Italy"}>Italy</option>
+                        <option value={"IR_EU"}>Ireland</option>
                       </Form.Select>
-                      {errors.country && (
+                      {errors.country_code && (
                         <Form.Text className="text-danger">
-                          {errors.country.message}
+                          {errors.country_code.message}
                         </Form.Text>
                       )}
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="partnerGroup">
+                      <Form.Label size="sm" htmlFor="partner_group">
                         Partner Group
                       </Form.Label>
                       <Form.Select
                         size="sm"
-                        id="partnerGroup"
-                        name="partnerGroup"
-                        {...register("partnerGroup", {
+                        id="partner_group"
+                        name="partner_group"
+                        {...register("partner_group", {
                           required: "Partner group is required",
                         })}
                       >
@@ -204,21 +229,21 @@ function PartnerComponent(props) {
                         <option>Partner 2</option>
                         <option>Partner 3</option>
                       </Form.Select>
-                      {errors.partnerGroup && (
+                      {errors.partner_group && (
                         <Form.Text className="text-danger">
-                          {errors.partnerGroup.message}
+                          {errors.partner_group.message}
                         </Form.Text>
                       )}
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="se_electricEntity">
+                      <Form.Label size="sm" htmlFor="se_entity">
                         Schneider Electric Entity
                       </Form.Label>
                       <Form.Select
                         size="sm"
-                        id="se_electricEntity"
-                        name="se_electricEntity"
-                        {...register("se_electricEntity", {
+                        id="se_entity"
+                        name="se_entity"
+                        {...register("se_entity", {
                           required: "Schneider Electric Entity is required",
                         })}
                       >
@@ -227,24 +252,30 @@ function PartnerComponent(props) {
                         <option>Entity 2</option>
                         <option>Entity 3</option>
                       </Form.Select>
-                      {errors.se_electricEntity && (
+                      {errors.se_entity && (
                         <Form.Text className="text-danger">
-                          {errors.se_electricEntity.message}
+                          {errors.se_entity.message}
                         </Form.Text>
                       )}
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="reseller_seller">
+                      <Form.Label size="sm" htmlFor="reseller_name">
                         Reseller Name
                       </Form.Label>
                       <Form.Control
                         size="sm"
-                        id="partner_id"
-                        name="partner_id"
-                        disabled
+                        id="reseller_name"
+                        name="reseller_name"
                         type="text"
-                        value={data?.reseller}
+                        {...register("reseller_name", {
+                          required: "Reseller name is required"
+                        })}
                       />
+                      {errors.se_entity && (
+                        <Form.Text className="text-danger">
+                          {errors.se_entity.message}
+                        </Form.Text>
+                      )}
                     </Col>
                   </Row>
                 </Form.Group>
@@ -264,14 +295,14 @@ function PartnerComponent(props) {
                       />
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="partner_acc_name">
+                      <Form.Label size="sm" htmlFor="partner_account_name">
                         Partner Account Name
                       </Form.Label>
                       &nbsp;
                       <OverlayTrigger
                         placement="right"
                         overlay={tooltip(
-                          "Partner name + 3 letters for country"
+                          "Platform name + 3 letters for country"
                         )}
                       >
                         <span>
@@ -280,8 +311,8 @@ function PartnerComponent(props) {
                       </OverlayTrigger>
                       <Form.Control
                         size="sm"
-                        id="partner_acc_name"
-                        name="partner_acc_name"
+                        id="partner_account_name"
+                        name="partner_account_name"
                         type="text"
                         disabled
                         value={data?.PartnerAccount}
@@ -366,7 +397,7 @@ function PartnerComponent(props) {
                 <Form.Group className="mb-4">
                   <Row>
                     <Col>
-                      <Form.Label size="sm" htmlFor="url_address_partner">
+                      <Form.Label size="sm" htmlFor="partner_url">
                         URL Address of Partner
                       </Form.Label>
                       &nbsp;
@@ -380,11 +411,11 @@ function PartnerComponent(props) {
                       </OverlayTrigger>
                       <Form.Control
                         size="sm"
-                        id="url_address_partner"
-                        name="url_address_partner"
+                        id="partner_url"
+                        name="partner_url"
                         type="url"
                         value={data?.partnerURL}
-                        {...register("url_address_partner", {
+                        {...register("partner_url", {
                           required: "URL Address of Partner is required",
                           pattern: {
                             value:
@@ -393,21 +424,21 @@ function PartnerComponent(props) {
                           },
                         })}
                       />
-                      {errors.url_address_partner && (
+                      {errors.partner_url && (
                         <Form.Text className="text-danger">
-                          {errors.url_address_partner.message}
+                          {errors.partner_url.message}
                         </Form.Text>
                       )}
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="currency">
+                      <Form.Label size="sm" htmlFor="trans_currency_code">
                         Currency of Sellout Reporting
                       </Form.Label>
                       <Form.Select
                         size="sm"
-                        id="currency"
-                        name="currency"
-                        {...register("currency", {
+                        id="trans_currency_code"
+                        name="trans_currency_code"
+                        {...register("trans_currency_code", {
                           required: "Currency of Sellout Reporting is required",
                         })}
                       >
@@ -416,9 +447,9 @@ function PartnerComponent(props) {
                         <option>INR</option>
                         <option>USD</option>
                       </Form.Select>
-                      {errors.currency && (
+                      {errors.trans_currency_code && (
                         <Form.Text className="text-danger">
-                          {errors.currency.message}
+                          {errors.trans_currency_code.message}
                         </Form.Text>
                       )}
                     </Col>
@@ -445,7 +476,7 @@ function PartnerComponent(props) {
                       )}
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="partnerSellOutMargin">
+                      <Form.Label size="sm" htmlFor="partner_sellout_margin">
                         Partner Sellout Margin (%)
                       </Form.Label>
                       &nbsp;
@@ -459,28 +490,28 @@ function PartnerComponent(props) {
                       </OverlayTrigger>
                       <Form.Control
                         size="sm"
-                        id="partnerSellOutMargin"
-                        name="partnerSellOutMargin"
+                        id="partner_sellout_margin"
+                        name="partner_sellout_margin"
                         type="number"
-                        {...register("partnerSellOutMargin", {
+                        {...register("partner_sellout_margin", {
                           required: "Partner Sellout Margin is required",
                         })}
                       />
-                      {errors.partnerSellOutMargin && (
+                      {errors.partner_sellout_margin && (
                         <Form.Text className="text-danger">
-                          {errors.partnerSellOutMargin.message}
+                          {errors.partner_sellout_margin.message}
                         </Form.Text>
                       )}
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="playbook_type">
+                      <Form.Label size="sm" htmlFor="e2_playbook_type">
                         E2 Playbook Type
                       </Form.Label>
                       <Form.Select
                         size="sm"
-                        id="playbook_type"
-                        name="playbook_type"
-                        {...register("playbook_type", {
+                        id="e2_playbook_type"
+                        name="e2_playbook_type"
+                        {...register("e2_playbook_type", {
                           required: "E2 Playbook Type is required",
                         })}
                       >
@@ -489,9 +520,9 @@ function PartnerComponent(props) {
                         <option value={"type2"}>Type 2</option>
                         <option value={"type3"}>Type 3</option>
                       </Form.Select>
-                      {errors.playbook_type && (
+                      {errors.e2_playbook_type && (
                         <Form.Text className="text-danger">
-                          {errors.playbook_type.message}
+                          {errors.e2_playbook_type.message}
                         </Form.Text>
                       )}
                     </Col>
@@ -706,6 +737,16 @@ function PartnerComponent(props) {
                 <Button className="btn-upload save-header" type="submit">
                   {props.isCreatedModule ? "Create" : "Update"}
                 </Button>
+                <AlertModel
+                      show={ showSuccessModal }
+                      handleClose={ handleCloseSuccessModal }
+                      body={ successmsg }
+                    />
+                <AlertModel
+                      show={ showErrorModal }
+                      handleClose={ handleCloseErrorModal }
+                      body={ errormsg }
+                    />
               </Col>
             </Row>
           </Form>
@@ -715,4 +756,4 @@ function PartnerComponent(props) {
   );
 }
 
-export default connect(null, { createSellOutData })(PartnerComponent);
+export default connect(null, { CreatePartnerData })(PartnerComponent);

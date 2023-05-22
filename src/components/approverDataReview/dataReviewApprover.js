@@ -184,12 +184,17 @@ function DataReviewApprover({ props }) {
       }
     });
 
-    params.data.SelloutCQ = sellOutValArr.reduce(function (prev, current) {
-      return prev + +current;
+    let selloutCQ = sellOutValArr.reduce(function(prev, current) {
+      return prev + +current
     }, 0);
 
-    return params.data.SelloutCQ;
-  };
+    console.log('selloutCQ', selloutCQ);
+    
+    if(params.data){
+      params.data.SelloutCQ = selloutCQ != undefined ? selloutCQ : 0;
+    }
+    return selloutCQ;
+  }
 
   const getTotalYTDSellOutGrowthCalc = (params) => {
     const currentDate = new Date();
@@ -215,16 +220,21 @@ function DataReviewApprover({ props }) {
       }
     });
 
-    params.data.YTD = YTDSellOutValArr.reduce(function (prev, current) {
-      return prev + +current;
+    let YTD = YTDSellOutValArr.reduce(function (prev, current) {
+      return prev + + current;
     }, 0);
 
-    return params.data.YTD;
-  };
+    if(params.data){
+      params.data.YTD = YTD!=undefined?YTD:0;
+    }
+
+    return YTD;
+  }
 
   const getYTDSelloutGrowthPercCalc = (params) => {
     console.log("getYTDSelloutGrowthPercCalc", params.data);
     //YTD Sellout CY
+    if(params.data){
     let YTDSelloutCY = params.data.YTD;
 
     //YTD Sellout LY
@@ -254,12 +264,14 @@ function DataReviewApprover({ props }) {
       return prev + +current;
     }, 0);
 
-    params.data.YTD_Growth =
-      ((YTDSelloutCY - YTDSelloutLY) / YTDSelloutLY) * 100;
+    let YTD_Growth = ((YTDSelloutCY-YTDSelloutLY)/YTDSelloutLY)*100;
     //% difference of YTD Sellout CY vs YTD Sellout LY
-
-    return Math.round(params.data.YTD_Growth);
-  };
+    params.data.YTD_Growth = Math.round(YTD_Growth);
+  
+    return Math.round(YTD_Growth);
+  }
+  return 0;
+  }
 
   columnDefs.push(
     {
@@ -492,7 +504,6 @@ function DataReviewApprover({ props }) {
             autoGroupColumnDef={autoGroupColumnDef}
             groupHideOpenParents={true}
             showOpenedGroup={true}
-            // groupDefaultExpanded={-1}
             animateRows={true}
             suppressAggFuncInHeader={true}
             groupIncludeTotalFooter={true}

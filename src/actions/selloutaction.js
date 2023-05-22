@@ -8,9 +8,10 @@ import {
 
   import SellOutDataService from "../services/selloutdata";
 
-  export const createSellOutData = (name) => async(dispatch) => {
+  export const createSellOutData = (data) => async(dispatch) => {
     try{
-        const res = await SellOutDataService.create({name});
+        console.log('createSellOutData', createSellOutData);
+        const res = await SellOutDataService.create(data);
 
         dispatch({
             type: CREATE_SELLOUTDATA,
