@@ -20,3 +20,16 @@
 .ag-theme-alpine .ag-radio-button-input-wrapper {
   font-weight: bold;
 }
+
+.ag-theme-alpine {
+  --ag-selected-row-background-color: white !important;
+  --ag-odd-row-background-color: none !important;
+}
+
+.ag-theme-alpine:focus {
+  --ag-selected-row-background-color: white !important;
+}
+
+.ag-theme-alpine, .ag-theme-alpine-dark {
+  --ag-alpine-active-color: green !important;
+}

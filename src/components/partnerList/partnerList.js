@@ -9,16 +9,21 @@ import MyMenu from "../menu/menu.component.js";
 import { AgGridReact } from "ag-grid-react";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
+import Pending from "../../images/pending.png";
 import partnerEdit from "../../images/partner-edit.png";
 import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
 import "../partnerList/partnerList.css";
 import { RetrieveAllPartnerData } from "../../actions/partneraction";
 import { connect } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 function PartnerList(props) {
+  console.log("props", props);
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
+  const location = useLocation();
+  const screenRole = new URLSearchParams(location.search).get("id");
 
   const handlePartnerEdit = (params) => {
     navigate(`/updatePartner?id=${params.data.partnerID}`);
@@ -26,6 +31,10 @@ function PartnerList(props) {
 
   const handleCreate = () => {
     navigate("/addPartner");
+  };
+
+  const handleRequest = () => {
+    navigate("/partnerRequestList");
   };
 
   const columnDefs = [
@@ -77,7 +86,7 @@ function PartnerList(props) {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Schneider Electric Entity",
@@ -87,7 +96,7 @@ function PartnerList(props) {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Partner Group",
@@ -123,6 +132,9 @@ function PartnerList(props) {
             {Status === "Closed" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )}
+            {Status === "Pending" && (
+              <img src={Pending} alt="Pending" style={{ width: "80px" }} />
+            )}
           </div>
         );
       },
@@ -144,7 +156,7 @@ function PartnerList(props) {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "E2 Playbook Type",
@@ -154,7 +166,7 @@ function PartnerList(props) {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Activation Date",
@@ -167,10 +179,10 @@ function PartnerList(props) {
       suppressMenu: true,
       valueFormatter: (params) => {
         var date = new Date(params.value);
-        var day = date.getDate().toString().padStart(2, '0');
-        var month = (date.getMonth() + 1).toString().padStart(2, '0');
+        var day = date.getDate().toString().padStart(2, "0");
+        var month = (date.getMonth() + 1).toString().padStart(2, "0");
         var year = date.getFullYear().toString().substring(2);
-        return day + '/' + month + '/' + year;
+        return day + "/" + month + "/" + year;
       },
     },
     {
@@ -181,7 +193,7 @@ function PartnerList(props) {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Currency of Sellout Reporting",
@@ -191,7 +203,7 @@ function PartnerList(props) {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Data Collection Type",
@@ -201,7 +213,7 @@ function PartnerList(props) {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "BOPP Type",
@@ -211,7 +223,7 @@ function PartnerList(props) {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "GTM Type",
@@ -221,7 +233,7 @@ function PartnerList(props) {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Partner Sellout Margin",
@@ -231,7 +243,7 @@ function PartnerList(props) {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Partner URL",
@@ -241,8 +253,8 @@ function PartnerList(props) {
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
-    }
+      suppressMenu: true,
+    },
     // {
     //   headerName: "Editor",
     //   field: "created_by",
@@ -297,15 +309,16 @@ function PartnerList(props) {
   );
 
   const onGridReady = useCallback((params) => {
-    let data = props.RetrieveAllPartnerData()
-    .then((data)=>{
-      console.log('RetrieveAllPartnerData',data);
-      setRowData(data);
-    })
-    .catch((e)=>{
-      console.log(e);
-    });
-  },[]);
+    let data = props
+      .RetrieveAllPartnerData()
+      .then((data) => {
+        console.log("RetrieveAllPartnerData", data);
+        setRowData(data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
 
   return (
     <>
@@ -314,47 +327,100 @@ function PartnerList(props) {
           <MyMenu />
         </Row>
         <div>
-          <Breadcrumb>
-            <Breadcrumb.Item href="/">
-              <img
-                src={Home}
-                alt="home"
-                style={{ height: "20px", width: "80px", cursor: "pointer" }}
-              />
-            </Breadcrumb.Item>
-          </Breadcrumb>
+          {screenRole === "admin" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/adminHome">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : screenRole === "superUser" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/superUserHome">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : screenRole === "approver" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/approverHome">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : screenRole === "editor" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/editorHome">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : (
+            ""
+          )}
         </div>
         <Row>
-          <Col>
-            <div className="sell-out-partner-header">Sell Out Partner List</div>
-          </Col>
-          <Col md={2} className="partner-container">
-            <Button
-              size="md"
-              className="partner-header save-header"
-              onClick={() => {
-                handleCreate();
-              }}
-            >
-              Create Partner
-            </Button>
-          </Col>
+          <div className="partner-request-header">
+            <Col>
+              <div className="sell-out-partner-header">
+                Sell Out Partner List
+              </div>
+            </Col>
+            {screenRole === "admin" || screenRole === "superUser" ? (
+              <Col xs="auto" className="partner-container">
+                <Button
+                  size="md"
+                  className="partner-header save-header"
+                  onClick={() => {
+                    handleRequest();
+                  }}
+                >
+                  Pending requests
+                </Button>
+              </Col>
+            ) : (
+              ""
+            )}
+            <Col xs="auto" className="partner-container">
+              <Button
+                size="md"
+                className="partner-header save-header"
+                onClick={() => {
+                  handleCreate();
+                }}
+              >
+                Create Partner
+              </Button>
+            </Col>
+          </div>
         </Row>
         <>
           <div
             className="ag-theme-alpine ag-grid-table"
-            style={{ height: 350, margin: "7px 0px 0px 0px" }}>
-
+            style={{ height: 350, margin: "7px 0px 0px 0px" }}
+          >
             <AgGridReact
               className="ag-theme-alpine"
               animateRows="true"
-              rowData={ rowData }
-              columnDefs={ columnDefs }
+              rowData={rowData}
+              columnDefs={columnDefs}
               defaultColDef={defaultColDef}
               enableRangeSelection="true"
               rowSelection="multiple"
               suppressRowClickSelection="true"
-              suppressMenuHide= {true}
+              suppressMenuHide={true}
               onGridReady={onGridReady}
             />
           </div>
@@ -364,4 +430,4 @@ function PartnerList(props) {
   );
 }
 
-export default connect(null, {RetrieveAllPartnerData})(PartnerList);
+export default connect(null, { RetrieveAllPartnerData })(PartnerList);

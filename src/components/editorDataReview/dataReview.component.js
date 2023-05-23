@@ -38,13 +38,14 @@ function DataReviewComponent({}) {
       filter: true,
       sortable: true,
       pinned: "left",
-      width: 200,
+      width: 170,
       suppressSizeToFit: true,
     },
     {
       headerName: "Country",
       field: "Country",
       rowGroup: true,
+      width: 100,
       hide: true,
       filter: true,
       sortable: true,
@@ -55,6 +56,7 @@ function DataReviewComponent({}) {
     {
       headerName: "Model",
       field: "Model",
+      width: 100,
       rowGroup: true,
       hide: true,
       sortable: true,
@@ -116,7 +118,7 @@ function DataReviewComponent({}) {
 
   const autoGroupColumnDef = useMemo(() => {
       return {
-        width: 160,
+        width: 150,
         filterValueGetter: (params) => {
           if (params.node) {
             var colGettingGrouped = params.colDef.showRowGroup + "";
@@ -615,7 +617,7 @@ function DataReviewComponent({}) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 370, marginTop: "10px" }}
+          style={{ height: 350, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}

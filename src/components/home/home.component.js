@@ -13,6 +13,7 @@ import superOverview from "../../data/superOverview.json";
 import footerTotalReview from "../editorDataReview/footerTotalReview";
 
 function Home(props) {
+  console.log('props.role', props.role)
   const gridRef = useRef();
   const navigate = useNavigate();
 
@@ -26,8 +27,9 @@ function Home(props) {
     navigate("/dataReview");
   };
 
-  const partnerDataNavigation = () => {
-    navigate("/partnerList");
+  const partnerDataNavigation = (props) => {
+    console.log('propsRole', props.role)
+    navigate(`/partnerList?id=${props.role}`);
   };
 
   const approverReviewNavigation = () => {
@@ -302,13 +304,10 @@ function Home(props) {
         <Row>
           <div>
             <Row className="mb-4" style={{ float: "right", marginTop: "10px" }}>
-              {props.role === "superuser" ? (
+              {props.role === "superUser" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"
-                    onClick={() => {
-                      dataReviewNavigation();
-                    }}
                   >
                     Data Review
                   </Button>
@@ -316,7 +315,7 @@ function Home(props) {
               ) : (
                 ""
               )}
-              {props.role === "superuser" ? (
+              {props.role === "superUser" ? (
                 <Col xs="auto">
                   <Button className="btn-approve save-header">
                     Previous Data Approval
@@ -333,7 +332,7 @@ function Home(props) {
                     Data Review
                   </Button>
                 </Col>
-              ) : (
+              ) : props.role === "editor" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"
@@ -344,9 +343,9 @@ function Home(props) {
                     Data Input
                   </Button>
                 </Col>
-              )}
+              ): ("")}
 
-              {props.role === "superuser" ? (
+              {props.role === "superUser" ? (
                 <Col xs="auto">
                   <Button className="btn-split save-header">BU Split</Button>
                 </Col>
@@ -361,7 +360,7 @@ function Home(props) {
                     Previous Data Approval
                   </Button>
                 </Col>
-              ) : (
+              ) : props.role === "editor" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"
@@ -372,14 +371,14 @@ function Home(props) {
                     Data Review
                   </Button>
                 </Col>
-              )}
+              ): ("")}
 
-              {props.role === "superuser" ? (
+              {props.role === "superUser" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"
                     onClick={() => {
-                      partnerDataNavigation();
+                      partnerDataNavigation(props);
                     }}
                   >
                     Partner Data
@@ -389,13 +388,13 @@ function Home(props) {
                 <Col xs="auto">
                   <Button className="btn-data save-header">BU Split</Button>
                 </Col>
-              ) : (
+              ) : props.role === "editor" ? (
                 <Col xs="auto">
                   <Button className="btn-data save-header">BU Split</Button>
                 </Col>
-              )}
+              ): ("")}
 
-              {props.role === "superuser" ? (
+              {props.role === "superUser" ? (
                 <Col xs="auto">
                   <Button className="btn-split save-header">User Data</Button>
                 </Col>
@@ -404,24 +403,24 @@ function Home(props) {
                   <Button
                     className="btn-data save-header"
                     onClick={() => {
-                      partnerDataNavigation();
+                      partnerDataNavigation(props);
                     }}
                   >
                     Partner Data
                   </Button>
                 </Col>
-              ) : (
+              ) : props.role === "editor" ? (
                 <Col>
                   <Button
                     className="btn-data save-header"
                     onClick={() => {
-                      partnerDataNavigation();
+                      partnerDataNavigation(props);
                     }}
                   >
                     Partner Data
                   </Button>
                 </Col>
-              )}
+              ): ("")}
             </Row>
           </div>
         </Row>
@@ -437,14 +436,14 @@ function Home(props) {
             <AgGridReact
               ref={gridRef}
               rowData={
-                props.role === "superuser"
+                props.role === "superUser"
                   ? superOverview
                   : props.role === "approver"
                   ? approveOverview
                   : editorOverview
               }
               columnDefs={
-                props.role === "superuser"
+                props.role === "superUser"
                   ? superColColDefs
                   : props.role === "approver"
                   ? approverColDefs

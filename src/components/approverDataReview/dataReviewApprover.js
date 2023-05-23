@@ -494,7 +494,7 @@ function DataReviewApprover({ props }) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 370, marginTop: "10px" }}
+          style={{ height: 350, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}
