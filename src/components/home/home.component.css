@@ -63,6 +63,7 @@
     font-weight: 400;
     font-size: 14px;
 }
+
 .number-header {
     color: #000000;
     font-weight: 600;
@@ -81,9 +82,11 @@
     height: 40px;
     margin-bottom: 20px;
 }
+
 .window-container {
     border-right: 1px solid #707070;
 }
+
 .window-header {
     display: flex;
     justify-content: center;
