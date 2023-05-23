@@ -97,7 +97,7 @@ function PartnerComponent(props) {
       </Row>
       <Row>
         <Breadcrumb>
-          <Breadcrumb.Item href="/">
+          <Breadcrumb.Item href="/editorHome">
             <img
               src={Home}
               alt="home"

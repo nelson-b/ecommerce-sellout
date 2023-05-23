@@ -295,7 +295,7 @@ function PartnerList(props) {
         </Row>
         <div>
           <Breadcrumb>
-            <Breadcrumb.Item href="/">
+            <Breadcrumb.Item href="/editorHome">
               <img
                 src={Home}
                 alt="home"
