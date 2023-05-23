@@ -27,7 +27,6 @@ function App() {
           <Route path="/dataInput" element={<DataInputComponent />} />
           <Route path="/dataReview" element={<DataReview />} />
           <Route path="/partnerList" element={<PartnerList />} />
-          {/* <Route path="/" element={<HomeComponent />} /> */}
           <Route path="/editorHome" element={<HomeComponent role={'editor'} />} />
           <Route path="/approverHome" element={<HomeComponent  role={'approver'}/>} />
           <Route path="/superUserHome" element={<HomeComponent  role={'superuser'}/>} />
@@ -37,7 +36,7 @@ function App() {
           <Route path="/partnerPreviousReview" element={<PartnerQuarterApprover />} />
           <Route path="/addPartner" exact element={<PartnerComponent isCreatedModule={true} />} />
           <Route path="/updatePartner" exact element={<PartnerComponent isCreatedModule={false}/>} />
-          <Route path="/login" element={ <LoginComponent/> } />
+          <Route path="/" element={ <LoginComponent/> } />
         </Routes>
       </Router>
     </div>

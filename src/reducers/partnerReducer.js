@@ -1,5 +1,5 @@
 import {
-    CREATE_PARTNERDATA
+    CREATE_PARTNERDATA, RETRIEVE_PARTNERDATA
 } from "../actions/type";
 
 const initialState = [];
@@ -10,6 +10,8 @@ function partnerReducer(sellOutData = initialState, action) {
     switch (type) {
         case CREATE_PARTNERDATA:
             return [...sellOutData, payload];
+        case RETRIEVE_PARTNERDATA:
+            return payload;
 
         default:
             return sellOutData;

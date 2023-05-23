@@ -13,6 +13,8 @@ import partnerEdit from "../../images/partner-edit.png";
 import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
 import "../partnerList/partnerList.css";
+import { RetrieveAllPartnerData } from "../../actions/partneraction";
+import { connect } from "react-redux";
 
 function PartnerList(props) {
   const navigate = useNavigate();
@@ -51,7 +53,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Platform Name",
-      field: "platformNmae",
+      field: "platform_name",
       width: 150,
       sortable: true,
       filter: true,
@@ -60,7 +62,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Partner Account Name",
-      field: "PartnerAccount",
+      field: "partner_account_name",
       width: 150,
       sortable: true,
       filter: true,
@@ -69,7 +71,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Reseller Name",
-      field: "reseller",
+      field: "reseller_name",
       width: 140,
       sortable: true,
       filter: true,
@@ -79,7 +81,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Schneider Electric Entity",
-      field: "schneider",
+      field: "se_entity",
       width: 150,
       sortable: true,
       filter: true,
@@ -89,7 +91,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Partner Group",
-      field: "partnerGroup",
+      field: "partner_group",
       width: 150,
       sortable: true,
       filter: true,
@@ -99,7 +101,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Partner ID",
-      field: "partnerID",
+      field: "partner_id",
       width: 150,
       sortable: true,
       filter: true,
@@ -108,7 +110,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Status",
-      field: "Status",
+      field: "status",
       width: 110,
       editable: false,
       cellRenderer: (params) => {
@@ -127,7 +129,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Country",
-      field: "Country",
+      field: "country_code",
       width: 120,
       sortable: true,
       filter: true,
@@ -136,7 +138,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Business Type",
-      field: "BusinessType",
+      field: "business_type",
       width: 120,
       sortable: true,
       filter: true,
@@ -146,7 +148,7 @@ function PartnerList(props) {
     },
     {
       headerName: "E2 Playbook Type",
-      field: "playbookType",
+      field: "e2_playbook_type",
       width: 150,
       sortable: true,
       filter: true,
@@ -156,17 +158,24 @@ function PartnerList(props) {
     },
     {
       headerName: "Activation Date",
-      field: "activation",
+      field: "activation_date",
       width: 120,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
+      valueFormatter: (params) => {
+        var date = new Date(params.value);
+        var day = date.getDate().toString().padStart(2, '0');
+        var month = (date.getMonth() + 1).toString().padStart(2, '0');
+        var year = date.getFullYear().toString().substring(2);
+        return day + '/' + month + '/' + year;
+      },
     },
     {
       headerName: "Model Type",
-      field: "ModelType",
+      field: "model_type",
       width: 120,
       sortable: true,
       filter: true,
@@ -176,7 +185,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Currency of Sellout Reporting",
-      field: "currency",
+      field: "trans_currency_code",
       width: 170,
       sortable: true,
       filter: true,
@@ -186,7 +195,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Data Collection Type",
-      field: "dataCollection",
+      field: "data_collection_type",
       width: 150,
       sortable: true,
       filter: true,
@@ -196,7 +205,7 @@ function PartnerList(props) {
     },
     {
       headerName: "BOPP Type",
-      field: "bopp",
+      field: "bopp_type",
       width: 120,
       sortable: true,
       filter: true,
@@ -206,7 +215,7 @@ function PartnerList(props) {
     },
     {
       headerName: "GTM Type",
-      field: "gtm",
+      field: "gtm_type",
       width: 100,
       sortable: true,
       filter: true,
@@ -216,7 +225,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Partner Sellout Margin",
-      field: "partnerMargin",
+      field: "partner_sellout_margin",
       width: 170,
       sortable: true,
       filter: true,
@@ -226,54 +235,54 @@ function PartnerList(props) {
     },
     {
       headerName: "Partner URL",
-      field: "partnerURL",
+      field: "partner_url",
       width: 170,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
       editable: false,
       suppressMenu: true
-    },
-    {
-      headerName: "Editor",
-      field: "editor",
-      width: 120,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true
-    },
-    {
-      headerName: "Backup Editor",
-      field: "backup",
-      width: 140,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true
-    },
-    {
-      headerName: "Approver 1",
-      field: "Approver1",
-      width: 180,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true
-    },
-    {
-      headerName: "Approver 2",
-      field: "Approver2",
-      width: 180,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true
-    },
+    }
+    // {
+    //   headerName: "Editor",
+    //   field: "created_by",
+    //   width: 120,
+    //   sortable: true,
+    //   filter: true,
+    //   suppressSizeToFit: true,
+    //   editable: false,
+    //   suppressMenu: true
+    // },
+    // {
+    //   headerName: "Backup Editor",
+    //   field: "created_by",
+    //   width: 140,
+    //   sortable: true,
+    //   filter: true,
+    //   suppressSizeToFit: true,
+    //   editable: false,
+    //   suppressMenu: true
+    // },
+    // {
+    //   headerName: "Approver 1",
+    //   field: "Approver1",
+    //   width: 180,
+    //   sortable: true,
+    //   filter: true,
+    //   suppressSizeToFit: true,
+    //   editable: false,
+    //   suppressMenu: true
+    // },
+    // {
+    //   headerName: "Approver 2",
+    //   field: "Approver2",
+    //   width: 180,
+    //   sortable: true,
+    //   filter: true,
+    //   suppressSizeToFit: true,
+    //   editable: false,
+    //   suppressMenu: true
+    // },
   ];
 
   const defaultColDef = useMemo(
@@ -286,6 +295,17 @@ function PartnerList(props) {
     }),
     []
   );
+
+  const onGridReady = useCallback((params) => {
+    let data = props.RetrieveAllPartnerData()
+    .then((data)=>{
+      console.log('RetrieveAllPartnerData',data);
+      setRowData(data);
+    })
+    .catch((e)=>{
+      console.log(e);
+    });
+  },[]);
 
   return (
     <>
@@ -323,18 +343,19 @@ function PartnerList(props) {
         <>
           <div
             className="ag-theme-alpine ag-grid-table"
-            style={{ height: 350, margin: "7px 0px 0px 0px" }}
-          >
+            style={{ height: 350, margin: "7px 0px 0px 0px" }}>
+
             <AgGridReact
               className="ag-theme-alpine"
               animateRows="true"
-              rowData={props.role === "approver" ? partnerData: partnerData }
-              columnDefs={props.role === "approver" ? columnDefs: columnDefs }
+              rowData={ rowData }
+              columnDefs={ columnDefs }
               defaultColDef={defaultColDef}
               enableRangeSelection="true"
               rowSelection="multiple"
               suppressRowClickSelection="true"
               suppressMenuHide= {true}
+              onGridReady={onGridReady}
             />
           </div>
         </>
@@ -343,4 +364,4 @@ function PartnerList(props) {
   );
 }
 
-export default PartnerList;
+export default connect(null, {RetrieveAllPartnerData})(PartnerList);
