@@ -41,7 +41,7 @@ function Home(props) {
   };
 
   const userNavigation = () => {
-    navigate("/createUser");
+    navigate("/user/list");
   }
 
   const editorColDefs = [
