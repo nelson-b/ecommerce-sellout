@@ -21,11 +21,15 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import partnerRequest from "../../data/partnerRequestList.json";
 import Home from "../../images/home-icon.png";
+import { useLocation } from "react-router-dom";
 
-function PartnerRequestList({}) {
+function PartnerRequestList(props) {
   const gridRef = useRef();
   const navigate = useNavigate();
+  const location = useLocation();
+  const screenRole = new URLSearchParams(location.search).get("role");
   const [rowData, setRowData] = useState();
+  const [message, setMessage] = useState(0);
 
   const columnDefs = [
     {
@@ -277,12 +281,17 @@ function PartnerRequestList({}) {
     };
   }, []);
 
+  const handleCheckboxClick = (params) => {
+    const selectedRows = params.api.getSelectedRows();
+    setMessage(selectedRows?.length);
+  };
+
   const handleReject = () => {
-    setRowData(rowData);
+    console.log(message ? `${message} Partner Accounts selected for Reject` : "");
   };
 
   const handleApprove = () => {
-    setRowData(rowData);
+    console.log(message ? `${message} Partner Accounts selected for Approval` : "");
   };
 
   const onGridReady = useCallback((params) => {
@@ -298,15 +307,27 @@ function PartnerRequestList({}) {
           <MyMenu />
         </Row>
         <div>
-          <Breadcrumb>
-            <Breadcrumb.Item href="/superUserHome">
-              <img
-                src={Home}
-                alt="home"
-                style={{ height: "20px", width: "80px", cursor: "pointer" }}
-              />
-            </Breadcrumb.Item>
-          </Breadcrumb>
+          {screenRole === "admin" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/adminHome">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/superUserHome">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) }
         </div>
 
         <div className="sell-out-request-header">
@@ -326,10 +347,11 @@ function PartnerRequestList({}) {
             animateRows={true}
             onGridReady={onGridReady}
             rowSelection={"multiple"}
-            suppressRowClickSelection={true}
             groupSelectsChildren={true}
             suppressMenuHide={true}
             enableRangeSelection={true}
+            suppressRowClickSelection={true}
+            onSelectionChanged={handleCheckboxClick}
           ></AgGridReact>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>

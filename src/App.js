@@ -14,6 +14,9 @@ import LoginComponent from "./components/login/login.component.js";
 import DataReviewApprover from "./components/approverDataReview/dataReviewApprover.js";
 import PartnerQuarterApprover from "./components/approverDataReview/previousQuarterReview.js";
 import PartnerRequestList from "./components/partnerRequestList/partnerRequestList.js";
+import AdminOverview from "./components/home/adminOverview.js";
+import SuperUserApproverOverview from "./components/home/superUserApproverOverview.js";
+import roles from "./data/roles.json";
 import CreateUser from "./components/user/create.js";
 
 function App() {
@@ -31,10 +34,12 @@ function App() {
           <Route path="/partnerList" element={<PartnerList />} />
           <Route path="/partnerRequestList" element={<PartnerRequestList />} />
 
-          <Route path="/editorHome" element={<HomeComponent role={'editor'} />} />
-          <Route path="/approverHome" element={<HomeComponent  role={'approver'}/>} />
-          <Route path="/superUserHome" element={<HomeComponent  role={'superUser'}/>} />
-          <Route path="/adminHome" element={<adminHomeComponent role={'admin'} />} />
+          <Route path="/editorHome" element={<HomeComponent role={roles.editor} />} />
+          <Route path="/approverHome" element={<HomeComponent  role={roles.approver}/>} />
+          <Route path="/superUserHome" element={<HomeComponent  role={roles.superUser}/>} />
+          <Route path="/adminHome" element={<AdminOverview role={roles.admin} />} />
+          
+          <Route path="/superUserApprover" element={<SuperUserApproverOverview />} />
           <Route path="*" element={<ErrorPageComponent />} />
           <Route path="/approverReview" element={<DataReviewApprover />} />
           <Route path="/partnerPreviousReview" element={<PartnerQuarterApprover />} />

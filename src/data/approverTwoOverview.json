@@ -1,0 +1,46 @@
+[
+    {
+        "approval_stage2": "Approver1",
+        "ops": "NAM",
+        "zone": "US",
+        "country": "Finland",
+        "Model": "E1",
+        "partner_account_associate": 30,
+        "partner_account_validate": 20,
+        "reamaining_account_Validate": 10,
+        "action": ""
+    },
+    {
+        "approval_stage2": "Approver2",
+        "ops": "NAM",
+        "zone": "US",
+        "country": "France",
+        "Model": "E1",
+        "partner_account_associate": 24,
+        "partner_account_validate": 16,
+        "reamaining_account_Validate": 8,
+        "action": ""
+    },
+    {
+        "approval_stage2": "Approver3",
+        "ops": "NAM",
+        "zone": "US",
+        "country": "Germany",
+        "Model": "E1",
+        "partner_account_associate": 24,
+        "partner_account_validate": 22,
+        "reamaining_account_Validate": 2,
+        "action": ""
+    },
+    {
+        "approval_stage2": "Approver4",
+        "ops": "NAM",
+        "zone": "US",
+        "country": "Swedan",
+        "Model": "E1",
+        "partner_account_associate": 20,
+        "partner_account_validate": 10,
+        "reamaining_account_Validate": 20,
+        "action": ""
+    }
+]

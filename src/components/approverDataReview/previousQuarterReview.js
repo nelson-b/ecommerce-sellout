@@ -34,10 +34,10 @@ function PartnerQuarterApprover({}) {
 
   const ChildMessageRenderer = (props) => {
     const invokeReject = () => {
-      alert(props.data.Partner?.length ? `${props.data.Partner} partner Selected for reject approval` : "");
+      console.log(props.data.Partner?.length ? `${props.data.Partner} partner Selected for reject approval` : "");
     };
     const invokeValidate = () => {
-      alert(props.data.Partner?.length ? `${props.data.Partner} partner selected for Validate` : "");
+      console.log(props.data.Partner?.length ? `${props.data.Partner} partner selected for Validate` : "");
     };
     return (
       <div>
@@ -198,7 +198,7 @@ function PartnerQuarterApprover({}) {
   };
 
   const handleInvestigation = () => {
-    alert(message ? `${message} Partner Accounts Sent For Investigation` : "");
+    console.log(message ? `${message} Partner Accounts Sent For Investigation` : "");
   };
 
   const handleConfirm = () => {
