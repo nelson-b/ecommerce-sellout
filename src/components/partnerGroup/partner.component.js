@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { createSellOutData } from "../../actions/selloutaction";
 import { Button, Col, Form, Row, Container, Breadcrumb, Card, Tooltip, OverlayTrigger,
 } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import MyMenu from "../menu/menu.component.js";
-import { BiHome, BiHelpCircle } from "react-icons/bi";
+import { BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
@@ -50,13 +49,13 @@ function PartnerComponent(props) {
     reValidateMode: "onChange",
   });
   
-  // const [formData, setFormData] = useState(initialState);
   const data = partnerData.find((e)=> e.partnerID === id);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
   };
+  
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
@@ -113,6 +112,7 @@ function PartnerComponent(props) {
   const handleClearClick = () => {
     window.location.reload();
   };
+  
   return (
     <Container fluid>
       <Row>
@@ -142,15 +142,15 @@ function PartnerComponent(props) {
       </Row>
       <Row>
         {props.isCreatedModule && (
-          <h5 className="partner-header">Create New Partner</h5>
+          <h5 className="form-sellout-header">Create New Partner</h5>
         )}
         {!props.isCreatedModule && (
-          <h5 className="partner-header">Update Partner</h5>
+          <h5 className="form-sellout-header">Update Partner</h5>
         )}
         <Container fluid>
           <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
             <Row>
-              <Card className="card-Panel">
+              <Card className="card-Panel form-sellout-card">
                 <Form.Group className="mb-4">
                   <Row>
                     <Col>

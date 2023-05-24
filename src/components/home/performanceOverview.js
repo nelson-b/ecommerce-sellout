@@ -3,7 +3,6 @@ import upArrow from "./../../images/upArrow.png";
 import downArrow from "./../../images/downArrow.png";
 import calender from "./../../images/calender.png";
 
-
 function PerformanceOverview() {
   return (
     <Container fluid>
