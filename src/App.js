@@ -13,6 +13,7 @@ import PartnerList from "./components/partnerList/partnerList.js";
 import LoginComponent from "./components/login/login.component.js";
 import DataReviewApprover from "./components/approverDataReview/dataReviewApprover.js";
 import PartnerQuarterApprover from "./components/approverDataReview/previousQuarterReview.js";
+import PartnerRequestList from "./components/partnerRequestList/partnerRequestList.js";
 import CreateUser from "./components/user/create.js";
 
 function App() {
@@ -28,9 +29,12 @@ function App() {
           <Route path="/dataInput" element={<DataInputComponent />} />
           <Route path="/dataReview" element={<DataReview />} />
           <Route path="/partnerList" element={<PartnerList />} />
+          <Route path="/partnerRequestList" element={<PartnerRequestList />} />
+
           <Route path="/editorHome" element={<HomeComponent role={'editor'} />} />
           <Route path="/approverHome" element={<HomeComponent  role={'approver'}/>} />
-          <Route path="/superUserHome" element={<HomeComponent  role={'superuser'}/>} />
+          <Route path="/superUserHome" element={<HomeComponent  role={'superUser'}/>} />
+          <Route path="/adminHome" element={<adminHomeComponent role={'admin'} />} />
           <Route path="*" element={<ErrorPageComponent />} />
           <Route path="/approverReview" element={<DataReviewApprover />} />
           <Route path="/partnerPreviousReview" element={<PartnerQuarterApprover />} />
