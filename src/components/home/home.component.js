@@ -40,6 +40,10 @@ function Home(props) {
     navigate("/partnerPreviousReview");
   };
 
+  const userNavigation = () => {
+    navigate("/createUser");
+  }
+
   const editorColDefs = [
     {
       headerName: "Scope",
@@ -396,7 +400,9 @@ function Home(props) {
 
               {props.role === "superUser" ? (
                 <Col xs="auto">
-                  <Button className="btn-split save-header">User Data</Button>
+                  <Button className="btn-split save-header"
+                  onClick={() => {userNavigation()}}
+                  >User Data</Button>
                 </Col>
               ) : props.role === "approver" ? (
                 <Col>

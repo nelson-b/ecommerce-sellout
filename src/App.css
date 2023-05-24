@@ -12,3 +12,18 @@
 h3{
   color:grey;
 }
+
+.form-sellout-header {
+  margin-top: 5px;
+  padding-left: 10px;
+}
+
+.form-sellout-card {
+  width: 1563px;
+  margin-left: 14px;
+}
+
+.form-sellout-footerbtn { 
+  float: "right"; 
+  margin-top: "10px"; 
+}
