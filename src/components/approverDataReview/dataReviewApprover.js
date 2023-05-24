@@ -106,7 +106,6 @@ function DataReviewApprover({ props }) {
     const today = new Date();
     const month = today.getMonth() + 1;
     const quarter = Math.ceil(month / 3);
-    console.log("quarter", `Q${quarter}`);
     return `Q${quarter}`;
   };
   const currentQuater = getCurrentQuarter();
@@ -424,7 +423,7 @@ function DataReviewApprover({ props }) {
   };
 
   const handleInvestigation = () => {
-    alert(message ? `${message} Partner Selected for Data Approval ` : "");
+    console.log(message ? `${message} Partner Selected for Data Approval ` : "");
   };
 
   const handleConfirm = () => {

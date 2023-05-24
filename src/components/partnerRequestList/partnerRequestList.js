@@ -27,7 +27,7 @@ function PartnerRequestList(props) {
   const gridRef = useRef();
   const navigate = useNavigate();
   const location = useLocation();
-  const screenRole = new URLSearchParams(location.search).get("id");
+  const screenRole = new URLSearchParams(location.search).get("role");
   const [rowData, setRowData] = useState();
   const [message, setMessage] = useState(0);
 
@@ -287,11 +287,11 @@ function PartnerRequestList(props) {
   };
 
   const handleReject = () => {
-    alert(message ? `${message} Partner Accounts selected for Reject` : "");
+    console.log(message ? `${message} Partner Accounts selected for Reject` : "");
   };
 
   const handleApprove = () => {
-    alert(message ? `${message} Partner Accounts selected for Approval` : "");
+    console.log(message ? `${message} Partner Accounts selected for Approval` : "");
   };
 
   const onGridReady = useCallback((params) => {

@@ -17,9 +17,15 @@ function AdminOverview(props) {
 
   const ChildMessageRenderer = (props) => {
     const invokeNotify = () => {
-      alert(props.data.data_input?.length ? `${props.data.data_input} selected for Notify` : "");
-      // alert(props.data.approval_stage1?.length ? `${props.data.approval_stage1} selected for Notify` : "");
-      // alert(props.data.approval_stage2?.length ? `${props.data.approval_stage2} selected for Notify` : "");
+      if (props.data?.data_input?.length) {
+        console.log(props.data.data_input?.length ? `${props.data.data_input} selected for Notify` : "");
+        
+      } else if (props.data?.approval_stage1?.length) {
+        console.log(props.data.approval_stage1?.length ? `${props.data.approval_stage1} selected for Notify` : "");
+
+      } else if (props.data?.approval_stage2?.length) {
+        console.log(props.data.approval_stage2?.length ? `${props.data.approval_stage2} selected for Notify` : "");
+      }
     };
     return (
       <div>

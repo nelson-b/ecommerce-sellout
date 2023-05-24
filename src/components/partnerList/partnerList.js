@@ -33,7 +33,7 @@ function PartnerList(props) {
   };
 
   const handleRequest = () => {
-    navigate(`/partnerRequestList?id=${screenRole}`);
+    navigate(`/partnerRequestList?role=${screenRole}`);
 
   };
 
