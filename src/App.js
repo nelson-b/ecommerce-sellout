@@ -13,6 +13,7 @@ import PartnerList from "./components/partnerList/partnerList.js";
 import LoginComponent from "./components/login/login.component.js";
 import DataReviewApprover from "./components/approverDataReview/dataReviewApprover.js";
 import PartnerQuarterApprover from "./components/approverDataReview/previousQuarterReview.js";
+import CreateUser from "./components/user/create.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,12 +31,12 @@ function App() {
           <Route path="/editorHome" element={<HomeComponent role={'editor'} />} />
           <Route path="/approverHome" element={<HomeComponent  role={'approver'}/>} />
           <Route path="/superUserHome" element={<HomeComponent  role={'superuser'}/>} />
-
           <Route path="*" element={<ErrorPageComponent />} />
           <Route path="/approverReview" element={<DataReviewApprover />} />
           <Route path="/partnerPreviousReview" element={<PartnerQuarterApprover />} />
-          <Route path="/addPartner" exact element={<PartnerComponent isCreatedModule={true} />} />
-          <Route path="/updatePartner" exact element={<PartnerComponent isCreatedModule={false}/>} />
+          <Route path="/addPartner" element={<PartnerComponent isCreatedModule={true} />} />
+          <Route path="/updatePartner" element={<PartnerComponent isCreatedModule={false}/>} />
+          <Route path="/createUser" exact element={ <CreateUser /> } />
           <Route path="/" element={ <LoginComponent/> } />
         </Routes>
       </Router>

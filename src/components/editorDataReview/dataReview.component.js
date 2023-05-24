@@ -597,8 +597,7 @@ function DataReviewComponent({}) {
                       name="radio"
                       value={radio.value}
                       checked={radioValue === radio.value}
-                      onChange={(e) => setRadioValue(e.currentTarget.value)}
-                    >
+                      onChange={(e) => setRadioValue(e.currentTarget.value)}>
                       {radio.name}
                     </ToggleButton>
                   ))}
@@ -632,8 +631,8 @@ function DataReviewComponent({}) {
             onGridReady={onGridReady}
             getRowStyle={getRowStyle}
             excelStyles={excelStyles}
-            suppressMenuHide= {true}
-          ></AgGridReact>
+            suppressMenuHide= {true}>            
+          </AgGridReact>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
               <Col xs="auto">

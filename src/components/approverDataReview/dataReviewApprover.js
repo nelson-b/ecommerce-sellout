@@ -35,7 +35,7 @@ function DataReviewApprover({ props }) {
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
-    { name: "Euro", value: "2" },
+    { name: "Euro", value: "2" }
   ];
 
   const columnDefs = [
