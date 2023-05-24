@@ -5,7 +5,7 @@ import MyMenu from "../menu/menu.component.js";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./home.component.css";
-import PerformanceOverview from "./po.component";
+import PerformanceOverview from "./performanceOverview";
 import { AgGridReact } from "ag-grid-react";
 import editorOverview from "../../data/editorOverview.json";
 import approveOverview from "../../data/approverOverview.json";
@@ -13,7 +13,6 @@ import superOverview from "../../data/superOverview.json";
 import footerTotalReview from "../editorDataReview/footerTotalReview";
 
 function Home(props) {
-  console.log('props.role', props.role)
   const gridRef = useRef();
   const navigate = useNavigate();
 
@@ -57,12 +56,14 @@ function Home(props) {
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 160,
+      cellClass: "grid-cell-centered",
     },
     {
       field: "Sellout Growth Vs Last Year",
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 150,
+      cellClass: "grid-cell-centered",
       valueFormatter: (params) => {
         return params.value + "%";
       },
@@ -81,6 +82,7 @@ function Home(props) {
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 170,
+      cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#e47f00", fontWeight: "bold" };
@@ -98,6 +100,7 @@ function Home(props) {
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 170,
+      cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#b10043", fontWeight: "bold" };
@@ -131,12 +134,14 @@ function Home(props) {
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 170,
+      cellClass: "grid-cell-centered",
     },
     {
       field: "Sellout Growth Vs Last Year",
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 150,
+      cellClass: "grid-cell-centered",
       valueFormatter: (params) => {
         return params.value + "%";
       },
@@ -155,6 +160,7 @@ function Home(props) {
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 170,
+      cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#e47f00", fontWeight: "bold" };
@@ -172,6 +178,7 @@ function Home(props) {
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 170,
+      cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#b10043", fontWeight: "bold" };
@@ -205,12 +212,14 @@ function Home(props) {
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 170,
+      cellClass: "grid-cell-centered",
     },
     {
       field: "Sellout Growth Vs Last Year",
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 150,
+      cellClass: "grid-cell-centered",
       valueFormatter: (params) => {
         return params.value + "%";
       },
@@ -229,6 +238,7 @@ function Home(props) {
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 170,
+      cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#e47f00", fontWeight: "bold" };
@@ -246,6 +256,7 @@ function Home(props) {
       spanHeaderHeight: true,
       aggFunc: "sum",
       minWidth: 170,
+      cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
           return { color: "#b10043", fontWeight: "bold" };
@@ -303,7 +314,7 @@ function Home(props) {
         </Row>
         <Row>
           <div>
-            <Row className="mb-4" style={{ float: "right", marginTop: "10px" }}>
+            <Row className="mb-4" style={{ float: "right" }}>
               {props.role === "superUser" ? (
                 <Col xs="auto">
                   <Button

@@ -19,7 +19,6 @@ import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 
 function PartnerList(props) {
-  console.log("props", props);
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const location = useLocation();
@@ -34,7 +33,8 @@ function PartnerList(props) {
   };
 
   const handleRequest = () => {
-    navigate("/partnerRequestList");
+    navigate(`/partnerRequestList?id=${screenRole}`);
+
   };
 
   const columnDefs = [
@@ -368,7 +368,7 @@ function PartnerList(props) {
               </Breadcrumb.Item>
             </Breadcrumb>
           ) : (
-            ""
+            <div></div>
           )}
         </div>
         <Row>
@@ -384,7 +384,7 @@ function PartnerList(props) {
                   size="md"
                   className="partner-header save-header"
                   onClick={() => {
-                    handleRequest();
+                    handleRequest(screenRole);
                   }}
                 >
                   Pending requests
