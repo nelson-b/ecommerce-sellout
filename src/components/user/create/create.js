@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Col, Form, Row, Container, Breadcrumb, Card, Tooltip, OverlayTrigger, Button,
 } from "react-bootstrap";
-import MyMenu from "../menu/menu.component.js";
-import Home from "../../images/home-icon.png";
+import MyMenu from "../../menu/menu.component.js";
+import Home from "../../../images/home-icon.png";
 import { BiHelpCircle } from "react-icons/bi";
-import "./create.css"
-import MultiSelectDrp from "./multiSelectDropdown";
+import "./create.css" 
+import MultiSelectDrp from "../multiSelectDropdown";
 import Select, { components } from "react-select";
 import makeAnimated from "react-select/animated";
-import { countryOptions, partnerOptions } from "./optionsData.js";
-import PartnerAccountList from "./partnerAccountList.component.js";
+import { countryOptions, partnerOptions, modelOptions } from "../optionsData.js";
+import PartnerAccountList from "../partnerAccountList.component.js";
 
 function CreateUser() {                
   const navigate = useNavigate();
@@ -44,16 +44,23 @@ function CreateUser() {
   
   const animatedComponents = makeAnimated();
 
-  const [optionSelected, setOptionSelected] = useState([]);
+  const [optionCountrySelected, setOptionCountrySelected] = useState([]);
+  const [optionModelSelected, setOptionModelSelected] = useState([]);
+  const [optionPartnerSelected, setOptionPartnerSelected] = useState([]);
 
-  const handleChange = (selected) => {
-    setOptionSelected(selected);
-    console.log('optionSelected', optionSelected);
+  const handleCountryChange = (selected) => {
+    setOptionCountrySelected(selected);
+    console.log('optionSelected', optionCountrySelected);
+  }
+
+  const handleModelChange = (selected) => {
+    setOptionModelSelected(selected);
+    console.log('optionSelected', optionModelSelected);
   }
 
   const handlePartnerChange = (selected) => {
-    setOptionSelected(selected);
-    console.log('optionPartnerSelected', selected);
+    setOptionPartnerSelected(selected);
+    console.log('optionPartnerSelected', optionPartnerSelected);
   }
   
   const {
@@ -109,7 +116,7 @@ function CreateUser() {
       </Row>
       <Row>
         <Breadcrumb>
-          <Breadcrumb.Item href="/editorHome">
+          <Breadcrumb.Item href="/superUserHome">
             <img
               src={Home}
               alt="home"
@@ -127,7 +134,7 @@ function CreateUser() {
           <Container fluid>
             <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
               <Row>
-                <Card className="card-Panel form-sellout-card">
+                <Card className="card-Panel form-userCreate-card">
                   <Form.Group className="mb-4">
                   <Row>
                       <Col>
@@ -194,7 +201,7 @@ function CreateUser() {
                 </Card>
               </Row>
               <Row>
-                <Card className="card-Panel form-sellout-card">
+                <Card className="card-Panel form-userCreate-card">
                   <Row>
                     <Form.Label size="lg" className="create-usr-warning">
                       Select the relevant fields for user access levels
@@ -234,14 +241,14 @@ function CreateUser() {
                                 Model Type
                               </Form.Label>
                               <MultiSelectDrp
-                                options={countryOptions}
+                                options={ modelOptions }
                                 isMulti
-                                closeMenuOnSelect={false}
-                                hideSelectedOptions={false}
+                                closeMenuOnSelect={ false }
+                                hideSelectedOptions={ false }
                                 components={{ Option, MultiValue, animatedComponents }}
-                                onChange={handleChange}
+                                onChange={ handleModelChange }
                                 allowSelectAll={true}
-                                value={optionSelected}
+                                value={optionModelSelected}
                               />
                       </Col>
                     </Row>
@@ -271,35 +278,35 @@ function CreateUser() {
                         closeMenuOnSelect={false}
                         hideSelectedOptions={false}
                         components={{ Option, MultiValue, animatedComponents }}
-                        onChange={handleChange}
+                        onChange={ handleCountryChange }
                         allowSelectAll={true}
-                        value={optionSelected}
+                        value={optionCountrySelected}
                       />
                     </Col>
                   </Row>
                   <br />
                   <Row>                  
-                  <Col>
-                      <Form.Label size="sm" htmlFor="partnerAccNm">Partner Account Name</Form.Label>
-                      &nbsp;
-                      <OverlayTrigger
-                        placement="right"
-                        overlay={tooltip(
-                        "Type to search or select from dropdown"
-                        )}>
-                        <span>
-                          <BiHelpCircle />
-                        </span>
-                      </OverlayTrigger>
-                      <MultiSelectDrp
-                        options={partnerOptions}
-                        isMulti
-                        closeMenuOnSelect={false}
-                        hideSelectedOptions={false}
-                        components={{ Option, MultiValue, animatedComponents }}
-                        onChange={handlePartnerChange}
-                        allowSelectAll={true}
-                        value={optionSelected} />
+                    <Col>
+                        <Form.Label size="sm" htmlFor="partnerAccNm">Partner Account Name</Form.Label>
+                        &nbsp;
+                        <OverlayTrigger
+                          placement="right"
+                          overlay={tooltip(
+                          "Type to search or select from dropdown"
+                          )}>
+                          <span>
+                            <BiHelpCircle />
+                          </span>
+                        </OverlayTrigger>
+                        <MultiSelectDrp
+                          options={partnerOptions}
+                          isMulti
+                          closeMenuOnSelect={false}
+                          hideSelectedOptions={false}
+                          components={{ Option, MultiValue, animatedComponents }}
+                          onChange={handlePartnerChange}
+                          allowSelectAll={true}
+                          value={optionPartnerSelected} />
                     </Col>
                     <Col><PartnerAccountList/></Col>
                   </Row>

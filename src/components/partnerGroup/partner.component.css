@@ -9,3 +9,8 @@
 .partnerRowUpdate {
     max-width: 1280px;
 }
+
+.form-partner-card {
+    width: 1563px;
+    margin-left: 14px;
+  }

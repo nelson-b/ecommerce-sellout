@@ -14,7 +14,7 @@ import LoginComponent from "./components/login/login.component.js";
 import DataReviewApprover from "./components/approverDataReview/dataReviewApprover.js";
 import PartnerQuarterApprover from "./components/approverDataReview/previousQuarterReview.js";
 import PartnerRequestList from "./components/partnerRequestList/partnerRequestList.js";
-import CreateUser from "./components/user/create.js";
+import CreateUser from "./components/user/create/create.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,7 +30,6 @@ function App() {
           <Route path="/dataReview" element={<DataReview />} />
           <Route path="/partnerList" element={<PartnerList />} />
           <Route path="/partnerRequestList" element={<PartnerRequestList />} />
-
           <Route path="/editorHome" element={<HomeComponent role={'editor'} />} />
           <Route path="/approverHome" element={<HomeComponent  role={'approver'}/>} />
           <Route path="/superUserHome" element={<HomeComponent  role={'superUser'}/>} />
