@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Col, Form, Row, Container, Breadcrumb, Card, Tooltip, OverlayTrigger, Button,
 } from "react-bootstrap";
 import MyMenu from "../../menu/menu.component.js";
 import Home from "../../../images/home-icon.png";
 import { BiHelpCircle } from "react-icons/bi";
-import "./create.css" 
-import MultiSelectDrp from "../multiSelectDropdown";
+import "./save.css" 
+import MultiSelectDrp from "../multiSelectDropdown.js";
 import Select, { components } from "react-select";
 import makeAnimated from "react-select/animated";
-import { countryOptions, partnerOptions, modelOptions } from "../optionsData.js";
+import { countryOptions, partnerOptions, modelOptions, userRoleOptions, opsOptions, userZoneOptions, userOptions } from "../optionsData.js";
 import PartnerAccountList from "../partnerAccountList.component.js";
 
-function CreateUser() {                
+function SaveUser(props) {                
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,10 +43,17 @@ function CreateUser() {
   );
   
   const animatedComponents = makeAnimated();
-
+  
+  
+  const [optionUsernameSelected, setOptionUsernameSelected] = useState([]);
   const [optionCountrySelected, setOptionCountrySelected] = useState([]);
   const [optionModelSelected, setOptionModelSelected] = useState([]);
   const [optionPartnerSelected, setOptionPartnerSelected] = useState([]);
+  
+  const handleUserChange = (selected) => {
+    setOptionUsernameSelected(selected);
+    console.log('optionSelected', optionCountrySelected);
+  }
 
   const handleCountryChange = (selected) => {
     setOptionCountrySelected(selected);
@@ -100,7 +107,7 @@ function CreateUser() {
   }
 
   const onSubmit = (data) => {
-
+    console.log('data', data);
   }
 
   const onError = (error) => {
@@ -124,13 +131,25 @@ function CreateUser() {
             />
           </Breadcrumb.Item>
           <span> &nbsp;{">"}</span>
+          {props.isCreatedModule && (
             <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
               &nbsp;Create User
             </Breadcrumb.Item>
+          )}
+          {!props.isCreatedModule && (
+            <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
+              &nbsp;Update User
+            </Breadcrumb.Item>
+          )}
         </Breadcrumb>
       </Row>
       <Row>
+        {props.isCreatedModule && (
           <h5 className="form-sellout-header">Create New User</h5>
+        )}
+        {!props.isCreatedModule && (
+          <h5 className="form-sellout-header">Update User</h5>
+        )}
           <Container fluid>
             <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
               <Row>
@@ -152,13 +171,23 @@ function CreateUser() {
                               </span>
                             </OverlayTrigger>
                             <Select
+                              isDisabled={!props.isCreatedModule}
                               aria-labelledby="aria-label"
-                              inputId="aria-example-input"
-                              name="aria-live-color"
+                              inputId="username"
+                              name="username"
                               onMenuOpen={onMenuOpen}
                               onMenuClose={onMenuClose}
-                              options={countryOptions}
+                              options={userOptions}
+                              onChange={handleUserChange}
+                              {...register("username", {
+                                required: "User name is required",
+                              })}
                             />
+                            {errors.username && (
+                            <Form.Text className="text-danger">
+                              {errors.username.message}
+                            </Form.Text>
+                            )}
                       </Col>
                       <Col>
                             <Form.Label size="sm" htmlFor="useremailid">
@@ -175,13 +204,22 @@ function CreateUser() {
                               </span>
                             </OverlayTrigger>
                             <Select
+                              isDisabled={!props.isCreatedModule}
                               aria-labelledby="aria-label"
-                              inputId="aria-example-input"
-                              name="aria-live-color"
+                              inputId="useremailid"
+                              name="useremailid"
                               onMenuOpen={onMenuOpen}
                               onMenuClose={onMenuClose}
                               options={countryOptions}
+                              {...register("useremailid", {
+                                required: "User email is required",
+                              })}
                             />
+                        {errors.useremailid && (
+                        <Form.Text className="text-danger">
+                          {errors.useremailid.message}
+                        </Form.Text>
+                      )}
                       </Col>
                       <Col>
                             <Form.Label size="sm" htmlFor="userrole">
@@ -189,12 +227,20 @@ function CreateUser() {
                             </Form.Label>
                             <Select
                               aria-labelledby="aria-label"
-                              inputId="aria-example-input"
-                              name="aria-live-color"
+                              inputId="userrole"
+                              name="userrole"
                               onMenuOpen={onMenuOpen}
                               onMenuClose={onMenuClose}
-                              options={countryOptions}
+                              options={userRoleOptions}
+                              {...register("userrole", {
+                                required: "User role is required",
+                              })}
                             />
+                        {errors.userrole && (
+                        <Form.Text className="text-danger">
+                          {errors.userrole.message}
+                        </Form.Text>
+                        )}
                       </Col>
                   </Row>
                   </Form.Group>
@@ -211,17 +257,25 @@ function CreateUser() {
                     <Form.Group className="mb-4">
                     <Row>
                         <Col>
-                              <Form.Label size="sm" htmlFor="ops">
+                              <Form.Label size="sm" htmlFor="userops">
                                 Ops
                               </Form.Label>
                               <Select
                               aria-labelledby="aria-label"
-                              inputId="aria-example-input"
-                              name="aria-live-color"
+                              inputId="userops"
+                              name="userops"
                               onMenuOpen={onMenuOpen}
                               onMenuClose={onMenuClose}
-                              options={countryOptions}
+                              options={opsOptions}
+                              {...register("userops", {
+                                required: "User Ops is required",
+                              })}                              
                             />
+                            {errors.userops && (
+                            <Form.Text className="text-danger">
+                              {errors.userops.message}
+                            </Form.Text>
+                            )}
                         </Col>
                         <Col>
                               <Form.Label size="sm" htmlFor="usrzone">
@@ -229,12 +283,20 @@ function CreateUser() {
                               </Form.Label>
                               <Select
                                 aria-labelledby="aria-label"
-                                inputId="aria-example-input"
-                                name="aria-live-color"
+                                inputId="usrzone"
+                                name="usrzone"
                                 onMenuOpen={onMenuOpen}
                                 onMenuClose={onMenuClose}
-                                options={countryOptions}
+                                options={userZoneOptions}
+                                {...register("usrzone", {
+                                  required: "User zone is required",
+                                })}                              
                               />
+                              {errors.usrzone && (
+                              <Form.Text className="text-danger">
+                                {errors.usrzone.message}
+                              </Form.Text>
+                              )}
                         </Col>
                         <Col>
                               <Form.Label size="sm" htmlFor="modelType">
@@ -248,8 +310,17 @@ function CreateUser() {
                                 components={{ Option, MultiValue, animatedComponents }}
                                 onChange={ handleModelChange }
                                 allowSelectAll={true}
-                                value={optionModelSelected}
+                                value={ optionModelSelected }
+                                inputId ="modelType"
+                                {...register("modelType", {
+                                  required: "Model type is required",
+                                })}                              
                               />
+                              {errors.modelType && (
+                              <Form.Text className="text-danger">
+                                {errors.modelType.message}
+                              </Form.Text>
+                              )}
                       </Col>
                     </Row>
                     </Form.Group>
@@ -281,7 +352,16 @@ function CreateUser() {
                         onChange={ handleCountryChange }
                         allowSelectAll={true}
                         value={optionCountrySelected}
-                      />
+                        inputId ="usrcountry"
+                        {...register("usrcountry", {
+                          required: "User country is required",
+                        })}                              
+                        />
+                        {errors.modelType && (
+                          <Form.Text className="text-danger">
+                            {errors.modelType.message}
+                          </Form.Text>
+                        )}
                     </Col>
                   </Row>
                   <br />
@@ -306,7 +386,17 @@ function CreateUser() {
                           components={{ Option, MultiValue, animatedComponents }}
                           onChange={handlePartnerChange}
                           allowSelectAll={true}
-                          value={optionPartnerSelected} />
+                          value={optionPartnerSelected}
+                          inputId ="partnerAccNm"
+                          {...register("partnerAccNm", {
+                            required: "Partner Account Name is required",
+                          })}                              
+                          />
+                          {errors.partnerAccNm && (
+                            <Form.Text className="text-danger">
+                              {errors.partnerAccNm.message}
+                            </Form.Text>
+                          )}
                     </Col>
                     <Col><PartnerAccountList/></Col>
                   </Row>
@@ -332,4 +422,4 @@ function CreateUser() {
   );
 }
 
-export default CreateUser;
+export default SaveUser;

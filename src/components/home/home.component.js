@@ -40,7 +40,7 @@ function Home(props) {
   };
 
   const userNavigation = () => {
-    navigate("/user/list");
+    navigate("/user/list?role=superUser");
   }
 
   const editorColDefs = [
