@@ -18,7 +18,7 @@ import AdminOverview from "./components/home/adminOverview.js";
 import SuperUserApproverOverview from "./components/home/superUserApproverOverview.js";
 import roles from "./data/roles.json";
 import CreateUser from "./components/user/create/create.js";
-import UserList from "./components/user/list/list.js"
+import UserList from "./components/user/list/list.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
