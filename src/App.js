@@ -46,7 +46,8 @@ function App() {
           <Route path="/partnerPreviousReview" element={<PartnerQuarterApprover />} />
           <Route path="/addPartner" element={<PartnerComponent isCreatedModule={true} />} />
           <Route path="/updatePartner" element={<PartnerComponent isCreatedModule={false}/>} />
-          <Route path="/user/create" exact element={ <CreateUser /> } />
+          <Route path="/user/create" exact element={ <CreateUser isCreatedModule={true} /> } />
+          <Route path="/user/update" exact element={ <CreateUser isCreatedModule={false} /> } />
           <Route path="/user/list" exact element={ <UserList /> } />
           <Route path="/" element={ <LoginComponent/> } />
         </Routes>

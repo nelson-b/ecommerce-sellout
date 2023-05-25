@@ -13,8 +13,7 @@ import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import userEditIcon from "../../../images/edit-icon.png";
 
-function UserList(props) {
-  console.log("props", props);
+function UserList() {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const location = useLocation();

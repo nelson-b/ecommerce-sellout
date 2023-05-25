@@ -13,7 +13,7 @@ import makeAnimated from "react-select/animated";
 import { countryOptions, partnerOptions, modelOptions } from "../optionsData.js";
 import PartnerAccountList from "../partnerAccountList.component.js";
 
-function CreateUser() {                
+function CreateUser(props) {                
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -124,13 +124,25 @@ function CreateUser() {
             />
           </Breadcrumb.Item>
           <span> &nbsp;{">"}</span>
+          {props.isCreatedModule && (
             <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
               &nbsp;Create User
             </Breadcrumb.Item>
+          )}
+          {!props.isCreatedModule && (
+            <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
+              &nbsp;Update User
+            </Breadcrumb.Item>
+          )}
         </Breadcrumb>
       </Row>
       <Row>
+        {props.isCreatedModule && (
           <h5 className="form-sellout-header">Create New User</h5>
+        )}
+        {!props.isCreatedModule && (
+          <h5 className="form-sellout-header">Update User</h5>
+        )}
           <Container fluid>
             <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
               <Row>
@@ -152,6 +164,7 @@ function CreateUser() {
                               </span>
                             </OverlayTrigger>
                             <Select
+                              isDisabled={!props.isCreatedModule}
                               aria-labelledby="aria-label"
                               inputId="aria-example-input"
                               name="aria-live-color"
@@ -175,6 +188,7 @@ function CreateUser() {
                               </span>
                             </OverlayTrigger>
                             <Select
+                              isDisabled={!props.isCreatedModule}
                               aria-labelledby="aria-label"
                               inputId="aria-example-input"
                               name="aria-live-color"
