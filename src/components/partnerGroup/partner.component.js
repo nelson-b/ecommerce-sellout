@@ -150,7 +150,7 @@ function PartnerComponent(props) {
         <Container fluid>
           <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
             <Row>
-              <Card className="card-Panel form-sellout-card">
+              <Card className="card-Panel form-partner-card">
                 <Form.Group className="mb-4">
                   <Row>
                     <Col>

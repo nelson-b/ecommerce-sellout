@@ -17,7 +17,8 @@ import PartnerRequestList from "./components/partnerRequestList/partnerRequestLi
 import AdminOverview from "./components/home/adminOverview.js";
 import SuperUserApproverOverview from "./components/home/superUserApproverOverview.js";
 import roles from "./data/roles.json";
-import CreateUser from "./components/user/create.js";
+import CreateUser from "./components/user/create/create.js";
+import UserList from "./components/user/list/list.js"
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +46,8 @@ function App() {
           <Route path="/partnerPreviousReview" element={<PartnerQuarterApprover />} />
           <Route path="/addPartner" element={<PartnerComponent isCreatedModule={true} />} />
           <Route path="/updatePartner" element={<PartnerComponent isCreatedModule={false}/>} />
-          <Route path="/createUser" exact element={ <CreateUser /> } />
+          <Route path="/user/create" exact element={ <CreateUser /> } />
+          <Route path="/user/list" exact element={ <UserList /> } />
           <Route path="/" element={ <LoginComponent/> } />
         </Routes>
       </Router>
