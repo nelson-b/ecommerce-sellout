@@ -1,0 +1,46 @@
+[
+    {
+        "data_input": "user1",
+        "ops": "NAM",
+        "zone": "US",
+        "country": "Finland",
+        "Model": "E1",
+        "partner_account_associate": 30,
+        "partner_account_id": 20,
+        "reamaining_account": 10,
+        "action": ""
+    },
+    {
+        "data_input": "user2",
+        "ops": "EU",
+        "zone": "US",
+        "country": "France",
+        "Model": "E1",
+        "partner_account_associate": 24,
+        "partner_account_id": 16,
+        "reamaining_account": 8,
+        "action": ""
+    },
+    {
+        "data_input": "user3",
+        "ops": "IO",
+        "zone": "US",
+        "country": "Germany",
+        "Model": "E1",
+        "partner_account_associate": 24,
+        "partner_account_id": 22,
+        "reamaining_account": 2,
+        "action": ""
+    },
+    {
+        "data_input": "user4",
+        "ops": "IO",
+        "zone": "US",
+        "country": "Swedan",
+        "Model": "E1",
+        "partner_account_associate": 20,
+        "partner_account_id": 10,
+        "reamaining_account": 20,
+        "action": ""
+    }
+]
