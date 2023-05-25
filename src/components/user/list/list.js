@@ -3,37 +3,29 @@ import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useNavigate } from "react-router-dom";
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Button, Row, Col, Container, Breadcrumb } from "react-bootstrap";
-import MyMenu from "../menu/menu.component.js";
+import MyMenu from "../../menu/menu.component.js";
 import { AgGridReact } from "ag-grid-react";
-import active from "../../images/active.png";
-import closed from "../../images/closed.png";
-import Pending from "../../images/pending.png";
-import partnerEdit from "../../images/partner-edit.png";
-import Home from "../../images/home-icon.png";
-import partnerData from "../../data/partnerList.json";
-import "./list.css";
+import Home from "../../../images/home-icon.png";
+import "../list/list.css";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
+import userEditIcon from "../../../images/edit-icon.png";
 
-function PartnerList(props) {
+function UserList(props) {
   console.log("props", props);
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const location = useLocation();
-  const screenRole = new URLSearchParams(location.search).get("id");
-
-  const handlePartnerEdit = (params) => {
-    navigate(`/updatePartner?id=${params.data.partnerID}`);
+  const userRole = new URLSearchParams(location.search).get("role");
+  
+  const handleUserEdit = (params) => {
+    navigate(`/updateUser?id=${ params.data.userId }`);
   };
 
   const handleCreate = () => {
-    navigate("/addPartner");
-  };
-
-  const handleRequest = () => {
-    navigate("/partnerRequestList");
+    navigate("/user/create");
   };
 
   const columnDefs = [
@@ -50,9 +42,9 @@ function PartnerList(props) {
         return (
           <div>
             <img
-              src={partnerEdit}
-              alt="partner"
-              onClick={(e) => handlePartnerEdit(params)}
+              src={userEditIcon}
+              alt="user"
+              onClick={(e) => handleUserEdit(params)}
               style={{ height: "20px", width: "20px", cursor: "pointer" }}
             />
           </div>
@@ -60,27 +52,27 @@ function PartnerList(props) {
       },
     },
     {
-      headerName: "Platform Name",
-      field: "platform_name",
-      width: 150,
+      headerName: "Username",
+      field: "username",
+      width: 250,
       sortable: true,
       filter: true,
       suppressNavigable: true,
       editable: false,
     },
     {
-      headerName: "Partner Account Name",
-      field: "partner_account_name",
-      width: 150,
+      headerName: "User ID",
+      field: "userId",
+      width: 300,
       sortable: true,
       filter: true,
       suppressNavigable: true,
       editable: false,
     },
     {
-      headerName: "Reseller Name",
-      field: "reseller_name",
-      width: 140,
+      headerName: "Role",
+      field: "userrole",
+      width: 200,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -88,19 +80,9 @@ function PartnerList(props) {
       suppressMenu: true,
     },
     {
-      headerName: "Schneider Electric Entity",
-      field: "se_entity",
-      width: 150,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true,
-    },
-    {
-      headerName: "Partner Group",
-      field: "partner_group",
-      width: 150,
+      headerName: "Ops",
+      field: "userOps",
+      width: 200,
       sortable: true,
       filter: true,
       suppressNavigable: true,
@@ -108,192 +90,33 @@ function PartnerList(props) {
       editable: false,
     },
     {
-      headerName: "Partner ID",
-      field: "partner_id",
-      width: 150,
+      headerName: "Zone",
+      field: "userZone",
+      width: 250,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-    },
-    {
-      headerName: "Status",
-      field: "status",
-      width: 110,
-      editable: false,
-      cellRenderer: (params) => {
-        const Status = params.value;
-        return (
-          <div>
-            {Status === "Active" && (
-              <img src={active} alt="active" style={{ width: "80px" }} />
-            )}
-            {Status === "Closed" && (
-              <img src={closed} alt="closed" style={{ width: "80px" }} />
-            )}
-            {Status === "Pending" && (
-              <img src={Pending} alt="Pending" style={{ width: "80px" }} />
-            )}
-          </div>
-        );
-      },
     },
     {
       headerName: "Country",
-      field: "country_code",
-      width: 120,
+      field: "usrCountry",
+      width: 200,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
       editable: false,
     },
     {
-      headerName: "Business Type",
-      field: "business_type",
-      width: 120,
+      headerName: "Model",
+      field: "usrModel",
+      width: 200,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
       editable: false,
       suppressMenu: true,
-    },
-    {
-      headerName: "E2 Playbook Type",
-      field: "e2_playbook_type",
-      width: 150,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true,
-    },
-    {
-      headerName: "Activation Date",
-      field: "activation_date",
-      width: 120,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true,
-      valueFormatter: (params) => {
-        var date = new Date(params.value);
-        var day = date.getDate().toString().padStart(2, "0");
-        var month = (date.getMonth() + 1).toString().padStart(2, "0");
-        var year = date.getFullYear().toString().substring(2);
-        return day + "/" + month + "/" + year;
-      },
-    },
-    {
-      headerName: "Model Type",
-      field: "model_type",
-      width: 120,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true,
-    },
-    {
-      headerName: "Currency of Sellout Reporting",
-      field: "trans_currency_code",
-      width: 170,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true,
-    },
-    {
-      headerName: "Data Collection Type",
-      field: "data_collection_type",
-      width: 150,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true,
-    },
-    {
-      headerName: "BOPP Type",
-      field: "bopp_type",
-      width: 120,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true,
-    },
-    {
-      headerName: "GTM Type",
-      field: "gtm_type",
-      width: 100,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true,
-    },
-    {
-      headerName: "Partner Sellout Margin",
-      field: "partner_sellout_margin",
-      width: 170,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true,
-    },
-    {
-      headerName: "Partner URL",
-      field: "partner_url",
-      width: 170,
-      sortable: true,
-      filter: true,
-      suppressSizeToFit: true,
-      editable: false,
-      suppressMenu: true,
-    },
-    // {
-    //   headerName: "Editor",
-    //   field: "created_by",
-    //   width: 120,
-    //   sortable: true,
-    //   filter: true,
-    //   suppressSizeToFit: true,
-    //   editable: false,
-    //   suppressMenu: true
-    // },
-    // {
-    //   headerName: "Backup Editor",
-    //   field: "created_by",
-    //   width: 140,
-    //   sortable: true,
-    //   filter: true,
-    //   suppressSizeToFit: true,
-    //   editable: false,
-    //   suppressMenu: true
-    // },
-    // {
-    //   headerName: "Approver 1",
-    //   field: "Approver1",
-    //   width: 180,
-    //   sortable: true,
-    //   filter: true,
-    //   suppressSizeToFit: true,
-    //   editable: false,
-    //   suppressMenu: true
-    // },
-    // {
-    //   headerName: "Approver 2",
-    //   field: "Approver2",
-    //   width: 180,
-    //   sortable: true,
-    //   filter: true,
-    //   suppressSizeToFit: true,
-    //   editable: false,
-    //   suppressMenu: true
-    // },
+    }
   ];
 
   const defaultColDef = useMemo(
@@ -306,17 +129,37 @@ function PartnerList(props) {
     }),
     []
   );
-
+  
   const onGridReady = useCallback((params) => {
-    let data = props
-      .RetrieveAllPartnerData()
-      .then((data) => {
-        console.log("RetrieveAllPartnerData", data);
-        setRowData(data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    setRowData([
+        {
+            username: 'UserName 1',
+            userId: 'UserId 1',
+            userrole: 'Editor 1',
+            userOps: 'Ops 1',
+            userZone: 'Zone A',
+            usrCountry: 'Country 1',
+            usrModel: 'E1'
+        },
+        {
+            username: 'UserName 2',
+            userId: 'UserId 2',
+            userrole: 'Editor 2',
+            userOps: 'Ops 2',
+            userZone: 'Zone A',
+            usrCountry: 'Country 2',
+            usrModel: 'E2'
+        },
+        {
+            username: 'UserName 3',
+            userId: 'UserId 3',
+            userrole: 'Editor 3',
+            userOps: 'Ops 3',
+            userZone: 'Zone A',
+            usrCountry: 'Country 3',
+            usrModel: 'E3'
+        },
+    ]);
   }, []);
 
   return (
@@ -326,7 +169,7 @@ function PartnerList(props) {
           <MyMenu />
         </Row>
         <div>
-          {screenRole === "admin" ? (
+          {userRole === "admin" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/adminHome">
                 <img
@@ -335,8 +178,12 @@ function PartnerList(props) {
                   style={{ height: "20px", width: "80px", cursor: "pointer" }}
                 />
               </Breadcrumb.Item>
+              <span> &nbsp;{">"}</span>
+                <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
+                    &nbsp;User List
+                </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "superUser" ? (
+          ) : userRole === "superUser" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superUserHome">
                 <img
@@ -345,26 +192,10 @@ function PartnerList(props) {
                   style={{ height: "20px", width: "80px", cursor: "pointer" }}
                 />
               </Breadcrumb.Item>
-            </Breadcrumb>
-          ) : screenRole === "approver" ? (
-            <Breadcrumb>
-              <Breadcrumb.Item href="/approverHome">
-                <img
-                  src={Home}
-                  alt="home"
-                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
-                />
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          ) : screenRole === "editor" ? (
-            <Breadcrumb>
-              <Breadcrumb.Item href="/editorHome">
-                <img
-                  src={Home}
-                  alt="home"
-                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
-                />
-              </Breadcrumb.Item>
+                <span> &nbsp;{">"}</span>
+                <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
+                    &nbsp;User List
+                </Breadcrumb.Item>
             </Breadcrumb>
           ) : (
             ""
@@ -374,24 +205,9 @@ function PartnerList(props) {
           <div className="partner-request-header">
             <Col>
               <div className="sell-out-partner-header">
-                Sell Out Partner List
+                USER LIST
               </div>
             </Col>
-            {screenRole === "admin" || screenRole === "superUser" ? (
-              <Col xs="auto" className="partner-container">
-                <Button
-                  size="md"
-                  className="partner-header save-header"
-                  onClick={() => {
-                    handleRequest();
-                  }}
-                >
-                  Pending requests
-                </Button>
-              </Col>
-            ) : (
-              ""
-            )}
             <Col xs="auto" className="partner-container">
               <Button
                 size="md"
@@ -400,7 +216,7 @@ function PartnerList(props) {
                   handleCreate();
                 }}
               >
-                Create Partner
+                Create User
               </Button>
             </Col>
           </div>
@@ -429,4 +245,4 @@ function PartnerList(props) {
   );
 }
 
-export default connect(null, null)(PartnerList);
+export default connect(null, null)(UserList);

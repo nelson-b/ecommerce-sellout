@@ -10,7 +10,7 @@ import { AgGridReact } from "ag-grid-react";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
 import Pending from "../../images/pending.png";
-import partnerEdit from "../../images/partner-edit.png";
+import partnerEdit from "../../images/edit-icon.png";
 import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
 import "../partnerList/partnerList.css";
