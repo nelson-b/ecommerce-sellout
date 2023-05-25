@@ -208,13 +208,21 @@ function UserList() {
               </div>
             </Col>
             <Col xs="auto" className="partner-container">
+              {userRole == 'admin' && (
+              <Button
+                size="md"
+                className="partner-header save-header">
+                Requests
+              </Button>
+              )}
+            </Col>
+            <Col xs="auto" className="partner-container">
               <Button
                 size="md"
                 className="partner-header save-header"
                 onClick={() => {
                   handleCreate();
-                }}
-              >
+                }}>
                 Create User
               </Button>
             </Col>
