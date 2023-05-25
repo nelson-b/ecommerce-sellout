@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Col, Form, Row, Container, Breadcrumb, Card, Tooltip, OverlayTrigger, Button,
 } from "react-bootstrap";
 import MyMenu from "../../menu/menu.component.js";
@@ -10,7 +10,7 @@ import "./save.css"
 import MultiSelectDrp from "../multiSelectDropdown.js";
 import Select, { components } from "react-select";
 import makeAnimated from "react-select/animated";
-import { countryOptions, partnerOptions, modelOptions, userRoleOptions, opsOptions, userZoneOptions } from "../optionsData.js";
+import { countryOptions, partnerOptions, modelOptions, userRoleOptions, opsOptions, userZoneOptions, userOptions } from "../optionsData.js";
 import PartnerAccountList from "../partnerAccountList.component.js";
 
 function SaveUser(props) {                
@@ -43,10 +43,17 @@ function SaveUser(props) {
   );
   
   const animatedComponents = makeAnimated();
-
+  
+  
+  const [optionUsernameSelected, setOptionUsernameSelected] = useState([]);
   const [optionCountrySelected, setOptionCountrySelected] = useState([]);
   const [optionModelSelected, setOptionModelSelected] = useState([]);
   const [optionPartnerSelected, setOptionPartnerSelected] = useState([]);
+  
+  const handleUserChange = (selected) => {
+    setOptionUsernameSelected(selected);
+    console.log('optionSelected', optionCountrySelected);
+  }
 
   const handleCountryChange = (selected) => {
     setOptionCountrySelected(selected);
@@ -167,9 +174,11 @@ function SaveUser(props) {
                               isDisabled={!props.isCreatedModule}
                               aria-labelledby="aria-label"
                               inputId="username"
+                              name="username"
                               onMenuOpen={onMenuOpen}
                               onMenuClose={onMenuClose}
-                              options={countryOptions}
+                              options={userOptions}
+                              onChange={handleUserChange}
                               {...register("username", {
                                 required: "User name is required",
                               })}
