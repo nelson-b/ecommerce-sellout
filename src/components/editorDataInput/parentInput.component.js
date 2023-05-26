@@ -15,6 +15,7 @@ import "ag-grid-enterprise";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
+import AlertModal from "../modal/alertModel";
 
 function DataInputComponent() {
   const navigate = useNavigate();
@@ -25,11 +26,66 @@ function DataInputComponent() {
     window.location.reload();
   };
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    setRowData(rowData);
+  // const handleSave = (e) => {
+  //   let data = gridRef.current.api;
+  //   console.log('handleSave', data);
+  // };
+
+  const onCellClicked = (params) => {
+    setGridValChg(true);    
+    console.log('isGridValChg', isGridValChg);
+  }
+
+  const [showShouldUpdModal, setShowShouldUpdModal] = useState(false);
+
+  const [isGridValChg, setGridValChg] = useState(false);
+
+  const handleCloseShouldUpdModal = () => {
+    setShowShouldUpdModal(false);
   };
 
+  const shouldUpdateMsg={
+    headerLabel: "Warning....",
+    variant: "warning",
+    header: 'Do you wish to update the existing data!!',
+    content: ['Your previous data would be lost if you update it with new data']
+  }
+
+  const handleSave = (e) => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = String(currentDate.getFullYear()).slice(-2);
+    
+    if(isGridValChg){
+      setShowShouldUpdModal(true);
+      return;
+    }
+    //post data
+    postData();
+  }
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  
+  const successmsg = {
+    headerLabel: "Success....",
+    variant: "success",
+    header: 'Data has been saved successfully!!',
+    content: []
+  }
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+  };
+
+  const postData = () =>{
+    console.log('api call to save manual data');
+    setShowShouldUpdModal(false);
+    //iterate in the grid
+    // gridRef.current.api.forEachNode((rowNode, index) => {
+    // });
+    setShowSuccessModal(true);
+  }
+  
   const gridRef = useRef(null);
   const getData = [
     {
@@ -518,6 +574,7 @@ function DataInputComponent() {
             suppressCopySingleCellRanges={true}
             onGridReady={onGridReady}
             suppressMenuHide= {true}
+            onCellClicked={onCellClicked}
           ></AgGridReact>
         </Row>
         <Row
@@ -543,6 +600,19 @@ function DataInputComponent() {
             >
               Save
             </Button>
+            <AlertModal
+                show={ showShouldUpdModal }
+                handleClose={ handleCloseShouldUpdModal }
+                body={ shouldUpdateMsg }
+                handleConfirm={ postData }
+                button1Label = {'Confirm'}
+                button2Label = {'Cancel'}
+            />
+            <AlertModal
+                show={ showSuccessModal }
+                handleClose={ handleCloseSuccessModal }
+                body={ successmsg }
+            />
           </Col>
           <Col>
             <Button
