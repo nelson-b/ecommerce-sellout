@@ -28,7 +28,7 @@ function Home(props) {
 
   const partnerDataNavigation = (props) => {
     console.log('propsRole', props.role)
-    navigate(`/partnerList?id=${props.role}`);
+    navigate(`/partner/list?id=${props.role}`);
   };
 
   const approverReviewNavigation = () => {
@@ -36,7 +36,7 @@ function Home(props) {
   };
 
   const partnerQuarterNavigation = () => {
-    navigate("/partnerPreviousReview");
+    navigate("/partner/previousReview");
   };
 
   const userNavigation = () => {

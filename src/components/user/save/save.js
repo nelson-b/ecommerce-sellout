@@ -131,25 +131,13 @@ function SaveUser(props) {
             />
           </Breadcrumb.Item>
           <span> &nbsp;{">"}</span>
-          {props.isCreatedModule && (
-            <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
-              &nbsp;Create User
+          <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
+              &nbsp;{props.module} User
             </Breadcrumb.Item>
-          )}
-          {!props.isCreatedModule && (
-            <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
-              &nbsp;Update User
-            </Breadcrumb.Item>
-          )}
         </Breadcrumb>
       </Row>
       <Row>
-        {props.isCreatedModule && (
-          <h5 className="form-sellout-header">Create New User</h5>
-        )}
-        {!props.isCreatedModule && (
-          <h5 className="form-sellout-header">Update User</h5>
-        )}
+          <h5 className="form-sellout-header">{props.module} New User</h5>
           <Container fluid>
             <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
               <Row>
@@ -171,7 +159,7 @@ function SaveUser(props) {
                               </span>
                             </OverlayTrigger>
                             <Select
-                              isDisabled={!props.isCreatedModule}
+                              isDisabled={props.module==='Update'}
                               aria-labelledby="aria-label"
                               inputId="username"
                               name="username"
@@ -204,7 +192,7 @@ function SaveUser(props) {
                               </span>
                             </OverlayTrigger>
                             <Select
-                              isDisabled={!props.isCreatedModule}
+                              isDisabled={props.module==='Update'}
                               aria-labelledby="aria-label"
                               inputId="useremailid"
                               name="useremailid"
@@ -411,7 +399,7 @@ function SaveUser(props) {
                 </Col>
                 <Col xs="auto">
                   <Button className="btn-upload save-header" type="submit">
-                    Create
+                    {props.module}
                   </Button>
                 </Col>
               </Row>

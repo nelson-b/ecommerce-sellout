@@ -12,12 +12,14 @@ import "./partner.component.css";
 import { CreatePartnerData } from "../../actions/partneraction";
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
+import { roles } from "../constant.js";
 
 function PartnerComponent(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const id = new URLSearchParams(location.search).get("id");
-
+  const userRole = new URLSearchParams(location.search).get("role");
+  
   const initialState = {
     platform_name: "",
     country_code: "",
@@ -89,7 +91,7 @@ function PartnerComponent(props) {
       .then((data) => {
         setShowSuccessModal(true);
         setShowErrorModal(false);
-        setTimeout(()=>navigate('/partnerList'), 3000);
+        setTimeout(()=>navigate('/partner/list'), 3000);
       })
       .catch((e) => {
         setShowSuccessModal(false);
@@ -106,7 +108,7 @@ function PartnerComponent(props) {
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
 
   const handlePatnerCancel = () => {
-    navigate("/partnerList");
+    navigate("/partner/list");
   };
 
   const handleClearClick = () => {
@@ -120,33 +122,50 @@ function PartnerComponent(props) {
       </Row>
       <Row>
         <Breadcrumb>
-          <Breadcrumb.Item href="/editorHome">
+        {userRole === "editor" && (
+          <Breadcrumb.Item href="/editor/home">
             <img
               src={Home}
               alt="home"
               style={{ height: "20px", width: "80px", cursor: "pointer" }}
             />
           </Breadcrumb.Item>
+          )}
+          {userRole === "approver" && (
+          <Breadcrumb.Item href="/approver/home">
+            <img
+              src={Home}
+              alt="home"
+              style={{ height: "20px", width: "80px", cursor: "pointer" }}
+            />
+          </Breadcrumb.Item>
+          )}
+          {userRole === "superUser" && (
+          <Breadcrumb.Item href="/superUser/home">
+            <img
+              src={Home}
+              alt="home"
+              style={{ height: "20px", width: "80px", cursor: "pointer" }}
+            />
+          </Breadcrumb.Item>
+          )}
+          {userRole === "admin" && (
+          <Breadcrumb.Item href="/admin/home">
+            <img
+              src={Home}
+              alt="home"
+              style={{ height: "20px", width: "80px", cursor: "pointer" }}
+            />
+          </Breadcrumb.Item>
+          )}
           <span> &nbsp;{">"}</span>
-          {props.isCreatedModule && (
             <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
-              &nbsp;Create Partner
+              &nbsp;{props.module} Partner
             </Breadcrumb.Item>
-          )}
-          {!props.isCreatedModule && (
-            <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
-              &nbsp;Update Partner
-            </Breadcrumb.Item>
-          )}
         </Breadcrumb>
       </Row>
       <Row>
-        {props.isCreatedModule && (
-          <h5 className="form-sellout-header">Create New Partner</h5>
-        )}
-        {!props.isCreatedModule && (
-          <h5 className="form-sellout-header">Update Partner</h5>
-        )}
+        <h5 className="form-sellout-header">{props.module} New Partner</h5>
         <Container fluid>
           <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
             <Row>
@@ -172,7 +191,7 @@ function PartnerComponent(props) {
                         size="sm"
                         id="platform_name"
                         name="platform_name"
-                        disabled={!props.isCreatedModule}
+                        disabled={props.module === 'Update'}
                         type="text"
                         value={data?.platformNmae}
                         {...register("platform_name", {
@@ -329,7 +348,7 @@ function PartnerComponent(props) {
                         size="sm"
                         id="activation_date"
                         name="activation_date"
-                        disabled={!props.isCreatedModule}
+                        disabled={props.module === 'Update'}
                         type="date"
                         {...register("activation_date", {
                           required: "Activation Date is required",
@@ -525,9 +544,9 @@ function PartnerComponent(props) {
                 <Form.Group className="mb-4">
                   <Row
                     className={
-                      props.isCreatedModule
+                      props.module === 'Create'
                         ? "partnerRowCreate"
-                        : "partnerRowUpdate"
+                        : ""
                     }
                   >
                     <Col>
@@ -578,7 +597,31 @@ function PartnerComponent(props) {
                         </Form.Text>
                       )}
                     </Col>
-                    {!props.isCreatedModule && (
+                    {props.module === 'Update' && (
+                      <>
+                      <Col>
+                      <Form.Label size="sm" htmlFor="partner_status">
+                        Partner Status
+                      </Form.Label>
+                      <Form.Select
+                        size="sm"
+                        className="field-Prop"
+                        id="partner_status"
+                        name="partner_status"
+                        {...register("partner_status", {
+                          required: "Partner status is required",
+                        })}
+                      >
+                        <option value="">N/A</option>
+                        <option>Active</option>
+                        <option>Inactive</option>
+                      </Form.Select>
+                      {errors.partner_status && (
+                        <Form.Text className="text-danger">
+                          {errors.partner_status.message}
+                        </Form.Text>
+                      )}
+                    </Col>
                       <Col>
                         <Form.Label size="sm" htmlFor="deactivation_date">
                           Deactivation Date
@@ -608,8 +651,9 @@ function PartnerComponent(props) {
                           </Form.Text>
                         )}
                       </Col>
+                      </>
                     )}
-                    {!props.isCreatedModule && (
+                    {props.module === 'Update' && (
                       <Col>
                         <Form.Label size="sm" htmlFor="deactivation_reason">
                           Deactivation reason
@@ -640,8 +684,9 @@ function PartnerComponent(props) {
                 </Form.Group>
               </Card>
             </Row>
-            {!props.isCreatedModule && (
+            { props.showHigherLevelModule && (
               <Row>
+                <Card className="card-Panel form-partner-card">
                 <Form.Group className="mb-4">
                   <Row>
                     <Col>
@@ -649,62 +694,106 @@ function PartnerComponent(props) {
                         Editor
                       </Form.Label>
                       &nbsp;
-                      <Form.Control
+                      <Form.Select
+                        disabled={ (userRole===roles.editor || userRole===roles.approver)?true:false}
                         size="sm"
+                        className="field-Prop"
                         id="editor"
                         name="editor"
-                        disabled={!props.isCreatedModule}
-                        type="text"
-                        value={data?.editor}
-                      />
+                        {...register("editor", {
+                          required: "Editor is required",
+                        })}
+                      >
+                        <option value="">N/A</option>
+                        <option>Direct</option>
+                        <option>Indirect</option>
+                      </Form.Select>
+                      {errors.editor && (
+                        <Form.Text className="text-danger">
+                          {errors.editor.message}
+                        </Form.Text>
+                      )}
                     </Col>
                     <Col>
                       <Form.Label size="sm" htmlFor="backupEditor">
                         Backup Editor
                       </Form.Label>
                       &nbsp;
-                      <Form.Control
+                      <Form.Select
+                        disabled={ (userRole===roles.editor || userRole===roles.approver)}
                         size="sm"
-                        id="editor"
-                        name="editor"
-                        disabled={!props.isCreatedModule}
-                        type="text"
-                        value={data?.backup}
-                      />
+                        className="field-Prop"
+                        id="backupEditor"
+                        name="backupEditor"
+                        {...register("backupEditor", {
+                          required: "Backup Editor is required",
+                        })}
+                      >
+                        <option value="">N/A</option>
+                        <option>Direct</option>
+                        <option>Indirect</option>
+                      </Form.Select>
+                      {errors.editor && (
+                        <Form.Text className="text-danger">
+                          {errors.editor.message}
+                        </Form.Text>
+                      )}
                     </Col>
                     <Col>
                       <Form.Label size="sm" htmlFor="approver1">
                         Approver 1
                       </Form.Label>
-                      <Form.Control
+                      <Form.Select
+                        disabled={ (userRole===roles.editor || userRole===roles.approver)}
                         size="sm"
+                        className="field-Prop"
                         id="approver1"
                         name="approver1"
-                        disabled={!props.isCreatedModule}
-                        type="text"
-                        value={data?.Approver1}
-                      />
+                        {...register("approver1", {
+                          required: "Approver 1 is required",
+                        })}
+                      >
+                        <option value="">N/A</option>
+                        <option>Direct</option>
+                        <option>Indirect</option>
+                      </Form.Select>
+                      {errors.approver1 && (
+                        <Form.Text className="text-danger">
+                          {errors.approver1.message}
+                        </Form.Text>
+                      )}
                     </Col>
                     <Col>
                       <Form.Label size="sm" htmlFor="approver2">
                         Approver 2
                       </Form.Label>
-                      <Form.Control
+                      <Form.Select
+                        disabled={ (userRole===roles.editor || userRole===roles.approver)}
                         size="sm"
+                        className="field-Prop"
                         id="approver2"
                         name="approver2"
-                        disabled={!props.isCreatedModule}
-                        type="text"
-                        value={data?.Approver2}
-                      />
+                        {...register("approver2", {
+                          required: "Approver 2 is required",
+                        })}
+                      >
+                        <option value="">N/A</option>
+                        <option>Direct</option>
+                        <option>Indirect</option>
+                      </Form.Select>
+                      {errors.approver2 && (
+                        <Form.Text className="text-danger">
+                          {errors.approver2.message}
+                        </Form.Text>
+                      )}
                     </Col>
                   </Row>
                 </Form.Group>
+                </Card>
               </Row>
             )}
             <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
-              {props.isCreatedModule ? (
-                <Col xs="auto">
+              <Col xs="auto">
                   <Button
                     className="btn-upload cancel-header"
                     onClick={() => {
@@ -713,23 +802,10 @@ function PartnerComponent(props) {
                   >
                     Cancel
                   </Button>
-                </Col>
-              ) : (
-                <Col xs="auto">
-                  <Button
-                    className="btn-upload cancel-header"
-                    onClick={() => {
-                      handleClearClick();
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </Col>
-              )}
-
+              </Col>
               <Col xs="auto">
                 <Button className="btn-upload save-header" type="submit">
-                  {props.isCreatedModule ? "Create" : "Update"}
+                  { props.module }
                 </Button>
                 <AlertModel
                       show={ showSuccessModal }

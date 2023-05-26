@@ -46,7 +46,7 @@ function Login() {
 
   const loginNavigation = (data) => {
     if(data.username=="nelson@se.com" && data.usrpassword=="test@123"){
-      navigate("/editorHome")
+      navigate("/editor/home")
     }
     if(data.username=="katie@se.com" && data.usrpassword=="test@123"){
       navigate("/approverHome")

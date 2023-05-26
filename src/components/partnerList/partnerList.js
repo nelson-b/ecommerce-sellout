@@ -25,15 +25,15 @@ function PartnerList(props) {
   const screenRole = new URLSearchParams(location.search).get("id");
 
   const handlePartnerEdit = (params) => {
-    navigate(`/updatePartner?id=${params.data.partnerID}`);
+    navigate(`/partner/update?id=${params.data.partnerID}`);
   };
 
   const handleCreate = () => {
-    navigate("/addPartner");
+    navigate("/partner/create");
   };
 
   const handleRequest = () => {
-    navigate(`/partnerRequestList?role=${screenRole}`);
+    navigate(`/partner/requestList?role=${screenRole}`);
 
   };
 
@@ -359,7 +359,7 @@ function PartnerList(props) {
             </Breadcrumb>
           ) : screenRole === "editor" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/editorHome">
+              <Breadcrumb.Item href="/editor/home">
                 <img
                   src={Home}
                   alt="home"

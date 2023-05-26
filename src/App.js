@@ -16,7 +16,7 @@ import PartnerQuarterApprover from "./components/approverDataReview/previousQuar
 import PartnerRequestList from "./components/partnerRequestList/partnerRequestList.js";
 import AdminOverview from "./components/home/adminOverview.js";
 import SuperUserApproverOverview from "./components/home/superUserApproverOverview.js";
-import roles from "./data/roles.json";
+import { roles } from "./components/constant.js";
 import SaveUser from "./components/user/save/save.js";
 import UserList from "./components/user/list/list.js";
 
@@ -32,22 +32,28 @@ function App() {
         <Routes>
           <Route path="/dataInput" element={<DataInputComponent />} />
           <Route path="/dataReview" element={<DataReview />} />
-          <Route path="/partnerList" element={<PartnerList />} />
-          <Route path="/partnerRequestList" element={<PartnerRequestList />} />
+          <Route path="/partner/list" element={<PartnerList />} />
+          <Route path="/partner/requestList" element={<PartnerRequestList />} />
 
-          <Route path="/editorHome" element={<HomeComponent role={roles.editor} />} />
-          <Route path="/approverHome" element={<HomeComponent  role={roles.approver}/>} />
-          <Route path="/superUserHome" element={<HomeComponent  role={roles.superUser}/>} />
-          <Route path="/adminHome" element={<AdminOverview role={roles.admin} />} />
+          <Route path="/editor/home" exact element={<HomeComponent role={roles.editor} />} />
+          <Route path="/approver/home" exact element={<HomeComponent  role={roles.approver}/>} />
+          <Route path="/superUser/home" exact element={<HomeComponent  role={roles.superUser}/>} />
+          <Route path="/admin/home" exact element={<AdminOverview role={roles.admin} />} />
           
           <Route path="/superUserApprover" element={<SuperUserApproverOverview />} />
           <Route path="*" element={<ErrorPageComponent />} />
           <Route path="/approverReview" element={<DataReviewApprover />} />
-          <Route path="/partnerPreviousReview" element={<PartnerQuarterApprover />} />
-          <Route path="/addPartner" element={<PartnerComponent isCreatedModule={true} />} />
-          <Route path="/updatePartner" element={<PartnerComponent isCreatedModule={false}/>} />
-          <Route path="/user/create" exact element={ <SaveUser isCreatedModule={true} /> } />
-          <Route path="/user/update" exact element={ <SaveUser isCreatedModule={false} /> } />
+          <Route path="/partner/previousReview" element={<PartnerQuarterApprover />} />
+          <Route path="/partner/create" element={<PartnerComponent showHigherLevelModule={false} module={'Create'}/>} />
+          <Route path="/partner/update" element={<PartnerComponent showHigherLevelModule={true} module={'Update'}/>} />
+          <Route path="higerLevelUser/partner/create" element={
+              <PartnerComponent showHigherLevelModule={true} module={'Create'} />
+          } />
+          <Route path="higerLevelUser/partner/update" element={
+              <PartnerComponent showHigherLevelModule={true} module={'Update'} />
+          } />
+          <Route path="/user/create" exact element={ <SaveUser module={'Create'} /> } />
+          <Route path="/user/update" exact element={ <SaveUser module={'Update'} /> } />
           <Route path="/user/list" exact element={ <UserList /> } />
           <Route path="/" element={ <LoginComponent/> } />
         </Routes>
