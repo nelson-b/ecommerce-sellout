@@ -6,7 +6,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useState, useMemo, useCallback, useRef } from "react";
 import { Button, Row, Col, Container, Form, Breadcrumb } from "react-bootstrap";
-import { AllCalMonths } from "../constant";
+import { allCalMonths } from "../constant";
 import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
 import MyMenu from "../menu/menu.component.js";
@@ -304,7 +304,7 @@ function DataInputComponent() {
       1
     );
     
-    const monthName = AllCalMonths[date.getMonth()];
+    const monthName = allCalMonths[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
     const monthHeader = monthName+' ' + year;
     const monthField = monthName+'_Amount';
@@ -485,7 +485,7 @@ function DataInputComponent() {
         </Row>
         <Row>
           <Breadcrumb>
-            <Breadcrumb.Item href="/editorHome">
+            <Breadcrumb.Item href="/editor/home">
               <img
                 src={Home}
                 alt="home"

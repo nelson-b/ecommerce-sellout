@@ -1,4 +1,4 @@
-export const AllCalMonths = [
+export const allCalMonths = [
   "Jan",
   "Feb",
   "Mar",
@@ -12,3 +12,12 @@ export const AllCalMonths = [
   "Nov",
   "Dec",
 ];
+
+export const roles ={ 
+  "editor": "editor",
+  "approver": "approver",
+  "superUser": "superUser",
+  "admin": "admin",
+  "approver1": "approver1",
+  "approver2": "approver2"
+};

@@ -327,7 +327,7 @@ function AdminOverview(props) {
   }, []);
 
   const partnerDataNavigation = (props) => {
-    navigate(`/partnerList?id=${props.role}`);
+    navigate(`/partner/list?id=${props.role}`);
   };
 
   return (

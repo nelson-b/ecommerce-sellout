@@ -1,16 +1,20 @@
 .partnerRowCreate{
-    max-width: 647px;
+    max-width: 672px;
 }
 
-.field-Prop{
+/* .field-Prop{
     width: 292px;
-}
+} */
 
 .partnerRowUpdate {
-    max-width: 1280px;
+    max-width: 1342px;
 }
 
 .form-partner-card {
-    width: 1563px;
+    width: 1677px;
     margin-left: 14px;
-  }
+}
+
+.form-higherlevelusr-section{
+    padding: 10px;
+}
