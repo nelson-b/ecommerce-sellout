@@ -7,7 +7,6 @@ import * as xlsx from "xlsx-js-style";
 import AlertModel from "../modal/alertModel";
 import { allCalMonths } from "../constant";
 
-
 function BatchInputComponent({ getData }) {
   const navigate = useNavigate();
 
@@ -21,28 +20,14 @@ function BatchInputComponent({ getData }) {
     reValidateMode: "onSubmit",
     reValidateMode: "onChange",
   });
-  
-  // const initialState = {
-  //   fileData: ''
-  // };
-  
-  // const [formData, setFormData] = useState(initialState);
-
-  // const onChangeHandler = (e) => {
-  //   console.log('e',e);
-  //   setFormData({ ...formData, [e.target.id]: e.target.value });
-  //   console.log('formData',formData);
-  // };
 
   const handleChange=({target})=> {
     console.log('target', target);
     setSelectedFile(target);
-    // target.value = ''
   };
   
   const handleClick = event => {
     console.log('event', event);
-    // const { target = {} } = event || {};
     setSelectedFile(event.target.files);
   };
 
@@ -59,10 +44,6 @@ function BatchInputComponent({ getData }) {
 
   const handleCloseErrorModal = () => {
     setShowErrorModal(false);
-  };
-
-  const handleShowShouldUpdModal = () => {
-    setShowShouldUpdModal(true);
   };
 
   const handleCloseShouldUpdModal = () => {
@@ -90,7 +71,7 @@ function BatchInputComponent({ getData }) {
     content: ['Your previous data would be lost if you update it with new data']
   }
 
-  const ShouldUpdate = () =>{
+  const saveData = () =>{
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth();
       const currentYear = String(currentDate.getFullYear()).slice(-2);
@@ -251,7 +232,7 @@ function BatchInputComponent({ getData }) {
 
   const onSubmit = (frmData) => {
     setSelectedFile(frmData);
-    ShouldUpdate();
+    saveData();
   };
 
   const onError = (error) => {
