@@ -71,7 +71,7 @@ function BatchInputComponent({ getData }) {
     content: ['Your previous data would be lost if you update it with new data']
   }
 
-  const SaveData = () =>{
+  const saveData = () =>{
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth();
       const currentYear = String(currentDate.getFullYear()).slice(-2);
@@ -232,7 +232,7 @@ function BatchInputComponent({ getData }) {
 
   const onSubmit = (frmData) => {
     setSelectedFile(frmData);
-    SaveData();
+    saveData();
   };
 
   const onError = (error) => {
