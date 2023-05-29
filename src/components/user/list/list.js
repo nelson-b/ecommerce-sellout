@@ -18,13 +18,13 @@ function UserList() {
   const [rowData, setRowData] = useState();
   const location = useLocation();
   const userRole = new URLSearchParams(location.search).get("role");
-  
+
   const handleUserEdit = (params) => {
-    navigate(`/updateUser?id=${ params.data.userId }`);
+    navigate(`/updateUser?id=${params.data.userId}`);
   };
 
   const handleCreate = () => {
-    navigate("/user/create");
+    navigate(`/user/create?role=${userRole}`);
   };
 
   const columnDefs = [
@@ -115,7 +115,7 @@ function UserList() {
       suppressSizeToFit: true,
       editable: false,
       suppressMenu: true,
-    }
+    },
   ];
 
   const defaultColDef = useMemo(
@@ -128,38 +128,42 @@ function UserList() {
     }),
     []
   );
-  
+
   const onGridReady = useCallback((params) => {
     setRowData([
-        {
-            username: 'UserName 1',
-            userId: 'UserId 1',
-            userrole: 'Editor 1',
-            userOps: 'Ops 1',
-            userZone: 'Zone A',
-            usrCountry: 'Country 1',
-            usrModel: 'E1'
-        },
-        {
-            username: 'UserName 2',
-            userId: 'UserId 2',
-            userrole: 'Editor 2',
-            userOps: 'Ops 2',
-            userZone: 'Zone A',
-            usrCountry: 'Country 2',
-            usrModel: 'E2'
-        },
-        {
-            username: 'UserName 3',
-            userId: 'UserId 3',
-            userrole: 'Editor 3',
-            userOps: 'Ops 3',
-            userZone: 'Zone A',
-            usrCountry: 'Country 3',
-            usrModel: 'E3'
-        },
+      {
+        username: "UserName 1",
+        userId: "UserId 1",
+        userrole: "Editor 1",
+        userOps: "Ops 1",
+        userZone: "Zone A",
+        usrCountry: "Country 1",
+        usrModel: "E1",
+      },
+      {
+        username: "UserName 2",
+        userId: "UserId 2",
+        userrole: "Editor 2",
+        userOps: "Ops 2",
+        userZone: "Zone A",
+        usrCountry: "Country 2",
+        usrModel: "E2",
+      },
+      {
+        username: "UserName 3",
+        userId: "UserId 3",
+        userrole: "Editor 3",
+        userOps: "Ops 3",
+        userZone: "Zone A",
+        usrCountry: "Country 3",
+        usrModel: "E3",
+      },
     ]);
   }, []);
+
+  const handleRequest = () => {
+    navigate(`/user/Request?role=${userRole}`);
+  };
 
   return (
     <>
@@ -170,7 +174,7 @@ function UserList() {
         <div>
           {userRole === "admin" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/adminHome">
+              <Breadcrumb.Item href="/admin/home">
                 <img
                   src={Home}
                   alt="home"
@@ -178,54 +182,75 @@ function UserList() {
                 />
               </Breadcrumb.Item>
               <span> &nbsp;{">"}</span>
-                <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
-                    &nbsp;User List
-                </Breadcrumb.Item>
+              <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
+                &nbsp;User List
+              </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "superUser" ? (
+          ) : userRole === "superApproverUser" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUserHome">
+              <Breadcrumb.Item href="/superUser/home">
                 <img
                   src={Home}
                   alt="home"
                   style={{ height: "20px", width: "80px", cursor: "pointer" }}
                 />
               </Breadcrumb.Item>
-                <span> &nbsp;{">"}</span>
-                <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
-                    &nbsp;User List
-                </Breadcrumb.Item>
+              <span> &nbsp;{">"}</span>
+              <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
+                &nbsp;User List
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : userRole === "superUser" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/superUser">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+              <span> &nbsp;{">"}</span>
+              <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
+                &nbsp;User List
+              </Breadcrumb.Item>
             </Breadcrumb>
           ) : (
-            ""
+            <div></div>
           )}
         </div>
         <Row>
           <div className="partner-request-header">
             <Col>
-              <div className="sell-out-partner-header">
-                USER LIST
-              </div>
+              <div className="sell-out-partner-header">USER LIST</div>
             </Col>
-            <Col xs="auto" className="partner-container">
-              {userRole == 'admin' && (
-              <Button
-                size="md"
-                className="partner-header save-header">
-                Requests
-              </Button>
-              )}
-            </Col>
-            <Col xs="auto" className="partner-container">
-              <Button
-                size="md"
-                className="partner-header save-header"
-                onClick={() => {
-                  handleCreate();
-                }}>
-                Create User
-              </Button>
-            </Col>
+            <div>
+              <Row className="" style={{ float: "right" }}>
+                <Col xs="auto">
+                  {userRole == "admin" && (
+                    <Button
+                      size="md"
+                      className="btn-overview save-header"
+                      onClick={() => {
+                        handleRequest(userRole);
+                      }}
+                    >
+                      Requests
+                    </Button>
+                  )}
+                </Col>
+                <Col xs="auto">
+                  <Button
+                    size="md"
+                    className="btn-overview save-header"
+                    onClick={() => {
+                      handleCreate(userRole);
+                    }}
+                  >
+                    Create User
+                  </Button>
+                </Col>
+              </Row>
+            </div>
           </div>
         </Row>
         <>

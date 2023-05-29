@@ -5,11 +5,15 @@ import { useNavigate } from "react-router-dom";
 import calender from "./../../images/calender.png";
 import { roles } from "../../components/constant.js";
 
-function SuperUserApproverOverview(props) {
+function SuperUseOverview(props) {
   const navigate = useNavigate();
 
   const partnerDataNavigation = () => {
     navigate(`/partner/list?role=${roles.superUser}`);
+  };
+
+  const userNavigation = () => {
+    navigate(`/user/list?role=${roles.superUser}`);
   };
 
   return (
@@ -33,7 +37,14 @@ function SuperUserApproverOverview(props) {
                 </Button>
               </Col>
               <Col xs="auto">
-                <Button className="btn-data save-header">User Data</Button>
+                <Button
+                  className="btn-data save-header"
+                  onClick={() => {
+                    userNavigation(props.superUser);
+                  }}
+                >
+                  User Data
+                </Button>
               </Col>
             </Row>
           </div>
@@ -87,4 +98,4 @@ function SuperUserApproverOverview(props) {
   );
 }
 
-export default SuperUserApproverOverview;
+export default SuperUseOverview;

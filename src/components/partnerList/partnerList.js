@@ -25,16 +25,15 @@ function PartnerList(props) {
   const screenRole = new URLSearchParams(location.search).get("role");
 
   const handlePartnerEdit = (params) => {
-    navigate(`/partner/update?id=${params.data.partnerID}`);
+    navigate(`/partner/update?role=${params.data.partnerID}`);
   };
 
   const handleCreate = () => {
-    navigate("/partner/create");
+    navigate(`/partner/create?role=${screenRole}`);
   };
 
   const handleRequest = () => {
     navigate(`/partner/requestList?role=${screenRole}`);
-
   };
 
   const columnDefs = [
@@ -324,12 +323,12 @@ function PartnerList(props) {
     <>
       <Container fluid>
         <Row>
-          <MyMenu />
+          <MyMenu role={screenRole}/>
         </Row>
         <div>
           {screenRole === "admin" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/adminHome">
+              <Breadcrumb.Item href="/admin/home">
                 <img
                   src={Home}
                   alt="home"
@@ -337,9 +336,9 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "superUser" ? (
+          ) : screenRole === "superApproverUser" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUserHome">
+              <Breadcrumb.Item href="/superUser/home">
                 <img
                   src={Home}
                   alt="home"
@@ -349,7 +348,7 @@ function PartnerList(props) {
             </Breadcrumb>
           ) : screenRole === "approver" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/approverHome">
+              <Breadcrumb.Item href="/approver/home">
                 <img
                   src={Home}
                   alt="home"
@@ -367,8 +366,19 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
+          ) : screenRole === "superUser" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/superUser">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
           ) : (
-            <div></div>
+          <div></div>
+            
           )}
         </div>
         <Row>
@@ -378,7 +388,7 @@ function PartnerList(props) {
                 Sell Out Partner List
               </div>
             </Col>
-            {screenRole === "admin" || screenRole === "superUser" ? (
+            {screenRole === "admin" || screenRole === "superApproverUser" ? (
               <Col xs="auto" className="partner-container">
                 <Button
                   size="md"
@@ -398,7 +408,7 @@ function PartnerList(props) {
                 size="md"
                 className="partner-header save-header"
                 onClick={() => {
-                  handleCreate();
+                  handleCreate(screenRole);
                 }}
               >
                 Create Partner

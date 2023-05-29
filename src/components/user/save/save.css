@@ -1,8 +1,7 @@
 .create-usr-warning{
     color: #E47F00;
 }
-  
-.form-userCreate-card {
-    width: 1633px;
-    margin-left: 14px;
+
+.username-header {
+    margin: 0px 20px 0px 20px;
 }
