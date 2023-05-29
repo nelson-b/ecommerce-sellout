@@ -42,8 +42,8 @@ function Home(props) {
     navigate(`/partner/previousReview?role=${props}`);
   };
 
-  const userNavigation = () => {
-    navigate("/user/list");
+  const userNavigation = (props) => {
+    navigate(`/user/list?role=${props}`);
   };
 
   const editorColDefs = [
@@ -455,7 +455,7 @@ function Home(props) {
                   <Button
                     className="btn-split save-header"
                     onClick={() => {
-                      userNavigation();
+                      userNavigation(props.role);
                     }}
                   >
                     User Data

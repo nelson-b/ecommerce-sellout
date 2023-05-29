@@ -29,7 +29,6 @@ function PartnerList(props) {
   };
 
   const handleCreate = () => {
-    // navigate("/partner/create");
     navigate(`/partner/create?role=${screenRole}`);
   };
 

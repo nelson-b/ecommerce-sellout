@@ -8,7 +8,7 @@ import { AgGridReact } from "ag-grid-react";
 import adminOverview from "../../data/adminOverview.json";
 import approvalOneOverview from "../../data/approverOneOverview.json";
 import approvalTwoOverview from "../../data/approverTwoOverview.json";
-import "../home/home.component.css"; 
+import "../home/home.component.css";
 
 function AdminOverview(props) {
   const gridRef = useRef();
@@ -18,13 +18,23 @@ function AdminOverview(props) {
   const ChildMessageRenderer = (props) => {
     const invokeNotify = () => {
       if (props.data?.data_input?.length) {
-        console.log(props.data.data_input?.length ? `${props.data.data_input} selected for Notify` : "");
-        
+        console.log(
+          props.data.data_input?.length
+            ? `${props.data.data_input} selected for Notify`
+            : ""
+        );
       } else if (props.data?.approval_stage1?.length) {
-        console.log(props.data.approval_stage1?.length ? `${props.data.approval_stage1} selected for Notify` : "");
-
+        console.log(
+          props.data.approval_stage1?.length
+            ? `${props.data.approval_stage1} selected for Notify`
+            : ""
+        );
       } else if (props.data?.approval_stage2?.length) {
-        console.log(props.data.approval_stage2?.length ? `${props.data.approval_stage2} selected for Notify` : "");
+        console.log(
+          props.data.approval_stage2?.length
+            ? `${props.data.approval_stage2} selected for Notify`
+            : ""
+        );
       }
     };
     return (
@@ -105,7 +115,7 @@ function AdminOverview(props) {
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       minWidth: 160,
-      cellStyle: { textAlign: 'center' },
+      cellStyle: { textAlign: "center" },
       suppressMenu: true,
       cellClass: "grid-cell-centered",
       cellStyle: function (params) {
@@ -330,17 +340,28 @@ function AdminOverview(props) {
     navigate(`/partner/list?role=${props.role}`);
   };
 
+  const userNavigation = (props) => {
+    navigate(`/user/list?role=${props}`);
+  };
+
   return (
     <>
       <Container fluid>
         <Row>
-          <MyMenu role={props.role}/>
+          <MyMenu role={props.role} />
         </Row>
         <Row>
           <div>
             <Row className="" style={{ float: "right" }}>
               <Col xs="auto">
-                <Button className="btn-overview save-header">User Data</Button>
+                <Button
+                  className="btn-overview save-header"
+                  onClick={() => {
+                    userNavigation(props.role);
+                  }}
+                >
+                  User Data
+                </Button>
               </Col>
               <Col xs="auto">
                 <Button
