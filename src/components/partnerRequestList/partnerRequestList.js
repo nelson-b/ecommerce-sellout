@@ -287,11 +287,23 @@ function PartnerRequestList(props) {
   };
 
   const handleReject = () => {
-    console.log(message ? `${message} Partner Accounts selected for Reject` : "");
+    console.log(
+      message === 1
+        ? `${message} Partner Account selected for Reject `
+        : message > 1
+        ? `${message} Partner Accounts selected for Reject`
+        : ""
+    );
   };
 
   const handleApprove = () => {
-    console.log(message ? `${message} Partner Accounts selected for Approval` : "");
+    console.log(
+      message === 1
+        ? `${message} Partner Account selected for Approval `
+        : message > 1
+        ? `${message} Partner Accounts selected for Approval`
+        : ""
+    );
   };
 
   const onGridReady = useCallback((params) => {
@@ -304,7 +316,7 @@ function PartnerRequestList(props) {
     <>
       <Container fluid>
         <Row>
-          <MyMenu />
+          <MyMenu role={screenRole} />
         </Row>
         <div>
           {screenRole === "admin" ? (
@@ -316,6 +328,10 @@ function PartnerRequestList(props) {
                   style={{ height: "20px", width: "80px", cursor: "pointer" }}
                 />
               </Breadcrumb.Item>
+              <span style={{ color: "grey" }}> &nbsp;{">"}</span>
+              <Breadcrumb.Item active style={{ color: "#000000" }}>
+                &nbsp;Partner List
+              </Breadcrumb.Item>
             </Breadcrumb>
           ) : (
             <Breadcrumb>
@@ -326,8 +342,12 @@ function PartnerRequestList(props) {
                   style={{ height: "20px", width: "80px", cursor: "pointer" }}
                 />
               </Breadcrumb.Item>
+              <span style={{ color: "grey" }}> &nbsp;{">"}</span>
+              <Breadcrumb.Item active style={{ color: "#000000" }}>
+                &nbsp;Partner List
+              </Breadcrumb.Item>
             </Breadcrumb>
-          ) }
+          )}
         </div>
 
         <div className="sell-out-request-header">
@@ -353,6 +373,13 @@ function PartnerRequestList(props) {
             suppressRowClickSelection={true}
             onSelectionChanged={handleCheckboxClick}
           ></AgGridReact>
+          <div className="checkbox-message">
+            {message === 1
+              ? `${message} Partner Selected `
+              : message > 1
+              ? `${message} Partners Selected `
+              : ""}
+          </div>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
               <Col xs="auto">

@@ -22,10 +22,10 @@ function PartnerList(props) {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const location = useLocation();
-  const screenRole = new URLSearchParams(location.search).get("id");
+  const screenRole = new URLSearchParams(location.search).get("role");
 
   const handlePartnerEdit = (params) => {
-    navigate(`/updatePartner?id=${params.data.partnerID}`);
+    navigate(`/updatePartner?role=${params.data.partnerID}`);
   };
 
   const handleCreate = () => {
@@ -324,7 +324,7 @@ function PartnerList(props) {
     <>
       <Container fluid>
         <Row>
-          <MyMenu />
+          <MyMenu role={screenRole}/>
         </Row>
         <div>
           {screenRole === "admin" ? (
@@ -337,7 +337,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "superUser" ? (
+          ) : screenRole === "superApproverUser" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superUserHome">
                 <img
@@ -367,8 +367,19 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
+          ) : screenRole === "superUser" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/superUser">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
           ) : (
-            <div></div>
+          <div></div>
+            
           )}
         </div>
         <Row>
@@ -378,7 +389,7 @@ function PartnerList(props) {
                 Sell Out Partner List
               </div>
             </Col>
-            {screenRole === "admin" || screenRole === "superUser" ? (
+            {screenRole === "admin" || screenRole === "superApproverUser" ? (
               <Col xs="auto" className="partner-container">
                 <Button
                   size="md"

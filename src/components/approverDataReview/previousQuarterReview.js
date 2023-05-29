@@ -19,10 +19,14 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import partnerPrevious from "../../data/partnerPreviousData.json";
 import partnerPreviousEuro from "../../data/partnerPreviousDataEuro.json";
 import Home from "../../images/home-icon.png";
+import { useLocation } from "react-router-dom";
 
-function PartnerQuarterApprover({}) {
+function PartnerQuarterApprover({ props }) {
   const gridRef = useRef();
   const navigate = useNavigate();
+  const location = useLocation();
+  const quarterRole = new URLSearchParams(location.search).get("role");
+
   const [rowData, setRowData] = useState();
   const [radioValue, setRadioValue] = useState("1");
   const [message, setMessage] = useState(0);
@@ -34,10 +38,18 @@ function PartnerQuarterApprover({}) {
 
   const ChildMessageRenderer = (props) => {
     const invokeReject = () => {
-      console.log(props.data.Partner?.length ? `${props.data.Partner} partner Selected for reject approval` : "");
+      console.log(
+        props.data.Partner?.length
+          ? `${props.data.Partner} partner Selected for reject approval`
+          : ""
+      );
     };
     const invokeValidate = () => {
-      console.log(props.data.Partner?.length ? `${props.data.Partner} partner selected for Validate` : "");
+      console.log(
+        props.data.Partner?.length
+          ? `${props.data.Partner} partner selected for Validate`
+          : ""
+      );
     };
     return (
       <div>
@@ -121,6 +133,7 @@ function PartnerQuarterApprover({}) {
       wrapHeaderText: true,
       sortable: true,
       suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
     },
     {
       headerName: "New value (in KE)",
@@ -130,6 +143,7 @@ function PartnerQuarterApprover({}) {
       wrapHeaderText: true,
       sortable: true,
       suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
     },
     {
       headerName: "Change in Value",
@@ -139,6 +153,7 @@ function PartnerQuarterApprover({}) {
       wrapHeaderText: true,
       sortable: true,
       suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
     },
     {
       headerName: "Change In %",
@@ -148,6 +163,7 @@ function PartnerQuarterApprover({}) {
       wrapHeaderText: true,
       sortable: true,
       suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
     },
     {
       headerName: "User that made the change",
@@ -157,6 +173,7 @@ function PartnerQuarterApprover({}) {
       wrapHeaderText: true,
       sortable: true,
       suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
     },
     {
       headerName: "Editors Comments",
@@ -167,6 +184,7 @@ function PartnerQuarterApprover({}) {
       sortable: true,
       suppressMenu: true,
       cellRenderer: ChildMessageRenderer,
+      cellStyle: {'border-color': '#e2e2e2'},
     },
   ];
 
@@ -198,7 +216,13 @@ function PartnerQuarterApprover({}) {
   };
 
   const handleInvestigation = () => {
-    console.log(message ? `${message} Partner Accounts Sent For Investigation` : "");
+    console.log(
+      message === 1
+        ? `${message} Partner Account Sent For Investigation `
+        : message > 1
+        ? `${message} Partner Accounts Sent For Investigation `
+        : ""
+    );
   };
 
   const handleConfirm = () => {
@@ -218,15 +242,29 @@ function PartnerQuarterApprover({}) {
           <MyMenu />
         </Row>
         <div>
-          <Breadcrumb>
-            <Breadcrumb.Item href="/approverHome">
-              <img
-                src={Home}
-                alt="home"
-                style={{ height: "20px", width: "80px", cursor: "pointer" }}
-              />
-            </Breadcrumb.Item>
-          </Breadcrumb>
+          {quarterRole === "approver" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/approverHome">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : quarterRole === "superApproverUser" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/superUserHome">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : (
+            <div></div>
+          )}
         </div>
         <div>
           <Stack direction="horizontal">
@@ -277,7 +315,11 @@ function PartnerQuarterApprover({}) {
             // }}
           ></AgGridReact>
           <div className="checkbox-message">
-            {message > 0 ? `${message} Partner Account ` : ""}
+            {message === 1
+              ? `${message} Partner Selected `
+              : message > 1
+              ? `${message} Partners Selected `
+              : ""}
           </div>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>

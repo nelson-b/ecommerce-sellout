@@ -290,7 +290,7 @@ function DataInputComponent() {
 
     var isEstimated = filterMonths[monthYrKey] == true;
     if (isEstimated == true) return { backgroundColor: "#EEB265" };
-    return { backgroundColor: "white" };
+    return { backgroundColor: "white", 'border-color': '#e2e2e2'};
   };
 
   const currentDate = new Date();
@@ -522,7 +522,7 @@ function DataInputComponent() {
         </Row>
         <Row
           className="mb-3"
-          style={{ float: "right", marginRight: "10px", marginTop: "20px" }}
+          style={{ float: "right", marginTop: "20px" }}
         >
           <Col xs="auto">
             <Button

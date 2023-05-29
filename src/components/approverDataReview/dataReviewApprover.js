@@ -25,17 +25,21 @@ import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
 import "../approverDataReview/dataReviewApprover.css";
 import customHeader from "../../components/approverDataReview/customHeader";
+import { useLocation } from "react-router-dom";
 
-function DataReviewApprover({ props }) {
+function DataReviewApprover(props) {
+  console.log("kadapa", props);
   const gridRef = useRef();
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const [radioValue, setRadioValue] = useState("1");
   const [message, setMessage] = useState(0);
+  const location = useLocation();
+  const historicalRole = new URLSearchParams(location.search).get("role");
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
-    { name: "Euro", value: "2" }
+    { name: "Euro", value: "2" },
   ];
 
   const columnDefs = [
@@ -141,6 +145,7 @@ function DataReviewApprover({ props }) {
       suppressSizeToFit: true,
       suppressMenu: true,
       columnGroupShow: "open",
+      cellStyle: {'border-color': '#e2e2e2'},
     };
     expandColumn.children.push(columnDef1);
   });
@@ -183,17 +188,17 @@ function DataReviewApprover({ props }) {
       }
     });
 
-    let selloutCQ = sellOutValArr.reduce(function(prev, current) {
-      return prev + +current
+    let selloutCQ = sellOutValArr.reduce(function (prev, current) {
+      return prev + +current;
     }, 0);
 
-    console.log('selloutCQ', selloutCQ);
-    
-    if(params.data){
+    console.log("selloutCQ", selloutCQ);
+
+    if (params.data) {
       params.data.SelloutCQ = selloutCQ != undefined ? selloutCQ : 0;
     }
     return selloutCQ;
-  }
+  };
 
   const getTotalYTDSellOutGrowthCalc = (params) => {
     const currentDate = new Date();
@@ -220,57 +225,57 @@ function DataReviewApprover({ props }) {
     });
 
     let YTD = YTDSellOutValArr.reduce(function (prev, current) {
-      return prev + + current;
+      return prev + +current;
     }, 0);
 
-    if(params.data){
-      params.data.YTD = YTD!=undefined?YTD:0;
+    if (params.data) {
+      params.data.YTD = YTD != undefined ? YTD : 0;
     }
 
     return YTD;
-  }
+  };
 
   const getYTDSelloutGrowthPercCalc = (params) => {
     console.log("getYTDSelloutGrowthPercCalc", params.data);
     //YTD Sellout CY
-    if(params.data){
-    let YTDSelloutCY = params.data.YTD;
+    if (params.data) {
+      let YTDSelloutCY = params.data.YTD;
 
-    //YTD Sellout LY
-    const getYTDMonthsLY = AllCalMonths;
+      //YTD Sellout LY
+      const getYTDMonthsLY = AllCalMonths;
 
-    let YTDSellOutValArrLY = [];
-    getYTDMonthsLY.forEach((month, index) => {
-      console.log("index", index);
-      let fieldMonth = getPrevMonthField(month);
-      console.log("fieldMonth", fieldMonth);
-      if (params.data) {
-        var filterMonthsYTDLY = Object.keys(params.data)
-          .filter((key) => [fieldMonth].includes(key))
-          .reduce((obj, key) => {
-            obj[key] = params.data[key];
-            return obj;
-          }, {});
-      }
+      let YTDSellOutValArrLY = [];
+      getYTDMonthsLY.forEach((month, index) => {
+        console.log("index", index);
+        let fieldMonth = getPrevMonthField(month);
+        console.log("fieldMonth", fieldMonth);
+        if (params.data) {
+          var filterMonthsYTDLY = Object.keys(params.data)
+            .filter((key) => [fieldMonth].includes(key))
+            .reduce((obj, key) => {
+              obj[key] = params.data[key];
+              return obj;
+            }, {});
+        }
 
-      if (filterMonthsYTDLY) {
-        let fieldMonthData = filterMonthsYTDLY[fieldMonth];
-        YTDSellOutValArrLY = YTDSellOutValArrLY.concat(fieldMonthData);
-      }
-    });
+        if (filterMonthsYTDLY) {
+          let fieldMonthData = filterMonthsYTDLY[fieldMonth];
+          YTDSellOutValArrLY = YTDSellOutValArrLY.concat(fieldMonthData);
+        }
+      });
 
-    let YTDSelloutLY = YTDSellOutValArrLY.reduce(function (prev, current) {
-      return prev + +current;
-    }, 0);
+      let YTDSelloutLY = YTDSellOutValArrLY.reduce(function (prev, current) {
+        return prev + +current;
+      }, 0);
 
-    let YTD_Growth = ((YTDSelloutCY-YTDSelloutLY)/YTDSelloutLY)*100;
-    //% difference of YTD Sellout CY vs YTD Sellout LY
-    params.data.YTD_Growth = Math.round(YTD_Growth);
-  
-    return Math.round(YTD_Growth);
-  }
-  return 0;
-  }
+      let YTD_Growth = ((YTDSelloutCY - YTDSelloutLY) / YTDSelloutLY) * 100;
+      //% difference of YTD Sellout CY vs YTD Sellout LY
+      params.data.YTD_Growth = Math.round(YTD_Growth);
+
+      return Math.round(YTD_Growth);
+    }
+    return 0;
+  };
 
   columnDefs.push(
     {
@@ -282,6 +287,7 @@ function DataReviewApprover({ props }) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
       valueGetter: (params) => {
         return getTotSellOutCurrQuatrCalc(params);
       },
@@ -295,6 +301,7 @@ function DataReviewApprover({ props }) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
       valueGetter: (params) => {
         return getTotalYTDSellOutGrowthCalc(params);
       },
@@ -316,9 +323,9 @@ function DataReviewApprover({ props }) {
       },
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
+          return { color: "#ff0000", fontWeight: "bold", 'border-color': '#e2e2e2'};
         } else {
-          return { color: "#009530", fontWeight: "bold" };
+          return { color: "#009530", fontWeight: "bold", 'border-color': '#e2e2e2'};
         }
       },
     },
@@ -331,6 +338,8 @@ function DataReviewApprover({ props }) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
+
     },
     {
       headerName: "System Comments",
@@ -341,6 +350,7 @@ function DataReviewApprover({ props }) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
     },
     {
       headerName: "Editor Comments",
@@ -351,6 +361,7 @@ function DataReviewApprover({ props }) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
     },
     {
       headerName: "Approver Comments",
@@ -361,6 +372,7 @@ function DataReviewApprover({ props }) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
     }
   );
 
@@ -384,7 +396,7 @@ function DataReviewApprover({ props }) {
 
   const autoGroupColumnDef = useMemo(() => {
     return {
-      width: 160,
+      width: 180,
       filterValueGetter: (params) => {
         if (params.node) {
           var colGettingGrouped = params.colDef.showRowGroup + "";
@@ -423,11 +435,21 @@ function DataReviewApprover({ props }) {
   };
 
   const handleInvestigation = () => {
-    console.log(message ? `${message} Partner Selected for Data Approval ` : "");
+    console.log(
+      message === 1
+        ? `${message} Partner Account Sent For Investigation `
+        : message > 1
+        ? `${message} Partner Accounts Sent For Investigation `
+        : ""
+    );
   };
 
   const handleConfirm = () => {
     setRowData(rowData);
+  };
+
+  const historicalDataNavigation = () => {
+    navigate(`/historicalData?role=${historicalRole}`);
   };
 
   const getRowStyle = (params) => {
@@ -449,15 +471,29 @@ function DataReviewApprover({ props }) {
           <MyMenu />
         </Row>
         <div>
-          <Breadcrumb>
-            <Breadcrumb.Item href="/approverHome">
-              <img
-                src={Home}
-                alt="home"
-                style={{ height: "20px", width: "80px", cursor: "pointer" }}
-              />
-            </Breadcrumb.Item>
-          </Breadcrumb>
+          {historicalRole === "approver" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/approverHome">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : historicalRole === "superApproverUser" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/superUserHome">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : (
+            <div></div>
+          )}
         </div>
         <div>
           <Stack direction="horizontal" gap={4}>
@@ -484,7 +520,12 @@ function DataReviewApprover({ props }) {
               </Col>
             </div>
             <div className="historical-header">
-              <Button className="btn-md historical-data">
+              <Button
+                className="btn-md historical-data"
+                onClick={() => {
+                  historicalDataNavigation(historicalRole);
+                }}
+              >
                 Historical Data
               </Button>
             </div>
@@ -513,9 +554,14 @@ function DataReviewApprover({ props }) {
             onSelectionChanged={handleCheckboxClick}
             groupSelectsChildren={true}
             suppressMenuHide={true}
+            groupDefaultExpanded={1}
           ></AgGridReact>
           <div className="checkbox-message">
-            {message > 0 ? `${message} Partner Selected ` : ""}
+            {message === 1
+              ? `${message} Partner Selected `
+              : message > 1
+              ? `${message} Partners Selected `
+              : ""}
           </div>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>

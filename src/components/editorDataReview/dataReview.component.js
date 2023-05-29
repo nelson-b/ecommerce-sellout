@@ -1,7 +1,22 @@
-import React, { useCallback, useMemo, useState, useRef, useEffect } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
-import { Button, Row, Col, Stack, ToggleButton, ButtonGroup, Breadcrumb, Container } from "react-bootstrap";
+import {
+  Button,
+  Row,
+  Col,
+  Stack,
+  ToggleButton,
+  ButtonGroup,
+  Breadcrumb,
+  Container,
+} from "react-bootstrap";
 import "./dataReview.css";
 import { AllCalMonths } from "../constant";
 import MyMenu from "../menu/menu.component.js";
@@ -14,12 +29,16 @@ import footerTotalReview from "./footerTotalReview";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
+import { useLocation } from "react-router-dom";
 
 function DataReviewComponent({}) {
   const gridRef = useRef();
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const [radioValue, setRadioValue] = useState("1");
+  const location = useLocation();
+  const historicalRole = new URLSearchParams(location.search).get("role");
+  console.log('historicalRole', historicalRole)
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -74,7 +93,7 @@ function DataReviewComponent({}) {
       width: 140,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true
+      suppressMenu: true,
     },
     {
       headerName: "Status",
@@ -112,142 +131,139 @@ function DataReviewComponent({}) {
       resizable: true,
       filter: true,
       sortable: true,
-      suppressSizeToFit: true
+      suppressSizeToFit: true,
     };
   }, []);
 
   const autoGroupColumnDef = useMemo(() => {
-      return {
-        width: 150,
-        filterValueGetter: (params) => {
-          if (params.node) {
-            var colGettingGrouped = params.colDef.showRowGroup + "";
-            return params.api.getValue(colGettingGrouped, params.node);
-          }
-        },
-        pinned: "left",
-        cellRenderer: "agGroupCellRenderer",
-        cellRendererParams: {
-          suppressCount: true,
-          innerRenderer: footerTotalReview,
-        },
-      };
-    }, []);
+    return {
+      width: 170,
+      filterValueGetter: (params) => {
+        if (params.node) {
+          var colGettingGrouped = params.colDef.showRowGroup + "";
+          return params.api.getValue(colGettingGrouped, params.node);
+        }
+      },
+      pinned: "left",
+      cellRenderer: "agGroupCellRenderer",
+      cellRendererParams: {
+        suppressCount: true,
+        innerRenderer: footerTotalReview,
+      },
+    };
+  }, []);
 
   const getCMLMValues = (params) => {
-      const currentDate = new Date();
-      const currentMonth = currentDate.getMonth();
-      let date = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        1
-      );
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
-      const currMonthName = AllCalMonths[date.getMonth()];
-      const lastMonthName = AllCalMonths[date.getMonth()-1];
-      const year = String(date.getFullYear()).slice(-2);
-      const currmonthField = currMonthName + year;
-      const lastmonthField = lastMonthName + year;
-      
-      if(params.data){
-        var filterCurrMonths = Object.keys(params.data)
-          .filter((key) => [currmonthField].includes(key))
-          .reduce((obj, key) => {
-            obj[key] = params.data[key];
-            return obj;
-          }, {});
-        
-        var filterLastMonths = Object.keys(params.data)
+    const currMonthName = AllCalMonths[date.getMonth()];
+    const lastMonthName = AllCalMonths[date.getMonth() - 1];
+    const year = String(date.getFullYear()).slice(-2);
+    const currmonthField = currMonthName + year;
+    const lastmonthField = lastMonthName + year;
+
+    if (params.data) {
+      var filterCurrMonths = Object.keys(params.data)
+        .filter((key) => [currmonthField].includes(key))
+        .reduce((obj, key) => {
+          obj[key] = params.data[key];
+          return obj;
+        }, {});
+
+      var filterLastMonths = Object.keys(params.data)
         .filter((key) => [lastmonthField].includes(key))
         .reduce((obj, key) => {
           obj[key] = params.data[key];
           return obj;
         }, {});
 
-        let ret = {
-          CurrentMonth: filterCurrMonths[currmonthField],
-          LastMonth: filterLastMonths[lastmonthField]
-        } 
-        return ret;
+      let ret = {
+        CurrentMonth: filterCurrMonths[currmonthField],
+        LastMonth: filterLastMonths[lastmonthField],
+      };
+      return ret;
     }
     return undefined;
-  }
+  };
 
   const getCMLYValues = (params) => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
-    let date = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1
-    );
+    let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
     const currMonthName = AllCalMonths[date.getMonth()];
     const curryear = String(date.getFullYear()).slice(-2);
     const currmonthCYField = currMonthName + curryear;
     const currmonthLYField = currMonthName + (curryear - 1);
-    
-    if(params.data){
-        var filterCurrMonthCY = Object.keys(params.data)
-          .filter((key) => [currmonthCYField].includes(key))
-          .reduce((obj, key) => {
-            obj[key] = params.data[key];
-            return obj;
-          }, {});
-        
-        var filterCurrMonthLY = Object.keys(params.data)
+
+    if (params.data) {
+      var filterCurrMonthCY = Object.keys(params.data)
+        .filter((key) => [currmonthCYField].includes(key))
+        .reduce((obj, key) => {
+          obj[key] = params.data[key];
+          return obj;
+        }, {});
+
+      var filterCurrMonthLY = Object.keys(params.data)
         .filter((key) => [currmonthLYField].includes(key))
         .reduce((obj, key) => {
           obj[key] = params.data[key];
           return obj;
         }, {});
 
-        let ret = {
-          CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
-          CurrentMonthLY: filterCurrMonthLY[currmonthLYField]
-        }
-        return ret;
+      let ret = {
+        CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
+        CurrentMonthLY: filterCurrMonthLY[currmonthLYField],
+      };
+      return ret;
     }
     return undefined;
-  }
+  };
 
-  const setVarCMvsLMCalc = (params) =>  {
+  const setVarCMvsLMCalc = (params) => {
     let resp = getCMLMValues(params);
-    
-    if(resp != undefined){
-      return (resp.CurrentMonth - resp.LastMonth);
+
+    if (resp != undefined) {
+      return resp.CurrentMonth - resp.LastMonth;
     }
     return '';
   }
 
-  const setVarCMvsLMCalcPerc = (params) =>  {
+  const setVarCMvsLMCalcPerc = (params) => {
     let resp = getCMLMValues(params);
-    if(resp != undefined){
-      if(resp.LastMonth!=0){
-        return Math.round(((resp.CurrentMonth - resp.LastMonth)/resp.LastMonth)*100);
+    if (resp != undefined) {
+      if (resp.LastMonth != 0) {
+        return Math.round(
+          ((resp.CurrentMonth - resp.LastMonth) / resp.LastMonth) * 100
+        );
       }
     }
     return 0;
-  }
+  };
 
   const setVarCMvsLYCalc = (params) => {
-      let resp = getCMLYValues(params);
-      if(resp != undefined){
-        return (resp.CurrentMonthCY - resp.CurrentMonthLY);
-      }
-      return 0;
-  }
+    let resp = getCMLYValues(params);
+    if (resp != undefined) {
+      return resp.CurrentMonthCY - resp.CurrentMonthLY;
+    }
+    return 0;
+  };
 
   const setVarCMvsLYCalcPerc = (params) => {
     let resp = getCMLYValues(params);
-    console.log('setVarCMvsLYCalcPerc',resp);
-    if(resp != undefined){
-      if(resp.CurrentMonthLY!=0){
-        return Math.round(((resp.CurrentMonthCY - resp.CurrentMonthLY)/resp.CurrentMonthLY)*100);
+    console.log("setVarCMvsLYCalcPerc", resp);
+    if (resp != undefined) {
+      if (resp.CurrentMonthLY != 0) {
+        return Math.round(
+          ((resp.CurrentMonthCY - resp.CurrentMonthLY) / resp.CurrentMonthLY) *
+            100
+        );
       }
     }
     return 0;
-  }
+  };
 
   const getRowStyle = (params) => {
     if (params.node.aggData) {
@@ -264,11 +280,11 @@ function DataReviewComponent({}) {
           obj[key] = params.data[key];
           return obj;
         }, {});
-  
-        var isEstimated = filterMonths[monthYrKey] === "true";
-        if (isEstimated === true) return { backgroundColor: "#EEB265" };
-      } else {
-      return { backgroundColor: "white" };
+
+      var isEstimated = filterMonths[monthYrKey] === "true";
+      if (isEstimated === true) return { backgroundColor: "#EEB265" };
+    } else {
+      return { backgroundColor: "white", 'border-color': '#e2e2e2'};
     }
   };
 
@@ -285,7 +301,7 @@ function DataReviewComponent({}) {
 
     const monthName = AllCalMonths[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
-    const monthHeader = monthName+' ' + year;
+    const monthHeader = monthName + " " + year;
     const monthField = monthName + year;
     const monthAEFlagField = monthName + " _E";
 
@@ -318,16 +334,17 @@ function DataReviewComponent({}) {
             singleClickEdit: true,
             filter: "agNumberColumnFilter",
             sortable: true,
-            valueGetter: param => { return setVarCMvsLMCalc(param) },
+            valueGetter: (param) => {
+              return setVarCMvsLMCalc(param);
+            },
             valueParser: (params) => Number(params.newValue),
             aggFunc: "sum",
             suppressMenu: true,
             cellStyle: function (params) {
               if (params.value >= 0) {
-                return { color: "#009530", fontWeight: "bold" };
-              }
-              else if (params.value < 0) {
-                return { color: "#ff0000", fontWeight: "bold" };
+                return { color: "#009530", fontWeight: "bold", 'border-color': '#e2e2e2'};
+              } else if (params.value < 0) {
+                return { color: "#ff0000", fontWeight: "bold", 'border-color': '#e2e2e2'};
               }
             },
           },
@@ -341,17 +358,18 @@ function DataReviewComponent({}) {
             aggFunc: "sum",
             singleClickEdit: true,
             suppressMenu: true,
-            valueGetter: param => { return setVarCMvsLMCalcPerc(param) },
+            valueGetter: (param) => {
+              return setVarCMvsLMCalcPerc(param);
+            },
             valueFormatter: (params) => {
               return params.value + "%";
             },
             cellStyle: function (params) {
-                if (params.value >= 0) {
-                  return { color: "#009530", fontWeight: "bold" };
-                }
-                else if (params.value < 0) {
-                  return { color: "#ff0000", fontWeight: "bold" };
-                }
+              if (params.value >= 0) {
+                return { color: "#009530", fontWeight: "bold", 'border-color': '#e2e2e2'};
+              } else if (params.value < 0) {
+                return { color: "#ff0000", fontWeight: "bold", 'border-color': '#e2e2e2'};
+              }
             },
           }
         )
@@ -417,13 +435,14 @@ function DataReviewComponent({}) {
           filter: "agNumberColumnFilter",
           sortable: true,
           suppressMenu: true,
-          valueGetter: params => { return setVarCMvsLYCalc(params) },
+          valueGetter: (params) => {
+            return setVarCMvsLYCalc(params);
+          },
           cellStyle: function (params) {
             if (params.value >= 0) {
-              return { color: "#009530", fontWeight: "bold" };
-            }
-            else if (params.value < 0) {
-              return { color: "#ff0000", fontWeight: "bold" };
+              return { color: "#009530", fontWeight: "bold", 'border-color': '#e2e2e2'};
+            } else if (params.value < 0) {
+              return { color: "#ff0000", fontWeight: "bold", 'border-color': '#e2e2e2'};
             }
           },
         },
@@ -437,16 +456,17 @@ function DataReviewComponent({}) {
           filter: "agNumberColumnFilter",
           sortable: true,
           suppressMenu: true,
-          valueGetter: params => { return setVarCMvsLYCalcPerc(params) },
+          valueGetter: (params) => {
+            return setVarCMvsLYCalcPerc(params);
+          },
           valueFormatter: (params) => {
             return params.value + "%";
           },
           cellStyle: function (params) {
             if (params.value >= 0) {
-              return { color: "#009530", fontWeight: "bold" };
-            }
-            else if (params.value < 0) {
-              return { color: "#ff0000", fontWeight: "bold" };
+              return { color: "#009530", fontWeight: "bold", 'border-color': '#e2e2e2'};
+            } else if (params.value < 0) {
+              return { color: "#ff0000", fontWeight: "bold", 'border-color': '#e2e2e2'};
             }
           },
         }
@@ -476,7 +496,8 @@ function DataReviewComponent({}) {
       minWidth: 200,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
     },
     {
       headerName: "System Comments",
@@ -486,7 +507,9 @@ function DataReviewComponent({}) {
       minWidth: 200,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
+
     },
     {
       headerName: "Editor Comments",
@@ -496,7 +519,8 @@ function DataReviewComponent({}) {
       minWidth: 200,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
     },
     {
       headerName: "Approver Comments",
@@ -506,7 +530,8 @@ function DataReviewComponent({}) {
       minWidth: 200,
       aggFunc: "sum",
       sortable: true,
-      suppressMenu: true
+      suppressMenu: true,
+      cellStyle: {'border-color': '#e2e2e2'},
     }
   );
 
@@ -520,7 +545,11 @@ function DataReviewComponent({}) {
 
   const handleDtaInputNavigation = () => {
     navigate("/dataInput");
-  }
+  };
+
+  const historicalDataNavigation = () => {
+    navigate(`/historicalData?role=${historicalRole}`);
+  };
 
   const handleSave = () => {
     setRowData(rowData);
@@ -599,7 +628,8 @@ function DataReviewComponent({}) {
                       name="radio"
                       value={radio.value}
                       checked={radioValue === radio.value}
-                      onChange={(e) => setRadioValue(e.currentTarget.value)}>
+                      onChange={(e) => setRadioValue(e.currentTarget.value)}
+                    >
                       {radio.name}
                     </ToggleButton>
                   ))}
@@ -607,7 +637,12 @@ function DataReviewComponent({}) {
               </Col>
             </div>
             <div className="historical-header">
-              <Button className="btn-md historical-data">
+              <Button
+                className="btn-md historical-data"
+                onClick={() => {
+                  historicalDataNavigation();
+                }}
+              >
                 Historical Data
               </Button>
             </div>
@@ -633,8 +668,8 @@ function DataReviewComponent({}) {
             onGridReady={onGridReady}
             getRowStyle={getRowStyle}
             excelStyles={excelStyles}
-            suppressMenuHide= {true}>            
-          </AgGridReact>
+            suppressMenuHide={true}
+          ></AgGridReact>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
               <Col xs="auto">

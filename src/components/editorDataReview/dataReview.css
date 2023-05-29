@@ -19,6 +19,12 @@
   font-size: 14px;
   color: #FFFFFF;
 }
+.edited-header {
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0px 40px;
+  color: #1E1E1E;
+}
 
 .historical-data {
   background: #009530 0% 0% no-repeat padding-box;

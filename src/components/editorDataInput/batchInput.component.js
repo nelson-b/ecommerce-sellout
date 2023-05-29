@@ -10,6 +10,7 @@ import { AllCalMonths } from "../constant";
 
 function BatchInputComponent({ getData }) {
   const navigate = useNavigate();
+  console.log('getData', getData)
 
   const {
     register,
@@ -285,6 +286,7 @@ function BatchInputComponent({ getData }) {
   ];
 
   const exportToExcel = async (exportedData) => {
+    console.log('exportedData', exportedData)
     const tempData = exportedData.map((e) => {
       const { id, status, ...rest } = e;
       return rest;

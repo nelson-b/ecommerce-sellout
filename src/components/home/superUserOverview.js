@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 import calender from "./../../images/calender.png";
 import roles from "../../data/roles.json";
 
-function SuperUserApproverOverview(props) {
+function SuperUseOverview(props) {
   const navigate = useNavigate();
 
   const partnerDataNavigation = () => {
-    navigate(`/partnerList?id=${roles.superUser}`);
+    navigate(`/partnerList?role=${roles.superUser}`);
   };
 
   return (
@@ -87,4 +87,4 @@ function SuperUserApproverOverview(props) {
   );
 }
 
-export default SuperUserApproverOverview;
+export default SuperUseOverview;
