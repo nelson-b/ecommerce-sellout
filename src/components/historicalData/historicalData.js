@@ -18,7 +18,7 @@ import {
   Container,
   Form,
 } from "react-bootstrap";
-import { AllCalMonths } from "../constant";
+import { allCalMonths } from "../constant";
 import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
@@ -129,7 +129,7 @@ function HistoricalData({}) {
     i--
   ) {
     let date = new Date(selectedValue, currentDate.getMonth() - (i - 1), 1);
-    const monthName = AllCalMonths[date.getMonth()];
+    const monthName = allCalMonths[date.getMonth()];
     const year =
       selectedValue == new Date().getFullYear()
         ? String(date.getFullYear()).slice(-2)
@@ -138,12 +138,12 @@ function HistoricalData({}) {
     const monthHeader =
       selectedValue == new Date().getFullYear()
         ? monthName + " " + year
-        : AllCalMonths[12 - i] + " " + year;
+        : allCalMonths[12 - i] + " " + year;
 
     const monthField =
       selectedValue == new Date().getFullYear()
         ? monthName + year
-        : AllCalMonths[12 - i] + year;
+        : allCalMonths[12 - i] + year;
 
     columnDefs.push({
       headerName: monthHeader,
@@ -307,7 +307,7 @@ function HistoricalData({}) {
       const currentDate = new Date();
 
       let date = new Date(selectedValue, currentDate.getMonth() - (i - 1), 1);
-      const monthName = AllCalMonths[date.getMonth()];
+      const monthName = allCalMonths[date.getMonth()];
       const year =
         selectedValue == new Date().getFullYear()
           ? String(date.getFullYear()).slice(-2)
@@ -316,7 +316,7 @@ function HistoricalData({}) {
       const monthField =
         selectedValue == new Date().getFullYear()
           ? monthName + year
-          : AllCalMonths[12 - i] + year;
+          : allCalMonths[12 - i] + year;
 
       filterTotalMonths.push(
         Object.keys(params.data)
@@ -351,7 +351,7 @@ function HistoricalData({}) {
         <div>
           {screenRole === "editor" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
-              <Breadcrumb.Item href="/editorHome">
+              <Breadcrumb.Item href="/editor/home">
                 <img
                   src={Home}
                   alt="home"
@@ -365,7 +365,7 @@ function HistoricalData({}) {
             </Breadcrumb>
           ) : screenRole === "approver" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
-              <Breadcrumb.Item href="/approverHome">
+              <Breadcrumb.Item href="/approver/home">
                 <img
                   src={Home}
                   alt="home"
@@ -379,7 +379,7 @@ function HistoricalData({}) {
             </Breadcrumb>
           ) : screenRole === "superApproverUser" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
-              <Breadcrumb.Item href="/superUserHome">
+              <Breadcrumb.Item href="/superUser/home">
                 <img
                   src={Home}
                   alt="home"

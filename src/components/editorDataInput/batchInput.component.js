@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import * as xlsx from "xlsx-js-style";
 import AlertModel from "../modal/alertModel";
-import { AllCalMonths } from "../constant";
-
+import { allCalMonths } from "../constant";
 
 function BatchInputComponent({ getData }) {
   const navigate = useNavigate();
@@ -22,28 +21,14 @@ function BatchInputComponent({ getData }) {
     reValidateMode: "onSubmit",
     reValidateMode: "onChange",
   });
-  
-  // const initialState = {
-  //   fileData: ''
-  // };
-  
-  // const [formData, setFormData] = useState(initialState);
-
-  // const onChangeHandler = (e) => {
-  //   console.log('e',e);
-  //   setFormData({ ...formData, [e.target.id]: e.target.value });
-  //   console.log('formData',formData);
-  // };
 
   const handleChange=({target})=> {
     console.log('target', target);
     setSelectedFile(target);
-    // target.value = ''
   };
   
   const handleClick = event => {
     console.log('event', event);
-    // const { target = {} } = event || {};
     setSelectedFile(event.target.files);
   };
 
@@ -60,10 +45,6 @@ function BatchInputComponent({ getData }) {
 
   const handleCloseErrorModal = () => {
     setShowErrorModal(false);
-  };
-
-  const handleShowShouldUpdModal = () => {
-    setShowShouldUpdModal(true);
   };
 
   const handleCloseShouldUpdModal = () => {
@@ -91,7 +72,7 @@ function BatchInputComponent({ getData }) {
     content: ['Your previous data would be lost if you update it with new data']
   }
 
-  const ShouldUpdate = () =>{
+  const saveData = () =>{
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth();
       const currentYear = String(currentDate.getFullYear()).slice(-2);
@@ -104,7 +85,7 @@ function BatchInputComponent({ getData }) {
           1
         );
         
-        const monthName = AllCalMonths[date.getMonth()];
+        const monthName = allCalMonths[date.getMonth()];
         const year = String(date.getFullYear()).slice(-2);
         const monthField = monthName+'_Amount';
 
@@ -136,93 +117,91 @@ function BatchInputComponent({ getData }) {
       });
       return;
     } else {
-      var res = ShouldUpdate();
-      res ? setShowShouldUpdModal(true):setShowShouldUpdModal(false);
-
-      if (selectedFile.file) {
+      if (file) {
         let reader = new FileReader();
         reader.onload = (e) => {
           console.log("reader onload");
           let result = e.target.result;
           let workbook = xlsx.read(result, { type: "array" });
-          let sheetName = workbook.SheetNames[0];
+          let sheetName = workbook.SheetNames[1];
+          console.log('sheetName',sheetName);
           let worksheet = workbook.Sheets[sheetName];
           let json = xlsx.utils.sheet_to_json(worksheet);
           let errorJson = [];
           console.log("Reading excel: ", json);
-          
           setFileData(json);
-            fileData.forEach((i) => {
-              if(i.Jan){
-                if(isNaN(i.Jan)){
-                  errorJson.push('There should be number for Jan month at partner : ' + i.Partner);
-                  console.log('There should be number for Jan month at partner : ' + i.Partner);
+          console.log("fileData: ", fileData);
+            json.forEach((i) => {
+              if(i.Jan_Amount){
+                if(isNaN(i.Jan_Amount)){
+                  errorJson.push('There should be number for Jan month at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number for Jan month at partner : ' + i['Partner Account Name']);
                 }
               }
-              if(i.Feb){
-                if(isNaN(i.Feb)){
-                  errorJson.push('There should be number for Feb month at partner : ' + i.Partner);
-                  console.log('There should be number for Feb at partner : ' + i.Partner);
+              if(i.Feb_Amount){
+                if(isNaN(i.Feb_Amount)){
+                  errorJson.push('There should be number for Feb month at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number for Feb at partner : ' + i['Partner Account Name']);
                 }
               }
-              if(i.Mar){
-                if(isNaN(i.Mar)){
-                  errorJson.push('There should be number for Mar month at partner : ' + i.Partner);
-                  console.log('There should be number for Mar month at partner : ' + i.Partner);
+              if(i.Mar_Amount){
+                if(isNaN(i.Mar_Amount)){
+                  errorJson.push('There should be number for Mar month at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number for Mar month at partner : ' + i['Partner Account Name']);
                 }
               }
-              if(i.Apr){
-                if(isNaN(i.Apr)){
-                  errorJson.push('There should be number at Apr at partner : ' + i.Partner);
-                  console.log('There should be number at Apr at partner : ' + i.Partner);
+              if(i.Apr_Amount){
+                if(isNaN(i.Apr_Amount)){
+                  errorJson.push('There should be number at Apr at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number at Apr at partner : ' + i['Partner Account Name']);
                 }
               }
-              if(i.May){
-                if(isNaN(i.May)){
-                  errorJson.push('There should be number at May at partner : ' + i.Partner);
-                  console.log('There should be number at May at partner : ' + i.Partner);
+              if(i.May_Amount){
+                if(isNaN(i.May_Amount)){
+                  errorJson.push('There should be number at May at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number at May at partner : ' + i['Partner Account Name']);
                 }
               }
-              if(i.Jun){
-                if(isNaN(i.Jun)){
-                  errorJson.push('There should be number at Jun at partner : ' + i.Partner);
-                  console.log('There should be number at Jun at partner : ' + i.Partner);
+              if(i.Jun_Amount){
+                if(isNaN(i.Jun_Amount)){
+                  errorJson.push('There should be number at Jun at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number at Jun at partner : ' + i['Partner Account Name']);
                 }
               }
-              if(i.Jul){
-                if(isNaN(i.Jul)){
-                  errorJson.push('There should be number at Jul at partner : ' + i.Partner);
-                  console.log('There should be number at Jul at partner : ' + i.Partner);
+              if(i.Jul_Amount){
+                if(isNaN(i.Jul_Amount)){
+                  errorJson.push('There should be number at Jul at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number at Jul at partner : ' + i['Partner Account Name']);
                 }
               }
-              if(i.Aug){
-                if(isNaN(i.Aug)){
-                  errorJson.push('There should be number at Jul at partner : ' + i.Partner);
-                  console.log('There should be number at Aug at partner : ' + i.Partner);
+              if(i.Aug_Amount){
+                if(isNaN(i.Aug_Amount)){
+                  errorJson.push('There should be number at Jul at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number at Aug at partner : ' + i['Partner Account Name']);
                 }
               }
-              if(i.Sep){
-                if(isNaN(i.Sep)){
-                  errorJson.push('There should be number at Jul at partner : ' + i.Partner);
-                  console.log('There should be number at Sep at partner : ' + i.Partner);
+              if(i.Sep_Amount){
+                if(isNaN(i.Sep_Amount)){
+                  errorJson.push('There should be number at Jul at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number at Sep at partner : ' + i['Partner Account Name']);
                 }
               }
-              if(i.Oct){
-                if(isNaN(i.Oct)){
-                  errorJson.push('There should be number at Oct at partner : ' + i.Partner);
-                  console.log('There should be number at Oct at partner : ' + i.Partner);
+              if(i.Oct_Amount){
+                if(isNaN(i.Oct_Amount)){
+                  errorJson.push('There should be number at Oct at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number at Oct at partner : ' + i['Partner Account Name']);
                 }
               }
-              if(i.Nov){
-                if(isNaN(i.Nov)){
-                  errorJson.push('There should be number at Nov at partner : ' + i.Partner);
-                  console.log('There should be number at Nov at partner : ' + i.Partner);
+              if(i.Nov_Amount){
+                if(isNaN(i.Nov_Amount)){
+                  errorJson.push('There should be number at Nov at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number at Nov at partner : ' + i['Partner Account Name']);
                 }
               }
-              if(i.Dec){
-                if(isNaN(i.Dec)){
-                  errorJson.push('There should be number at Dec at partner : ' + i.Partner);
-                  console.log('There should be number at Dec at partner : ' + i.Partner);
+              if(i.Dec_Amount){
+                if(isNaN(i.Dec_Amount)){
+                  errorJson.push('There should be number at Dec at partner : ' + i['Partner Account Name']);
+                  console.log('There should be number at Dec at partner : ' + i['Partner Account Name']);
                 }
               }
           });
@@ -231,12 +210,14 @@ function BatchInputComponent({ getData }) {
             setFileError(errorJson);
             setShowErrorModal(true);
             setShowSuccessModal(false);
+            setShowShouldUpdModal(false);
           }
           else
           {
             setFileError([]);
             setShowErrorModal(false);
             setShowSuccessModal(true);
+            setShowShouldUpdModal(false);
             setTimeout(()=>navigate('/dataReview'), 3000);
           }
 
@@ -252,7 +233,7 @@ function BatchInputComponent({ getData }) {
 
   const onSubmit = (frmData) => {
     setSelectedFile(frmData);
-    ShouldUpdate();
+    saveData();
   };
 
   const onError = (error) => {

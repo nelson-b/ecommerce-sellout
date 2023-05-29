@@ -25,16 +25,16 @@ function PartnerList(props) {
   const screenRole = new URLSearchParams(location.search).get("role");
 
   const handlePartnerEdit = (params) => {
-    navigate(`/updatePartner?role=${params.data.partnerID}`);
+    navigate(`/partner/update?role=${params.data.partnerID}`);
   };
 
   const handleCreate = () => {
-    navigate("/addPartner");
+    // navigate("/partner/create");
+    navigate(`/partner/create?role=${screenRole}`);
   };
 
   const handleRequest = () => {
-    navigate(`/partnerRequestList?role=${screenRole}`);
-
+    navigate(`/partner/requestList?role=${screenRole}`);
   };
 
   const columnDefs = [
@@ -329,7 +329,7 @@ function PartnerList(props) {
         <div>
           {screenRole === "admin" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/adminHome">
+              <Breadcrumb.Item href="/admin/home">
                 <img
                   src={Home}
                   alt="home"
@@ -339,7 +339,7 @@ function PartnerList(props) {
             </Breadcrumb>
           ) : screenRole === "superApproverUser" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUserHome">
+              <Breadcrumb.Item href="/superUser/home">
                 <img
                   src={Home}
                   alt="home"
@@ -349,7 +349,7 @@ function PartnerList(props) {
             </Breadcrumb>
           ) : screenRole === "approver" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/approverHome">
+              <Breadcrumb.Item href="/approver/home">
                 <img
                   src={Home}
                   alt="home"
@@ -359,7 +359,7 @@ function PartnerList(props) {
             </Breadcrumb>
           ) : screenRole === "editor" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/editorHome">
+              <Breadcrumb.Item href="/editor/home">
                 <img
                   src={Home}
                   alt="home"
@@ -409,7 +409,7 @@ function PartnerList(props) {
                 size="md"
                 className="partner-header save-header"
                 onClick={() => {
-                  handleCreate();
+                  handleCreate(screenRole);
                 }}
               >
                 Create Partner

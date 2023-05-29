@@ -18,7 +18,7 @@ import {
   Container,
 } from "react-bootstrap";
 import "./dataReview.css";
-import { AllCalMonths } from "../constant";
+import { allCalMonths } from "../constant";
 import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
@@ -154,25 +154,29 @@ function DataReviewComponent({}) {
   }, []);
 
   const getCMLMValues = (params) => {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      let date = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
+      );
 
-    const currMonthName = AllCalMonths[date.getMonth()];
-    const lastMonthName = AllCalMonths[date.getMonth() - 1];
-    const year = String(date.getFullYear()).slice(-2);
-    const currmonthField = currMonthName + year;
-    const lastmonthField = lastMonthName + year;
-
-    if (params.data) {
-      var filterCurrMonths = Object.keys(params.data)
-        .filter((key) => [currmonthField].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = params.data[key];
-          return obj;
-        }, {});
-
-      var filterLastMonths = Object.keys(params.data)
+      const currMonthName = allCalMonths[date.getMonth()];
+      const lastMonthName = allCalMonths[date.getMonth()-1];
+      const year = String(date.getFullYear()).slice(-2);
+      const currmonthField = currMonthName + year;
+      const lastmonthField = lastMonthName + year;
+      
+      if(params.data){
+        var filterCurrMonths = Object.keys(params.data)
+          .filter((key) => [currmonthField].includes(key))
+          .reduce((obj, key) => {
+            obj[key] = params.data[key];
+            return obj;
+          }, {});
+        
+        var filterLastMonths = Object.keys(params.data)
         .filter((key) => [lastmonthField].includes(key))
         .reduce((obj, key) => {
           obj[key] = params.data[key];
@@ -193,7 +197,7 @@ function DataReviewComponent({}) {
     const currentMonth = currentDate.getMonth();
     let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
-    const currMonthName = AllCalMonths[date.getMonth()];
+    const currMonthName = allCalMonths[date.getMonth()];
     const curryear = String(date.getFullYear()).slice(-2);
     const currmonthCYField = currMonthName + curryear;
     const currmonthLYField = currMonthName + (curryear - 1);
@@ -299,7 +303,7 @@ function DataReviewComponent({}) {
       1
     );
 
-    const monthName = AllCalMonths[date.getMonth()];
+    const monthName = allCalMonths[date.getMonth()];
     const year = String(date.getFullYear()).slice(-2);
     const monthHeader = monthName + " " + year;
     const monthField = monthName + year;
@@ -396,7 +400,7 @@ function DataReviewComponent({}) {
     1
   );
 
-  const prevMonth = AllCalMonths[previousYear.getMonth()];
+  const prevMonth = allCalMonths[previousYear.getMonth()];
   console.log("prevMonth", prevMonth);
   const prevYear = String(previousYear.getFullYear()).slice(-2);
 
@@ -603,7 +607,7 @@ function DataReviewComponent({}) {
         </Row>
         <div>
           <Breadcrumb>
-            <Breadcrumb.Item href="/editorHome">
+            <Breadcrumb.Item href="/editor/home">
               <img
                 src={Home}
                 alt="home"

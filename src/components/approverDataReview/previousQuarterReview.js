@@ -212,7 +212,7 @@ function PartnerQuarterApprover({ props }) {
   };
 
   const handleReviewNavigation = () => {
-    navigate("/approverHome");
+    navigate("/approver/home");
   };
 
   const handleInvestigation = () => {
@@ -244,7 +244,7 @@ function PartnerQuarterApprover({ props }) {
         <div>
           {quarterRole === "approver" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/approverHome">
+              <Breadcrumb.Item href="/approver/home">
                 <img
                   src={Home}
                   alt="home"
@@ -254,7 +254,7 @@ function PartnerQuarterApprover({ props }) {
             </Breadcrumb>
           ) : quarterRole === "superApproverUser" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUserHome">
+              <Breadcrumb.Item href="/superUser/home">
                 <img
                   src={Home}
                   alt="home"

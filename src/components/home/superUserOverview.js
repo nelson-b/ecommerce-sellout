@@ -3,13 +3,13 @@ import MyMenu from "../menu/menu.component.js";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import calender from "./../../images/calender.png";
-import roles from "../../data/roles.json";
+import { roles } from "../../components/constant.js";
 
 function SuperUseOverview(props) {
   const navigate = useNavigate();
 
   const partnerDataNavigation = () => {
-    navigate(`/partnerList?role=${roles.superUser}`);
+    navigate(`/partner/list?role=${roles.superUser}`);
   };
 
   return (

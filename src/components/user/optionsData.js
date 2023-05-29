@@ -13,6 +13,11 @@ export const userRoleOptions = [
     { value: "Approver", label: "Approver" }
 ];
 
+export const opsOptions = [
+    { value: "Ops 1", label: "Ops 1" },
+    { value: "Ops 2", label: "Ops 2" }
+];
+
 export const userZoneOptions = [
     { value: "Zone 1", label: "Zone 1" },
     { value: "Zone 2", label: "Zone 2" }

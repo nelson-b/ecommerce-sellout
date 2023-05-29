@@ -46,14 +46,18 @@ function Login() {
 
   const loginNavigation = (data) => {
     if(data.username=="nelson@se.com" && data.usrpassword=="test@123"){
-      navigate("/editorHome")
+      navigate("/editor/home");
     }
     if(data.username=="katie@se.com" && data.usrpassword=="test@123"){
-      navigate("/approverHome")
+      navigate("/approver/home");
     }
     if(data.username=="thomas@se.com" && data.usrpassword=="test@123"){
-      navigate("/superUserHome")
+      navigate("/superUser/home");
     }
+    if(data.username=="jean@se.com" && data.usrpassword=="test@123"){
+      navigate("/admin/home");
+    }
+
     console.log('loginNavigation', data);
   };
 

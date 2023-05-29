@@ -13,8 +13,7 @@ import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import userEditIcon from "../../../images/edit-icon.png";
 
-function UserList(props) {
-  console.log("props", props);
+function UserList() {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const location = useLocation();
@@ -171,7 +170,7 @@ function UserList(props) {
         <div>
           {userRole === "admin" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/adminHome">
+              <Breadcrumb.Item href="/admin/home">
                 <img
                   src={Home}
                   alt="home"
@@ -185,7 +184,7 @@ function UserList(props) {
             </Breadcrumb>
           ) : userRole === "superApproverUser" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUserHome">
+              <Breadcrumb.Item href="/superUser/home">
                 <img
                   src={Home}
                   alt="home"
@@ -209,13 +208,21 @@ function UserList(props) {
               </div>
             </Col>
             <Col xs="auto" className="partner-container">
+              {userRole == 'admin' && (
+              <Button
+                size="md"
+                className="partner-header save-header">
+                Requests
+              </Button>
+              )}
+            </Col>
+            <Col xs="auto" className="partner-container">
               <Button
                 size="md"
                 className="partner-header save-header"
                 onClick={() => {
                   handleCreate();
-                }}
-              >
+                }}>
                 Create User
               </Button>
             </Col>

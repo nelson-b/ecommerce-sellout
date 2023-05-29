@@ -12,7 +12,7 @@ import {
   Breadcrumb,
   Container,
 } from "react-bootstrap";
-import { AllCalMonths } from "../constant";
+import { allCalMonths } from "../constant";
 import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
@@ -202,7 +202,7 @@ function DataReviewApprover(props) {
 
   const getTotalYTDSellOutGrowthCalc = (params) => {
     const currentDate = new Date();
-    const getYTDMonths = AllCalMonths.slice(0, currentDate.getMonth());
+    const getYTDMonths = allCalMonths.slice(0, currentDate.getMonth());
 
     let YTDSellOutValArr = [];
     getYTDMonths.forEach((month, index) => {
@@ -241,8 +241,8 @@ function DataReviewApprover(props) {
     if (params.data) {
       let YTDSelloutCY = params.data.YTD;
 
-      //YTD Sellout LY
-      const getYTDMonthsLY = AllCalMonths;
+    //YTD Sellout LY
+    const getYTDMonthsLY = allCalMonths;
 
       let YTDSellOutValArrLY = [];
       getYTDMonthsLY.forEach((month, index) => {
@@ -431,7 +431,7 @@ function DataReviewApprover(props) {
   };
 
   const handleReviewNavigation = () => {
-    navigate("/approverHome");
+    navigate("/approver/home");
   };
 
   const handleInvestigation = () => {
@@ -473,7 +473,7 @@ function DataReviewApprover(props) {
         <div>
           {historicalRole === "approver" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/approverHome">
+              <Breadcrumb.Item href="/approver/home">
                 <img
                   src={Home}
                   alt="home"
@@ -483,7 +483,7 @@ function DataReviewApprover(props) {
             </Breadcrumb>
           ) : historicalRole === "superApproverUser" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUserHome">
+              <Breadcrumb.Item href="/superUser/home">
                 <img
                   src={Home}
                   alt="home"

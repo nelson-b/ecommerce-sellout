@@ -27,7 +27,7 @@ function Home(props) {
   };
 
   const partnerDataNavigation = (props) => {
-    navigate(`/partnerList?role=${props}`);
+    navigate(`/partner/list?role=${props}`);
   };
 
   const buSplitNavigation = (props) => {
@@ -39,7 +39,7 @@ function Home(props) {
   };
 
   const partnerQuarterNavigation = (props) => {
-    navigate(`/partnerPreviousReview?role=${props}`);
+    navigate(`/partner/previousReview?role=${props}`);
   };
 
   const userNavigation = () => {

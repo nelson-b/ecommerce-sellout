@@ -321,7 +321,7 @@ function PartnerRequestList(props) {
         <div>
           {screenRole === "admin" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/adminHome">
+              <Breadcrumb.Item href="/admin/home">
                 <img
                   src={Home}
                   alt="home"
@@ -335,7 +335,7 @@ function PartnerRequestList(props) {
             </Breadcrumb>
           ) : (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUserHome">
+              <Breadcrumb.Item href="/superUser/home">
                 <img
                   src={Home}
                   alt="home"

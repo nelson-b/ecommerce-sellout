@@ -20,7 +20,7 @@ import "ag-grid-enterprise";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
 import AlertModel from "../modal/alertModel";
-import { AllCalMonths } from "../constant";
+import { allCalMonths } from "../constant.js";
 import * as xlsx from "xlsx-js-style";
 
 function BusinessUnitSplit() {
@@ -358,7 +358,7 @@ function BusinessUnitSplit() {
         1
       );
 
-      const monthName = AllCalMonths[date.getMonth()];
+      const monthName = allCalMonths[date.getMonth()];
       const year = String(date.getFullYear()).slice(-2);
       const monthField = monthName + "_Amount";
 
@@ -451,7 +451,7 @@ function BusinessUnitSplit() {
           <Stack direction="horizontal" gap={4}>
             {buRole === "editor" ? (
               <Breadcrumb>
-                <Breadcrumb.Item href="/editorHome">
+                <Breadcrumb.Item href="/editor/home">
                   <img
                     src={Home}
                     alt="home"
@@ -461,7 +461,7 @@ function BusinessUnitSplit() {
               </Breadcrumb>
             ) : buRole === "approver" ? (
               <Breadcrumb>
-                <Breadcrumb.Item href="/approverHome">
+                <Breadcrumb.Item href="/approver/home">
                   <img
                     src={Home}
                     alt="home"
@@ -471,7 +471,7 @@ function BusinessUnitSplit() {
               </Breadcrumb>
             ) : buRole === "superApproverUser" ? (
               <Breadcrumb>
-                <Breadcrumb.Item href="/superUserHome">
+                <Breadcrumb.Item href="/superUser/home">
                   <img
                     src={Home}
                     alt="home"
