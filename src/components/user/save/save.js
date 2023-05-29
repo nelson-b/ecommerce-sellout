@@ -123,7 +123,7 @@ function SaveUser(props) {
       </Row>
       <Row>
         <Breadcrumb>
-          <Breadcrumb.Item href="/superUserHome">
+          <Breadcrumb.Item href="/superUser/home">
             <img
               src={Home}
               alt="home"

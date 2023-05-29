@@ -170,7 +170,7 @@ function UserList() {
         <div>
           {userRole === "admin" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/adminHome">
+              <Breadcrumb.Item href="/admin/home">
                 <img
                   src={Home}
                   alt="home"
@@ -182,9 +182,9 @@ function UserList() {
                     &nbsp;User List
                 </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "superUser" ? (
+          ) : userRole === "superApproverUser" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUserHome">
+              <Breadcrumb.Item href="/superUser/home">
                 <img
                   src={Home}
                   alt="home"

@@ -17,6 +17,7 @@ export const roles ={
   "editor": "editor",
   "approver": "approver",
   "superUser": "superUser",
+  "superApproverUser": "superApproverUser",
   "admin": "admin",
   "approver1": "approver1",
   "approver2": "approver2"

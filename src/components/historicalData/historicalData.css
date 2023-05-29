@@ -1,0 +1,36 @@
+.sell-out-historical-header {
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: 0px;
+    color: #1E1E1E;
+    text-transform: uppercase;
+}
+
+.year-container {
+    margin: 20px 0px 0px 0px;
+    display: flex;
+    justify-content: end;
+}
+
+/* .breadcrumb {
+    margin-bottom: -10px !important;
+} */
+
+.form-select:hover {
+    border: 1px solid green;
+    box-shadow: none !important;
+}
+
+.form-select:focus {
+    border: 1px solid green;
+    box-shadow: none !important;
+}
+
+.form-select:active {
+    box-shadow: none !important;
+}
+
+
+.form-select option:hover {
+    color: green !important;
+}

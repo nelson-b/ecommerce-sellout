@@ -15,10 +15,14 @@ import DataReviewApprover from "./components/approverDataReview/dataReviewApprov
 import PartnerQuarterApprover from "./components/approverDataReview/previousQuarterReview.js";
 import PartnerRequestList from "./components/partnerRequestList/partnerRequestList.js";
 import AdminOverview from "./components/home/adminOverview.js";
-import SuperUserApproverOverview from "./components/home/superUserApproverOverview.js";
+import SuperUserOverview from "./components/home/superUserOverview.js";
+import CreateUser from "./components/user/save/save.js";
 import { roles } from "./components/constant.js";
 import SaveUser from "./components/user/save/save.js";
 import UserList from "./components/user/list/list.js";
+import HistoricalData from "./components/historicalData/historicalData.js";
+import BusinessUnitSplit from "./components/businessUnitSplit/buSplit.js";
+import UserRequestComponent from "./components/user/userRequest.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,12 +39,15 @@ function App() {
           <Route path="/partner/list" element={<PartnerList />} />
           <Route path="/partner/requestList" element={<PartnerRequestList />} />
 
-          <Route path="/editor/home" exact element={<HomeComponent role={roles.editor} />} />
-          <Route path="/approver/home" exact element={<HomeComponent  role={roles.approver}/>} />
-          <Route path="/superUser/home" exact element={<HomeComponent  role={roles.superUser}/>} />
-          <Route path="/admin/home" exact element={<AdminOverview role={roles.admin} />} />
+          <Route path="/editor/home" element={<HomeComponent role={roles.editor} />} />
+          <Route path="/approver/home" element={<HomeComponent  role={roles.approver}/>} />
+          <Route path="/superUser/home" element={<HomeComponent  role={roles.superApproverUser}/>} />
+          <Route path="/admin/home" element={<AdminOverview role={roles.admin} />} />
+          <Route path="/superUser" element={<SuperUserOverview />} />
           
-          <Route path="/superUserApprover" element={<SuperUserApproverOverview />} />
+          <Route path="/historicalData" element={<HistoricalData />} />
+          <Route path="/buSplit" element={<BusinessUnitSplit />} />
+          <Route path="/userRequest" element={<UserRequestComponent />} />
           <Route path="*" element={<ErrorPageComponent />} />
           <Route path="/approverReview" element={<DataReviewApprover />} />
           <Route path="/partner/previousReview" element={<PartnerQuarterApprover />} />

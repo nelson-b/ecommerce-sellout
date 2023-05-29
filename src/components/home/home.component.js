@@ -22,26 +22,29 @@ function Home(props) {
     navigate("/dataInput");
   };
 
-  const dataReviewNavigation = () => {
-    navigate("/dataReview");
+  const dataReviewNavigation = (props) => {
+    navigate(`/dataReview?role=${props}`);
   };
 
   const partnerDataNavigation = (props) => {
-    console.log('propsRole', props.role)
-    navigate(`/partner/list?id=${props.role}`);
+    navigate(`/partner/list?role=${props}`);
   };
 
-  const approverReviewNavigation = () => {
-    navigate("/approverReview");
+  const buSplitNavigation = (props) => {
+    navigate(`/buSplit?role=${props}`);
   };
 
-  const partnerQuarterNavigation = () => {
-    navigate("/partner/previousReview");
+  const approverReviewNavigation = (props) => {
+    navigate(`/approverReview?role=${props}`);
+  };
+
+  const partnerQuarterNavigation = (props) => {
+    navigate(`/partner/previousReview?role=${props}`);
   };
 
   const userNavigation = () => {
-    navigate("/user/list?role=superUser");
-  }
+    navigate("/user/list");
+  };
 
   const editorColDefs = [
     {
@@ -73,9 +76,9 @@ function Home(props) {
       },
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
+          return { color: "#ff0000", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
         } else if (params.value > "0") {
-          return { color: "#009530", fontWeight: "bold" };
+          return { color: "#009530", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
         } else {
           return null;
         }
@@ -89,11 +92,11 @@ function Home(props) {
       cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
-          return { color: "#e47f00", fontWeight: "bold" };
+          return { color: "#e47f00", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
         } else if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
+          return { color: "#ff0000", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
         } else if (params.value == 0) {
-          return { color: "#009530", fontWeight: "bold" };
+          return { color: "#009530", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
         } else {
           return null;
         }
@@ -151,9 +154,9 @@ function Home(props) {
       },
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
+          return { color: "#ff0000", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
         } else if (params.value > "0") {
-          return { color: "#009530", fontWeight: "bold" };
+          return { color: "#009530", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
         } else {
           return null;
         }
@@ -167,11 +170,11 @@ function Home(props) {
       cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
-          return { color: "#e47f00", fontWeight: "bold" };
+          return { color: "#e47f00", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
         } else if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
+          return { color: "#ff0000", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
         } else if (params.value == 0) {
-          return { color: "#009530", fontWeight: "bold" };
+          return { color: "#009530", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
         } else {
           return null;
         }
@@ -217,6 +220,7 @@ function Home(props) {
       aggFunc: "sum",
       minWidth: 170,
       cellClass: "grid-cell-centered",
+      cellStyle: {'border-right-color': '#e2e2e2'},
     },
     {
       field: "Sellout Growth Vs Last Year",
@@ -229,9 +233,9 @@ function Home(props) {
       },
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
+          return { color: "#ff0000", fontWeight: "bold" , 'border-right-color': '#e2e2e2'};
         } else if (params.value > "0") {
-          return { color: "#009530", fontWeight: "bold" };
+          return { color: "#009530", fontWeight: "bold" , 'border-right-color': '#e2e2e2'};
         } else {
           return null;
         }
@@ -243,13 +247,14 @@ function Home(props) {
       aggFunc: "sum",
       minWidth: 170,
       cellClass: "grid-cell-centered",
+      cellStyle: {'border-right-color': '#e2e2e2'},
       cellStyle: function (params) {
         if (params.value > "0") {
-          return { color: "#e47f00", fontWeight: "bold" };
+          return { color: "#e47f00", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
         } else if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" };
+          return { color: "#ff0000", fontWeight: "bold" ,'border-right-color': '#e2e2e2'};
         } else if (params.value == 0) {
-          return { color: "#009530", fontWeight: "bold" };
+          return { color: "#009530", fontWeight: "bold" , 'border-right-color': '#e2e2e2'};
         } else {
           return null;
         }
@@ -284,6 +289,7 @@ function Home(props) {
       resizable: true,
       flex: 1,
       minWidth: 150,
+      cellStyle: {'border-right-color': '#e2e2e2'},
     };
   }, []);
 
@@ -319,10 +325,13 @@ function Home(props) {
         <Row>
           <div>
             <Row className="mb-4" style={{ float: "right" }}>
-              {props.role === "superUser" ? (
+              {props.role === "superApproverUser" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"
+                    onClick={() => {
+                      approverReviewNavigation(props.role);
+                    }}
                   >
                     Data Review
                   </Button>
@@ -330,9 +339,14 @@ function Home(props) {
               ) : (
                 ""
               )}
-              {props.role === "superUser" ? (
+              {props.role === "superApproverUser" ? (
                 <Col xs="auto">
-                  <Button className="btn-approve save-header">
+                  <Button
+                    className="btn-approve save-header"
+                    onClick={() => {
+                      partnerQuarterNavigation(props.role);
+                    }}
+                  >
                     Previous Data Approval
                   </Button>
                 </Col>
@@ -341,7 +355,7 @@ function Home(props) {
                   <Button
                     className="btn-data save-header"
                     onClick={() => {
-                      approverReviewNavigation();
+                      approverReviewNavigation(props.role);
                     }}
                   >
                     Data Review
@@ -358,18 +372,27 @@ function Home(props) {
                     Data Input
                   </Button>
                 </Col>
-              ): ("")}
+              ) : (
+                ""
+              )}
 
-              {props.role === "superUser" ? (
+              {props.role === "superApproverUser" ? (
                 <Col xs="auto">
-                  <Button className="btn-split save-header">BU Split</Button>
+                  <Button
+                    className="btn-split save-header"
+                    onClick={() => {
+                      buSplitNavigation(props.role);
+                    }}
+                  >
+                    BU Split
+                  </Button>
                 </Col>
               ) : props.role === "approver" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-approve save-header"
                     onClick={() => {
-                      partnerQuarterNavigation();
+                      partnerQuarterNavigation(props.role);
                     }}
                   >
                     Previous Data Approval
@@ -380,20 +403,22 @@ function Home(props) {
                   <Button
                     className="btn-data save-header"
                     onClick={() => {
-                      dataReviewNavigation();
+                      dataReviewNavigation(props.role);
                     }}
                   >
                     Data Review
                   </Button>
                 </Col>
-              ): ("")}
+              ) : (
+                ""
+              )}
 
-              {props.role === "superUser" ? (
+              {props.role === "superApproverUser" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"
                     onClick={() => {
-                      partnerDataNavigation(props);
+                      partnerDataNavigation(props.role);
                     }}
                   >
                     Partner Data
@@ -401,26 +426,47 @@ function Home(props) {
                 </Col>
               ) : props.role === "approver" ? (
                 <Col xs="auto">
-                  <Button className="btn-data save-header">BU Split</Button>
+                  <Button
+                    className="btn-data save-header"
+                    onClick={() => {
+                      buSplitNavigation(props.role);
+                    }}
+                  >
+                    BU Split
+                  </Button>
                 </Col>
               ) : props.role === "editor" ? (
                 <Col xs="auto">
-                  <Button className="btn-data save-header">BU Split</Button>
+                  <Button
+                    className="btn-data save-header"
+                    onClick={() => {
+                      buSplitNavigation(props.role);
+                    }}
+                  >
+                    BU Split
+                  </Button>
                 </Col>
-              ): ("")}
+              ) : (
+                ""
+              )}
 
-              {props.role === "superUser" ? (
+              {props.role === "superApproverUser" ? (
                 <Col xs="auto">
-                  <Button className="btn-split save-header"
-                  onClick={() => {userNavigation()}}
-                  >User Data</Button>
+                  <Button
+                    className="btn-split save-header"
+                    onClick={() => {
+                      userNavigation();
+                    }}
+                  >
+                    User Data
+                  </Button>
                 </Col>
               ) : props.role === "approver" ? (
                 <Col>
                   <Button
                     className="btn-data save-header"
                     onClick={() => {
-                      partnerDataNavigation(props);
+                      partnerDataNavigation(props.role);
                     }}
                   >
                     Partner Data
@@ -431,13 +477,15 @@ function Home(props) {
                   <Button
                     className="btn-data save-header"
                     onClick={() => {
-                      partnerDataNavigation(props);
+                      partnerDataNavigation(props.role);
                     }}
                   >
                     Partner Data
                   </Button>
                 </Col>
-              ): ("")}
+              ) : (
+                ""
+              )}
             </Row>
           </div>
         </Row>
@@ -453,14 +501,14 @@ function Home(props) {
             <AgGridReact
               ref={gridRef}
               rowData={
-                props.role === "superUser"
+                props.role === "superApproverUser"
                   ? superOverview
                   : props.role === "approver"
                   ? approveOverview
                   : editorOverview
               }
               columnDefs={
-                props.role === "superUser"
+                props.role === "superApproverUser"
                   ? superColColDefs
                   : props.role === "approver"
                   ? approverColDefs

@@ -140,8 +140,17 @@ function PartnerComponent(props) {
             />
           </Breadcrumb.Item>
           )}
-          {userRole === "superUser" && (
+          {userRole === "superApproverUser" && (
           <Breadcrumb.Item href="/superUser/home">
+            <img
+              src={Home}
+              alt="home"
+              style={{ height: "20px", width: "80px", cursor: "pointer" }}
+            />
+          </Breadcrumb.Item>
+          )}
+          {userRole === "superUser" && (
+          <Breadcrumb.Item href="/superUser">
             <img
               src={Home}
               alt="home"
