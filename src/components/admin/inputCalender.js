@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Button, Col, Form, Row, Container, Breadcrumb, Card, Tooltip, OverlayTrigger, Table,
 } from "react-bootstrap";
@@ -36,7 +36,7 @@ function InputCalendar(){
     
     const currentQuater = getCurrentQuarter();
     
-    const getQuarterMonths = (quarter) => {
+    const getQuarterMonths = useCallback((quarter) => {
         const quarters = {
           Q1: ["Jan", "Feb", "Mar"],
           Q2: ["Apr", "May", "Jun"],
@@ -44,30 +44,33 @@ function InputCalendar(){
           Q4: ["Oct", "Nov", "Dec"],
         };
         return quarters[quarter] || [];
-    };
+    },[]);
     
     const [quaterMonths, setQuaterMonths] = useState(getQuarterMonths(currentQuater));
     
-    const [nextQuarter, setNextQuarter] = useState([2,3,4]);
+    const [nextQuarter, setNextQuarter] = useState([]);
 
-    const [prevQuarter, setPrevQuarter] = useState([{quarter: 1, openingDate: '11/01/2023', closingDate: '20/01/2023'}]);
-    // useCallback(() => {
-    //     let retVal = getQuarterMonths(currentQuater);
-    //     console.log('quaterMonths', quaterMonths);
-    //     setQuaterMonths(retVal);
-    // },[]);
+    const [prevQuarter, setPrevQuarter] = useState([{quarter: 1, openingDate: '11/01/2023', closingDate: '20/01/2023'}]); //fetched form API
+
+    useEffect(()=>{
+        getNextQuarter();
+    },[]);
 
     //retr prev quarter
-    const getPrevQuarter = () => {
-        let getNum = getCurrentQuarter().slice(1, 1);
-        let retVal = getNum == 1 ? 4 : (getNum - 1);
-        console.log('Get Prev Quarter Months =>', retVal);
-        return retVal;
-    };
+    const getNextQuarter = useCallback(() => {
+        let currQuatNum = currentQuater.slice(1, 2);
+        console.log('currQuatNum', currQuatNum);
+        let nextQuatrs = [];
+        //logic
+        for(let i = currQuatNum; i <= 4; i++)
+        {
+            nextQuatrs = nextQuatrs.concat(i);
+        }
+        console.log('nextQuatrs', nextQuatrs);
+        setNextQuarter(nextQuatrs || []);
+    },[]);
 
-    const prevQuarterMonths = useCallback(() => {getQuarterMonths(getPrevQuarter())},[]);
-    console.log('prevQuarterMonths', prevQuarterMonths);
-
+    //fetched form API
     const [prevQuaterMonthsData, setPrevQuaterMonthsData] = useState([
         {month: 'January', openingDate: '11/01/2023', closingDate: '20/01/2023'},
         {month: 'February', openingDate: '11/02/2023', closingDate: '20/02/2023'},
