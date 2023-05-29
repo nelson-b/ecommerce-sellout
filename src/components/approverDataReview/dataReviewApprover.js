@@ -112,6 +112,7 @@ function DataReviewApprover(props) {
     const quarter = Math.ceil(month / 3);
     return `Q${quarter}`;
   };
+
   const currentQuater = getCurrentQuarter();
 
   const getQuarterMonths = (quarter) => {
@@ -123,6 +124,7 @@ function DataReviewApprover(props) {
     };
     return quarters[quarter] || [];
   };
+  
   const quaterMonths = getQuarterMonths(currentQuater);
 
   const currentDate = new Date();
