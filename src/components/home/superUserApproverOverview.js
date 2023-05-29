@@ -9,7 +9,7 @@ function SuperUserApproverOverview(props) {
   const navigate = useNavigate();
 
   const partnerDataNavigation = () => {
-    navigate(`/partner/list?id=${roles.superUser}`);
+    navigate(`/partner/list?role=${roles.superUser}`);
   };
 
   return (

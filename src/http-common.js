@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "http://localhost:8000/sellout",
+  baseURL: "https://eoa01d6g1c.execute-api.eu-west-1.amazonaws.com",
   headers: {
     "Content-type": "application/json"
   }

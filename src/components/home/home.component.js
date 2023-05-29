@@ -28,7 +28,7 @@ function Home(props) {
 
   const partnerDataNavigation = (props) => {
     console.log('propsRole', props.role)
-    navigate(`/partner/list?id=${props.role}`);
+    navigate(`/partner/list?role=${props.role}`);
   };
 
   const approverReviewNavigation = () => {

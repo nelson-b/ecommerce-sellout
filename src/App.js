@@ -19,6 +19,7 @@ import SuperUserApproverOverview from "./components/home/superUserApproverOvervi
 import { roles } from "./components/constant.js";
 import SaveUser from "./components/user/save/save.js";
 import UserList from "./components/user/list/list.js";
+import InputCalender from "./components/admin/inputCalender.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +39,9 @@ function App() {
           <Route path="/editor/home" exact element={<HomeComponent role={roles.editor} />} />
           <Route path="/approver/home" exact element={<HomeComponent  role={roles.approver}/>} />
           <Route path="/superUser/home" exact element={<HomeComponent  role={roles.superUser}/>} />
+          
           <Route path="/admin/home" exact element={<AdminOverview role={roles.admin} />} />
+          <Route path="/admin/inputCalendar" exact element={<InputCalender />} />
           
           <Route path="/superUserApprover" element={<SuperUserApproverOverview />} />
           <Route path="*" element={<ErrorPageComponent />} />

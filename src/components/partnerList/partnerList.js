@@ -22,7 +22,7 @@ function PartnerList(props) {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const location = useLocation();
-  const screenRole = new URLSearchParams(location.search).get("id");
+  const screenRole = new URLSearchParams(location.search).get("role");
 
   const handlePartnerEdit = (params) => {
     navigate(`/partner/update?id=${params.data.partnerID}`);

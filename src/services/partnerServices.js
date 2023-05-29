@@ -6,7 +6,7 @@ class PartnerService {
     }
 
     getAll() {
-        return http.get("/getpartnerlist/");
+        return http.get("/default/SamFunction/");
     }
 }
 
