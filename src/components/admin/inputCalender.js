@@ -6,6 +6,7 @@ import MyMenu from "../menu/menu.component.js";
 import Home from "../../images/home-icon.png";
 import { useForm } from "react-hook-form";
 import '../admin/inputCalendar.css'
+ import { quarters } from "../constant.js";
 
 function InputCalendar(){
 
@@ -37,12 +38,6 @@ function InputCalendar(){
     const currentQuater = getCurrentQuarter();
     
     const getQuarterMonths = useCallback((quarter) => {
-        const quarters = {
-          Q1: ["Jan", "Feb", "Mar"],
-          Q2: ["Apr", "May", "Jun"],
-          Q3: ["Jul", "Aug", "Sep"],
-          Q4: ["Oct", "Nov", "Dec"],
-        };
         return quarters[quarter] || [];
     },[]);
     

@@ -21,3 +21,10 @@ export const roles ={
   "approver1": "approver1",
   "approver2": "approver2"
 };
+
+export const quarters = {
+  Q1: ["Jan", "Feb", "Mar"],
+  Q2: ["Apr", "May", "Jun"],
+  Q3: ["Jul", "Aug", "Sep"],
+  Q4: ["Oct", "Nov", "Dec"],
+};
