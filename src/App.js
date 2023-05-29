@@ -47,7 +47,6 @@ function App() {
           
           <Route path="/historicalData" element={<HistoricalData />} />
           <Route path="/buSplit" element={<BusinessUnitSplit />} />
-          <Route path="/userRequest" element={<UserRequestComponent />} />
           <Route path="*" element={<ErrorPageComponent />} />
           <Route path="/approverReview" element={<DataReviewApprover />} />
           <Route path="/partner/previousReview" element={<PartnerQuarterApprover />} />
@@ -62,6 +61,7 @@ function App() {
           <Route path="/user/create" exact element={ <SaveUser module={'Create'} /> } />
           <Route path="/user/update" exact element={ <SaveUser module={'Update'} /> } />
           <Route path="/user/list" exact element={ <UserList /> } />
+          <Route path="/user/Request" element={<UserRequestComponent />} />
           <Route path="/" element={ <LoginComponent/> } />
         </Routes>
       </Router>
