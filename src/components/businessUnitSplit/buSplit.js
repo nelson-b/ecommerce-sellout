@@ -29,8 +29,9 @@ function BusinessUnitSplit() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [fileData, setFileData] = useState([]);
-  const [fileError, setFileError] = useState([]);
   const [showShouldUpdModal, setShowShouldUpdModal] = useState(false);
+  const [errorBtnDisable, setErrorBtnDisable] = useState(false);
+  const [errorData, setErrorData] = useState([]);
 
   const {
     register,
@@ -52,10 +53,31 @@ function BusinessUnitSplit() {
     window.location.reload();
   };
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    setRowData(rowData);
-  };
+  const handleSave = useCallback(() => {
+    let errorLog = [];
+    //iterate in the grid
+    gridRef.current.api.forEachNode((rowNode, index) => {
+      console.log('Grid row - ',index);
+      console.log('Rownode', rowNode.data);
+      
+      if(rowNode.data.Total != 100){
+        errorLog = errorLog.concat('Total not 100% at partner id: '+ rowNode.data.id);
+      };
+    });
+    
+    console.log('errorLog', errorLog);
+    setErrorData(errorLog);
+
+    console.log('errorData', errorData);
+
+    if(errorData.length>0) {
+      setShowErrorModal(true);
+    }
+    else{
+      setShowErrorModal(false);
+    }
+    
+  },[]);
 
   const gridRef = useRef(null);
 
@@ -66,12 +88,12 @@ function BusinessUnitSplit() {
       Partner_Account_Name: "Adalbert Zajadacz (Part of DEHA) DEU",
       Model: "E1 - Dist",
       quarter: "Q1 2023",
-      sp: 25,
-      h_d: 15,
-      pp: 10,
-      de: 27,
-      ia: 23,
-      total: 100,
+      SP: 25,
+      H_and_D: 15,
+      PP: 10,
+      DE: 27,
+      IA: 23,
+      Total: 0,
     },
     {
       id: "AFB",
@@ -79,12 +101,12 @@ function BusinessUnitSplit() {
       Partner_Account_Name: "AFB eSolutions DEU",
       Model: "E1 - Dist",
       quarter: "Q1 2023",
-      sp: 10,
-      h_d: 20,
-      pp: 30,
-      de: 20,
-      ia: 20,
-      total: 100,
+      SP: 10,
+      H_and_D: 20,
+      PP: 30,
+      DE: 20,
+      IA: 20,
+      Total: 0,
     },
     {
       id: "Ahlsell",
@@ -92,12 +114,12 @@ function BusinessUnitSplit() {
       Partner_Account_Name: "Ahlsell ELKO NOR",
       Model: "E1 - Dist",
       quarter: "Q1 2023",
-      sp: 15,
-      h_d: 30,
-      pp: 10,
-      de: 30,
-      ia: 15,
-      total: 100,
+      SP: 15,
+      H_and_D: 30,
+      PP: 10,
+      DE: 30,
+      IA: 15,
+      Total: 0,
     },
     {
       id: "Ahlsell",
@@ -105,14 +127,27 @@ function BusinessUnitSplit() {
       Partner_Account_Name: "Ahlsell ELKO SWE",
       Model: "E2 - Dist",
       quarter: "Q2 2023",
-      sp: 25,
-      h_d: 25,
-      pp: 25,
-      de: 25,
-      ia: 25,
-      total: 100,
+      SP: 25,
+      H_and_D: 25,
+      PP: 25,
+      DE: 25,
+      IA: 0,
+      Total: 0,
     },
   ];
+
+  const sumTotal = (params, index) => {
+
+    let totalBu = (
+      Number(Math.round(params.data.DE)) + 
+      Number(Math.round(params.data.H_and_D)) + 
+      Number(Math.round(params.data.IA)) + 
+      Number(Math.round(params.data.PP)) + 
+      Number(Math.round(params.data.SP)));
+
+      params.data.Total = Number(Math.round(totalBu));
+      return totalBu;
+  }
 
   const columnDefs = [
     {
@@ -163,69 +198,72 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "SP",
-      field: "sp",
+      field: "SP",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
       cellStyle: { "border-color": "#e2e2e2" },
       valueFormatter: (params) => {
-        return params.value + "%";
+        return Math.round(params.value) + "%";
       },
     },
     {
       headerName: "H&D",
-      field: "h_d",
+      field: "H_and_D",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
       cellStyle: { "border-color": "#e2e2e2" },
       valueFormatter: (params) => {
-        return params.value + "%";
+        return Math.round(params.value) + "%";
       },
     },
     {
       headerName: "PP",
-      field: "pp",
+      field: "PP",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
       cellStyle: { "border-color": "#e2e2e2" },
       valueFormatter: (params) => {
-        return params.value + "%";
+        return Math.round(params.value) + "%";
       },
     },
     {
       headerName: "DE",
-      field: "de",
+      field: "DE",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
       cellStyle: { "border-color": "#e2e2e2" },
       valueFormatter: (params) => {
-        return params.value + "%";
+        return Math.round(params.value) + "%";
       },
     },
     {
       headerName: "IA",
-      field: "ia",
+      field: "IA",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
       cellStyle: { "border-color": "#e2e2e2" },
       valueFormatter: (params) => {
-        return params.value + "%";
-      },
+        return Math.round(params.value) + "%";
+      }
     },
     {
       headerName: "Total",
-      field: "total",
+      field: "Total",
       minWidth: 80,
       editable: false,
       suppressMenu: true,
       cellStyle: { "border-color": "#e2e2e2" },
       valueFormatter: (params) => {
-        return params.value + "%";
+        return Math.round(params.value) + "%";
       },
+      valueGetter: (params) => {
+        return sumTotal(params); 
+      }
     },
   ];
 
@@ -263,7 +301,7 @@ function BusinessUnitSplit() {
     variant: "danger",
     header:
       "There are below errors while processing. Please recitify and retry",
-    content: fileError,
+    content: errorData,
   };
 
   const shouldUpdateMsg = {
@@ -324,15 +362,13 @@ function BusinessUnitSplit() {
           console.log("Reading excel: ", json);
 
           setFileData(json);
-          // fileData.forEach((i) => {
-          // });
 
           if (errorJson.length > 0) {
-            setFileError(errorJson);
+            setErrorData(errorJson);
             setShowErrorModal(true);
             setShowSuccessModal(false);
           } else {
-            setFileError([]);
+            setErrorData([]);
             setShowErrorModal(false);
             setShowSuccessModal(true);
             setSelectedFile(null);
@@ -505,7 +541,6 @@ function BusinessUnitSplit() {
                       <Form.Control
                         type="file"
                         accept=".xlsx,.xls"
-                        // value={selectedFile}
                         onClick={handleClick}
                         onChange={handleChange}
                         {...register("file", {
@@ -590,6 +625,7 @@ function BusinessUnitSplit() {
                 </Col>
                 <Col xs="auto">
                   <Button
+                    disabled = {errorBtnDisable}
                     className="btn-upload save-header"
                     onClick={() => {
                       handleSave();
