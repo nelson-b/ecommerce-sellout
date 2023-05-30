@@ -6,7 +6,6 @@ import PartnerComponent from "./components/partnerGroup/partner.component.js";
 import HomeComponent from "./components/home/home.component.js";
 import DataInputComponent from "./components/editorDataInput/parentInput.component.js";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import DataReview from "./components/editorDataReview/dataReview.component.js";
 import PartnerList from "./components/partnerList/partnerList.js";

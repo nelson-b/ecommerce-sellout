@@ -26,11 +26,6 @@ function DataInputComponent() {
     window.location.reload();
   };
 
-  // const handleSave = (e) => {
-  //   let data = gridRef.current.api;
-  //   console.log('handleSave', data);
-  // };
-
   const onCellClicked = (params) => {
     setGridValChg(true);    
     console.log('isGridValChg', isGridValChg);
@@ -80,9 +75,6 @@ function DataInputComponent() {
   const postData = () =>{
     console.log('api call to save manual data');
     setShowShouldUpdModal(false);
-    //iterate in the grid
-    // gridRef.current.api.forEachNode((rowNode, index) => {
-    // });
     setShowSuccessModal(true);
   }
   

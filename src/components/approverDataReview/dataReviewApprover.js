@@ -229,7 +229,7 @@ function DataReviewApprover(props) {
     let YTD = YTDSellOutValArr.reduce(function (prev, current) {
       return prev + +current;
     }, 0);
-
+    
     if (params.data) {
       params.data.YTD = YTD != undefined ? YTD : 0;
     }
