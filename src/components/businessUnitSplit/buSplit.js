@@ -66,15 +66,16 @@ function BusinessUnitSplit() {
     });
     
     console.log('errorLog', errorLog);
-    setErrorData(errorLog);
-
-    console.log('errorData', errorData);
-
-    if(errorData.length>0) {
+    
+    if(errorLog.length > 0) {
+      setErrorData(errorLog);
       setShowErrorModal(true);
+      setShowSuccessModal(false);
     }
     else{
+      setErrorData([]);
       setShowErrorModal(false);
+      setShowSuccessModal(true);
     }
     
   },[]);
@@ -293,7 +294,7 @@ function BusinessUnitSplit() {
     headerLabel: "Success....",
     variant: "success",
     header: "Data has been saved successfully!!",
-    content: ["Navigating you to the Sell out data review page....."],
+    content: [],
   };
 
   const errormsg = {
