@@ -95,9 +95,9 @@ function PartnerComponent(props) {
       })
       .catch((e) => {
         setShowSuccessModal(false);
-        setErrorRet(['There is error in create']);
+        setErrorRet([e.message]);
         setShowErrorModal(true);
-        console.log('Error', e);
+        console.log('Error', e.message);
       });
   };
 
