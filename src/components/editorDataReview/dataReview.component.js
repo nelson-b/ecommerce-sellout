@@ -673,6 +673,7 @@ function DataReviewComponent({}) {
             getRowStyle={getRowStyle}
             excelStyles={excelStyles}
             suppressMenuHide={true}
+            groupDefaultExpanded={1}
           ></AgGridReact>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>

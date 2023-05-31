@@ -187,7 +187,7 @@ function HistoricalData({}) {
     {
       headerName: "Editor Comments",
       field: "editorComments",
-      editable: true,
+      editable: false,
       singleClickEdit: true,
       minWidth: 200,
       aggFunc: "sum",

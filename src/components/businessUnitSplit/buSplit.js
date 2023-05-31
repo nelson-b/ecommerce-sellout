@@ -61,62 +61,62 @@ function BusinessUnitSplit() {
 
   const buSplitData = [
     {
-      id: "Adalbert",
+      ID: "Adalbert",
       Country: "France",
       Partner_Account_Name: "Adalbert Zajadacz (Part of DEHA) DEU",
       Model: "E1 - Dist",
-      quarter: "Q1 2023",
-      sp: 25,
-      h_d: 15,
-      pp: 10,
-      de: 27,
-      ia: 23,
-      total: 100,
+      Quarter: "Q1 2023",
+      SP: 25,
+      "H&D": 15,
+      PP: 10,
+      DE: 27,
+      IA: 23,
+      Total: 100,
     },
     {
-      id: "AFB",
+      ID: "AFB",
       Country: "Caneda",
       Partner_Account_Name: "AFB eSolutions DEU",
       Model: "E1 - Dist",
-      quarter: "Q1 2023",
-      sp: 10,
-      h_d: 20,
-      pp: 30,
-      de: 20,
-      ia: 20,
-      total: 100,
+      Quarter: "Q1 2023",
+      SP: 10,
+      "H&D": 20,
+      PP: 30,
+      DE: 20,
+      IA: 20,
+      Total: 100,
     },
     {
-      id: "Ahlsell",
+      ID: "Ahlsell",
       Country: "Norway",
       Partner_Account_Name: "Ahlsell ELKO NOR",
       Model: "E1 - Dist",
-      quarter: "Q1 2023",
-      sp: 15,
-      h_d: 30,
-      pp: 10,
-      de: 30,
-      ia: 15,
-      total: 100,
+      Quarter: "Q1 2023",
+      SP: 15,
+      "H&D": 30,
+      PP: 10,
+      DE: 30,
+      IA: 15,
+      Total: 100,
     },
     {
-      id: "Ahlsell",
+      ID: "Ahlsell",
       Country: "Finland",
       Partner_Account_Name: "Ahlsell ELKO SWE",
       Model: "E2 - Dist",
-      quarter: "Q2 2023",
-      sp: 25,
-      h_d: 25,
-      pp: 25,
-      de: 25,
-      ia: 25,
-      total: 100,
+      Quarter: "Q2 2023",
+      SP: 25,
+      "H&D": 25,
+      PP: 25,
+      DE: 25,
+      IA: 25,
+      Total: 100,
     },
   ];
 
   const columnDefs = [
     {
-      field: "id",
+      field: "ID",
       hide: true,
     },
     {
@@ -153,7 +153,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "Quarter",
-      field: "quarter",
+      field: "Quarter",
       sortable: true,
       filter: true,
       pinned: "left",
@@ -163,7 +163,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "SP",
-      field: "sp",
+      field: "SP",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
@@ -174,7 +174,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "H&D",
-      field: "h_d",
+      field: "H&D",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
@@ -185,7 +185,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "PP",
-      field: "pp",
+      field: "PP",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
@@ -196,7 +196,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "DE",
-      field: "de",
+      field: "DE",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
@@ -207,7 +207,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "IA",
-      field: "ia",
+      field: "IA",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
@@ -218,7 +218,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "Total",
-      field: "total",
+      field: "Total",
       minWidth: 80,
       editable: false,
       suppressMenu: true,
@@ -385,14 +385,9 @@ function BusinessUnitSplit() {
   };
 
   const buSplitExcel = async (exportedData) => {
-    const tempData = exportedData.map((e) => {
-      const { id, ...rest } = e;
-      return rest;
-    });
-
     const currentDate = new Date();
     const workbook = xlsx.utils.book_new();
-    const sheet1 = xlsx.utils.json_to_sheet(tempData);
+    const sheet1 = xlsx.utils.json_to_sheet(exportedData);
     xlsx.utils.book_append_sheet(workbook, sheet1, "Sell out BuSplit Data");
 
     workbook.Sheets["Sell out BuSplit Data"]["A1"].s = {
@@ -432,6 +427,10 @@ function BusinessUnitSplit() {
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out BuSplit Data"]["J1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
+    };
+    workbook.Sheets["Sell out BuSplit Data"]["K1"].s = {
       fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };
