@@ -84,7 +84,7 @@ function PartnerComponent(props) {
     data.created_by = 'test123';
     data.modified_by = 'test123';
     data.status = 'approved';
-    data.partner_account_name = data.platform_name + data.country_code;
+    data.partner_account_name = data.platform_name + '_' + data.reseller_name + '_' + data.se_entity;
 
     //create api
     props.CreatePartnerData(data)
@@ -95,9 +95,9 @@ function PartnerComponent(props) {
       })
       .catch((e) => {
         setShowSuccessModal(false);
-        setErrorRet(e);
+        setErrorRet([e.message]);
         setShowErrorModal(true);
-        console.log(e);
+        console.log('Error', e.message);
       });
   };
 
@@ -226,7 +226,7 @@ function PartnerComponent(props) {
                         })}
                       >
                         <option value="">N/A</option>
-                        <option value={"IR_EU"}>Ireland</option>
+                        <option value={"USA"}>USA</option>
                       </Form.Select>
                       {errors.country_code && (
                         <Form.Text className="text-danger">
@@ -358,6 +358,7 @@ function PartnerComponent(props) {
                         id="activation_date"
                         name="activation_date"
                         disabled={props.module === 'Update'}
+                        max={new Date().toISOString().split('T')[0]}
                         type="date"
                         {...register("activation_date", {
                           required: "Activation Date is required",
@@ -441,7 +442,7 @@ function PartnerComponent(props) {
                           required: "URL Address of Partner is required",
                           pattern: {
                             value:
-                              /^((https?|ftp|smtp|http):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/i,
+                              /^((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?)*$/i,
                             message: "URL format incorrect",
                           },
                         })}

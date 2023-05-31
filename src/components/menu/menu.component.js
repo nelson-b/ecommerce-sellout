@@ -1,16 +1,5 @@
-import React, { useState } from "react";
-import {
-  Nav,
-  Navbar,
-  NavDropdown,
-  Container,
-  Image,
-  Badge,
-  Button,
-  Toast,
-  ToastContainer,
-  Row,
-} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Nav, Navbar, NavDropdown, Container, Image, Badge, Button, Toast, ToastContainer, Row, ListGroup } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "./../../images/schneider-electric-logo.svg";
 import loginUserPic from "./../../images/loginUser.jpg";
@@ -21,12 +10,47 @@ import "./menu.component.css";
 function MyMenu(props) {
   const [username, setLoggedInUsrName] = useState("Jean-Pascal");
   const [showNotifiation, setshowNotification] = useState(false);
-  const [notificationCount, setnotificationCount] = useState(1); //currently set with test values
+  const [notificationCount, setnotificationCount] = useState(null); //currently set with test values
   const [position, setPosition] = useState("top-start");
+  const [notificationMessage, setNotificationMessage] = useState([]);
+
+  useEffect(()=>{
+    //notification api call
+    setNotificationMessage([
+      {
+        Id: '1',
+        Title: 'Partner request creation has been approved',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '2',
+        Title: 'Data Input Window closing reminder - 6 days Remaining',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '3',
+        Title: 'Partner data update request sent successfully.',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '4',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+    ]);
+  },[]);
+
+  useEffect(()=>{
+    console.log('notificationMessage',notificationMessage.length);
+    setnotificationCount(notificationMessage.length);
+  },[notificationMessage]);
 
   const location = useLocation();
-  const notificationMessage = location?.state?.message;
-  console.log("notificationMessage", notificationMessage);
+  // const notificationMessage = location?.state?.message;
 
   //set current notification count
   const setNotification = (value) => setnotificationCount(value);
@@ -53,8 +77,8 @@ function MyMenu(props) {
           <Nav>
             {props.role != "admin" ? (
               <Nav.Link>
-                <Button size="lg" variant="light">
-                  <AiFillBell onClick={toggleShowNotification} />
+                <Button size="lg" variant="light" onClick={toggleShowNotification}>
+                  <AiFillBell />
                   <Badge pill bg="danger">
                     {notificationCount}
                   </Badge>
@@ -71,17 +95,15 @@ function MyMenu(props) {
                         alt=""
                       />
                       <strong className="me-auto">Notifications</strong>
-                      <small>11 mins ago</small>
+                      {/* <small>11 mins ago</small> */}
                     </Toast.Header>
-                    <Toast.Body>You have got one inbox message!!</Toast.Body>
-                    {notificationMessage > 0 ? (
-                      <Toast.Body>
-                        {" "}
-                        {`${notificationMessage} Partner Accounts Sent for Investigation`}
-                      </Toast.Body>
-                    ) : (
-                      ""
-                    )}
+                    <Toast.Body>
+                      <ListGroup>
+                        {notificationMessage.map((row) =>
+                        <ListGroup.Item>{row.Title}</ListGroup.Item>
+                        )}                        
+                      </ListGroup>
+                    </Toast.Body>
                   </Toast>
                 </ToastContainer>
               </Nav.Link>
