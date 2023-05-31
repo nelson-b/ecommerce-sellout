@@ -71,10 +71,12 @@ function DataReviewApprover(props) {
     {
       headerName: "Partner Account Name",
       field: "Partner",
+      rowGroup: true,
+      hide: true,
       filter: true,
       pinned: "left",
-      width: 170,
       suppressSizeToFit: true,
+      editable: false,
     },
     {
       headerName: "Currency of Reporting",

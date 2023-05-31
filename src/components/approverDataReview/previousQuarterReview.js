@@ -53,7 +53,7 @@ function PartnerQuarterApprover({ props }) {
     };
     return (
       <div>
-        {props.data.editorComments.length ? (
+        {/* {props.data.editorComments.length ? ( */}
           <div>
             {props.data.editorComments}
             <Button
@@ -61,7 +61,7 @@ function PartnerQuarterApprover({ props }) {
                 height: 30,
                 width: 100,
                 lineHeight: 0.5,
-                margin: "0px 0px 5px 100px",
+                margin: "0px 0px 5px 50px",
               }}
               onClick={invokeReject}
               className="cancel-header btn-reject"
@@ -81,9 +81,17 @@ function PartnerQuarterApprover({ props }) {
               Validate
             </Button>
           </div>
-        ) : (
+        {/* ) : (
           <div></div>
-        )}
+        )} */}
+      </div>
+    );
+  };
+
+  const CustomHeader = ({ displayName }) => {
+    return (
+      <div>
+        <span style={{ fontSize: '13px' }}>{displayName} (in K&euro;)</span>
       </div>
     );
   };
@@ -126,17 +134,21 @@ function PartnerQuarterApprover({ props }) {
       editable: false,
     },
     {
-      headerName: "Sellout value Approved (in KE)",
+      headerName: "Sellout value Approved",
+      headerComponentFramework: CustomHeader,
+      headerComponentParams: { displayName: 'Sellout value Approved' },
       field: "SelloutValue",
       editable: false,
-      minWidth: 140,
+      minWidth: 150,
       wrapHeaderText: true,
       sortable: true,
       suppressMenu: true,
       cellStyle: {'border-color': '#e2e2e2'},
     },
     {
-      headerName: "New value (in KE)",
+      headerName: "New value",
+      headerComponentFramework: CustomHeader,
+      headerComponentParams: { displayName: 'New value' },
       field: "newValue",
       editable: false,
       minWidth: 100,
@@ -178,7 +190,9 @@ function PartnerQuarterApprover({ props }) {
     {
       headerName: "Editors Comments",
       field: "editorComments",
-      minWidth: 650,
+      minWidth: 600,
+      maxWidth: 600,
+      flex: 5,
       editable: false,
       wrapHeaderText: true,
       sortable: true,

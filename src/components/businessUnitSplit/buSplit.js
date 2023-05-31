@@ -84,7 +84,7 @@ function BusinessUnitSplit() {
 
   const buSplitData = [
     {
-      id: "Adalbert",
+      ID: "Adalbert",
       Country: "France",
       Partner_Account_Name: "Adalbert Zajadacz (Part of DEHA) DEU",
       Model: "E1 - Dist",
@@ -97,7 +97,7 @@ function BusinessUnitSplit() {
       Total: 0,
     },
     {
-      id: "AFB",
+      ID: "AFB",
       Country: "Caneda",
       Partner_Account_Name: "AFB eSolutions DEU",
       Model: "E1 - Dist",
@@ -110,7 +110,7 @@ function BusinessUnitSplit() {
       Total: 0,
     },
     {
-      id: "Ahlsell",
+      ID: "Ahlsell",
       Country: "Norway",
       Partner_Account_Name: "Ahlsell ELKO NOR",
       Model: "E1 - Dist",
@@ -123,7 +123,7 @@ function BusinessUnitSplit() {
       Total: 0,
     },
     {
-      id: "Ahlsell",
+      ID: "Ahlsell",
       Country: "Finland",
       Partner_Account_Name: "Ahlsell ELKO SWE",
       Model: "E2 - Dist",
@@ -152,7 +152,7 @@ function BusinessUnitSplit() {
 
   const columnDefs = [
     {
-      field: "id",
+      field: "ID",
       hide: true,
     },
     {
@@ -189,7 +189,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "Quarter",
-      field: "quarter",
+      field: "Quarter",
       sortable: true,
       filter: true,
       pinned: "left",
@@ -422,14 +422,9 @@ function BusinessUnitSplit() {
   };
 
   const buSplitExcel = async (exportedData) => {
-    const tempData = exportedData.map((e) => {
-      const { id, ...rest } = e;
-      return rest;
-    });
-
     const currentDate = new Date();
     const workbook = xlsx.utils.book_new();
-    const sheet1 = xlsx.utils.json_to_sheet(tempData);
+    const sheet1 = xlsx.utils.json_to_sheet(exportedData);
     xlsx.utils.book_append_sheet(workbook, sheet1, "Sell out BuSplit Data");
 
     workbook.Sheets["Sell out BuSplit Data"]["A1"].s = {
@@ -469,6 +464,10 @@ function BusinessUnitSplit() {
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out BuSplit Data"]["J1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
+    };
+    workbook.Sheets["Sell out BuSplit Data"]["K1"].s = {
       fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };

@@ -21,7 +21,7 @@
         "changeValue": 500,
         "change_per": 30,
         "userChange": "",
-        "editorComments": ""
+        "editorComments": "Received Updated Values From Distributor"
     },
     {
         "Zone": "DACH",
@@ -33,7 +33,7 @@
         "changeValue": 600,
         "change_per": 22,
         "userChange": "",
-        "editorComments": ""
+        "editorComments": "Received Updated Values From Distributor"
     },
     {
         "Zone": "DACH",
@@ -45,7 +45,7 @@
         "changeValue": 260,
         "change_per": 12,
         "userChange": "",
-        "editorComments": ""
+        "editorComments": "Received Updated Values From Distributor"
     },
     {
         "Zone": "DACH",
@@ -57,7 +57,7 @@
         "changeValue": 200,
         "change_per": 30,
         "userChange": "",
-        "editorComments": ""
+        "editorComments": "Received Updated Values From Distributor"
     },
     {
         "Zone": "DACH",
@@ -69,7 +69,7 @@
         "changeValue": 200,
         "change_per": 10,
         "userChange": "",
-        "editorComments": ""
+        "editorComments": "Received Updated Values From Distributor"
     },
     {
         "Zone": "Nordics",
@@ -81,6 +81,6 @@
         "changeValue": 809,
         "change_per": 20,
         "userChange": "",
-        "editorComments": ""
+        "editorComments": "Received Updated Values From Distributor"
     }
 ]
