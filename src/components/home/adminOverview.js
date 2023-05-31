@@ -344,6 +344,10 @@ function AdminOverview(props) {
     navigate(`/user/list?role=${props}`);
   };
 
+  const navigateInpCal = () => {
+    navigate('/admin/inputCalendar');
+  }
+
   return (
     <>
       <Container fluid>
@@ -374,7 +378,8 @@ function AdminOverview(props) {
                 </Button>
               </Col>
               <Col xs="auto">
-                <Button className="btn-data save-header">Input Calendar</Button>
+                <Button className="btn-data save-header"
+                onClick={navigateInpCal}>Input Calendar</Button>
               </Col>
             </Row>
           </div>

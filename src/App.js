@@ -6,7 +6,6 @@ import PartnerComponent from "./components/partnerGroup/partner.component.js";
 import HomeComponent from "./components/home/home.component.js";
 import DataInputComponent from "./components/editorDataInput/parentInput.component.js";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import DataReview from "./components/editorDataReview/dataReview.component.js";
 import PartnerList from "./components/partnerList/partnerList.js";
@@ -23,6 +22,7 @@ import UserList from "./components/user/list/list.js";
 import HistoricalData from "./components/historicalData/historicalData.js";
 import BusinessUnitSplit from "./components/businessUnitSplit/buSplit.js";
 import UserRequestComponent from "./components/user/userRequest.js";
+import InputCalender from "./components/admin/inputCalender.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +42,9 @@ function App() {
           <Route path="/editor/home" element={<HomeComponent role={roles.editor} />} />
           <Route path="/approver/home" element={<HomeComponent  role={roles.approver}/>} />
           <Route path="/superUser/home" element={<HomeComponent  role={roles.superApproverUser}/>} />
+          
           <Route path="/admin/home" element={<AdminOverview role={roles.admin} />} />
+          <Route path="/admin/inputCalendar" exact element={<InputCalender />} />
           <Route path="/superUser" element={<SuperUserOverview />} />
           
           <Route path="/historicalData" element={<HistoricalData />} />

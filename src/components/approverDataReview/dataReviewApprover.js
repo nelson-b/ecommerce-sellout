@@ -114,6 +114,7 @@ function DataReviewApprover(props) {
     const quarter = Math.ceil(month / 3);
     return `Q${quarter}`;
   };
+
   const currentQuater = getCurrentQuarter();
 
   const getQuarterMonths = (quarter) => {
@@ -125,6 +126,7 @@ function DataReviewApprover(props) {
     };
     return quarters[quarter] || [];
   };
+  
   const quaterMonths = getQuarterMonths(currentQuater);
 
   const currentDate = new Date();
@@ -229,7 +231,7 @@ function DataReviewApprover(props) {
     let YTD = YTDSellOutValArr.reduce(function (prev, current) {
       return prev + +current;
     }, 0);
-
+    
     if (params.data) {
       params.data.YTD = YTD != undefined ? YTD : 0;
     }
