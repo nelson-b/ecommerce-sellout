@@ -13,7 +13,6 @@ import { CreatePartnerData } from "../../actions/partneraction";
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
 import { roles } from "../constant.js";
-
 function PartnerComponent(props) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -303,9 +302,9 @@ function PartnerComponent(props) {
                           },
                         })}
                       />
-                      {errors.se_entity && (
+                      {errors.reseller_name && (
                         <Form.Text className="text-danger">
-                          {errors.se_entity.message}
+                          {errors.reseller_name.message}
                         </Form.Text>
                       )}
                     </Col>

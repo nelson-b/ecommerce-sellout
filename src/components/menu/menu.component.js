@@ -50,7 +50,6 @@ function MyMenu(props) {
   },[notificationMessage]);
 
   const location = useLocation();
-  // const notificationMessage = location?.state?.message;
 
   //set current notification count
   const setNotification = (value) => setnotificationCount(value);
@@ -95,7 +94,6 @@ function MyMenu(props) {
                         alt=""
                       />
                       <strong className="me-auto">Notifications</strong>
-                      {/* <small>11 mins ago</small> */}
                     </Toast.Header>
                     <Toast.Body>
                       <ListGroup>

@@ -58,18 +58,8 @@ function BusinessUnitSplit() {
 
   // set background colour on even rows again, this looks bad, should be using CSS classes
   const getRowStyle = params => {
-      console.log('row data', params.node.data);
-      console.log('total', params.node.data.Total);
       let data = params.node.data;
-      // console.log('data.Total',data['Total']); 
-      // console.log('params.node.data.Total !== 100',params.node.data.Total !== '100');
-      var filterTotal = Object.keys(params.node.data)
-      .filter((key) => ['Total'].includes(key))
-      .reduce((obj, key) => {
-        obj[key] = params.data[key];
-        return obj;
-      }, {});
-      console.log('filterTotal', filterTotal);
+
       if (params.node.data.Total !== 100) {
         return { background: 'red' };
       }
