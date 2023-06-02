@@ -424,7 +424,7 @@ function BusinessUnitSplit() {
 
             if (splitData > 100) {
               errorJson.push(
-                `Total should be not greater than or less tahn 100% for - ${e.Partner_Account_Name} partner`
+                `Total should not be greater than or less tahn 100% for - ${e.Partner_Account_Name} partner`
               );
             }
           });
