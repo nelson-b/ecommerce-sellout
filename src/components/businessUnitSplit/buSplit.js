@@ -53,6 +53,18 @@ function BusinessUnitSplit() {
     window.location.reload();
   };
 
+  // set background colour on every row, this is probably bad, should be using CSS classes
+  const rowStyle = { background: 'white' };
+
+  // set background colour on even rows again, this looks bad, should be using CSS classes
+  const getRowStyle = params => {
+  //   console.log('row data', params.node.data);
+  //   console.log('getRowStyle', params.node.data.Total);
+  //   if (params.node.data.Total !== 100) {
+  //     return { background: 'red' };
+  //   }
+  };
+
   const handleSave = useCallback(() => {
     let errorLog = [];
     //iterate in the grid
@@ -68,7 +80,7 @@ function BusinessUnitSplit() {
     console.log('errorLog', errorLog);
     
     if(errorLog.length > 0) {
-      setErrorData(errorLog);
+      setErrorData(['Total should be 100% for all Bussiness units']);
       setShowErrorModal(true);
       setShowSuccessModal(false);
     }
@@ -84,7 +96,7 @@ function BusinessUnitSplit() {
 
   const buSplitData = [
     {
-      ID: "Adalbert",
+      id: "Adalbert",
       Country: "France",
       Partner_Account_Name: "Adalbert Zajadacz (Part of DEHA) DEU",
       Model: "E1 - Dist",
@@ -97,7 +109,7 @@ function BusinessUnitSplit() {
       Total: 0,
     },
     {
-      ID: "AFB",
+      id: "AFB",
       Country: "Caneda",
       Partner_Account_Name: "AFB eSolutions DEU",
       Model: "E1 - Dist",
@@ -110,7 +122,7 @@ function BusinessUnitSplit() {
       Total: 0,
     },
     {
-      ID: "Ahlsell",
+      id: "Ahlsell",
       Country: "Norway",
       Partner_Account_Name: "Ahlsell ELKO NOR",
       Model: "E1 - Dist",
@@ -123,7 +135,7 @@ function BusinessUnitSplit() {
       Total: 0,
     },
     {
-      ID: "Ahlsell",
+      id: "Ahlsell",
       Country: "Finland",
       Partner_Account_Name: "Ahlsell ELKO SWE",
       Model: "E2 - Dist",
@@ -152,7 +164,7 @@ function BusinessUnitSplit() {
 
   const columnDefs = [
     {
-      field: "ID",
+      field: "id",
       hide: true,
     },
     {
@@ -203,7 +215,7 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
@@ -214,7 +226,7 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
@@ -225,7 +237,7 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
@@ -236,7 +248,7 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
@@ -247,7 +259,7 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       }
@@ -258,7 +270,7 @@ function BusinessUnitSplit() {
       minWidth: 80,
       editable: false,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
@@ -301,7 +313,7 @@ function BusinessUnitSplit() {
     headerLabel: "Error....",
     variant: "danger",
     header:
-      "There are below errors while processing. Please recitify and retry",
+      "Please recitify errors and retry",
     content: errorData,
   };
 
@@ -607,6 +619,8 @@ function BusinessUnitSplit() {
               suppressCopySingleCellRanges={true}
               onGridReady={onGridReady}
               suppressMenuHide={true}
+              rowStyle={rowStyle} 
+              getRowStyle={getRowStyle}
             ></AgGridReact>
             <div>
               <Row

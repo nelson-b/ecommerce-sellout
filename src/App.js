@@ -15,7 +15,6 @@ import PartnerQuarterApprover from "./components/approverDataReview/previousQuar
 import PartnerRequestList from "./components/partnerRequestList/partnerRequestList.js";
 import AdminOverview from "./components/home/adminOverview.js";
 import SuperUserOverview from "./components/home/superUserOverview.js";
-import CreateUser from "./components/user/save/save.js";
 import { roles } from "./components/constant.js";
 import SaveUser from "./components/user/save/save.js";
 import UserList from "./components/user/list/list.js";

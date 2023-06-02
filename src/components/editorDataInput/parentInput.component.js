@@ -26,10 +26,10 @@ function DataInputComponent() {
     window.location.reload();
   };
 
-  const onCellClicked = (params) => {
-    setGridValChg(true);    
-    console.log('isGridValChg', isGridValChg);
-  }
+  // const onCellClicked = (params) => {
+  //   setGridValChg(true);    
+  //   console.log('isGridValChg', isGridValChg);
+  // }
 
   const [showShouldUpdModal, setShowShouldUpdModal] = useState(false);
 
@@ -186,7 +186,7 @@ function DataInputComponent() {
       GrandTotal: 8545,
     },
     {
-      id: "Ahlsell",
+      id: "Ahlsellr",
       Zone: "Nordics",
       Country: "Sweden",
       Partner_Account_Name: "Ahlsell ELKO SWE",
@@ -326,8 +326,6 @@ function DataInputComponent() {
 
   //fn set is estimated
   const fnSetIsEstimated = (params, monthField) => {
-    console.log('params', params);
-    console.log('monthField', monthField);
     let monthYrKey = monthField.replace('_Amount','') + "_Estimated";
     var filterMonths = Object.keys(params.data)
       .filter((key) => [monthYrKey].includes(key))
@@ -426,7 +424,8 @@ function DataInputComponent() {
     };
   }, []);
 
-  const toggleActualEstimate = useCallback((isEstimate) => {
+  const toggleActualEstimate = useCallback((isEstimate) => 
+  {
     const selectedCells = gridRef.current.api.getCellRanges();
     const itemsToUpdate = [];
     selectedCells.forEach((currRow) => {
@@ -434,9 +433,7 @@ function DataInputComponent() {
       currRow.columns.forEach((currCol) => {
         //col level loop
         for (
-          let i = currRow.startRow.rowIndex;
-          i < currRow.endRow.rowIndex + 1;
-          i++
+          let i = currRow.startRow.rowIndex; i < currRow.endRow.rowIndex + 1; i++
         ) {
           gridRef.current.api.forEachNodeAfterFilterAndSort(function (
             rowNodes,
@@ -500,6 +497,7 @@ function DataInputComponent() {
                     break;
                 }
               }
+              console.log('estimated data', data)
               itemsToUpdate.push(data);
             }
           });
@@ -566,7 +564,6 @@ function DataInputComponent() {
             suppressCopySingleCellRanges={true}
             onGridReady={onGridReady}
             suppressMenuHide= {true}
-            onCellClicked={onCellClicked}
           ></AgGridReact>
         </Row>
         <Row
