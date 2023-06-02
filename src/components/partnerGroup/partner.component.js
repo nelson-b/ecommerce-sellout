@@ -96,7 +96,7 @@ function PartnerComponent(props) {
         setShowSuccessModal(false);
         setErrorRet([e.message]);
         setShowErrorModal(true);
-        console.log('Error', e.message);
+        console.log('Error', e);
       });
   };
 
