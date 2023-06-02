@@ -54,33 +54,33 @@ function PartnerQuarterApprover({ props }) {
     return (
       <div>
         {/* {props.data.editorComments.length ? ( */}
-          <div>
-            {props.data.editorComments}
-            <Button
-              style={{
-                height: 30,
-                width: 100,
-                lineHeight: 0.5,
-                margin: "0px 0px 5px 50px",
-              }}
-              onClick={invokeReject}
-              className="cancel-header btn-reject"
-            >
-              Reject
-            </Button>
-            <Button
-              style={{
-                height: 30,
-                width: 100,
-                lineHeight: 0.5,
-                margin: " 0px 10px 5px 20px",
-              }}
-              onClick={invokeValidate}
-              className="save-header btn-reject"
-            >
-              Validate
-            </Button>
-          </div>
+        <div>
+          {props.data.editorComments}
+          <Button
+            style={{
+              height: 30,
+              width: 100,
+              lineHeight: 0.5,
+              margin: "0px 0px 5px 50px",
+            }}
+            onClick={invokeReject}
+            className="cancel-header btn-reject"
+          >
+            Reject
+          </Button>
+          <Button
+            style={{
+              height: 30,
+              width: 100,
+              lineHeight: 0.5,
+              margin: " 0px 10px 5px 20px",
+            }}
+            onClick={invokeValidate}
+            className="save-header btn-reject"
+          >
+            Validate
+          </Button>
+        </div>
         {/* ) : (
           <div></div>
         )} */}
@@ -91,7 +91,7 @@ function PartnerQuarterApprover({ props }) {
   const CustomHeader = ({ displayName }) => {
     return (
       <div>
-        <span style={{ fontSize: '13px' }}>{displayName} (in K&euro;)</span>
+        <span style={{ fontSize: "13px" }}>{displayName} (in K&euro;)</span>
       </div>
     );
   };
@@ -136,26 +136,26 @@ function PartnerQuarterApprover({ props }) {
     {
       headerName: "Sellout value Approved",
       headerComponentFramework: CustomHeader,
-      headerComponentParams: { displayName: 'Sellout value Approved' },
+      headerComponentParams: { displayName: "Sellout value Approved" },
       field: "SelloutValue",
       editable: false,
       minWidth: 150,
       wrapHeaderText: true,
       sortable: true,
       suppressMenu: true,
-      cellStyle: {'border-color': '#e2e2e2'},
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "New value",
       headerComponentFramework: CustomHeader,
-      headerComponentParams: { displayName: 'New value' },
+      headerComponentParams: { displayName: "New value" },
       field: "newValue",
       editable: false,
       minWidth: 100,
       wrapHeaderText: true,
       sortable: true,
       suppressMenu: true,
-      cellStyle: {'border-color': '#e2e2e2'},
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "Change in Value",
@@ -165,7 +165,7 @@ function PartnerQuarterApprover({ props }) {
       wrapHeaderText: true,
       sortable: true,
       suppressMenu: true,
-      cellStyle: {'border-color': '#e2e2e2'},
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "Change In %",
@@ -175,7 +175,7 @@ function PartnerQuarterApprover({ props }) {
       wrapHeaderText: true,
       sortable: true,
       suppressMenu: true,
-      cellStyle: {'border-color': '#e2e2e2'},
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "User that made the change",
@@ -185,7 +185,7 @@ function PartnerQuarterApprover({ props }) {
       wrapHeaderText: true,
       sortable: true,
       suppressMenu: true,
-      cellStyle: {'border-color': '#e2e2e2'},
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "Editors Comments",
@@ -198,7 +198,7 @@ function PartnerQuarterApprover({ props }) {
       sortable: true,
       suppressMenu: true,
       cellRenderer: ChildMessageRenderer,
-      cellStyle: {'border-color': '#e2e2e2'},
+      cellStyle: { "border-color": "#e2e2e2" },
     },
   ];
 
@@ -229,16 +229,6 @@ function PartnerQuarterApprover({ props }) {
     navigate("/approver/home");
   };
 
-  const handleInvestigation = () => {
-    console.log(
-      message === 1
-        ? `${message} Partner Account Sent For Investigation `
-        : message > 1
-        ? `${message} Partner Accounts Sent For Investigation `
-        : ""
-    );
-  };
-
   const handleConfirm = () => {
     setRowData(rowData);
   };
@@ -248,6 +238,16 @@ function PartnerQuarterApprover({ props }) {
       .then((resp) => partnerPrevious)
       .then((partnerPrevious) => setRowData(partnerPrevious));
   }, []);
+
+  const handleInvestigation = (params) => {
+    console.log(
+      message === 1
+        ? `${message} Partner Account Sent For Investigation `
+        : message > 1
+        ? `${message} Partners Account Sent For Investigation `
+        : ""
+    );
+  };
 
   return (
     <>
@@ -324,9 +324,9 @@ function PartnerQuarterApprover({ props }) {
             onSelectionChanged={handleCheckboxClick}
             groupSelectsChildren={true}
             suppressMenuHide={true}
-            // context={{
-            //   methodFromParent,
-            // }}
+            headerCheckboxSelection={true}
+            checkboxSelection={true}
+            // onSelectionChanged={handleSelectionChanged}
           ></AgGridReact>
           <div className="checkbox-message">
             {message === 1

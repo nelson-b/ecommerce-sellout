@@ -9,7 +9,6 @@ import { allCalMonths } from "../constant";
 
 function BatchInputComponent({ getData }) {
   const navigate = useNavigate();
-  console.log('getData', getData)
 
   const {
     register,
@@ -22,13 +21,13 @@ function BatchInputComponent({ getData }) {
     reValidateMode: "onChange",
   });
 
-  const handleChange=({target})=> {
-    console.log('target', target);
+  const handleChange = ({ target }) => {
+    console.log("target", target);
     setSelectedFile(target);
   };
-  
-  const handleClick = event => {
-    console.log('event', event);
+
+  const handleClick = (event) => {
+    console.log("event", event);
     setSelectedFile(event.target.files);
   };
 
@@ -54,59 +53,61 @@ function BatchInputComponent({ getData }) {
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
-    header: 'Data has been saved successfully!!',
-    content: ['Navigating you to the Sell out data review page.....']
-  }
+    header: "Data has been saved successfully!!",
+    content: ["Navigating you to the Sell out data review page....."],
+  };
 
   const errormsg = {
     headerLabel: "Error....",
     variant: "danger",
-    header: "There are below errors while processing. Please recitify and retry",
-    content: fileError
-  }
+    header:
+      "There are below errors while processing. Please recitify and retry",
+    content: fileError,
+  };
 
-  const shouldUpdateMsg={
+  const shouldUpdateMsg = {
     headerLabel: "Warning....",
     variant: "warning",
-    header: 'Do you wish to update the existing data!!',
-    content: ['Your previous data would be lost if you update it with new data']
-  }
+    header: "Do you wish to update the existing data!!",
+    content: [
+      "Your previous data would be lost if you update it with new data",
+    ],
+  };
 
-  const saveData = () =>{
-      const currentDate = new Date();
-      const currentMonth = currentDate.getMonth();
-      const currentYear = String(currentDate.getFullYear()).slice(-2);
+  const saveData = () => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = String(currentDate.getFullYear()).slice(-2);
 
-      for (let i = 7; i > 0; i--) 
-      {
-        let date = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth() - (i - 1), 
-          1
-        );
-        
-        const monthName = allCalMonths[date.getMonth()];
-        const year = String(date.getFullYear()).slice(-2);
-        const monthField = monthName+'_Amount';
+    for (let i = 7; i > 0; i--) {
+      let date = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - (i - 1),
+        1
+      );
 
-        if (currentYear !== year && currentMonth !== 0) continue;
+      const monthName = allCalMonths[date.getMonth()];
+      const year = String(date.getFullYear()).slice(-2);
+      const monthField = monthName + "_Amount";
 
-        let data = getData.filter(item => item[monthField] != '');
-        console.log('data', data);
+      if (currentYear !== year && currentMonth !== 0) continue;
 
-        if(data.length > 0){
-          console.log('show data already exist popup');
-          setShowShouldUpdModal(true);
-          return;
-        }
+      let data = getData.filter((item) => item[monthField] != "");
+      console.log("data", data);
+
+      if (data.length > 0) {
+        console.log("show data already exist popup");
+        setShowShouldUpdModal(true);
+        return;
       }
-      postBatchData();
-  }
+    }
+    postBatchData();
+  };
 
   const postBatchData = () => {
-    console.log('selectedFile', selectedFile);
+    console.log("selectedFile", selectedFile);
     const file = selectedFile.file[0];
-    
+
     if (
       file.type !==
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -124,101 +125,171 @@ function BatchInputComponent({ getData }) {
           let result = e.target.result;
           let workbook = xlsx.read(result, { type: "array" });
           let sheetName = workbook.SheetNames[1];
-          console.log('sheetName',sheetName);
+          console.log("sheetName", sheetName);
           let worksheet = workbook.Sheets[sheetName];
           let json = xlsx.utils.sheet_to_json(worksheet);
           let errorJson = [];
           console.log("Reading excel: ", json);
           setFileData(json);
           console.log("fileData: ", fileData);
-            json.forEach((i) => {
-              if(i.Jan_Amount){
-                if(isNaN(i.Jan_Amount)){
-                  errorJson.push('There should be number for Jan month at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number for Jan month at partner : ' + i['Partner Account Name']);
-                }
+          json.forEach((i) => {
+            if (i.Jan_Amount) {
+              if (isNaN(i.Jan_Amount)) {
+                errorJson.push(
+                  "There should be number for Jan month at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number for Jan month at partner : " +
+                    i["Partner Account Name"]
+                );
               }
-              if(i.Feb_Amount){
-                if(isNaN(i.Feb_Amount)){
-                  errorJson.push('There should be number for Feb month at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number for Feb at partner : ' + i['Partner Account Name']);
-                }
+            }
+            if (i.Feb_Amount) {
+              if (isNaN(i.Feb_Amount)) {
+                errorJson.push(
+                  "There should be number for Feb month at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number for Feb at partner : " +
+                    i["Partner Account Name"]
+                );
               }
-              if(i.Mar_Amount){
-                if(isNaN(i.Mar_Amount)){
-                  errorJson.push('There should be number for Mar month at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number for Mar month at partner : ' + i['Partner Account Name']);
-                }
+            }
+            if (i.Mar_Amount) {
+              if (isNaN(i.Mar_Amount)) {
+                errorJson.push(
+                  "There should be number for Mar month at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number for Mar month at partner : " +
+                    i["Partner Account Name"]
+                );
               }
-              if(i.Apr_Amount){
-                if(isNaN(i.Apr_Amount)){
-                  errorJson.push('There should be number at Apr at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number at Apr at partner : ' + i['Partner Account Name']);
-                }
+            }
+            if (i.Apr_Amount) {
+              if (isNaN(i.Apr_Amount)) {
+                errorJson.push(
+                  "There should be number at Apr at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number at Apr at partner : " +
+                    i["Partner Account Name"]
+                );
               }
-              if(i.May_Amount){
-                if(isNaN(i.May_Amount)){
-                  errorJson.push('There should be number at May at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number at May at partner : ' + i['Partner Account Name']);
-                }
+            }
+            if (i.May_Amount) {
+              if (isNaN(i.May_Amount)) {
+                errorJson.push(
+                  "There should be number at May at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number at May at partner : " +
+                    i["Partner Account Name"]
+                );
               }
-              if(i.Jun_Amount){
-                if(isNaN(i.Jun_Amount)){
-                  errorJson.push('There should be number at Jun at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number at Jun at partner : ' + i['Partner Account Name']);
-                }
+            }
+            if (i.Jun_Amount) {
+              if (isNaN(i.Jun_Amount)) {
+                errorJson.push(
+                  "There should be number at Jun at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number at Jun at partner : " +
+                    i["Partner Account Name"]
+                );
               }
-              if(i.Jul_Amount){
-                if(isNaN(i.Jul_Amount)){
-                  errorJson.push('There should be number at Jul at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number at Jul at partner : ' + i['Partner Account Name']);
-                }
+            }
+            if (i.Jul_Amount) {
+              if (isNaN(i.Jul_Amount)) {
+                errorJson.push(
+                  "There should be number at Jul at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number at Jul at partner : " +
+                    i["Partner Account Name"]
+                );
               }
-              if(i.Aug_Amount){
-                if(isNaN(i.Aug_Amount)){
-                  errorJson.push('There should be number at Jul at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number at Aug at partner : ' + i['Partner Account Name']);
-                }
+            }
+            if (i.Aug_Amount) {
+              if (isNaN(i.Aug_Amount)) {
+                errorJson.push(
+                  "There should be number at Jul at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number at Aug at partner : " +
+                    i["Partner Account Name"]
+                );
               }
-              if(i.Sep_Amount){
-                if(isNaN(i.Sep_Amount)){
-                  errorJson.push('There should be number at Jul at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number at Sep at partner : ' + i['Partner Account Name']);
-                }
+            }
+            if (i.Sep_Amount) {
+              if (isNaN(i.Sep_Amount)) {
+                errorJson.push(
+                  "There should be number at Jul at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number at Sep at partner : " +
+                    i["Partner Account Name"]
+                );
               }
-              if(i.Oct_Amount){
-                if(isNaN(i.Oct_Amount)){
-                  errorJson.push('There should be number at Oct at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number at Oct at partner : ' + i['Partner Account Name']);
-                }
+            }
+            if (i.Oct_Amount) {
+              if (isNaN(i.Oct_Amount)) {
+                errorJson.push(
+                  "There should be number at Oct at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number at Oct at partner : " +
+                    i["Partner Account Name"]
+                );
               }
-              if(i.Nov_Amount){
-                if(isNaN(i.Nov_Amount)){
-                  errorJson.push('There should be number at Nov at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number at Nov at partner : ' + i['Partner Account Name']);
-                }
+            }
+            if (i.Nov_Amount) {
+              if (isNaN(i.Nov_Amount)) {
+                errorJson.push(
+                  "There should be number at Nov at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number at Nov at partner : " +
+                    i["Partner Account Name"]
+                );
               }
-              if(i.Dec_Amount){
-                if(isNaN(i.Dec_Amount)){
-                  errorJson.push('There should be number at Dec at partner : ' + i['Partner Account Name']);
-                  console.log('There should be number at Dec at partner : ' + i['Partner Account Name']);
-                }
+            }
+            if (i.Dec_Amount) {
+              if (isNaN(i.Dec_Amount)) {
+                errorJson.push(
+                  "There should be number at Dec at partner : " +
+                    i["Partner Account Name"]
+                );
+                console.log(
+                  "There should be number at Dec at partner : " +
+                    i["Partner Account Name"]
+                );
               }
+            }
           });
 
-          if(errorJson.length > 0){
+          if (errorJson.length > 0) {
             setFileError(errorJson);
             setShowErrorModal(true);
             setShowSuccessModal(false);
             setShowShouldUpdModal(false);
-          }
-          else
-          {
+          } else {
             setFileError([]);
             setShowErrorModal(false);
             setShowSuccessModal(true);
             setShowShouldUpdModal(false);
-            setTimeout(()=>navigate('/dataReview'), 3000);
+            setTimeout(() => navigate("/dataReview"), 3000);
           }
 
           errorJson = [];
@@ -227,9 +298,9 @@ function BatchInputComponent({ getData }) {
         reader.readAsArrayBuffer(selectedFile.file[0]);
       }
       console.log("Reading excel useState: ", fileData);
-      console.log('fileError',fileError);
+      console.log("fileError", fileError);
     }
-  }
+  };
 
   const onSubmit = (frmData) => {
     setSelectedFile(frmData);
@@ -267,13 +338,33 @@ function BatchInputComponent({ getData }) {
   ];
 
   const exportToExcel = async (exportedData) => {
-    console.log('exportedData', exportedData)
     const tempData = exportedData.map((e) => {
       const { id, status, ...rest } = e;
       return rest;
     });
 
     const currentDate = new Date();
+    const totalValue = [];
+
+    for (let i = 12; i > 0; i--) {
+      let date = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - (i - 1),
+        1
+      );
+      const monthName = allCalMonths[date.getMonth()];
+      const monthField = monthName + "_Amount";
+      totalValue.push(monthField);
+    }
+    
+    let totalAmount = 0;
+    tempData.forEach((e, i) => {
+      totalValue.forEach((m) => {
+        totalAmount = Number(totalAmount) + Number(e[m]);
+      })
+      tempData[i].GrandTotal = totalAmount;
+      totalAmount = 0;
+    });
 
     const workbook = xlsx.utils.book_new();
     const readmeDataWithoutHeader = readMeData.slice(0);
@@ -282,141 +373,150 @@ function BatchInputComponent({ getData }) {
 
     const sheet2 = xlsx.utils.json_to_sheet(tempData);
     xlsx.utils.book_append_sheet(workbook, sheet2, "Sell out Data Input");
-    console.log('workbook', workbook);
-    console.log('workbook sheets["Sell out Data Input"]["A1"]', workbook.Sheets["Sell out Data Input"]["A1"]);
-    console.log('convert Object.keys(params.data): ',Object.keys(workbook.Sheets["Sell out Data Input"]));
+    console.log("workbook", workbook);
+    console.log(
+      'workbook sheets["Sell out Data Input"]["A1"]',
+      workbook.Sheets["Sell out Data Input"]["A1"]
+    );
+    console.log(
+      "convert Object.keys(params.data): ",
+      Object.keys(workbook.Sheets["Sell out Data Input"])
+    );
 
     //style excel header with green bgcolor and white forecolor
     workbook.Sheets["Sell out Data Input"]["A1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["B1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["C1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["D1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["E1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["F1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["G1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["H1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["I1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["J1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["K1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["L1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["M1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["N1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["O1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["P1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["Q1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["R1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["S1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["T1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["U1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["V1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["W1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["X1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["Y1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["Z1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["AA1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["AB1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["AC1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["AD1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["AE1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["AF1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" }},
-      font: { bold: true, color: { rgb: "FFFFFF" }}
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
     };
 
-    xlsx.writeFile(workbook, "Sell out Data Input" + currentDate.getFullYear() + ".xlsx");
+    xlsx.writeFile(
+      workbook,
+      "Sell out Data Input" + currentDate.getFullYear() + ".xlsx"
+    );
   };
 
   return (
@@ -455,22 +555,22 @@ function BatchInputComponent({ getData }) {
                       Upload
                     </Button>
                     <AlertModel
-                      show={ showSuccessModal }
-                      handleClose={ handleCloseSuccessModal }
-                      body={ successmsg }
+                      show={showSuccessModal}
+                      handleClose={handleCloseSuccessModal}
+                      body={successmsg}
                     />
                     <AlertModel
-                      show={ showErrorModal }
-                      handleClose={ handleCloseErrorModal }
-                      body={ errormsg }
+                      show={showErrorModal}
+                      handleClose={handleCloseErrorModal}
+                      body={errormsg}
                     />
                     <AlertModel
-                      show={ showShouldUpdModal }
-                      handleClose={ handleCloseShouldUpdModal }
-                      body={ shouldUpdateMsg }
-                      handleConfirm={ postBatchData }
-                      button1Label = {'Confirm'}
-                      button2Label = {'Cancel'}
+                      show={showShouldUpdModal}
+                      handleClose={handleCloseShouldUpdModal}
+                      body={shouldUpdateMsg}
+                      handleConfirm={postBatchData}
+                      button1Label={"Confirm"}
+                      button2Label={"Cancel"}
                     />
                   </Col>
                 </Row>
@@ -480,7 +580,8 @@ function BatchInputComponent({ getData }) {
               <Button
                 size="lg"
                 className="edit-header"
-                onClick={(e) => exportToExcel(getData)}>
+                onClick={(e) => exportToExcel(getData)}
+              >
                 Download Template
               </Button>
             </Col>
