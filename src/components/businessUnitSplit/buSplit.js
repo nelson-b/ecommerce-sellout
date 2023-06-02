@@ -91,7 +91,7 @@ function BusinessUnitSplit() {
 
   const buSplitData = [
     {
-      Platform_ID: "Adalbert",
+      Partner_ID: "Adalbert",
       Country: "France",
       Partner_Account_Name: "Adalbert Zajadacz (Part of DEHA) DEU",
       Model: "E1 - Dist",
@@ -104,7 +104,7 @@ function BusinessUnitSplit() {
       Total: 100,
     },
     {
-      Platform_ID: "AFB",
+      Partner_ID: "AFB",
       Country: "Caneda",
       Partner_Account_Name: "AFB eSolutions DEU",
       Model: "E1 - Dist",
@@ -117,7 +117,7 @@ function BusinessUnitSplit() {
       Total: 100,
     },
     {
-      Platform_ID: "Ahlsell",
+      Partner_ID: "Ahlsell",
       Country: "Norway",
       Partner_Account_Name: "Ahlsell ELKO NOR",
       Model: "E1 - Dist",
@@ -130,7 +130,7 @@ function BusinessUnitSplit() {
       Total: 100,
     },
     {
-      Platform_ID: "Ahlsell",
+      Partner_ID: "Ahlsell",
       Country: "Finland",
       Partner_Account_Name: "Ahlsell ELKO SWE",
       Model: "E2 - Dist",
@@ -170,7 +170,7 @@ function BusinessUnitSplit() {
 
   const columnDefs = [
     {
-      field: "Platform_ID",
+      field: "Partner_ID",
       hide: true,
     },
     {
