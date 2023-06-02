@@ -6,16 +6,10 @@
     display: flex;
     align-items: right;
     justify-content: right;
+    margin-right: 50px;
 }
 
 .prev-window-table{
     padding: 30px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.form-calendar-card {
-    width: 1666px;
-    margin-left: 14px;
 }
