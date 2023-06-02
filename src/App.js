@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ErrorPageComponent from "./components/error-page.component.js";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import PartnerComponent from "./components/partnerGroup/partner.component.js";
 import HomeComponent from "./components/home/home.component.js";
 import DataInputComponent from "./components/editorDataInput/parentInput.component.js";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import DataReview from "./components/editorDataReview/dataReview.component.js";
 import PartnerList from "./components/partnerList/partnerList.js";
@@ -38,32 +37,87 @@ function App() {
           <Route path="/partner/list" element={<PartnerList />} />
           <Route path="/partner/requestList" element={<PartnerRequestList />} />
 
-          <Route path="/editor/home" element={<HomeComponent role={roles.editor} />} />
-          <Route path="/approver/home" element={<HomeComponent  role={roles.approver}/>} />
-          <Route path="/superUser/home" element={<HomeComponent  role={roles.superApproverUser}/>} />
-          
-          <Route path="/admin/home" element={<AdminOverview role={roles.admin} />} />
-          <Route path="/admin/inputCalendar" exact element={<InputCalender />} />
+          <Route
+            path="/editor/home"
+            element={<HomeComponent role={roles.editor} />}
+          />
+          <Route
+            path="/approver/home"
+            element={<HomeComponent role={roles.approver} />}
+          />
+          <Route
+            path="/superUser/home"
+            element={<HomeComponent role={roles.superApproverUser} />}
+          />
+
+          <Route
+            path="/admin/home"
+            element={<AdminOverview role={roles.admin} />}
+          />
+          <Route
+            path="/admin/inputCalendar"
+            exact
+            element={<InputCalender />}
+          />
           <Route path="/superUser" element={<SuperUserOverview />} />
-          
+
           <Route path="/historicalData" element={<HistoricalData />} />
           <Route path="/buSplit" element={<BusinessUnitSplit />} />
           <Route path="*" element={<ErrorPageComponent />} />
           <Route path="/approverReview" element={<DataReviewApprover />} />
-          <Route path="/partner/previousReview" element={<PartnerQuarterApprover />} />
-          <Route path="/partner/create" element={<PartnerComponent showHigherLevelModule={false} module={'Create'}/>} />
-          <Route path="/partner/update" element={<PartnerComponent showHigherLevelModule={true} module={'Update'}/>} />
-          <Route path="higerLevelUser/partner/create" element={
-              <PartnerComponent showHigherLevelModule={true} module={'Create'} />
-          } />
-          <Route path="higerLevelUser/partner/update" element={
-              <PartnerComponent showHigherLevelModule={true} module={'Update'} />
-          } />
-          <Route path="/user/create" exact element={ <SaveUser module={'Create'} /> } />
-          <Route path="/user/update" exact element={ <SaveUser module={'Update'} /> } />
-          <Route path="/user/list" exact element={ <UserList /> } />
+          <Route
+            path="/partner/previousReview"
+            element={<PartnerQuarterApprover />}
+          />
+          <Route
+            path="/partner/create"
+            element={
+              <PartnerComponent
+                showHigherLevelModule={false}
+                module={"Create"}
+              />
+            }
+          />
+          <Route
+            path="/partner/update"
+            element={
+              <PartnerComponent
+                showHigherLevelModule={true}
+                module={"Update"}
+              />
+            }
+          />
+          <Route
+            path="higerLevelUser/partner/create"
+            element={
+              <PartnerComponent
+                showHigherLevelModule={true}
+                module={"Create"}
+              />
+            }
+          />
+          <Route
+            path="higerLevelUser/partner/update"
+            element={
+              <PartnerComponent
+                showHigherLevelModule={true}
+                module={"Update"}
+              />
+            }
+          />
+          <Route
+            path="/user/create"
+            exact
+            element={<SaveUser module={"Create"} />}
+          />
+          <Route
+            path="/user/update"
+            exact
+            element={<SaveUser module={"Update"} />}
+          />
+          <Route path="/user/list" exact element={<UserList />} />
           <Route path="/user/Request" element={<UserRequestComponent />} />
-          <Route path="/" element={ <LoginComponent/> } />
+          <Route path="/" element={<LoginComponent />} />
         </Routes>
       </Router>
     </div>

@@ -160,7 +160,7 @@ function HistoricalData({}) {
   }
 
   columnDefs.push({
-    headerName: "2023 Total",
+    headerName: `${selectedValue} Total`,
     field: "total",
     minWidth: 90,
     editable: false,
@@ -427,7 +427,8 @@ function HistoricalData({}) {
                   style={{ width: "120px", height: "40px" }}
                   value={selectedValue}
                   onChange={handleChange}
-                >
+                  id="yearSelect" 
+                  >
                   <option value="2021">2021</option>
                   <option value="2022">2022</option>
                   <option value="2023">2023</option>
