@@ -443,7 +443,7 @@ function DataReviewApprover(props) {
       message === 1
         ? `${message} Partner Account Sent For Investigation `
         : message > 1
-        ? `${message} Partner Accounts Sent For Investigation `
+        ? `${message} Partners Account Sent For Investigation `
         : ""
     );
   };

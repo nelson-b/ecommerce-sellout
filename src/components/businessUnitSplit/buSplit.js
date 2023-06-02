@@ -53,18 +53,6 @@ function BusinessUnitSplit() {
     window.location.reload();
   };
 
-  // set background colour on every row, this is probably bad, should be using CSS classes
-  const rowStyle = { background: 'white' };
-
-  // set background colour on even rows again, this looks bad, should be using CSS classes
-  const getRowStyle = params => {
-      let data = params.node.data;
-
-      if (params.node.data.Total !== 100) {
-        return { background: 'red' };
-      }
-  };
-
   const handleSave = useCallback(() => {
     let errorLog = [];
     //iterate in the grid
@@ -80,8 +68,7 @@ function BusinessUnitSplit() {
       setErrorData(['Total should be 100% for all Bussiness units']);
       setShowErrorModal(true);
       setShowSuccessModal(false);
-    }
-    else{
+    } else {
       setErrorData([]);
       setShowErrorModal(false);
       setShowSuccessModal(true);
@@ -92,61 +79,56 @@ function BusinessUnitSplit() {
 
   const buSplitData = [
     {
-      id: "Adalbert1",
+      Partner_ID: "Adalbert",
       Country: "France",
       Partner_Account_Name: "Adalbert Zajadacz (Part of DEHA) DEU",
       Model: "E1 - Dist",
-      quarter: "Q1 2023",
+      Quarter: "Q1 2023",
       SP: 25,
       H_and_D: 15,
       PP: 10,
       DE: 27,
-      IA: 23,
-      Total: 100,
+      IA: 23
     },
     {
-      id: "AFB1",
+      Partner_ID: "AFB",
       Country: "Caneda",
       Partner_Account_Name: "AFB eSolutions DEU",
       Model: "E1 - Dist",
-      quarter: "Q1 2023",
+      Quarter: "Q1 2023",
       SP: 10,
       H_and_D: 20,
       PP: 30,
       DE: 20,
-      IA: 20,
-      Total: 100,
+      IA: 20
     },
     {
-      id: "Ahlsell1",
+      Partner_ID: "Ahlsell",
       Country: "Norway",
       Partner_Account_Name: "Ahlsell ELKO NOR",
       Model: "E1 - Dist",
-      quarter: "Q1 2023",
+      Quarter: "Q1 2023",
       SP: 15,
       H_and_D: 30,
       PP: 10,
       DE: 30,
-      IA: 15,
-      Total: 100,
+      IA: 15
     },
     {
-      id: "Ahlsell",
+      Partner_ID: "Ahlsell",
       Country: "Finland",
       Partner_Account_Name: "Ahlsell ELKO SWE",
       Model: "E2 - Dist",
-      quarter: "Q2 2023",
+      Quarter: "Q2 2023",
       SP: 25,
       H_and_D: 25,
-      PP: 25,
+      PP: 10,
       DE: 25,
-      IA: 0,
-      Total: 100,
+      IA: 15
     },
   ];
 
   const sumTotal = (params, index) => {
-
     let totalBu = (
       Number(Math.round(params.data.DE)) + 
       Number(Math.round(params.data.H_and_D)) + 
@@ -154,8 +136,15 @@ function BusinessUnitSplit() {
       Number(Math.round(params.data.PP)) + 
       Number(Math.round(params.data.SP)));
       
-      params.data.Total = Number(Math.round(totalBu));
-      return totalBu;
+      params.data['Total'] = Number(Math.round(totalBu));
+      return params.data.Total;
+  }
+
+  const isTot100Per = (params) => {
+    if(params.data.Total!==100){
+      return { backgroundColor: "red" };
+    }
+    return { backgroundColor: "white", 'borderColor': '#e2e2e2'};
   }
 
   const checkNumericValue = (params,field) => {
@@ -172,7 +161,7 @@ function BusinessUnitSplit() {
 
   const columnDefs = [
     {
-      field: "id",
+      field: "Partner_ID",
       hide: true,
     },
     {
@@ -288,7 +277,10 @@ function BusinessUnitSplit() {
         return Math.round(params.value) + "%";
       },
       valueGetter: (params) => {
-        return sumTotal(params); 
+        return sumTotal(params);
+      },
+      cellStyle: (params) => {
+        return isTot100Per(params);
       }
     },
   ];
@@ -361,7 +353,6 @@ function BusinessUnitSplit() {
 
   const postBatchData = () => {
     const file = selectedFile.file[0];
-
     if (
       file.type !==
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -378,17 +369,61 @@ function BusinessUnitSplit() {
       if (selectedFile.file) {
         let reader = new FileReader();
         reader.onload = (e) => {
-          console.log("reader onload");
           let result = e.target.result;
           let workbook = xlsx.read(result, { type: "array" });
           let sheetName = workbook.SheetNames[0];
           let worksheet = workbook.Sheets[sheetName];
           let json = xlsx.utils.sheet_to_json(worksheet);
           let errorJson = [];
-          console.log("Reading excel: ", json);
+          json.forEach((i) => {
+            if (i.SP) {
+              if (isNaN(i.SP)) {
+                errorJson.push(
+                  `Bu split accepts only Numeric value in - ${i.Partner_Account_Name} partner`
+                );
+              }
+            }
+            if (i.H_and_D) {
+              if (isNaN(i.H_and_D)) {
+                errorJson.push(
+                  `Bu split accepts only Numeric value in - ${i.Partner_Account_Name} partner`
+                );
+              }
+            }
+            if (i.PP) {
+              if (isNaN(i.PP)) {
+                errorJson.push(
+                  `Bu split accepts only Numeric value in - ${i.Partner_Account_Name} partner`
+                );
+              }
+            }
+            if (i.DE) {
+              if (isNaN(i.DE)) {
+                errorJson.push(
+                  `Bu split accepts only Numeric value in - ${i.Partner_Account_Name} partner`
+                );
+              }
+            }
+            if (i.IA) {
+              if (isNaN(i.IA)) {
+                errorJson.push(
+                  `Bu split accepts only Numeric value in - ${i.Partner_Account_Name} partner`
+                );
+              }
+            }
+          });
+
+          json.forEach((e) => {
+            const splitData = e.SP + e.H_and_D + e.PP + e.DE + e.IA;
+
+            if (splitData > 100) {
+              errorJson.push(
+                `Total should not be greater than or less than 100% for - ${e.Partner_Account_Name} partner`
+              );
+            }
+          });
 
           setFileData(json);
-
           if (errorJson.length > 0) {
             setErrorData(errorJson);
             setShowErrorModal(true);
@@ -402,7 +437,6 @@ function BusinessUnitSplit() {
           errorJson = [];
         };
         setSelectedFile(null);
-
         reader.readAsArrayBuffer(selectedFile.file[0]);
       }
     }
@@ -624,7 +658,7 @@ function BusinessUnitSplit() {
           >
             <AgGridReact
               ref={gridRef}
-              rowData={rowData}
+              rowData={buSplitData}
               columnDefs={columnDefs}
               defaultColDef={defaultColDef}
               animateRows={true}
@@ -632,8 +666,6 @@ function BusinessUnitSplit() {
               suppressCopySingleCellRanges={true}
               onGridReady={onGridReady}
               suppressMenuHide={true}
-              rowStyle={rowStyle} 
-              getRowStyle={getRowStyle}
             ></AgGridReact>
             <div>
               <Row
@@ -652,7 +684,7 @@ function BusinessUnitSplit() {
                 </Col>
                 <Col xs="auto">
                   <Button
-                    disabled = {errorBtnDisable}
+                    disabled={errorBtnDisable}
                     className="btn-upload save-header"
                     onClick={() => {
                       handleSave();
