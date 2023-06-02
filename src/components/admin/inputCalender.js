@@ -134,7 +134,7 @@ function InputCalendar(){
                                 <Form.Control
                                     size="sm"
                                     id={"currmonth_closedt" + index}
-                                    name="currmonth_closedt"
+                                    name={"currmonth_closedt" + index}
                                     type="date"
                                     {...register("currmonth_closedt", {
                                     required: "Close date is required",
