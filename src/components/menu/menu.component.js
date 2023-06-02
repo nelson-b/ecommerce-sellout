@@ -41,6 +41,162 @@ function MyMenu(props) {
         Content: '',
         URL: ''
       },
+      {
+        Id: '5',
+        Title: 'Partner request creation has been approved',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '6',
+        Title: 'Data Input Window closing reminder - 6 days Remaining',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '7',
+        Title: 'Partner data update request sent successfully.',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '8',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '9',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '10',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '11',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '12',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '13',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '14',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '15',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '16',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '17',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '18',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '19',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '20',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '21',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '22',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '23',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '24',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '25',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '26',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '27',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '28',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '29',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      },
+      {
+        Id: '30',
+        Title: 'Approver sent back data for correction - View',
+        Content: '',
+        URL: ''
+      }
     ]);
   },[]);
 
@@ -96,10 +252,10 @@ function MyMenu(props) {
                       <strong className="me-auto">Notifications</strong>
                     </Toast.Header>
                     <Toast.Body>
-                      <ListGroup>
+                      <ListGroup className="list-group">
                         {notificationMessage.map((row) =>
                         <ListGroup.Item key={row.Title}>{row.Title}</ListGroup.Item>
-                        )}                        
+                        )}
                       </ListGroup>
                     </Toast.Body>
                   </Toast>

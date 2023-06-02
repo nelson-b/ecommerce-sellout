@@ -53,18 +53,6 @@ function BusinessUnitSplit() {
     window.location.reload();
   };
 
-  // set background colour on every row, this is probably bad, should be using CSS classes
-  const rowStyle = { background: 'white' };
-
-  // set background colour on even rows again, this looks bad, should be using CSS classes
-  const getRowStyle = params => {
-      let data = params.node.data;
-
-      if (params.node.data.Total !== 100) {
-        return { background: 'red' };
-      }
-  };
-
   const handleSave = useCallback(() => {
     let errorLog = [];
     //iterate in the grid
@@ -100,8 +88,7 @@ function BusinessUnitSplit() {
       H_and_D: 15,
       PP: 10,
       DE: 27,
-      IA: 23,
-      Total: 100,
+      IA: 23
     },
     {
       Partner_ID: "AFB",
@@ -113,8 +100,7 @@ function BusinessUnitSplit() {
       H_and_D: 20,
       PP: 30,
       DE: 20,
-      IA: 20,
-      Total: 100,
+      IA: 20
     },
     {
       Partner_ID: "Ahlsell",
@@ -126,8 +112,7 @@ function BusinessUnitSplit() {
       H_and_D: 30,
       PP: 10,
       DE: 30,
-      IA: 15,
-      Total: 100,
+      IA: 15
     },
     {
       Partner_ID: "Ahlsell",
@@ -139,8 +124,7 @@ function BusinessUnitSplit() {
       H_and_D: 25,
       PP: 10,
       DE: 25,
-      IA: 15,
-      Total: 0,
+      IA: 15
     },
   ];
 
@@ -152,8 +136,15 @@ function BusinessUnitSplit() {
       Number(Math.round(params.data.PP)) + 
       Number(Math.round(params.data.SP)));
       
-      params.data.Total = Number(Math.round(totalBu));
-      return totalBu;
+      params.data['Total'] = Number(Math.round(totalBu));
+      return params.data.Total;
+  }
+
+  const isTot100Per = (params) => {
+    if(params.data.Total!==100){
+      return { backgroundColor: "red" };
+    }
+    return { backgroundColor: "white", 'borderColor': '#e2e2e2'};
   }
 
   const checkNumericValue = (params,field) => {
@@ -288,6 +279,9 @@ function BusinessUnitSplit() {
       valueGetter: (params) => {
         return sumTotal(params);
       },
+      cellStyle: (params) => {
+        return isTot100Per(params);
+      }
     },
   ];
 
@@ -424,7 +418,7 @@ function BusinessUnitSplit() {
 
             if (splitData > 100) {
               errorJson.push(
-                `Total should not be greater than or less tahn 100% for - ${e.Partner_Account_Name} partner`
+                `Total should not be greater than or less than 100% for - ${e.Partner_Account_Name} partner`
               );
             }
           });
@@ -672,8 +666,6 @@ function BusinessUnitSplit() {
               suppressCopySingleCellRanges={true}
               onGridReady={onGridReady}
               suppressMenuHide={true}
-              rowStyle={rowStyle} 
-              getRowStyle={getRowStyle}
             ></AgGridReact>
             <div>
               <Row

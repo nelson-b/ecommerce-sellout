@@ -8,8 +8,6 @@ import {
   Container,
   Breadcrumb,
   Card,
-  Tooltip,
-  OverlayTrigger,
   Table,
 } from "react-bootstrap";
 import MyMenu from "../menu/menu.component.js";
@@ -138,6 +136,7 @@ function InputCalendar() {
                                   size="sm"
                                   id="currmonth_opndt"
                                   name="currmonth_opndt"
+                                  min={new Date().toISOString().split('T')[0]}
                                   type="date"
                                   {...register("currmonth_opndt", {
                                     required: "Opening date is required",
@@ -243,6 +242,7 @@ function InputCalendar() {
                                   size="sm"
                                   id="currmonth_opndt"
                                   name="currmonth_opndt"
+                                  min={new Date().toISOString().split('T')[0]}
                                   type="date"
                                   {...register("currmonth_opndt", {
                                     required: "Opening date is required",
