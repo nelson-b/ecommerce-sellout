@@ -9,7 +9,6 @@ import '../admin/inputCalendar.css'
  import { quarters } from "../constant.js";
 
 function InputCalendar(){
-
     const {
         register,
         handleSubmit,
@@ -113,16 +112,17 @@ function InputCalendar(){
                                 &nbsp;
                                 <Form.Control
                                     size="sm"
-                                    id="currmonth_opndt"
-                                    name="currmonth_opndt"
+                                    id={"currmonth_opndt"+index}
+                                    name={"currmonth_opndt"+index}
                                     type="date"
-                                    {...register("currmonth_opndt", {
+                                    min={new Date().toISOString().split('T')[0]}
+                                    {...register(`currmonth_opndt${index}`, {
                                     required: "Opening date is required",
                                     })}
                                 />
-                                {errors.currmonth_opndt && (
+                                {errors[`currmonth_opndt${index}`] && (
                                     <Form.Text className="text-danger">
-                                        {errors.currmonth_opndt.message}
+                                        {errors[`currmonth_opndt${index}`].message}
                                     </Form.Text>
                                 )}
                                 </Col>
@@ -133,7 +133,7 @@ function InputCalendar(){
                                 &nbsp;
                                 <Form.Control
                                     size="sm"
-                                    id="currmonth_closedt"
+                                    id={"currmonth_closedt" + index}
                                     name="currmonth_closedt"
                                     type="date"
                                     {...register("currmonth_closedt", {
@@ -205,6 +205,7 @@ function InputCalendar(){
                                         id="currmonth_opndt"
                                         name="currmonth_opndt"
                                         type="date"
+                                        min={new Date().toISOString().split('T')[0]}
                                         {...register("currmonth_opndt", {
                                         required: "Opening date is required",
                                         })}
