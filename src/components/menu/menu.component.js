@@ -100,7 +100,7 @@ function MyMenu(props) {
                     <Toast.Body>
                       <ListGroup>
                         {notificationMessage.map((row) =>
-                        <ListGroup.Item>{row.Title}</ListGroup.Item>
+                        <ListGroup.Item key={row.Title}>{row.Title}</ListGroup.Item>
                         )}                        
                       </ListGroup>
                     </Toast.Body>

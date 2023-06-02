@@ -53,13 +53,32 @@ function BusinessUnitSplit() {
     window.location.reload();
   };
 
+  // set background colour on every row, this is probably bad, should be using CSS classes
+  const rowStyle = { background: 'white' };
+
+  // set background colour on even rows again, this looks bad, should be using CSS classes
+  const getRowStyle = params => {
+      console.log('row data', params.node.data);
+      console.log('total', params.node.data.Total);
+      let data = params.node.data;
+      // console.log('data.Total',data['Total']); 
+      // console.log('params.node.data.Total !== 100',params.node.data.Total !== '100');
+      var filterTotal = Object.keys(params.node.data)
+      .filter((key) => ['Total'].includes(key))
+      .reduce((obj, key) => {
+        obj[key] = params.data[key];
+        return obj;
+      }, {});
+      console.log('filterTotal', filterTotal);
+      if (params.node.data.Total !== 100) {
+        return { background: 'red' };
+      }
+  };
+
   const handleSave = useCallback(() => {
     let errorLog = [];
     //iterate in the grid
     gridRef.current.api.forEachNode((rowNode, index) => {
-      console.log('Grid row - ',index);
-      console.log('Rownode', rowNode.data);
-      
       if(rowNode.data.Total != 100){
         errorLog = errorLog.concat('Total not 100% at partner id: '+ rowNode.data.id);
       };
@@ -68,7 +87,7 @@ function BusinessUnitSplit() {
     console.log('errorLog', errorLog);
     
     if(errorLog.length > 0) {
-      setErrorData(errorLog);
+      setErrorData(['Total should be 100% for all Bussiness units']);
       setShowErrorModal(true);
       setShowSuccessModal(false);
     }
@@ -77,14 +96,13 @@ function BusinessUnitSplit() {
       setShowErrorModal(false);
       setShowSuccessModal(true);
     }
-    
   },[]);
 
   const gridRef = useRef(null);
 
   const buSplitData = [
     {
-      ID: "Adalbert",
+      id: "Adalbert1",
       Country: "France",
       Partner_Account_Name: "Adalbert Zajadacz (Part of DEHA) DEU",
       Model: "E1 - Dist",
@@ -94,10 +112,10 @@ function BusinessUnitSplit() {
       PP: 10,
       DE: 27,
       IA: 23,
-      Total: 0,
+      Total: 100,
     },
     {
-      ID: "AFB",
+      id: "AFB1",
       Country: "Caneda",
       Partner_Account_Name: "AFB eSolutions DEU",
       Model: "E1 - Dist",
@@ -107,10 +125,10 @@ function BusinessUnitSplit() {
       PP: 30,
       DE: 20,
       IA: 20,
-      Total: 0,
+      Total: 100,
     },
     {
-      ID: "Ahlsell",
+      id: "Ahlsell1",
       Country: "Norway",
       Partner_Account_Name: "Ahlsell ELKO NOR",
       Model: "E1 - Dist",
@@ -120,10 +138,10 @@ function BusinessUnitSplit() {
       PP: 10,
       DE: 30,
       IA: 15,
-      Total: 0,
+      Total: 100,
     },
     {
-      ID: "Ahlsell",
+      id: "Ahlsell",
       Country: "Finland",
       Partner_Account_Name: "Ahlsell ELKO SWE",
       Model: "E2 - Dist",
@@ -133,7 +151,7 @@ function BusinessUnitSplit() {
       PP: 25,
       DE: 25,
       IA: 0,
-      Total: 0,
+      Total: 100,
     },
   ];
 
@@ -145,14 +163,26 @@ function BusinessUnitSplit() {
       Number(Math.round(params.data.IA)) + 
       Number(Math.round(params.data.PP)) + 
       Number(Math.round(params.data.SP)));
-
+      
       params.data.Total = Number(Math.round(totalBu));
       return totalBu;
   }
 
+  const checkNumericValue = (params,field) => {
+    console.log('checkNumericValue',params.newValue);
+    console.log('Is NAN', isNaN(params.newValue));
+    if(isNaN(params.newValue)===true){
+      params.data[field] = 0;
+      return 0;
+    }
+    params.data[field] = Number(Math.round(params.newValue));
+    console.log('checkNumericValue', params.data[field]);
+    return params.data[field];
+  }
+
   const columnDefs = [
     {
-      field: "ID",
+      field: "id",
       hide: true,
     },
     {
@@ -203,10 +233,11 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
+      valueSetter: (params) => {return checkNumericValue(params, 'SP')},
     },
     {
       headerName: "H&D",
@@ -214,10 +245,11 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
+      valueSetter: (params) => {return checkNumericValue(params, 'H_and_D')},
     },
     {
       headerName: "PP",
@@ -225,10 +257,11 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
+      valueSetter: (params) => {return checkNumericValue(params, 'PP')},
     },
     {
       headerName: "DE",
@@ -236,10 +269,11 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
+      valueSetter: (params) => {return checkNumericValue(params, 'DE')},
     },
     {
       headerName: "IA",
@@ -247,10 +281,11 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
-      }
+      },
+      valueSetter: (params) => {return checkNumericValue(params, 'IA')},
     },
     {
       headerName: "Total",
@@ -258,7 +293,7 @@ function BusinessUnitSplit() {
       minWidth: 80,
       editable: false,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
@@ -301,7 +336,7 @@ function BusinessUnitSplit() {
     headerLabel: "Error....",
     variant: "danger",
     header:
-      "There are below errors while processing. Please recitify and retry",
+      "Please recitify and retry",
     content: errorData,
   };
 
@@ -607,6 +642,8 @@ function BusinessUnitSplit() {
               suppressCopySingleCellRanges={true}
               onGridReady={onGridReady}
               suppressMenuHide={true}
+              rowStyle={rowStyle} 
+              getRowStyle={getRowStyle}
             ></AgGridReact>
             <div>
               <Row

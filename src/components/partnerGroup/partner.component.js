@@ -97,7 +97,7 @@ function PartnerComponent(props) {
         setShowSuccessModal(false);
         setErrorRet([e.message]);
         setShowErrorModal(true);
-        console.log('Error', e.message);
+        console.log('Error', e);
       });
   };
 
@@ -205,6 +205,11 @@ function PartnerComponent(props) {
                         value={data?.platformNmae}
                         {...register("platform_name", {
                           required: "Platform name is required",
+                          pattern: {
+                            value:
+                            /^[A-Za-z]+$/i,
+                            message: "Platform name can have only alphabets",
+                          },
                         })}
                       />
                       {errors.platform_name && (
@@ -290,7 +295,12 @@ function PartnerComponent(props) {
                         name="reseller_name"
                         type="text"
                         {...register("reseller_name", {
-                          required: "Reseller name is required"
+                          required: "Reseller name is required",
+                          pattern: {
+                            value:
+                            /^[A-Za-z]+$/i,
+                            message: "Reseller name can have only alphabets",
+                          },
                         })}
                       />
                       {errors.se_entity && (
