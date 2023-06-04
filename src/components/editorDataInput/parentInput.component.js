@@ -13875,7 +13875,9 @@ function DataInputComponent() {
 
     var isEstimated = filterMonths[monthYrKey] == true;
     if (isEstimated == true) return { backgroundColor: "#EEB265" };
-    return { backgroundColor: "white", 'borderColor': '#e2e2e2'};
+    return { backgroundColor: "white", 
+    // 'borderColor': '#e2e2e2'
+  };
   };
 
   const currentDate = new Date();
