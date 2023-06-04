@@ -84,7 +84,7 @@ function PartnerComponent(props) {
     data.modified_by = 'test123';
     data.status = 'approved';
     data.partner_account_name = data.platform_name + '_' + data.reseller_name + '_' + data.se_entity;
-
+    
     //create api
     props.CreatePartnerData(data)
       .then((data) => {
