@@ -22,12 +22,12 @@ function BatchInputComponent({ getData }) {
   });
 
   const handleChange = ({ target }) => {
-    console.log("target", target);
+    //console.log("target", target);
     setSelectedFile(target);
   };
 
   const handleClick = (event) => {
-    console.log("event", event);
+    //console.log("event", event);
     setSelectedFile(event.target.files);
   };
 
@@ -93,10 +93,10 @@ function BatchInputComponent({ getData }) {
       if (currentYear !== year && currentMonth !== 0) continue;
 
       let data = getData.filter((item) => item[monthField] != "");
-      console.log("data", data);
+      //console.log("data", data);
 
       if (data.length > 0) {
-        console.log("show data already exist popup");
+        //console.log("show data already exist popup");
         setShowShouldUpdModal(true);
         return;
       }
@@ -105,7 +105,7 @@ function BatchInputComponent({ getData }) {
   };
 
   const postBatchData = () => {
-    console.log("selectedFile", selectedFile);
+    //console.log("selectedFile", selectedFile);
     const file = selectedFile.file[0];
 
     if (
@@ -121,17 +121,17 @@ function BatchInputComponent({ getData }) {
       if (file) {
         let reader = new FileReader();
         reader.onload = (e) => {
-          console.log("reader onload");
+          //console.log("reader onload");
           let result = e.target.result;
           let workbook = xlsx.read(result, { type: "array" });
           let sheetName = workbook.SheetNames[1];
-          console.log("sheetName", sheetName);
+          //console.log("sheetName", sheetName);
           let worksheet = workbook.Sheets[sheetName];
           let json = xlsx.utils.sheet_to_json(worksheet);
           let errorJson = [];
-          console.log("Reading excel: ", json);
+          //console.log("Reading excel: ", json);
           setFileData(json);
-          console.log("fileData: ", fileData);
+          //console.log("fileData: ", fileData);
           json.forEach((i) => {
             if (i.Jan_Amount) {
               if (isNaN(i.Jan_Amount)) {
@@ -139,10 +139,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number for Jan month at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number for Jan month at partner : " +
-                    i["Partner Account Name"]
-                );
+                //console.log(
+                //   "There should be number for Jan month at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
             if (i.Feb_Amount) {
@@ -151,10 +151,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number for Feb month at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number for Feb at partner : " +
-                    i["Partner Account Name"]
-                );
+                // console.log(
+                //   "There should be number for Feb at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
             if (i.Mar_Amount) {
@@ -163,10 +163,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number for Mar month at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number for Mar month at partner : " +
-                    i["Partner Account Name"]
-                );
+                // console.log(
+                //   "There should be number for Mar month at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
             if (i.Apr_Amount) {
@@ -175,10 +175,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Apr at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number at Apr at partner : " +
-                    i["Partner Account Name"]
-                );
+                // console.log(
+                //   "There should be number at Apr at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
             if (i.May_Amount) {
@@ -187,10 +187,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number at May at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number at May at partner : " +
-                    i["Partner Account Name"]
-                );
+                // console.log(
+                //   "There should be number at May at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
             if (i.Jun_Amount) {
@@ -199,10 +199,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Jun at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number at Jun at partner : " +
-                    i["Partner Account Name"]
-                );
+                // console.log(
+                //   "There should be number at Jun at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
             if (i.Jul_Amount) {
@@ -211,10 +211,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Jul at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number at Jul at partner : " +
-                    i["Partner Account Name"]
-                );
+                // console.log(
+                //   "There should be number at Jul at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
             if (i.Aug_Amount) {
@@ -223,10 +223,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Jul at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number at Aug at partner : " +
-                    i["Partner Account Name"]
-                );
+                // console.log(
+                //   "There should be number at Aug at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
             if (i.Sep_Amount) {
@@ -235,10 +235,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Jul at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number at Sep at partner : " +
-                    i["Partner Account Name"]
-                );
+                // console.log(
+                //   "There should be number at Sep at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
             if (i.Oct_Amount) {
@@ -247,10 +247,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Oct at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number at Oct at partner : " +
-                    i["Partner Account Name"]
-                );
+                // console.log(
+                //   "There should be number at Oct at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
             if (i.Nov_Amount) {
@@ -259,10 +259,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Nov at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number at Nov at partner : " +
-                    i["Partner Account Name"]
-                );
+                // console.log(
+                //   "There should be number at Nov at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
             if (i.Dec_Amount) {
@@ -271,10 +271,10 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Dec at partner : " +
                     i["Partner Account Name"]
                 );
-                console.log(
-                  "There should be number at Dec at partner : " +
-                    i["Partner Account Name"]
-                );
+                // console.log(
+                //   "There should be number at Dec at partner : " +
+                //     i["Partner Account Name"]
+                // );
               }
             }
           });
@@ -297,8 +297,8 @@ function BatchInputComponent({ getData }) {
 
         reader.readAsArrayBuffer(selectedFile.file[0]);
       }
-      console.log("Reading excel useState: ", fileData);
-      console.log("fileError", fileError);
+      //console.log("Reading excel useState: ", fileData);
+      //console.log("fileError", fileError);
     }
   };
 
@@ -308,7 +308,7 @@ function BatchInputComponent({ getData }) {
   };
 
   const onError = (error) => {
-    console.log("ERROR:::", error);
+    //console.log("ERROR:::", error);
   };
 
   const readMeData = [
@@ -373,15 +373,15 @@ function BatchInputComponent({ getData }) {
 
     const sheet2 = xlsx.utils.json_to_sheet(tempData);
     xlsx.utils.book_append_sheet(workbook, sheet2, "Sell out Data Input");
-    console.log("workbook", workbook);
-    console.log(
-      'workbook sheets["Sell out Data Input"]["A1"]',
-      workbook.Sheets["Sell out Data Input"]["A1"]
-    );
-    console.log(
-      "convert Object.keys(params.data): ",
-      Object.keys(workbook.Sheets["Sell out Data Input"])
-    );
+    //console.log("workbook", workbook);
+    // console.log(
+    //   'workbook sheets["Sell out Data Input"]["A1"]',
+    //   workbook.Sheets["Sell out Data Input"]["A1"]
+    // );
+    // console.log(
+    //   "convert Object.keys(params.data): ",
+    //   Object.keys(workbook.Sheets["Sell out Data Input"])
+    // );
 
     //style excel header with green bgcolor and white forecolor
     workbook.Sheets["Sell out Data Input"]["A1"].s = {

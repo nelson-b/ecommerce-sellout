@@ -2,11 +2,12 @@ import http from "../http-common";
 
 class PartnerService {
     create(data) {
-       return http.post("/Createpartnerthursday", data);
+        console.log('PartnerService', data);
+       return http.post("/createpartneraccount/", data);
     }
 
     getAll() {
-        return http.get("/default/SamFunction/");
+        return http.get("/pets/1/");
     }
 }
 
