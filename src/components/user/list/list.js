@@ -20,7 +20,7 @@ function UserList() {
   const userRole = new URLSearchParams(location.search).get("role");
 
   const handleUserEdit = (params) => {
-    navigate(`/updateUser?id=${params.data.userId}`);
+    navigate(`/user/update?id=${params.data.userId}&role=${userRole}`);
   };
 
   const handleCreate = () => {

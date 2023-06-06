@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState, useRef } from "react";
 import { connect } from "react-redux";
-import { sellOutData } from "../../actions/selloutaction";
 import MyMenu from "../menu/menu.component.js";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -46,6 +45,17 @@ function Home(props) {
     navigate(`/user/list?role=${props}`);
   };
 
+  const calcSellOutCurrYTDvsLYYTD = (params) => {
+    console.log('calcSellOutCurrYTDvsLYYTD', params.data);
+      if(params.data!=undefined){
+        params.data["Sellout Growth Vs Last Year"] = Math.round((
+          (params.data["YTD Sellout Value (In K EUR)"] - params.data.LY_YTD_Sellout_Value_In_K_EUR)
+        /params.data.LY_YTD_Sellout_Value_In_K_EUR) * 100);
+    
+      return params.data["Sellout Growth Vs Last Year"];
+    }
+  }
+
   const editorColDefs = [
     {
       headerName: "Scope",
@@ -57,6 +67,14 @@ function Home(props) {
         },
         { field: "Model" },
       ],
+    },
+    {
+      field: "LY_YTD_Sellout_Value_In_K_EUR",
+      spanHeaderHeight: true,
+      aggFunc: "sum",
+      minWidth: 160,
+      cellClass: "grid-cell-centered",
+      hide: true
     },
     {
       field: "YTD Sellout Value (In K EUR)",
@@ -73,6 +91,9 @@ function Home(props) {
       cellClass: "grid-cell-centered",
       valueFormatter: (params) => {
         return params.value + "%";
+      },
+      valueGetter: (params) => {
+        return calcSellOutCurrYTDvsLYYTD(params);
       },
       cellStyle: function (params) {
         if (params.value < "0") {

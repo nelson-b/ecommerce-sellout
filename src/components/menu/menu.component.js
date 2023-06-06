@@ -278,7 +278,7 @@ function MyMenu(props) {
                   <b>{username}</b>
                 </div>
               }
-              className="pull-right"
+              className="pull-right menu-sellout"
               id="navbarScrollingDropdown"
             >
               <NavDropdown.Item href="/action1">Action 1</NavDropdown.Item>

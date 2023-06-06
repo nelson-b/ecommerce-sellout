@@ -113,7 +113,7 @@ function PartnerComponent(props) {
   const handleClearClick = () => {
     window.location.reload();
   };
-  
+
   return (
     <Container fluid>
       <Row>
@@ -206,7 +206,7 @@ function PartnerComponent(props) {
                           required: "Platform name is required",
                           pattern: {
                             value:
-                            /^[A-Za-z]+$/i,
+                            /^[a-zA-Z ]*$/i,
                             message: "Platform name can have only alphabets",
                           },
                         })}
@@ -297,7 +297,7 @@ function PartnerComponent(props) {
                           required: "Reseller name is required",
                           pattern: {
                             value:
-                            /^[A-Za-z]+$/i,
+                            /^[a-zA-Z ]*$/i,
                             message: "Reseller name can have only alphabets",
                           },
                         })}
@@ -435,8 +435,7 @@ function PartnerComponent(props) {
                       &nbsp;
                       <OverlayTrigger
                         placement="right"
-                        overlay={tooltip("Enter valid Partner URL")}
-                      >
+                        overlay={tooltip("Enter valid Partner URL")}>
                         <span>
                           <BiHelpCircle />
                         </span>
@@ -527,6 +526,10 @@ function PartnerComponent(props) {
                         type="number"
                         {...register("partner_sellout_margin", {
                           required: "Partner Sellout Margin is required",
+                          pattern: {
+                            value: /^([0-9]|[1-9][0-9]|100)$/i,
+                            message: "Decimal not allowed",
+                          },
                         })}
                       />
                       {errors.partner_sellout_margin && (
