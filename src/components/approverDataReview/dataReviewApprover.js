@@ -439,7 +439,7 @@ function DataReviewApprover(props) {
   };
 
   const handleInvestigation = () => {
-    console.log(
+    alert(
       message === 1
         ? `${message} Partner Account Sent For Investigation `
         : message > 1

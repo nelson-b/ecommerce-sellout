@@ -61,6 +61,10 @@ function HistoricalData({}) {
       suppressSizeToFit: true,
     },
     {
+      field: "Partner_Code",
+      hide: true,
+    },
+    {
       headerName: "Country",
       field: "Country",
       rowGroup: true,
@@ -275,18 +279,18 @@ function HistoricalData({}) {
     ];
   }, []);
 
+  const onGridReady = useCallback((params) => {
+    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
+      .then((resp) => historyData)
+      .then((historyData) => setRowData(historyData));
+  }, []);
+
   const handleExport = useCallback(() => {
     const params = {
       fileName: "Sell out Historical Data.xlsx",
       sheetName: "Historical Data",
     };
     gridRef.current.api.exportDataAsExcel(params);
-  }, []);
-
-  const onGridReady = useCallback((params) => {
-    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => historyData)
-      .then((historyData) => setRowData(historyData));
   }, []);
 
   const handleChange = (event) => {

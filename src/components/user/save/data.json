@@ -1,0 +1,46 @@
+[
+    {
+        "user_name": "John",
+        "user_id": "John@se.com",
+        "role": "Editor",
+        "ops": "OPS 1",
+        "zone": "US",
+        "country": "Finland",
+        "Model": "E1",
+        "action": "",
+        "partner": "Ahlsell"
+    },
+    {
+        "user_name": "Mike",
+        "user_id": "Mike@se.com",
+        "role": "Editor",
+        "ops": "OPS 2",
+        "zone": "US",
+        "country": "France",
+        "Model": "E1",
+        "action": "",
+        "partner": "Ahlsell"
+    },
+    {
+        "user_name": "Marie",
+        "user_id": "Marie@se.com",
+        "role": "Approver 1",
+        "ops": "OPS 3",
+        "zone": "US",
+        "country": "Germany",
+        "Model": "E1",
+        "action": "",
+        "partner": "Ahlsell"
+    },
+    {
+        "user_name": "George",
+        "user_id": "George@se.com",
+        "role": "Approver 2",
+        "ops": "OPS 4",
+        "zone": "US",
+        "country": "Swedan",
+        "Model": "E1",
+        "action": "",
+        "partner": "Ahlsell"
+    }
+]

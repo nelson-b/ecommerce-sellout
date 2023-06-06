@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import userEditIcon from "../../../images/edit-icon.png";
 
-function UserList() {
+function UserList(props) {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const location = useLocation();
@@ -24,7 +24,7 @@ function UserList() {
   };
 
   const handleCreate = () => {
-    navigate(`/user/create?role=${userRole}`);
+    navigate(`/user/create?role=${userRole}&id=${""}`);
   };
 
   const columnDefs = [
@@ -62,7 +62,7 @@ function UserList() {
     {
       headerName: "User ID",
       field: "userId",
-      width: 300,
+      width: 250,
       sortable: true,
       filter: true,
       suppressNavigable: true,
@@ -91,7 +91,7 @@ function UserList() {
     {
       headerName: "Zone",
       field: "userZone",
-      width: 250,
+      width: 200,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -109,22 +109,24 @@ function UserList() {
     {
       headerName: "Model",
       field: "usrModel",
-      width: 200,
+      width: 180,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
       editable: false,
-      suppressMenu: true,
     },
   ];
 
   const defaultColDef = useMemo(
     () => ({
-      resizable: true,
-      sortable: true,
-      filter: true,
+      // flex: 1,
       wrapHeaderText: true,
       autoHeaderHeight: true,
+      resizable: true,
+      filter: true,
+      sortable: true,
+      suppressSizeToFit: true,
+      suppressMenuHide: true,
     }),
     []
   );

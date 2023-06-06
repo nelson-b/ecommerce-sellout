@@ -38,7 +38,6 @@ function DataReviewComponent({}) {
   const [radioValue, setRadioValue] = useState("1");
   const location = useLocation();
   const historicalRole = new URLSearchParams(location.search).get("role");
-  console.log('historicalRole', historicalRole)
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -59,6 +58,10 @@ function DataReviewComponent({}) {
       pinned: "left",
       width: 170,
       suppressSizeToFit: true,
+    },
+    {
+      field: "Partner_Code",
+      hide: true,
     },
     {
       headerName: "Country",
@@ -541,10 +544,6 @@ function DataReviewComponent({}) {
 
   const handleEdit = () => {
     navigate("/dataInput");
-  };
-
-  const handleConfirm = () => {
-    setRowData(rowData);
   };
 
   const handleDtaInputNavigation = () => {

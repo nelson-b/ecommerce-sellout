@@ -287,21 +287,21 @@ function PartnerRequestList(props) {
   };
 
   const handleReject = () => {
-    console.log(
+    alert(
       message === 1
-        ? `${message} Partner Account selected for Reject `
+        ? `${message} Partner Account Sent for Reject `
         : message > 1
-        ? `${message} Partner Accounts selected for Reject`
+        ? `${message} Partners Account Sent for Reject`
         : ""
     );
   };
 
   const handleApprove = () => {
-    console.log(
+    alert(
       message === 1
-        ? `${message} Partner Account selected for Approval `
+        ? `${message} Partner Account Sent for Approval `
         : message > 1
-        ? `${message} Partner Accounts selected for Approval`
+        ? `${message} Partners Account Sent for Approval`
         : ""
     );
   };

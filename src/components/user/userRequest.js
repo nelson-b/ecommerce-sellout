@@ -2,13 +2,12 @@ import React, { useCallback, useMemo, useState, useRef } from "react";
 import { connect } from "react-redux";
 import { sellOutData } from "../../actions/selloutaction";
 import MyMenu from "../menu/menu.component.js";
-import { Container, Row, Col, Button, Breadcrumb } from "react-bootstrap";
+import { Container, Row, Button, Breadcrumb } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
 import userRequestData from "../../data/userRequestData.json";
-
 import "../home/home.component.css";
 
 function UserRequestComponent(props) {
@@ -20,16 +19,16 @@ function UserRequestComponent(props) {
 
   const ChildMessageRenderer = (props) => {
     const invokeReject = () => {
-      console.log(
+      alert(
         props.data.user_name?.length
-          ? `${props.data.user_name} Selected for reject approval`
+          ? `${props.data.user_name} Sent for Reject Approval`
           : ""
       );
     };
     const invokeApprove = () => {
-      console.log(
+      alert(
         props.data.user_name?.length
-          ? `${props.data.user_name} selected for Validate`
+          ? `${props.data.user_name} Sent for Validate`
           : ""
       );
     };
@@ -64,12 +63,27 @@ function UserRequestComponent(props) {
     );
   };
 
+  const handleCellDoubleClick = (params, event, column, rowNode) => {
+    navigate(`/user/update?role=${screenRole}&id=${column.data.user_name}`);
+  };
+
   const userRequestDef = [
     {
       headerName: "UserName",
       field: "user_name",
       width: 150,
       editable: false,
+      cellRendererFramework: (params) => {
+        return (
+          <div style={{cursor: "pointer"}}
+            onDoubleClick={(event) =>
+              handleCellDoubleClick(event, params.column, params.node)
+            }
+          >
+            {params.value}
+          </div>
+        );
+      },
     },
     {
       headerName: "User ID",
