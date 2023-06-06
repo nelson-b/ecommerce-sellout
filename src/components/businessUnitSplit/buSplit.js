@@ -130,6 +130,7 @@ function BusinessUnitSplit() {
 
   const sumTotal = (params, index) => {
     console.log('sumTotal');
+
     let totalBu = (
       Number(Math.round(params.data.DE)) + 
       Number(Math.round(params.data.H_and_D)) + 
@@ -157,7 +158,7 @@ function BusinessUnitSplit() {
     }
     params.data[field] = Number(Math.round(params.newValue));
     console.log('checkNumericValue', params.data[field]);
-    return params.data[field];
+    return Number(params.data[field]);
   }
 
   const columnDefs = [
