@@ -25,6 +25,7 @@ const Select = (props) => {
     isClearable: props.isClearable,
     value: props.options.find((x) => x.value === props.value),
     options: props.options,
+    isDisabled: props.isDisabled
   };
 
   return (
@@ -53,6 +54,7 @@ Select.defaultProps = {
   onChangeFunc: () => {},
   isReq: null,
   onValidateFunc: () => {},
+  isDisabled: false
 };
 
 Select.propTypes = {

@@ -26,7 +26,7 @@ function PartnerAccountList(props) {
         []
     );
 
-    const onGridReady = useCallback((params) => {
+    const onGridReady = useCallback((params, props) => {
         let data =[ 
         {
             partneraccname:"Partner 1", currentEditor: "Editor 1", current1stApprover: "Approver 1", current2ndApprover: "Approver 2"
