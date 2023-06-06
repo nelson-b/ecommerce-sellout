@@ -45,14 +45,19 @@ function Home(props) {
     navigate(`/user/list?role=${props}`);
   };
 
-  const calcSellOutCurrYTDvsLYYTD = (params) => {
-    console.log('calcSellOutCurrYTDvsLYYTD', params.data);
+  const calcSellOutCurrYTDvsLYYTD = (params) => { 
       if(params.data!=undefined){
         params.data["Sellout Growth Vs Last Year"] = Math.round((
           (params.data["YTD Sellout Value (In K EUR)"] - params.data.LY_YTD_Sellout_Value_In_K_EUR)
         /params.data.LY_YTD_Sellout_Value_In_K_EUR) * 100);
     
       return params.data["Sellout Growth Vs Last Year"];
+    }
+    else
+    {
+      return Math.round((
+        (params.node.aggData["YTD Sellout Value (In K EUR)"] - params.node.aggData.LY_YTD_Sellout_Value_In_K_EUR)
+      /params.node.aggData.LY_YTD_Sellout_Value_In_K_EUR) * 100);
     }
   }
 
@@ -86,7 +91,7 @@ function Home(props) {
     {
       field: "Sellout Growth Vs Last Year",
       spanHeaderHeight: true,
-      aggFunc: "sum",
+      // aggFunc: "sum",
       minWidth: 150,
       cellClass: "grid-cell-centered",
       valueFormatter: (params) => {
@@ -95,6 +100,9 @@ function Home(props) {
       valueGetter: (params) => {
         return calcSellOutCurrYTDvsLYYTD(params);
       },
+      // valueParser: (params) => {
+      //   return calcSellOutCurrYTDvsLYYTD(params);
+      // },
       cellStyle: function (params) {
         if (params.value < "0") {
           return { color: "#ff0000", fontWeight: "bold", 'border-right-color': '#e2e2e2'};

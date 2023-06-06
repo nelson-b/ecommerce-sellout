@@ -88,6 +88,7 @@ function PartnerComponent(props) {
     //create api
     props.CreatePartnerData(data)
       .then((data) => {
+        console.log(data);
         setShowSuccessModal(true);
         setShowErrorModal(false);
         setTimeout(()=>navigate('/partner/list'), 3000);
