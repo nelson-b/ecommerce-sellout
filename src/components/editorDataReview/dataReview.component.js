@@ -165,8 +165,8 @@ function DataReviewComponent({}) {
         1
       );
 
-      const currMonthName = allCalMonths[date.getMonth()];
-      const lastMonthName = allCalMonths[date.getMonth()-1];
+      const currMonthName = allCalMonths[date.getMonth() -1];
+      const lastMonthName = allCalMonths[date.getMonth()-2];
       const year = String(date.getFullYear()).slice(-2);
       const currmonthField = currMonthName + year;
       const lastmonthField = lastMonthName + year;
@@ -200,7 +200,7 @@ function DataReviewComponent({}) {
     const currentMonth = currentDate.getMonth();
     let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
-    const currMonthName = allCalMonths[date.getMonth()];
+    const currMonthName = allCalMonths[date.getMonth() -1];
     const curryear = String(date.getFullYear()).slice(-2);
     const currmonthCYField = currMonthName + curryear;
     const currmonthLYField = currMonthName + (curryear - 1);
@@ -299,10 +299,10 @@ function DataReviewComponent({}) {
   const currentMonth = currentDate.getMonth();
   const currentYear = String(currentDate.getFullYear()).slice(-2);
 
-  for (let i = 7; i > 0; i--) {
+  for (let i = 5; i > 0; i--) {
     let date = new Date(
       currentDate.getFullYear(),
-      currentDate.getMonth() - (i - 1),
+      currentDate.getMonth() - (i),
       1
     );
 
@@ -332,6 +332,37 @@ function DataReviewComponent({}) {
           {
             field: monthAEFlagField,
             hide: true,
+          },
+          {
+            headerName: "YTD Sellout Growth",
+            field: "YTD_Growth",
+            editable: false,
+            minWidth: 150,
+            wrapHeaderText: true,
+            aggFunc: "sum",
+            sortable: true,
+            suppressMenu: true,
+            valueFormatter: (params) => {
+              return params.value + "%";
+            },
+            // valueGetter: (params) => {
+            //   return getYTDSelloutGrowthPercCalc(params);
+            // },
+            cellStyle: function (params) {
+              if (params.value < "0") {
+                return {
+                  color: "#ff0000",
+                  fontWeight: "bold",
+                  "border-color": "#e2e2e2",
+                };
+              } else {
+                return {
+                  color: "#009530",
+                  fontWeight: "bold",
+                  "border-color": "#e2e2e2",
+                };
+              }
+            },
           },
           {
             headerName: "var. CM vs LM (value)",
@@ -403,8 +434,7 @@ function DataReviewComponent({}) {
     1
   );
 
-  const prevMonth = allCalMonths[previousYear.getMonth()];
-  console.log("prevMonth", prevMonth);
+  const prevMonth = allCalMonths[previousYear.getMonth() - 1];
   const prevYear = String(previousYear.getFullYear()).slice(-2);
 
   const prevYearwithMonthValue = prevMonth + prevYear;
@@ -454,7 +484,7 @@ function DataReviewComponent({}) {
           },
         },
         {
-          headerName: "var. CM vs CM vs LY (%)",
+          headerName: "var. CM vs LY (%)",
           field: "PreVMvsLM",
           minWidth: 120,
           editable: false,
@@ -528,6 +558,7 @@ function DataReviewComponent({}) {
       sortable: true,
       suppressMenu: true,
       cellStyle: {'border-color': '#e2e2e2'},
+      cellClassRules: { 'cursor-pointer': () => true }
     },
     {
       headerName: "Approver Comments",
@@ -641,7 +672,7 @@ function DataReviewComponent({}) {
             </div>
             <div className="historical-header">
               <Button
-                className="btn-md historical-data"
+                className="btn-historical historical-data"
                 onClick={() => {
                   historicalDataNavigation();
                 }}

@@ -352,7 +352,7 @@ function AdminOverview(props) {
     <>
       <Container fluid>
         <Row>
-          <MyMenu role={props.role} />
+          <MyMenu/>
         </Row>
         <Row>
           <div>

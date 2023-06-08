@@ -11,8 +11,9 @@ import {
   ButtonGroup,
   Breadcrumb,
   Container,
+  Form,
 } from "react-bootstrap";
-import { allCalMonths } from "../constant";
+import { allCalMonths, quarters } from "../constant";
 import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
@@ -24,11 +25,9 @@ import active from "../../images/active.png";
 import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
 import "../approverDataReview/dataReviewApprover.css";
-import customHeader from "../../components/approverDataReview/customHeader";
 import { useLocation } from "react-router-dom";
 
 function DataReviewApprover(props) {
-  console.log("kadapa", props);
   const gridRef = useRef();
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
@@ -115,8 +114,6 @@ function DataReviewApprover(props) {
     return `Q${quarter}`;
   };
 
-  const currentQuater = getCurrentQuarter();
-
   const getQuarterMonths = (quarter) => {
     const quarters = {
       Q1: ["Jan", "Feb", "Mar"],
@@ -126,34 +123,416 @@ function DataReviewApprover(props) {
     };
     return quarters[quarter] || [];
   };
-  
-  const quaterMonths = getQuarterMonths(currentQuater);
 
-  const currentDate = new Date();
-  const currentYear = String(currentDate.getFullYear()).slice(-2);
+  const onBtShowYearColumn = useCallback(() => {
+    const currentDate = new Date();
+    const currentYear = String(currentDate.getFullYear()).slice(-2);
+    const currentMonth = allCalMonths[currentDate.getMonth()];
+    // const currentMonth = 'Jul'; // To test quarter basis
+    let currentQuarter = 0;
+    let currentQuarterIndex = 0;
+    let index = 1;
+    let selectedYear = currentYear;
 
-  const expandColumn = {
-    headerGroupComponent: customHeader,
-    children: [{ field: "", minWidth: 70, suppressMenu: true }],
-  };
+    for (const quarter in quarters) {
+      if (quarters[quarter].includes(currentMonth)) {
+        currentQuarter = quarter;
+        currentQuarterIndex = quarters[quarter].indexOf(currentMonth);
+        break;
+      }
+      index++;
+    }
 
-  quaterMonths.forEach((month, index) => {
-    const monthValue = month + currentYear;
-    const columnDef1 = {
-      headerName: `${monthValue}`,
-      field: `${monthValue}`,
-      filter: true,
-      sortable: true,
-      minWidth: 100,
-      aggFunc: "sum",
-      suppressSizeToFit: true,
-      suppressMenu: true,
-      columnGroupShow: "open",
-      cellStyle: {'border-color': '#e2e2e2'},
-    };
-    expandColumn.children.push(columnDef1);
-  });
-  columnDefs.push(expandColumn);
+    let resultQuarter = 0;
+    if (currentQuarterIndex === 0) {
+      const previousIndex = index - 1 ? index - 1 : 4;
+      if (index - 1 == 0) {
+        selectedYear = currentYear - 1;
+      }
+      const previousQuarter = Object.keys(quarters)[previousIndex - 1];
+      resultQuarter = previousQuarter;
+    } else {
+      resultQuarter = currentQuarter;
+    }
+    const q2Values = quarters[resultQuarter];
+
+    gridRef.current.api.setColumnDefs([
+      {
+        field: "Zone",
+        rowGroup: true,
+        hide: true,
+      },
+      {
+        headerName: "Country",
+        field: "Country",
+        rowGroup: true,
+        hide: true,
+        filter: true,
+        pinned: "left",
+        suppressSizeToFit: true,
+        editable: false,
+      },
+      {
+        headerName: "Model",
+        field: "Model",
+        rowGroup: true,
+        hide: true,
+        filter: true,
+        pinned: "left",
+        suppressSizeToFit: true,
+        editable: false,
+      },
+      {
+        headerName: "Partner Account Name",
+        field: "Partner",
+        rowGroup: true,
+        hide: true,
+        filter: true,
+        pinned: "left",
+        suppressSizeToFit: true,
+        editable: false,
+      },
+      {
+        headerName: "Currency of Reporting",
+        field: "currency",
+        pinned: "left",
+        width: 140,
+        editable: false,
+        suppressMenu: true,
+      },
+      {
+        headerName: "Status",
+        field: "Status",
+        pinned: "left",
+        width: 110,
+        suppressMenu: true,
+        cellRenderer: (params) => {
+          const Status = params.value;
+          return (
+            <div>
+              {Status === "Active" && (
+                <img src={active} alt="active" style={{ width: "80px" }} />
+              )}
+              {Status === "Closed" && (
+                <img src={closed} alt="closed" style={{ width: "80px" }} />
+              )}
+            </div>
+          );
+        },
+      },
+      {
+        field: `${q2Values[0]}${selectedYear}`,
+        filter: true,
+        sortable: true,
+        minWidth: 100,
+        aggFunc: "sum",
+        suppressSizeToFit: true,
+        suppressMenu: true,
+        columnGroupShow: "open",
+        cellStyle: { "border-color": "#e2e2e2" },
+      },
+      {
+        field: `${q2Values[1]}${selectedYear}`,
+        filter: true,
+        sortable: true,
+        minWidth: 100,
+        aggFunc: "sum",
+        suppressSizeToFit: true,
+        suppressMenu: true,
+        columnGroupShow: "open",
+        cellStyle: { "border-color": "#e2e2e2" },
+      },
+      {
+        field: `${q2Values[2]}${selectedYear}`,
+        filter: true,
+        sortable: true,
+        minWidth: 100,
+        aggFunc: "sum",
+        suppressSizeToFit: true,
+        suppressMenu: true,
+        columnGroupShow: "open",
+        cellStyle: { "border-color": "#e2e2e2" },
+      },
+      {
+        headerName: "Sellout value Current Quarter",
+        field: "SelloutCQ",
+        editable: false,
+        minWidth: 150,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+        valueGetter: (params) => {
+          return getTotSellOutCurrQuatrCalc(params);
+        },
+      },
+      {
+        headerName: "YTD Sellout Value",
+        field: "YTD",
+        editable: false,
+        minWidth: 140,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+        valueGetter: (params) => {
+          return getTotalYTDSellOutGrowthCalc(params);
+        },
+      },
+      {
+        headerName: "YTD Sellout Growth",
+        field: "YTD_Growth",
+        editable: false,
+        minWidth: 150,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        valueFormatter: (params) => {
+          return params.value + "%";
+        },
+        valueGetter: (params) => {
+          return getYTDSelloutGrowthPercCalc(params);
+        },
+        cellStyle: function (params) {
+          if (params.value < "0") {
+            return {
+              color: "#ff0000",
+              fontWeight: "bold",
+              "border-color": "#e2e2e2",
+            };
+          } else {
+            return {
+              color: "#009530",
+              fontWeight: "bold",
+              "border-color": "#e2e2e2",
+            };
+          }
+        },
+      },
+      {
+        headerName: "Ambition Data",
+        field: "ambition",
+        editable: false,
+        minWidth: 120,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+      },
+      {
+        headerName: "System Comments",
+        field: "systemComments",
+        editable: false,
+        wrapHeaderText: true,
+        minWidth: 140,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+      },
+      {
+        headerName: "Editor Comments",
+        field: "editorComments",
+        editable: false,
+        wrapHeaderText: true,
+        minWidth: 140,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+      },
+      {
+        headerName: "Approver Comments",
+        field: "approverComments",
+        editable: true,
+        wrapHeaderText: true,
+        minWidth: 140,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        singleClickEdit: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+        cellClassRules: { "cursor-pointer": () => true },
+      },
+    ]);
+  }, []);
+
+  const onBtHideYearColumn = useCallback(() => {
+    gridRef.current.api.setColumnDefs([
+      {
+        field: "Zone",
+        rowGroup: true,
+        hide: true,
+      },
+      {
+        headerName: "Country",
+        field: "Country",
+        rowGroup: true,
+        hide: true,
+        filter: true,
+        pinned: "left",
+        suppressSizeToFit: true,
+        editable: false,
+      },
+      {
+        headerName: "Model",
+        field: "Model",
+        rowGroup: true,
+        hide: true,
+        filter: true,
+        pinned: "left",
+        suppressSizeToFit: true,
+        editable: false,
+      },
+      {
+        headerName: "Partner Account Name",
+        field: "Partner",
+        rowGroup: true,
+        hide: true,
+        filter: true,
+        pinned: "left",
+        suppressSizeToFit: true,
+        editable: false,
+      },
+      {
+        headerName: "Currency of Reporting",
+        field: "currency",
+        pinned: "left",
+        width: 140,
+        editable: false,
+        suppressMenu: true,
+      },
+      {
+        headerName: "Status",
+        field: "Status",
+        pinned: "left",
+        width: 110,
+        suppressMenu: true,
+        cellRenderer: (params) => {
+          const Status = params.value;
+          return (
+            <div>
+              {Status === "Active" && (
+                <img src={active} alt="active" style={{ width: "80px" }} />
+              )}
+              {Status === "Closed" && (
+                <img src={closed} alt="closed" style={{ width: "80px" }} />
+              )}
+            </div>
+          );
+        },
+      },
+      {
+        headerName: "Sellout value Current Quarter",
+        field: "SelloutCQ",
+        editable: false,
+        minWidth: 150,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+        valueGetter: (params) => {
+          return getTotSellOutCurrQuatrCalc(params);
+        },
+      },
+      {
+        headerName: "YTD Sellout Value",
+        field: "YTD",
+        editable: false,
+        minWidth: 140,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+        valueGetter: (params) => {
+          return getTotalYTDSellOutGrowthCalc(params);
+        },
+      },
+      {
+        headerName: "YTD Sellout Growth",
+        field: "YTD_Growth",
+        editable: false,
+        minWidth: 150,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        valueFormatter: (params) => {
+          return params.value + "%";
+        },
+        valueGetter: (params) => {
+          return getYTDSelloutGrowthPercCalc(params);
+        },
+        cellStyle: function (params) {
+          if (params.value < "0") {
+            return {
+              color: "#ff0000",
+              fontWeight: "bold",
+              "border-color": "#e2e2e2",
+            };
+          } else {
+            return {
+              color: "#009530",
+              fontWeight: "bold",
+              "border-color": "#e2e2e2",
+            };
+          }
+        },
+      },
+      {
+        headerName: "Ambition Data",
+        field: "ambition",
+        editable: false,
+        minWidth: 120,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+      },
+      {
+        headerName: "System Comments",
+        field: "systemComments",
+        editable: false,
+        wrapHeaderText: true,
+        minWidth: 140,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+      },
+      {
+        headerName: "Editor Comments",
+        field: "editorComments",
+        editable: false,
+        wrapHeaderText: true,
+        minWidth: 140,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+      },
+      {
+        headerName: "Approver Comments",
+        field: "approverComments",
+        editable: true,
+        wrapHeaderText: true,
+        minWidth: 140,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        singleClickEdit: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+        cellClassRules: { "cursor-pointer": () => true },
+      },
+    ]);
+  }, []);
 
   const getMonthField = (month) => {
     const currentDate = new Date();
@@ -231,7 +610,7 @@ function DataReviewApprover(props) {
     let YTD = YTDSellOutValArr.reduce(function (prev, current) {
       return prev + +current;
     }, 0);
-    
+
     if (params.data) {
       params.data.YTD = YTD != undefined ? YTD : 0;
     }
@@ -245,8 +624,8 @@ function DataReviewApprover(props) {
     if (params.data) {
       let YTDSelloutCY = params.data.YTD;
 
-    //YTD Sellout LY
-    const getYTDMonthsLY = allCalMonths;
+      //YTD Sellout LY
+      const getYTDMonthsLY = allCalMonths;
 
       let YTDSellOutValArrLY = [];
       getYTDMonthsLY.forEach((month, index) => {
@@ -291,7 +670,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: {'border-color': '#e2e2e2'},
+      cellStyle: { "border-color": "#e2e2e2" },
       valueGetter: (params) => {
         return getTotSellOutCurrQuatrCalc(params);
       },
@@ -305,7 +684,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: {'border-color': '#e2e2e2'},
+      cellStyle: { "border-color": "#e2e2e2" },
       valueGetter: (params) => {
         return getTotalYTDSellOutGrowthCalc(params);
       },
@@ -327,9 +706,17 @@ function DataReviewApprover(props) {
       },
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold", 'border-color': '#e2e2e2'};
+          return {
+            color: "#ff0000",
+            fontWeight: "bold",
+            "border-color": "#e2e2e2",
+          };
         } else {
-          return { color: "#009530", fontWeight: "bold", 'border-color': '#e2e2e2'};
+          return {
+            color: "#009530",
+            fontWeight: "bold",
+            "border-color": "#e2e2e2",
+          };
         }
       },
     },
@@ -342,8 +729,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: {'border-color': '#e2e2e2'},
-
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "System Comments",
@@ -354,7 +740,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: {'border-color': '#e2e2e2'},
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "Editor Comments",
@@ -365,7 +751,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: {'border-color': '#e2e2e2'},
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "Approver Comments",
@@ -376,7 +762,9 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: {'border-color': '#e2e2e2'},
+      singleClickEdit: true,
+      cellStyle: { "border-color": "#e2e2e2" },
+      cellClassRules: { "cursor-pointer": () => true },
     }
   );
 
@@ -503,6 +891,24 @@ function DataReviewApprover(props) {
           <Stack direction="horizontal" gap={4}>
             <div className="sell-out-header">Sell Out Data Review</div>
             <div className="mt-0 ms-auto">
+              <Row className="quarter-months">Quarter Months</Row>
+              <Col className="">
+                <Button
+                  className="show-data save-header"
+                  onClick={onBtShowYearColumn}
+                >
+                  Show
+                </Button>
+                <Button
+                  className="hide-data hide-header"
+                  onClick={onBtHideYearColumn}
+                >
+                  Hide
+                </Button>
+              </Col>
+            </div>
+
+            <div className="mt-0">
               <Row className="currency-mode">CURRENCY MODE</Row>
               <Col>
                 <ButtonGroup>
@@ -525,7 +931,7 @@ function DataReviewApprover(props) {
             </div>
             <div className="historical-header">
               <Button
-                className="btn-md historical-data"
+                className="btn-historical historical-data"
                 onClick={() => {
                   historicalDataNavigation(historicalRole);
                 }}
@@ -538,7 +944,7 @@ function DataReviewApprover(props) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 350, marginTop: "10px" }}
+          style={{ height: 320, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}
@@ -559,6 +965,8 @@ function DataReviewApprover(props) {
             groupSelectsChildren={true}
             suppressMenuHide={true}
             groupDefaultExpanded={1}
+            suppressRowClickSelection={true}
+            suppressCellSelection={true}
           ></AgGridReact>
           <div className="checkbox-message">
             {message === 1
@@ -568,7 +976,7 @@ function DataReviewApprover(props) {
               : ""}
           </div>
           <div>
-            <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
+            <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
               <Col xs="auto">
                 <Button
                   className="btn-upload cancel-header"

@@ -31,7 +31,6 @@ import {
 } from "../optionsData.js";
 import PartnerAccountList from "../partnerAccountList.component.js";
 import { useLocation } from "react-router-dom";
-import requestData from "./data.json";
 
 function SaveUser(props) {
   const navigate = useNavigate();
@@ -42,7 +41,6 @@ function SaveUser(props) {
 
   const onMenuOpen = () => setIsMenuOpen(true);
   const onMenuClose = () => setIsMenuOpen(false);
-  const id = new URLSearchParams(location.search).get("id");
 
   const Option = (props) => {
     return (
@@ -71,8 +69,6 @@ function SaveUser(props) {
   const [optionCountrySelected, setOptionCountrySelected] = useState([]);
   const [optionModelSelected, setOptionModelSelected] = useState([]);
   const [optionPartnerSelected, setOptionPartnerSelected] = useState([]);
-
-  const data = requestData.find((e) => e.user_name === id) ?? "";
 
   const handleUserChange = (selected) => {
     setOptionUsernameSelected(selected);
@@ -228,9 +224,6 @@ function SaveUser(props) {
                         onMenuOpen={onMenuOpen}
                         onMenuClose={onMenuClose}
                         options={userOptions}
-                        value={userOptions.find(
-                          (e) => e.value === data.user_name
-                        )}
                         onChange={handleUserChange}
                         {...register("username", {
                           required: "User name is required",
@@ -258,16 +251,12 @@ function SaveUser(props) {
                         </span>
                       </OverlayTrigger>
                       <Select
-                        isDisabled={props.module === "Update"}
                         aria-labelledby="aria-label"
                         inputId="useremailid"
                         name="useremailid"
                         onMenuOpen={onMenuOpen}
                         onMenuClose={onMenuClose}
                         options={userEmailOptions}
-                        value={userEmailOptions.find(
-                          (e) => e.value === data.user_id
-                        )}
                         {...register("useremailid", {
                           required: "User email is required",
                         })}
@@ -283,16 +272,12 @@ function SaveUser(props) {
                         Role
                       </Form.Label>
                       <Select
-                        isDisabled={props.module === "Update"}
                         aria-labelledby="aria-label"
                         inputId="userrole"
                         name="userrole"
                         onMenuOpen={onMenuOpen}
                         onMenuClose={onMenuClose}
                         options={userRoleOptions}
-                        value={userRoleOptions.find(
-                          (e) => e.value === data.role
-                        )}
                         {...register("userrole", {
                           required: "User role is required",
                         })}
@@ -322,14 +307,12 @@ function SaveUser(props) {
                         Ops
                       </Form.Label>
                       <Select
-                        isDisabled={props.module === "Update"}
                         aria-labelledby="aria-label"
                         inputId="userops"
                         name="userops"
                         onMenuOpen={onMenuOpen}
                         onMenuClose={onMenuClose}
                         options={opsOptions}
-                        value={opsOptions.find((e) => e.value === data.ops)}
                         {...register("userops", {
                           required: "User Ops is required",
                         })}
@@ -345,16 +328,12 @@ function SaveUser(props) {
                         Zone
                       </Form.Label>
                       <Select
-                        isDisabled={props.module === "Update"}
                         aria-labelledby="aria-label"
                         inputId="usrzone"
                         name="usrzone"
                         onMenuOpen={onMenuOpen}
                         onMenuClose={onMenuClose}
                         options={userZoneOptions}
-                        value={userZoneOptions.find(
-                          (e) => e.value === data.zone
-                        )}
                         {...register("usrzone", {
                           required: "User zone is required",
                         })}
@@ -370,7 +349,6 @@ function SaveUser(props) {
                         Model Type
                       </Form.Label>
                       <MultiSelectDrp
-                        isDisabled={props.module === "Update"}
                         options={modelOptions}
                         isMulti
                         closeMenuOnSelect={false}
@@ -382,8 +360,7 @@ function SaveUser(props) {
                         }}
                         onChange={handleModelChange}
                         allowSelectAll={true}
-                        // value={optionModelSelected}
-                        value={modelOptions.find((e) => e.value === data.Model)}
+                        value={optionModelSelected}
                         inputId="modelType"
                         {...register("modelType", {
                           required: "Model type is required",
@@ -419,7 +396,6 @@ function SaveUser(props) {
                     </span>
                   </OverlayTrigger>
                   <MultiSelectDrp
-                    isDisabled={props.module === "Update"}
                     options={countryOptions}
                     isMulti
                     closeMenuOnSelect={false}
@@ -427,8 +403,7 @@ function SaveUser(props) {
                     components={{ Option, MultiValue, animatedComponents }}
                     onChange={handleCountryChange}
                     allowSelectAll={true}
-                    // value={optionCountrySelected}
-                    value={countryOptions.find((e) => e.value === data.country)}
+                    value={optionCountrySelected}
                     inputId="usrcountry"
                     {...register("usrcountry", {
                       required: "User country is required",
@@ -457,7 +432,6 @@ function SaveUser(props) {
                     </span>
                   </OverlayTrigger>
                   <MultiSelectDrp
-                    isDisabled={props.module === "Update"}
                     options={partnerOptions}
                     isMulti
                     closeMenuOnSelect={false}
@@ -465,8 +439,7 @@ function SaveUser(props) {
                     components={{ Option, MultiValue, animatedComponents }}
                     onChange={handlePartnerChange}
                     allowSelectAll={true}
-                    // value={optionPartnerSelected}
-                    value={partnerOptions.find((e) => e.value === data.partner)}
+                    value={optionPartnerSelected}
                     inputId="partnerAccNm"
                     {...register("partnerAccNm", {
                       required: "Partner Account Name is required",

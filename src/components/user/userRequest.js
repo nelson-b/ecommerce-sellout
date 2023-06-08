@@ -2,8 +2,7 @@ import React, { useCallback, useMemo, useState, useRef } from "react";
 import { connect } from "react-redux";
 import { sellOutData } from "../../actions/selloutaction";
 import MyMenu from "../menu/menu.component.js";
-import { Container, Row, Button, Breadcrumb } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Container, Row, Button, Breadcrumb, Modal } from "react-bootstrap";
 import { AgGridReact } from "ag-grid-react";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
@@ -12,8 +11,9 @@ import "../home/home.component.css";
 
 function UserRequestComponent(props) {
   const gridRef = useRef();
-  const navigate = useNavigate();
   const [rowData, setRowData] = useState();
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState(null);
   const location = useLocation();
   const screenRole = new URLSearchParams(location.search).get("role");
 
@@ -63,9 +63,41 @@ function UserRequestComponent(props) {
     );
   };
 
-  const handleCellDoubleClick = (params, event, column, rowNode) => {
-    navigate(`/user/update?role=${screenRole}&id=${column.data.user_name}`);
+  const ModalCellRenderer = (props) => {
+    const { showModal, value } = props;
+    const handleClick = () => {
+      showModal(value);
+    };
+    return <div onDoubleClick={handleClick}>{value}</div>;
   };
+
+  const columnDefs = [
+    { headerName: "Country", field: "Country", minWidth: 170,},
+    { headerName: "Model", field: "Model", minWidth: 150, },
+    { headerName: "Partner Account Name", field: "partneraccname", minWidth: 250},
+    { headerName: "Current Editor", field: "currentEditor", minWidth: 200, },
+    { headerName: "Current 1st Approver", field: "current1stApprover", minWidth: 200,},
+    { headerName: "Current 2nd Approver", field: "current2ndApprover", minWidth: 200,},
+  ];
+
+  const requestData = [
+    {
+      Country: "Finland",
+      Model: "E1",
+      partneraccname: "Partner 1",
+      currentEditor: "Editor 1",
+      current1stApprover: "Approver 1",
+      current2ndApprover: "Approver 2",
+    },
+    {
+      Country: "Japan",
+      Model: "E1",
+      partneraccname: "Partner 2",
+      currentEditor: "Editor 2",
+      current1stApprover: "Approver 1",
+      current2ndApprover: "Approver 2",
+    },
+  ];
 
   const userRequestDef = [
     {
@@ -73,16 +105,10 @@ function UserRequestComponent(props) {
       field: "user_name",
       width: 150,
       editable: false,
-      cellRendererFramework: (params) => {
-        return (
-          <div style={{cursor: "pointer"}}
-            onDoubleClick={(event) =>
-              handleCellDoubleClick(event, params.column, params.node)
-            }
-          >
-            {params.value}
-          </div>
-        );
+      cellClassRules: { "cursor-pointer": () => true },
+      cellRenderer: "modalCellRenderer",
+      cellRendererParams: {
+        showModal: (rowData) => handleShowModal(rowData),
       },
     },
     {
@@ -153,11 +179,21 @@ function UserRequestComponent(props) {
       .then((data) => setRowData(data));
   }, []);
 
+  const handleShowModal = (rowData) => {
+    setShowModal(true);
+    setModalData(rowData);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalData(null);
+  };
+
   return (
     <>
       <Container fluid>
         <Row>
-          <MyMenu role={screenRole} />
+          <MyMenu />
         </Row>
         <div>
           <Breadcrumb>
@@ -189,8 +225,40 @@ function UserRequestComponent(props) {
             getRowStyle={getRowStyle}
             onGridReady={onGridReady}
             suppressMenuHide={true}
+            frameworkComponents={{ modalCellRenderer: ModalCellRenderer }}
           ></AgGridReact>
         </Row>
+        <Modal
+          show={showModal}
+          onHide={handleCloseModal}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Partner Accounts Associated with {modalData}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="ag-theme-alpine" style={{ height: "200px" }}>
+              <AgGridReact
+                className="ag-theme-alpine"
+                animateRows="true"
+                rowData={requestData}
+                columnDefs={columnDefs}
+                defaultColDef={defaultColDef}
+                onGridReady={onGridReady}
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              className="btn-upload save-header"
+              onClick={handleCloseModal}
+            >
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </>
   );

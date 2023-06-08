@@ -10,17 +10,19 @@ import { allCalMonths } from "../constant";
 import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
 import MyMenu from "../menu/menu.component.js";
-import CancelModal from "../modal/cancelModal";
 import "ag-grid-enterprise";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
 import AlertModal from "../modal/alertModel";
+import { useLocation } from "react-router-dom";
 
-function DataInputComponent() {
+function DataInputComponent(props) {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [rowData, setRowData] = useState(null);
+  const location = useLocation();
+  const dataRole = new URLSearchParams(location.search).get("role");
 
   const handleClearClick = () => {
     window.location.reload();
@@ -418,10 +420,10 @@ function DataInputComponent() {
   const currentMonth = currentDate.getMonth();
   const currentYear = String(currentDate.getFullYear()).slice(-2);
 
-  for (let i = 7; i > 0; i--) {
+  for (let i = 5; i > 0; i--) {
     let date = new Date(
       currentDate.getFullYear(),
-      currentDate.getMonth() - (i - 1), 
+      currentDate.getMonth() - (i), 
       1
     );
     
@@ -595,7 +597,7 @@ function DataInputComponent() {
   }, []);
 
   const handleNavigation = () => {
-    navigate("/dataReview");
+    navigate(`/dataReview?role=${dataRole}`);
   };
 
   return (
@@ -682,7 +684,7 @@ function DataInputComponent() {
             <Button
               className="btn-upload save-header"
               onClick={() => {
-                handleNavigation();
+                handleNavigation(dataRole);
               }}
             >
               Next

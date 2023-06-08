@@ -13,6 +13,14 @@
   margin: 0px 40px;
 }
 
+.quarter-months {
+  color: grey;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0px 5px;
+  text-transform: uppercase;
+}
+
 .historical-header {
   margin-right: 0px;
   margin-top: 16px;
@@ -30,6 +38,9 @@
   background: #009530 0% 0% no-repeat padding-box;
   border: 2px solid #009530;
   border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .historical-data:hover {
@@ -75,6 +86,7 @@
   border: 2px solid var(--unnamed-color-009530);
   background: #FFFFFF 0% 0% no-repeat padding-box;
   border: 2px solid #009530;
+  border-radius: 8px;
   color: #009530;
   text-transform: uppercase;
   font-size: 14px;
@@ -85,6 +97,7 @@
   border: 2px solid var(--unnamed-color-009530);
   background: #FFFFFF 0% 0% no-repeat padding-box;
   border: 2px solid #009530;
+  border-radius: 8px;
   color: #009530;
 }
 
@@ -92,6 +105,7 @@
   border: 2px solid var(--unnamed-color-009530);
   background: #FFFFFF 0% 0% no-repeat padding-box;
   border: 2px solid #009530;
+  border-radius: 8px;
   color: #009530;
 }
 

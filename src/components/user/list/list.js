@@ -24,7 +24,7 @@ function UserList(props) {
   };
 
   const handleCreate = () => {
-    navigate(`/user/create?role=${userRole}&id=${""}`);
+    navigate(`/user/create?role=${userRole}`);
   };
 
   const columnDefs = [

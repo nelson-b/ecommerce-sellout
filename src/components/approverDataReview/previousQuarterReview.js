@@ -309,7 +309,7 @@ function PartnerQuarterApprover({ props }) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 350, marginTop: "10px" }}
+          style={{ height: 320, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}
@@ -336,7 +336,7 @@ function PartnerQuarterApprover({ props }) {
               : ""}
           </div>
           <div>
-            <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
+            <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
               <Col xs="auto">
                 <Button
                   className="btn-upload cancel-header"

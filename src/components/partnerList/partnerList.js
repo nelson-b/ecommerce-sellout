@@ -323,7 +323,7 @@ function PartnerList(props) {
     <>
       <Container fluid>
         <Row>
-          <MyMenu role={screenRole}/>
+          <MyMenu />
         </Row>
         <div>
           {screenRole === "admin" ? (
