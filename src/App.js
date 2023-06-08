@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Redirect } from "react-router-dom";
 import ErrorPageComponent from "./components/error-page.component.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import PartnerComponent from "./components/partnerGroup/partner.component.js";
@@ -21,7 +21,9 @@ import HistoricalData from "./components/historicalData/historicalData.js";
 import BusinessUnitSplit from "./components/businessUnitSplit/buSplit.js";
 import UserRequestComponent from "./components/user/userRequest.js";
 import InputCalender from "./components/admin/inputCalender.js";
-import SaveUserTest from "./components/user/save/save.js";
+//history
+import { history } from "./helper/history.js";
+// import {RouteGuard} from "./RouteGuard.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,9 +31,13 @@ function App() {
     setIsOpen(!isOpen);
   };
 
+  let data = {
+    body: {}
+  }
+
   return (
     <div className="App">
-      <Router>
+      <Router history={history}>
         <Routes>
           <Route path="/dataInput" element={<DataInputComponent />} />
           <Route path="/dataReview" element={<DataReview />} />
