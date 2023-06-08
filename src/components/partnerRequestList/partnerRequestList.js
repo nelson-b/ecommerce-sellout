@@ -287,21 +287,21 @@ function PartnerRequestList(props) {
   };
 
   const handleReject = () => {
-    console.log(
+    alert(
       message === 1
-        ? `${message} Partner Account selected for Reject `
+        ? `${message} Partner Account Sent for Reject `
         : message > 1
-        ? `${message} Partner Accounts selected for Reject`
+        ? `${message} Partners Account Sent for Reject`
         : ""
     );
   };
 
   const handleApprove = () => {
-    console.log(
+    alert(
       message === 1
-        ? `${message} Partner Account selected for Approval `
+        ? `${message} Partner Account Sent for Approval `
         : message > 1
-        ? `${message} Partner Accounts selected for Approval`
+        ? `${message} Partners Account Sent for Approval`
         : ""
     );
   };
@@ -316,7 +316,7 @@ function PartnerRequestList(props) {
     <>
       <Container fluid>
         <Row>
-          <MyMenu role={screenRole} />
+          <MyMenu />
         </Row>
         <div>
           {screenRole === "admin" ? (
@@ -356,7 +356,7 @@ function PartnerRequestList(props) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 350, marginTop: "10px" }}
+          style={{ height: 320, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}
@@ -381,7 +381,7 @@ function PartnerRequestList(props) {
               : ""}
           </div>
           <div>
-            <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
+            <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
               <Col xs="auto">
                 <Button
                   className="btn-upload cancel-header"

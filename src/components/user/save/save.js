@@ -1,27 +1,39 @@
-import React, { useState, useCallback } from 'react';
-import Select from '../singleSelect.js';
+import React, { useState, useCallback } from "react";
+import Select from "../singleSelect.js";
 import {
-    countryOptions,
-    partnerOptions,
-    modelOptions,
-    userRoleOptions,
-    opsOptions,
-    userZoneOptions,
-    userOptions,
-    userEmailOptions,
-  } from "../optionsData.js";
-import { Breadcrumb, Card, Container, Row, Col, OverlayTrigger, Form, Tooltip, Button } from 'react-bootstrap';
-import MyMenu from '../../menu/menu.component.js';
-import { useLocation } from 'react-router-dom';
+  countryOptions,
+  partnerOptions,
+  modelOptions,
+  userRoleOptions,
+  opsOptions,
+  userZoneOptions,
+  userOptions,
+  userEmailOptions,
+} from "../optionsData.js";
+import {
+  Breadcrumb,
+  Card,
+  Container,
+  Row,
+  Col,
+  OverlayTrigger,
+  Form,
+  Tooltip,
+  Button,
+} from "react-bootstrap";
+import MyMenu from "../../menu/menu.component.js";
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Home from "../../../images/home-icon.png";
-import { BiHelpCircle } from 'react-icons/bi';
-import MultiSelectDrp from '../multiSelectDropdown.js';
+import { BiHelpCircle } from "react-icons/bi";
+import MultiSelectDrp from "../multiSelectDropdown.js";
 import { components } from "react-select";
 import makeAnimated from "react-select/animated";
-import PartnerAccountList from '../partnerAccountList.component.js';
-import '../save/save.css'
+import PartnerAccountList from "../partnerAccountList.component.js";
+import "../save/save.css";
 
 function SaveUser(props) {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const userRole = new URLSearchParams(location.search).get("role");
@@ -34,7 +46,7 @@ function SaveUser(props) {
     usrzone: null,
     modelType: [],
     usrcountry: [],
-    partnerAccNm:[]
+    partnerAccNm: [],
   });
 
   const onValidate = (value, name) => {
@@ -47,43 +59,43 @@ function SaveUser(props) {
   const [error, setError] = useState({
     username: {
       isReq: true,
-      errorMsg: '',
+      errorMsg: "",
       onValidateFunc: onValidate,
     },
     useremailid: {
       isReq: true,
-      errorMsg: '',
+      errorMsg: "",
       onValidateFunc: onValidate,
     },
     userrole: {
-        isReq: true,
-        errorMsg: '',
-        onValidateFunc: onValidate,
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
     },
     userops: {
-        isReq: true,
-        errorMsg: '',
-        onValidateFunc: onValidate,
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
     },
     usrzone: {
-        isReq: true,
-        errorMsg: '',
-        onValidateFunc: onValidate,
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
     },
-    modelType:{
-        isReq: true,
-        errorMsg: '',
-        onValidateFunc: onValidate,
+    modelType: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
     },
-    usrcountry:{
-        isReq: true,
-        errorMsg: '',
-        onValidateFunc: onValidate,
+    usrcountry: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
     },
-    partnerAccNm:{
-        isReq: true,
-        errorMsg: '',
-        onValidateFunc: onValidate,
+    partnerAccNm: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
     },
   });
 
@@ -115,17 +127,17 @@ function SaveUser(props) {
   const [optionPartnerSelected, setOptionPartnerSelected] = useState([]);
 
   const handleCountryChange = (selected) => {
-    let name = 'usrcountry';
+    let name = "usrcountry";
     setOptionCountrySelected(selected);
     console.log("optionSelected", optionCountrySelected);
     setForm((prev) => ({
-        ...prev,
-        [name]: selected,
-      }));
+      ...prev,
+      [name]: selected,
+    }));
   };
 
   const handleModelChange = (selected) => {
-    let name = 'modelType';
+    let name = "modelType";
     setOptionModelSelected(selected);
     setForm((prev) => ({
       ...prev,
@@ -134,12 +146,12 @@ function SaveUser(props) {
   };
 
   const handlePartnerChange = (selected) => {
-    let name = 'partnerAccNm';
+    let name = "partnerAccNm";
     setOptionPartnerSelected(selected);
     setForm((prev) => ({
-        ...prev,
-        [name]: selected,
-      }));
+      ...prev,
+      [name]: selected,
+    }));
   };
 
   const onHandleChange = useCallback((value, name) => {
@@ -158,14 +170,11 @@ function SaveUser(props) {
       } else if (errObj.isReq && !form[x]) {
         isInvalid = true;
         onValidate(true, x);
-      }
-      else if(form.modelType.length===0){
+      } else if (form.modelType.length === 0) {
         isInvalid = true;
-      }
-      else if(form.usrcountry.length===0){
+      } else if (form.usrcountry.length === 0) {
         isInvalid = true;
-      }
-      else if(form.partnerAccNm.length===0){
+      } else if (form.partnerAccNm.length === 0) {
         isInvalid = true;
       }
     });
@@ -175,24 +184,27 @@ function SaveUser(props) {
 
   const handleSubmit = () => {
     const isValid = validateForm();
-    
-    if(form.usrcountry.length>0){
 
+    if (form.usrcountry.length > 0) {
     }
     if (!isValid) {
-      console.error('Invalid Form!');
+      console.error("Invalid Form!");
       return false;
     }
 
-    console.log('Data:', form);
+    console.log("Data:", form);
   };
 
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
 
+  const handleUserCancel = () => {
+    navigate(`/user/list?role=${userRole}`);
+  };
+
   return (
     <Container fluid>
       <Row>
-        <MyMenu />
+        <MyMenu role={props.role} />
       </Row>
       <Row>
         {userRole === "superApproverUser" ? (
@@ -242,142 +254,153 @@ function SaveUser(props) {
         )}
       </Row>
       <Row>
-      <h5 className="form-sellout-header">{props.module} User</h5>
-      <Container fluid>
-      <div className="form">
-      <Card className="card-Panel form-userCreate-card">
-        <Row className="mt-2 username-header">
-        <Col className="col-3">
-        <Form.Label size="sm" htmlFor="username">
-                        Username
-                      </Form.Label>
-                      &nbsp;
-                      <OverlayTrigger
-                        placement="right"
-                        overlay={tooltip(
-                          "Enter a name to search or select from dropdown"
-                        )}>
-                        <span>
-                          <BiHelpCircle />
-                        </span>
-                      </OverlayTrigger>
-        <Select
-          name="username"
-          title="Username"
-          value={form.username}
-          options={userOptions}
-          onChangeFunc={onHandleChange}
-          {...error.username}
-        />
-        </Col>
-        <Col className="col-3">
-        <Form.Label size="sm" htmlFor="useremailid">
-                        User email ID
-                      </Form.Label>
-                      &nbsp;
-                      <OverlayTrigger
-                        placement="right"
-                        overlay={tooltip(
-                          "Enter name to search or select from dropdown"
-                        )}
-                      >
-                        <span>
-                          <BiHelpCircle />
-                        </span>
-                      </OverlayTrigger>
-        <Select
-          name="useremailid"
-          title="User email id"
-          value={form.useremailid}
-          options={userEmailOptions}
-          onChangeFunc={onHandleChange}
-          {...error.useremailid}
-        />
-        </Col>
-        <Col className="col-3">
-          <Form.Label size="sm" htmlFor="userrole">
-                Role
-          </Form.Label>
-          <Select
-          name="userrole"
-          title="User Role"
-          value={form.userrole}
-          options={userRoleOptions}
-          onChangeFunc={onHandleChange}
-          {...error.userrole}
-        />
-        </Col>
-        </Row>
-        </Card>
-        <Card className="card-Panel form-userCreate-card mt-0">
-        <Row>
-            <Form.Label size="lg" className="create-usr-warning">
-                Select the relevant fields for user access levels
-            </Form.Label>
-        </Row>
-        <Row className="mt-2 username-header">
-        <Col className="col-3">
-            <Form.Label size="sm" htmlFor="userops">
-                        Ops
-            </Form.Label>
-          <Select
-          name="userops"
-          title="Ops"
-          value={form.userops}
-          options={opsOptions}
-          onChangeFunc={onHandleChange}
-          {...error.userops} />
-        </Col>
-        <Col className="col-3">
-            <Form.Label size="sm" htmlFor="usrzone">
-                        Zone
-            </Form.Label>
-            <Select
-            name="usrzone"
-            title="Zone"
-            value={form.usrzone}
-            options={userZoneOptions}
-            onChangeFunc={onHandleChange}
-            {...error.usrzone} />
-        </Col>
-        <Col className="col-3">
-            <Form.Label size="sm" htmlFor="modelType">
-                        Model Type
-            </Form.Label>
-            <MultiSelectDrp
-                        options={modelOptions}
-                        isMulti
-                        closeMenuOnSelect={false}
-                        name="modelType"
-                        title="Model Type"
-                        hideSelectedOptions={false}
-                        components={{ Option, MultiValue, animatedComponents }}
-                        onChange={(item) => { handleModelChange(item) } }
-                        allowSelectAll={true}
-                        value={optionModelSelected}
-                        {...error.modelType} />
-                        <span className="text-danger">{form.modelType.length===0?'Please select Model Type':''}</span>
-        </Col>
-        </Row>
-        <Row>
-            <Form.Label size="lg" className="create-usr-warning">
-                  Select the relevant fields for user sub access levels
-            </Form.Label>
-        </Row>
-        <Row className="username-header">
-        <Col className="col-3">
-            <Form.Label size="sm" htmlFor="usrcountry">
-                    Country
-            </Form.Label>
-            &nbsp;
-            <OverlayTrigger
+        <h5 className="form-sellout-header">{props.module} User</h5>
+        <Container fluid>
+          <div className="form">
+            <Card className="card-Panel form-userCreate-card">
+              <Row className="mt-2 username-header">
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="username">
+                    Username
+                  </Form.Label>
+                  &nbsp;
+                  <OverlayTrigger
                     placement="right"
-                    overlay={tooltip("Type to search or select from dropdown")}>
+                    overlay={tooltip(
+                      "Enter a name to search or select from dropdown"
+                    )}
+                  >
                     <span>
                       <BiHelpCircle />
                     </span>
-            </OverlayTrigger>
-            <MultiSelectDrp
+                  </OverlayTrigger>
+                  <Select
+                    name="username"
+                    title="Username"
+                    value={form.username}
+                    options={userOptions}
+                    onChangeFunc={onHandleChange}
+                    {...error.username}
+                  />
+                </Col>
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="useremailid">
+                    User email ID
+                  </Form.Label>
+                  &nbsp;
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={tooltip(
+                      "Enter name to search or select from dropdown"
+                    )}
+                  >
+                    <span>
+                      <BiHelpCircle />
+                    </span>
+                  </OverlayTrigger>
+                  <Select
+                    name="useremailid"
+                    title="User email id"
+                    value={form.useremailid}
+                    options={userEmailOptions}
+                    onChangeFunc={onHandleChange}
+                    {...error.useremailid}
+                  />
+                </Col>
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="userrole">
+                    Role
+                  </Form.Label>
+                  <Select
+                    name="userrole"
+                    title="User Role"
+                    value={form.userrole}
+                    options={userRoleOptions}
+                    onChangeFunc={onHandleChange}
+                    {...error.userrole}
+                  />
+                </Col>
+              </Row>
+            </Card>
+            <Card className="card-Panel form-userCreate-card mt-0">
+              <Row>
+                <Form.Label size="lg" className="create-usr-warning">
+                  Select the relevant fields for user access levels
+                </Form.Label>
+              </Row>
+              <Row className="mt-2 username-header">
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="userops">
+                    Ops
+                  </Form.Label>
+                  <Select
+                    name="userops"
+                    title="Ops"
+                    value={form.userops}
+                    options={opsOptions}
+                    onChangeFunc={onHandleChange}
+                    {...error.userops}
+                  />
+                </Col>
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="usrzone">
+                    Zone
+                  </Form.Label>
+                  <Select
+                    name="usrzone"
+                    title="Zone"
+                    value={form.usrzone}
+                    options={userZoneOptions}
+                    onChangeFunc={onHandleChange}
+                    {...error.usrzone}
+                  />
+                </Col>
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="modelType">
+                    Model Type
+                  </Form.Label>
+                  <MultiSelectDrp
+                    options={modelOptions}
+                    isMulti
+                    closeMenuOnSelect={false}
+                    name="modelType"
+                    title="Model Type"
+                    hideSelectedOptions={false}
+                    components={{ Option, MultiValue, animatedComponents }}
+                    onChange={(item) => {
+                      handleModelChange(item);
+                    }}
+                    allowSelectAll={true}
+                    value={optionModelSelected}
+                    {...error.modelType}
+                  />
+                  <span className="text-danger">
+                    {form.modelType.length === 0
+                      ? "Please select Model Type"
+                      : ""}
+                  </span>
+                </Col>
+              </Row>
+              <Row>
+                <Form.Label size="lg" className="create-usr-warning">
+                  Select the relevant fields for user sub access levels
+                </Form.Label>
+              </Row>
+              <Row className="username-header">
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="usrcountry">
+                    Country
+                  </Form.Label>
+                  &nbsp;
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={tooltip("Type to search or select from dropdown")}
+                  >
+                    <span>
+                      <BiHelpCircle />
+                    </span>
+                  </OverlayTrigger>
+                  <MultiSelectDrp
                     options={countryOptions}
                     isMulti
                     closeMenuOnSelect={false}
@@ -391,16 +414,20 @@ function SaveUser(props) {
                     onChange={handleCountryChange}
                     {...error.usrcountry}
                   />
-              <span className="text-danger">{form.usrcountry.length===0?'Please select Country' : ''}</span>
-        </Col>
-        </Row>
-        <br />
-        <Row className="username-header">
-        <Col className="col-3">
-            <Form.Label size="sm" htmlFor="partnerAccNm">
-                  Partner Account Name
-            </Form.Label>
-            &nbsp;
+                  <span className="text-danger">
+                    {form.usrcountry.length === 0
+                      ? "Please select Country"
+                      : ""}
+                  </span>
+                </Col>
+              </Row>
+              <br />
+              <Row className="username-header">
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="partnerAccNm">
+                    Partner Account Name
+                  </Form.Label>
+                  &nbsp;
                   <OverlayTrigger
                     placement="right"
                     overlay={tooltip("Type to search or select from dropdown")}
@@ -423,29 +450,34 @@ function SaveUser(props) {
                     onChange={handlePartnerChange}
                     {...error.partnerAccNm}
                   />
-                  <span className="text-danger">{form.partnerAccNm.length===0?'Please select Partner Account Name' : ''}</span>
-        </Col>
-        <Col>
-            <PartnerAccountList data={optionPartnerSelected}/>
-        </Col>
-        </Row>
-        </Card>
-        <div>
-            <Row
-            className="mb-3"
-            style={{ float: "right", padding: "20px" }}>
-            <Col xs="auto">
-                    <Button className="btn-upload cancel-header">Cancel</Button>
-                  </Col>
-                  <Col xs="auto">
-                    <Button className="btn-upload save-header" onClick={ handleSubmit }>
-                      { props.module }
-                    </Button>
-                  </Col>
-                </Row>
-        </div>
-      </div>
-      </Container>
+                  <span className="text-danger">
+                    {form.partnerAccNm.length === 0
+                      ? "Please select Partner Account Name"
+                      : ""}
+                  </span>
+                </Col>
+                <Col>
+                  <PartnerAccountList data={optionPartnerSelected} />
+                </Col>
+              </Row>
+            </Card>
+            <div>
+              <Row className="mb-3" style={{ float: "right", padding: "20px" }}>
+                <Col xs="auto">
+                  <Button className="btn-upload cancel-header">Cancel</Button>
+                </Col>
+                <Col xs="auto">
+                  <Button
+                    className="btn-upload save-header"
+                    onClick={handleSubmit}
+                  >
+                    {props.module}
+                  </Button>
+                </Col>
+              </Row>
+            </div>
+          </div>
+        </Container>
       </Row>
     </Container>
   );

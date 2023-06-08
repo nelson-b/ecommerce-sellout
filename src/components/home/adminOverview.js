@@ -18,21 +18,21 @@ function AdminOverview(props) {
   const ChildMessageRenderer = (props) => {
     const invokeNotify = () => {
       if (props.data?.data_input?.length) {
-        console.log(
+        alert(
           props.data.data_input?.length
-            ? `${props.data.data_input} selected for Notify`
+            ? `${props.data.data_input} Sent for Notify`
             : ""
         );
       } else if (props.data?.approval_stage1?.length) {
-        console.log(
+        alert(
           props.data.approval_stage1?.length
-            ? `${props.data.approval_stage1} selected for Notify`
+            ? `${props.data.approval_stage1} Sent for Notify`
             : ""
         );
       } else if (props.data?.approval_stage2?.length) {
-        console.log(
+        alert(
           props.data.approval_stage2?.length
-            ? `${props.data.approval_stage2} selected for Notify`
+            ? `${props.data.approval_stage2} Sent for Notify`
             : ""
         );
       }
@@ -352,7 +352,7 @@ function AdminOverview(props) {
     <>
       <Container fluid>
         <Row>
-          <MyMenu role={props.role} />
+          <MyMenu/>
         </Row>
         <Row>
           <div>

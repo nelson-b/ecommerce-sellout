@@ -19,6 +19,55 @@
   width: 100px;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.show-data {
+  width: 70px;
+  height: 32px;
+  margin-top: 0px;
+}
+
+.hide-data {
+  width: 70px;
+  height: 30px;
+  margin-top: 0px;
+}
+
+.btn-historical {
+  width: 140px;
+  height: 32px;
+  margin-top: 0px;
+}
+
+.hide-header {
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  border: 2px solid #E47F00;
+  border-radius: 8px;
+  text-align: center;
+  color: #E47F00;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.hide-header:hover {
+  border: 2px solid var(--unnamed-color-e47f00);
+  background: #E47F00 0% 0% no-repeat padding-box;
+  border: 2px solid #E47F00;
+  border-radius: 8px;
+  color: #FFFFFF;
+}
+
+.hide-header:active:focus {
+  border: 2px solid var(--unnamed-color-e47f00);
+  background: #E47F00 0% 0% no-repeat padding-box;
+  border: 2px solid #E47F00;
+  border-radius: 8px;
+  color: #FFFFFF;
+}
+
 .ag-theme-alpine .ag-icon,
 .ag-theme-alpine .ag-checkbox-input-wrapper,
 .ag-theme-alpine .ag-radio-button-input-wrapper {
@@ -34,6 +83,7 @@
   --ag-selected-row-background-color: white !important;
 }
 
-.ag-theme-alpine, .ag-theme-alpine-dark {
+.ag-theme-alpine,
+.ag-theme-alpine-dark {
   --ag-alpine-active-color: green !important;
 }
