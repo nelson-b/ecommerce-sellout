@@ -61,6 +61,11 @@ function HistoricalData({}) {
       suppressSizeToFit: true,
     },
     {
+      headerName: "Partner Code",
+      field: "Partner_Code",
+      hide: true,
+    },
+    {
       headerName: "Country",
       field: "Country",
       rowGroup: true,
@@ -128,35 +133,45 @@ function HistoricalData({}) {
     i > 0;
     i--
   ) {
-    let date = new Date(selectedValue, currentDate.getMonth() - (i - 1), 1);
+    let date = new Date(
+      selectedValue,
+      selectedValue == new Date().getFullYear()
+        ? currentDate.getMonth() - (i - 1)
+        : 1
+    );
     const monthName = allCalMonths[date.getMonth()];
-    const year =
-      selectedValue == new Date().getFullYear()
-        ? String(date.getFullYear()).slice(-2)
-        : String(selectedValue).slice(-2);
 
-    const monthHeader =
-      selectedValue == new Date().getFullYear()
-        ? monthName + " " + year
-        : allCalMonths[12 - i] + " " + year;
+    if (
+      !(allCalMonths[currentDate.getMonth()] === monthName)
+    ) {
+      const year =
+        selectedValue == new Date().getFullYear()
+          ? String(date.getFullYear()).slice(-2)
+          : String(selectedValue).slice(-2);
 
-    const monthField =
-      selectedValue == new Date().getFullYear()
-        ? monthName + year
-        : allCalMonths[12 - i] + year;
+      const monthHeader =
+        selectedValue == new Date().getFullYear()
+          ? monthName + " " + year
+          : allCalMonths[12 - i] + " " + year;
 
-    columnDefs.push({
-      headerName: monthHeader,
-      field: monthField,
-      editable: false,
-      singleClickEdit: true,
-      minWidth: 100,
-      aggFunc: "sum",
-      sortable: true,
-      suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
-      valueParser: (params) => Number(params.newValue),
-    });
+      const monthField =
+        selectedValue == new Date().getFullYear()
+          ? monthName + year
+          : allCalMonths[12 - i] + year;
+
+      columnDefs.push({
+        headerName: monthHeader,
+        field: monthField,
+        editable: false,
+        singleClickEdit: true,
+        minWidth: 100,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        cellStyle: { "border-color": "#e2e2e2" },
+        valueParser: (params) => Number(params.newValue),
+      });
+    }
   }
 
   columnDefs.push({
@@ -275,18 +290,18 @@ function HistoricalData({}) {
     ];
   }, []);
 
+  const onGridReady = useCallback((params) => {
+    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
+      .then((resp) => rowData)
+      .then((rowData) => setRowData(rowData));
+  }, []);
+
   const handleExport = useCallback(() => {
     const params = {
       fileName: "Sell out Historical Data.xlsx",
       sheetName: "Historical Data",
     };
     gridRef.current.api.exportDataAsExcel(params);
-  }, []);
-
-  const onGridReady = useCallback((params) => {
-    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => historyData)
-      .then((historyData) => setRowData(historyData));
   }, []);
 
   const handleChange = (event) => {
@@ -424,11 +439,11 @@ function HistoricalData({}) {
               <Row className="year-container">
                 <Form.Select
                   size="sm"
-                  style={{ width: "120px", height: "40px" }}
+                  style={{ width: "120px", height: "35px" }}
                   value={selectedValue}
                   onChange={handleChange}
-                  id="yearSelect" 
-                  >
+                  id="yearSelect"
+                >
                   <option value="2021">2021</option>
                   <option value="2022">2022</option>
                   <option value="2023">2023</option>
@@ -440,7 +455,7 @@ function HistoricalData({}) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 350, marginTop: "10px" }}
+          style={{ height: 320, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}
@@ -461,7 +476,7 @@ function HistoricalData({}) {
             groupDefaultExpanded={-1}
           ></AgGridReact>
           <div>
-            <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
+            <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
               <Col xs="auto">
                 <Button
                   className="btn-upload save-header"

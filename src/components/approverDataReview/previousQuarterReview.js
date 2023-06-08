@@ -38,16 +38,16 @@ function PartnerQuarterApprover({ props }) {
 
   const ChildMessageRenderer = (props) => {
     const invokeReject = () => {
-      console.log(
+      alert(
         props.data.Partner?.length
-          ? `${props.data.Partner} partner Selected for reject approval`
+          ? `${props.data.Partner} partner Sent for reject approval`
           : ""
       );
     };
     const invokeValidate = () => {
-      console.log(
+      alert(
         props.data.Partner?.length
-          ? `${props.data.Partner} partner selected for Validate`
+          ? `${props.data.Partner} partner Sent for Validate`
           : ""
       );
     };
@@ -240,7 +240,7 @@ function PartnerQuarterApprover({ props }) {
   }, []);
 
   const handleInvestigation = (params) => {
-    console.log(
+    alert(
       message === 1
         ? `${message} Partner Account Sent For Investigation `
         : message > 1
@@ -309,7 +309,7 @@ function PartnerQuarterApprover({ props }) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 350, marginTop: "10px" }}
+          style={{ height: 320, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}
@@ -336,7 +336,7 @@ function PartnerQuarterApprover({ props }) {
               : ""}
           </div>
           <div>
-            <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
+            <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
               <Col xs="auto">
                 <Button
                   className="btn-upload cancel-header"

@@ -108,11 +108,7 @@ function PartnerComponent(props) {
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
 
   const handlePatnerCancel = () => {
-    navigate("/partner/list");
-  };
-
-  const handleClearClick = () => {
-    window.location.reload();
+    navigate(`/partner/list?role=${userRole}`);
   };
 
   return (
@@ -820,7 +816,7 @@ function PartnerComponent(props) {
                   <Button
                     className="btn-upload cancel-header"
                     onClick={() => {
-                      handlePatnerCancel();
+                      handlePatnerCancel(userRole);
                     }}
                   >
                     Cancel

@@ -17,8 +17,8 @@ function Home(props) {
 
   const [rowData, setRowData] = useState();
 
-  const dataInputNavigation = () => {
-    navigate("/dataInput");
+  const dataInputNavigation = (props) => {
+    navigate(`/dataInput?role=${props}`);
   };
 
   const dataReviewNavigation = (props) => {
@@ -391,7 +391,7 @@ function Home(props) {
                   <Button
                     className="btn-data save-header"
                     onClick={() => {
-                      dataInputNavigation();
+                      dataInputNavigation(props.role);
                     }}
                   >
                     Data Input
