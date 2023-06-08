@@ -6,11 +6,13 @@ import { Container, Row } from "react-bootstrap";
 import { useCallback, useMemo, useState } from "react";
 
 function PartnerAccountList(props) {
-    console.log(props.data);
+    console.log('PartnerAccountList',props.data);
     const [rowData, setRowData] = useState([]);
     
     const columnDefs = [
         { headerName: "Partner Account Name", field: "partneraccname" },
+        { headerName: "Country", field: "country", minWidth: 100, suppressSizeToFit: true, suppressMenu: true },
+        { headerName: "Model", field: "model", minWidth: 100, suppressSizeToFit: true, suppressMenu: true },
         { headerName: "Current Editor", field: "currentEditor" },
         { headerName: "Current 1st Approver", field: "current1stApprover" },
         { headerName: "Current 2nd Approver", field: "current2ndApprover" }
@@ -30,10 +32,20 @@ function PartnerAccountList(props) {
     const onGridReady = useCallback((params, props) => {
         let data =[ 
         {
-            partneraccname:"Partner 1", currentEditor: "Editor 1", current1stApprover: "Approver 1", current2ndApprover: "Approver 2"
+            partneraccname:"Partner 1",
+            country: "USA",
+            model: "Model 1",
+            currentEditor: "Editor 1", 
+            current1stApprover: "Approver 1", 
+            current2ndApprover: "Approver 2"
         },
         {
-            partneraccname:"Partner 2", currentEditor: "Editor 2", current1stApprover: "Approver 1", current2ndApprover: "Approver 2"
+            partneraccname:"Partner 2",
+            country: "Ireland",
+            model: "Model 2", 
+            currentEditor: "Editor 2", 
+            current1stApprover: "Approver 1", 
+            current2ndApprover: "Approver 2"
         }];
         // setRowData(data);
     },[]);
