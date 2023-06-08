@@ -35,7 +35,7 @@ function PartnerList(props) {
 
   const handleCreate = () => {
     if(screenRole==="superUser" || screenRole ==="admin" || screenRole === "superApproverUser"){
-      navigate(`/higerLevelUser/partner/create?role=${screenRole}`);      
+      navigate(`/higerLevelUser/partner/create?role=${screenRole}`); 
     }
     else{
       navigate(`/partner/create?role=${screenRole}`);
