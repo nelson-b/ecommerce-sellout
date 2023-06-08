@@ -25,11 +25,21 @@ function PartnerList(props) {
   const screenRole = new URLSearchParams(location.search).get("role");
 
   const handlePartnerEdit = (params) => {
-    navigate(`/partner/update?role=${params.data.partnerID}`);
+    if(screenRole==="superUser" || screenRole ==="admin" || screenRole === "superApproverUser"){
+      navigate(`/higerLevelUser/partner/update?role=${screenRole}`);      
+    }
+    else{
+      navigate(`/partner/update?id=${params.data.partnerID}&role=${screenRole}`);
+    }
   };
 
   const handleCreate = () => {
-    navigate(`/partner/create?role=${screenRole}`);
+    if(screenRole==="superUser" || screenRole ==="admin" || screenRole === "superApproverUser"){
+      navigate(`/higerLevelUser/partner/create?role=${screenRole}`);      
+    }
+    else{
+      navigate(`/partner/create?role=${screenRole}`);
+    }
   };
 
   const handleRequest = () => {

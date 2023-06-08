@@ -153,12 +153,13 @@ function BusinessUnitSplit() {
     console.log('checkNumericValue', params.newValue);
     console.log('Is NAN', isNaN(params.newValue));
     if(isNaN(params.newValue) === true){
-      params.data[field] = Number(0); 
+      params.data[field] = Number(0);
       return params.data[field];
     }
+    console.log('Number(Math.round(params.newValue))', Number(Math.round(params.newValue)));
     params.data[field] = Number(Math.round(params.newValue));
     console.log('checkNumericValue', params.data[field]);
-    return Number(params.data[field]);
+    return params.data[field];
   }
 
   const columnDefs = [

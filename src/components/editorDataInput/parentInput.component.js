@@ -13965,7 +13965,7 @@ function DataInputComponent() {
     };
   }, []);
 
-  const toggleActualEstimate = useCallback((isEstimate) => 
+  const toggleActualEstimate = useCallback((isEstimate) =>
   {
     const selectedCells = gridRef.current.api.getCellRanges();
     const itemsToUpdate = [];
@@ -14038,7 +14038,6 @@ function DataInputComponent() {
                     break;
                 }
               }
-              //console.log('estimated data', data)
               itemsToUpdate.push(data);
             }
           });

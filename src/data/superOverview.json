@@ -2,6 +2,7 @@
     {
       "Country": "Japan",
       "Model": "E1",
+      "LY_YTD_Sellout_Value_In_K_EUR": 100,
       "YTD Sellout Value (In K EUR)": 340,
       "Sellout Growth Vs Last Year": -25,
       "Partners Accounts To Complete": 3,
@@ -10,6 +11,7 @@
     {
       "Country": "Caneda",
       "Model": "E2",
+      "LY_YTD_Sellout_Value_In_K_EUR": 200,
       "YTD Sellout Value (In K EUR)": 560,
       "Sellout Growth Vs Last Year": 62,
       "Partners Accounts To Complete": 8,
@@ -18,6 +20,7 @@
     {
       "Country": "Caneda",
       "Model": "E2",
+      "LY_YTD_Sellout_Value_In_K_EUR": 300,
       "YTD Sellout Value (In K EUR)": 450,
       "Sellout Growth Vs Last Year": -50,
       "Partners Accounts To Complete": 0,
@@ -26,6 +29,7 @@
     {
       "Country": "Japan",
       "Model": "E3",
+      "LY_YTD_Sellout_Value_In_K_EUR": 100,
       "YTD Sellout Value (In K EUR)": 129,
       "Sellout Growth Vs Last Year": 37,
       "Partners Accounts To Complete": 2,

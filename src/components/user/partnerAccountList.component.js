@@ -6,6 +6,7 @@ import { Container, Row } from "react-bootstrap";
 import { useCallback, useMemo, useState } from "react";
 
 function PartnerAccountList(props) {
+    console.log(props.data);
     const [rowData, setRowData] = useState([]);
     
     const columnDefs = [
