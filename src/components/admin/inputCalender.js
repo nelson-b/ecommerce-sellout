@@ -117,9 +117,7 @@ function InputCalendar() {
                           <>
                             <Row>
                               <h6 className="form-sellout-header">
-                                {index == 0
-                                  ? "Current month"
-                                  : `Month of ${month}`}
+                                {`Month of ${month}`}
                               </h6>
                             </Row>
                             <Row>

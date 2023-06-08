@@ -2,32 +2,36 @@
   {
     "Country": "France",
     "Model": "E1",
+    "LY_YTD_Sellout_Value_In_K_EUR": 2345,
     "YTD Sellout Value (In K EUR)": 3450,
-    "Sellout Growth Vs Last Year": 15,
+    "Sellout Growth Vs Last Year": 0,
     "Partners Accounts To Complete": 3,
     "Accounts Rejected by Approvers": 0
   },
   {
     "Country": "France",
     "Model": "E2",
+    "LY_YTD_Sellout_Value_In_K_EUR": 345,
     "YTD Sellout Value (In K EUR)": 450,
-    "Sellout Growth Vs Last Year": 12,
+    "Sellout Growth Vs Last Year": 0,
     "Partners Accounts To Complete": 0,
     "Accounts Rejected by Approvers": 3
   },
   {
     "Country": "Spain",
     "Model": "E2",
-    "YTD Sellout Value (In K EUR)": 350,
-    "Sellout Growth Vs Last Year": -10,
+    "LY_YTD_Sellout_Value_In_K_EUR": 350,
+    "YTD Sellout Value (In K EUR)": 250,
+    "Sellout Growth Vs Last Year": 0,
     "Partners Accounts To Complete": 3,
     "Accounts Rejected by Approvers": 6
   },
   {
     "Country": "Swedan",
     "Model": "E3",
+    "LY_YTD_Sellout_Value_In_K_EUR": 567,
     "YTD Sellout Value (In K EUR)": 950,
-    "Sellout Growth Vs Last Year": 17,
+    "Sellout Growth Vs Last Year": 0,
     "Partners Accounts To Complete": 2,
     "Accounts Rejected by Approvers": 0
   }

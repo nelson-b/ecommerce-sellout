@@ -413,7 +413,9 @@ function DataInputComponent(props) {
 
     var isEstimated = filterMonths[monthYrKey] == true;
     if (isEstimated == true) return { backgroundColor: "#EEB265" };
-    return { backgroundColor: "white", 'borderColor': '#e2e2e2'};
+    return { backgroundColor: "white", 
+    // 'borderColor': '#e2e2e2'
+  };
   };
 
   const currentDate = new Date();
@@ -501,7 +503,7 @@ function DataInputComponent(props) {
     };
   }, []);
 
-  const toggleActualEstimate = useCallback((isEstimate) => 
+  const toggleActualEstimate = useCallback((isEstimate) =>
   {
     const selectedCells = gridRef.current.api.getCellRanges();
     const itemsToUpdate = [];
@@ -574,7 +576,6 @@ function DataInputComponent(props) {
                     break;
                 }
               }
-              //console.log('estimated data', data)
               itemsToUpdate.push(data);
             }
           });

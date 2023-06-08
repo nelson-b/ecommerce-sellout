@@ -129,13 +129,15 @@ function BusinessUnitSplit() {
   ];
 
   const sumTotal = (params, index) => {
+    console.log('sumTotal');
+
     let totalBu = (
       Number(Math.round(params.data.DE)) + 
       Number(Math.round(params.data.H_and_D)) + 
       Number(Math.round(params.data.IA)) + 
       Number(Math.round(params.data.PP)) + 
       Number(Math.round(params.data.SP)));
-      
+    
       params.data['Total'] = Number(Math.round(totalBu));
       return params.data.Total;
   }
@@ -148,12 +150,13 @@ function BusinessUnitSplit() {
   }
 
   const checkNumericValue = (params,field) => {
-    console.log('checkNumericValue',params.newValue);
+    console.log('checkNumericValue', params.newValue);
     console.log('Is NAN', isNaN(params.newValue));
-    if(isNaN(params.newValue)===true){
-      params.data[field] = 0;
-      return 0;
+    if(isNaN(params.newValue) === true){
+      params.data[field] = Number(0);
+      return params.data[field];
     }
+    console.log('Number(Math.round(params.newValue))', Number(Math.round(params.newValue)));
     params.data[field] = Number(Math.round(params.newValue));
     console.log('checkNumericValue', params.data[field]);
     return params.data[field];

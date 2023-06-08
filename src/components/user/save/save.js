@@ -1,24 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
-import {
-  Col,
-  Form,
-  Row,
-  Container,
-  Breadcrumb,
-  Card,
-  Tooltip,
-  OverlayTrigger,
-  Button,
-} from "react-bootstrap";
-import MyMenu from "../../menu/menu.component.js";
-import Home from "../../../images/home-icon.png";
-import { BiHelpCircle } from "react-icons/bi";
-import "./save.css";
-import MultiSelectDrp from "../multiSelectDropdown.js";
-import Select, { components } from "react-select";
-import makeAnimated from "react-select/animated";
+import React, { useState, useCallback } from "react";
+import Select from "../singleSelect.js";
 import {
   countryOptions,
   partnerOptions,
@@ -26,21 +7,97 @@ import {
   userRoleOptions,
   opsOptions,
   userZoneOptions,
-  userEmailOptions,
   userOptions,
+  userEmailOptions,
 } from "../optionsData.js";
-import PartnerAccountList from "../partnerAccountList.component.js";
+import {
+  Breadcrumb,
+  Card,
+  Container,
+  Row,
+  Col,
+  OverlayTrigger,
+  Form,
+  Tooltip,
+  Button,
+} from "react-bootstrap";
+import MyMenu from "../../menu/menu.component.js";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Home from "../../../images/home-icon.png";
+import { BiHelpCircle } from "react-icons/bi";
+import MultiSelectDrp from "../multiSelectDropdown.js";
+import { components } from "react-select";
+import makeAnimated from "react-select/animated";
+import PartnerAccountList from "../partnerAccountList.component.js";
+import "../save/save.css";
 
 function SaveUser(props) {
   const navigate = useNavigate();
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const userRole = new URLSearchParams(location.search).get("role");
 
-  const onMenuOpen = () => setIsMenuOpen(true);
-  const onMenuClose = () => setIsMenuOpen(false);
+  const [form, setForm] = useState({
+    username: null,
+    useremailid: null,
+    userrole: null,
+    userops: null,
+    usrzone: null,
+    modelType: [],
+    usrcountry: [],
+    partnerAccNm: [],
+  });
+
+  const onValidate = (value, name) => {
+    setError((prev) => ({
+      ...prev,
+      [name]: { ...prev[name], errorMsg: value },
+    }));
+  };
+
+  const [error, setError] = useState({
+    username: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
+    },
+    useremailid: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
+    },
+    userrole: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
+    },
+    userops: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
+    },
+    usrzone: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
+    },
+    modelType: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
+    },
+    usrcountry: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
+    },
+    partnerAccNm: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
+    },
+  });
 
   const Option = (props) => {
     return (
@@ -65,74 +122,77 @@ function SaveUser(props) {
 
   const animatedComponents = makeAnimated();
 
-  const [optionUsernameSelected, setOptionUsernameSelected] = useState([]);
   const [optionCountrySelected, setOptionCountrySelected] = useState([]);
   const [optionModelSelected, setOptionModelSelected] = useState([]);
   const [optionPartnerSelected, setOptionPartnerSelected] = useState([]);
 
-  const handleUserChange = (selected) => {
-    setOptionUsernameSelected(selected);
-    console.log("optionSelected", optionCountrySelected);
-  };
-
   const handleCountryChange = (selected) => {
+    let name = "usrcountry";
     setOptionCountrySelected(selected);
     console.log("optionSelected", optionCountrySelected);
+    setForm((prev) => ({
+      ...prev,
+      [name]: selected,
+    }));
   };
 
   const handleModelChange = (selected) => {
+    let name = "modelType";
     setOptionModelSelected(selected);
-    console.log("optionSelected", optionModelSelected);
+    setForm((prev) => ({
+      ...prev,
+      [name]: selected,
+    }));
   };
 
   const handlePartnerChange = (selected) => {
+    let name = "partnerAccNm";
     setOptionPartnerSelected(selected);
-    console.log("optionPartnerSelected", optionPartnerSelected);
+    setForm((prev) => ({
+      ...prev,
+      [name]: selected,
+    }));
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    mode: "onTouched",
-    reValidateMode: "onSubmit",
-    reValidateMode: "onChange",
-  });
+  const onHandleChange = useCallback((value, name) => {
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }, []);
 
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const handleCloseSuccessModal = () => {
-    setShowSuccessModal(false);
+  const validateForm = () => {
+    let isInvalid = false;
+    Object.keys(error).forEach((x) => {
+      const errObj = error[x];
+      if (errObj.errorMsg) {
+        isInvalid = true;
+      } else if (errObj.isReq && !form[x]) {
+        isInvalid = true;
+        onValidate(true, x);
+      } else if (form.modelType.length === 0) {
+        isInvalid = true;
+      } else if (form.usrcountry.length === 0) {
+        isInvalid = true;
+      } else if (form.partnerAccNm.length === 0) {
+        isInvalid = true;
+      }
+    });
+
+    return !isInvalid;
   };
 
-  const successmsg = {
-    headerLabel: "Success....",
-    variant: "success",
-    header: "Data has been saved successfully!!",
-    content: ["Navigating you to the Partner list page....."],
-  };
+  const handleSubmit = () => {
+    const isValid = validateForm();
 
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const handleCloseErrorModal = () => {
-    setShowErrorModal(false);
-  };
+    if (form.usrcountry.length > 0) {
+    }
+    if (!isValid) {
+      console.error("Invalid Form!");
+      return false;
+    }
 
-  const [errorRet, setErrorRet] = useState([]);
-
-  const errormsg = {
-    headerLabel: "Error....",
-    variant: "danger",
-    header:
-      "There are below errors while processing. Please recitify and retry",
-    content: errorRet,
-  };
-
-  const onSubmit = (data) => {
-    console.log("data", data);
-  };
-
-  const onError = (error) => {
-    console.log("ERROR:::", error);
+    console.log("Data:", form);
   };
 
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
@@ -196,103 +256,72 @@ function SaveUser(props) {
       <Row>
         <h5 className="form-sellout-header">{props.module} User</h5>
         <Container fluid>
-          <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
+          <div className="form">
             <Card className="card-Panel form-userCreate-card">
               <Row className="mt-2 username-header">
-                <Form.Group className="mb-4">
-                  <Row>
-                    <Col className="col-3">
-                      <Form.Label size="sm" htmlFor="username">
-                        Username
-                      </Form.Label>
-                      &nbsp;
-                      <OverlayTrigger
-                        placement="right"
-                        overlay={tooltip(
-                          "Enter a name to search or select from dropdown"
-                        )}
-                      >
-                        <span>
-                          <BiHelpCircle />
-                        </span>
-                      </OverlayTrigger>
-                      <Select
-                        isDisabled={props.module === "Update"}
-                        aria-labelledby="aria-label"
-                        inputId="username"
-                        name="username"
-                        onMenuOpen={onMenuOpen}
-                        onMenuClose={onMenuClose}
-                        options={userOptions}
-                        onChange={handleUserChange}
-                        {...register("username", {
-                          required: "User name is required",
-                        })}
-                      />
-                      {errors.username && (
-                        <Form.Text className="text-danger">
-                          {errors.username.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                    <Col className="col-3">
-                      <Form.Label size="sm" htmlFor="useremailid">
-                        User email ID
-                      </Form.Label>
-                      &nbsp;
-                      <OverlayTrigger
-                        placement="right"
-                        overlay={tooltip(
-                          "Enter name to search or select from dropdown"
-                        )}
-                      >
-                        <span>
-                          <BiHelpCircle />
-                        </span>
-                      </OverlayTrigger>
-                      <Select
-                        aria-labelledby="aria-label"
-                        inputId="useremailid"
-                        name="useremailid"
-                        onMenuOpen={onMenuOpen}
-                        onMenuClose={onMenuClose}
-                        options={userEmailOptions}
-                        {...register("useremailid", {
-                          required: "User email is required",
-                        })}
-                      />
-                      {errors.useremailid && (
-                        <Form.Text className="text-danger">
-                          {errors.useremailid.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                    <Col className="col-3">
-                      <Form.Label size="sm" htmlFor="userrole">
-                        Role
-                      </Form.Label>
-                      <Select
-                        aria-labelledby="aria-label"
-                        inputId="userrole"
-                        name="userrole"
-                        onMenuOpen={onMenuOpen}
-                        onMenuClose={onMenuClose}
-                        options={userRoleOptions}
-                        {...register("userrole", {
-                          required: "User role is required",
-                        })}
-                      />
-                      {errors.userrole && (
-                        <Form.Text className="text-danger">
-                          {errors.userrole.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                  </Row>
-                </Form.Group>
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="username">
+                    Username
+                  </Form.Label>
+                  &nbsp;
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={tooltip(
+                      "Enter a name to search or select from dropdown"
+                    )}
+                  >
+                    <span>
+                      <BiHelpCircle />
+                    </span>
+                  </OverlayTrigger>
+                  <Select
+                    name="username"
+                    title="Username"
+                    value={form.username}
+                    options={userOptions}
+                    onChangeFunc={onHandleChange}
+                    {...error.username}
+                  />
+                </Col>
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="useremailid">
+                    User email ID
+                  </Form.Label>
+                  &nbsp;
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={tooltip(
+                      "Enter name to search or select from dropdown"
+                    )}
+                  >
+                    <span>
+                      <BiHelpCircle />
+                    </span>
+                  </OverlayTrigger>
+                  <Select
+                    name="useremailid"
+                    title="User email id"
+                    value={form.useremailid}
+                    options={userEmailOptions}
+                    onChangeFunc={onHandleChange}
+                    {...error.useremailid}
+                  />
+                </Col>
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="userrole">
+                    Role
+                  </Form.Label>
+                  <Select
+                    name="userrole"
+                    title="User Role"
+                    value={form.userrole}
+                    options={userRoleOptions}
+                    onChangeFunc={onHandleChange}
+                    {...error.userrole}
+                  />
+                </Col>
               </Row>
             </Card>
-
             <Card className="card-Panel form-userCreate-card mt-0">
               <Row>
                 <Form.Label size="lg" className="create-usr-warning">
@@ -300,82 +329,58 @@ function SaveUser(props) {
                 </Form.Label>
               </Row>
               <Row className="mt-2 username-header">
-                <Form.Group className="mb-4">
-                  <Row>
-                    <Col className="col-3">
-                      <Form.Label size="sm" htmlFor="userops">
-                        Ops
-                      </Form.Label>
-                      <Select
-                        aria-labelledby="aria-label"
-                        inputId="userops"
-                        name="userops"
-                        onMenuOpen={onMenuOpen}
-                        onMenuClose={onMenuClose}
-                        options={opsOptions}
-                        {...register("userops", {
-                          required: "User Ops is required",
-                        })}
-                      />
-                      {errors.userops && (
-                        <Form.Text className="text-danger">
-                          {errors.userops.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                    <Col className="col-3">
-                      <Form.Label size="sm" htmlFor="usrzone">
-                        Zone
-                      </Form.Label>
-                      <Select
-                        aria-labelledby="aria-label"
-                        inputId="usrzone"
-                        name="usrzone"
-                        onMenuOpen={onMenuOpen}
-                        onMenuClose={onMenuClose}
-                        options={userZoneOptions}
-                        {...register("usrzone", {
-                          required: "User zone is required",
-                        })}
-                      />
-                      {errors.usrzone && (
-                        <Form.Text className="text-danger">
-                          {errors.usrzone.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                    <Col className="col-3">
-                      <Form.Label size="sm" htmlFor="modelType">
-                        Model Type
-                      </Form.Label>
-                      <MultiSelectDrp
-                        options={modelOptions}
-                        isMulti
-                        closeMenuOnSelect={false}
-                        hideSelectedOptions={false}
-                        components={{
-                          Option,
-                          MultiValue,
-                          animatedComponents,
-                        }}
-                        onChange={handleModelChange}
-                        allowSelectAll={true}
-                        value={optionModelSelected}
-                        inputId="modelType"
-                        {...register("modelType", {
-                          required: "Model type is required",
-                        })}
-                      />
-                      {errors.modelType && (
-                        <Form.Text className="text-danger">
-                          {errors.modelType.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                  </Row>
-                </Form.Group>
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="userops">
+                    Ops
+                  </Form.Label>
+                  <Select
+                    name="userops"
+                    title="Ops"
+                    value={form.userops}
+                    options={opsOptions}
+                    onChangeFunc={onHandleChange}
+                    {...error.userops}
+                  />
+                </Col>
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="usrzone">
+                    Zone
+                  </Form.Label>
+                  <Select
+                    name="usrzone"
+                    title="Zone"
+                    value={form.usrzone}
+                    options={userZoneOptions}
+                    onChangeFunc={onHandleChange}
+                    {...error.usrzone}
+                  />
+                </Col>
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="modelType">
+                    Model Type
+                  </Form.Label>
+                  <MultiSelectDrp
+                    options={modelOptions}
+                    isMulti
+                    closeMenuOnSelect={false}
+                    name="modelType"
+                    title="Model Type"
+                    hideSelectedOptions={false}
+                    components={{ Option, MultiValue, animatedComponents }}
+                    onChange={(item) => {
+                      handleModelChange(item);
+                    }}
+                    allowSelectAll={true}
+                    value={optionModelSelected}
+                    {...error.modelType}
+                  />
+                  <span className="text-danger">
+                    {form.modelType.length === 0
+                      ? "Please select Model Type"
+                      : ""}
+                  </span>
+                </Col>
               </Row>
-
               <Row>
                 <Form.Label size="lg" className="create-usr-warning">
                   Select the relevant fields for user sub access levels
@@ -400,20 +405,20 @@ function SaveUser(props) {
                     isMulti
                     closeMenuOnSelect={false}
                     hideSelectedOptions={false}
+                    title="Country"
                     components={{ Option, MultiValue, animatedComponents }}
-                    onChange={handleCountryChange}
                     allowSelectAll={true}
                     value={optionCountrySelected}
                     inputId="usrcountry"
-                    {...register("usrcountry", {
-                      required: "User country is required",
-                    })}
+                    name="usrcountry"
+                    onChange={handleCountryChange}
+                    {...error.usrcountry}
                   />
-                  {errors.modelType && (
-                    <Form.Text className="text-danger">
-                      {errors.modelType.message}
-                    </Form.Text>
-                  )}
+                  <span className="text-danger">
+                    {form.usrcountry.length === 0
+                      ? "Please select Country"
+                      : ""}
+                  </span>
                 </Col>
               </Row>
               <br />
@@ -435,51 +440,43 @@ function SaveUser(props) {
                     options={partnerOptions}
                     isMulti
                     closeMenuOnSelect={false}
+                    title="Partner Account Name"
                     hideSelectedOptions={false}
                     components={{ Option, MultiValue, animatedComponents }}
-                    onChange={handlePartnerChange}
                     allowSelectAll={true}
                     value={optionPartnerSelected}
                     inputId="partnerAccNm"
-                    {...register("partnerAccNm", {
-                      required: "Partner Account Name is required",
-                    })}
+                    name="partnerAccNm"
+                    onChange={handlePartnerChange}
+                    {...error.partnerAccNm}
                   />
-                  {errors.partnerAccNm && (
-                    <Form.Text className="text-danger">
-                      {errors.partnerAccNm.message}
-                    </Form.Text>
-                  )}
+                  <span className="text-danger">
+                    {form.partnerAccNm.length === 0
+                      ? "Please select Partner Account Name"
+                      : ""}
+                  </span>
                 </Col>
                 <Col>
-                  <PartnerAccountList />
+                  <PartnerAccountList data={optionPartnerSelected} />
                 </Col>
               </Row>
-
-              <div>
-                <Row
-                  className="mb-3"
-                  style={{ float: "right", padding: "20px" }}
-                >
-                  <Col xs="auto">
-                    <Button
-                      className="btn-upload cancel-header"
-                      onClick={() => {
-                        handleUserCancel(userRole);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </Col>
-                  <Col xs="auto">
-                    <Button className="btn-upload save-header" type="submit">
-                      {props.module}
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
             </Card>
-          </Form>
+            <div>
+              <Row className="mb-3" style={{ float: "right", padding: "20px" }}>
+                <Col xs="auto">
+                  <Button className="btn-upload cancel-header">Cancel</Button>
+                </Col>
+                <Col xs="auto">
+                  <Button
+                    className="btn-upload save-header"
+                    onClick={handleSubmit}
+                  >
+                    {props.module}
+                  </Button>
+                </Col>
+              </Row>
+            </div>
+          </div>
         </Container>
       </Row>
     </Container>

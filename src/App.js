@@ -21,6 +21,7 @@ import HistoricalData from "./components/historicalData/historicalData.js";
 import BusinessUnitSplit from "./components/businessUnitSplit/buSplit.js";
 import UserRequestComponent from "./components/user/userRequest.js";
 import InputCalender from "./components/admin/inputCalender.js";
+import SaveUserTest from "./components/user/save/save.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);

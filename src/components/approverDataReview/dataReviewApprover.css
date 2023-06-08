@@ -3,6 +3,10 @@
   height: 40px;
 }
 
+.btn-collapseall{
+  margin-top: 26px;
+}
+
 .checkbox-message {
   color: #E47F00;
   font-size: 18px;
