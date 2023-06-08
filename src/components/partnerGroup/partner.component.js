@@ -80,7 +80,7 @@ function PartnerComponent(props) {
 
   const onSubmit = (data) => {
     console.log("form data", data);
-
+    
     let reqData = {
       platform_name: data.platform_name,
       country_code: data.country_code,
@@ -98,9 +98,9 @@ function PartnerComponent(props) {
       e2_playbook_type: data.e2_playbook_type,
       gtm_type: data.gtm_type,
       created_by: "thomas.decamps@se.com",
-      created_date: "2023-04-03T16:18:04.614693",
+      created_date: new Date(),
       modified_by: "thomas.decamps@se.com",
-      last_modified_date: "2023-05-27T16:18:04.614693",
+      last_modified_date: new Date(),
       status: 'ACTIVE',
       batch_upload_flag: false,
       active_flag: "false"
@@ -123,6 +123,7 @@ function PartnerComponent(props) {
   };
 
   const onError = (error) => {
+    console.log('date with timezone', new Date());
     console.log("ERROR:::", error);
   };
 
