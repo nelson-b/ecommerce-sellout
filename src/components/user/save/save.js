@@ -426,7 +426,7 @@ function SaveUser(props) {
                   <span className="text-danger">{form.partnerAccNm.length===0?'Please select Partner Account Name' : ''}</span>
         </Col>
         <Col>
-            <PartnerAccountList />
+            <PartnerAccountList data={optionPartnerSelected}/>
         </Col>
         </Row>
         </Card>

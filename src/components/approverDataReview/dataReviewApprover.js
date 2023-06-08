@@ -11,6 +11,7 @@ import {
   ButtonGroup,
   Breadcrumb,
   Container,
+  Form,
 } from "react-bootstrap";
 import { allCalMonths } from "../constant";
 import MyMenu from "../menu/menu.component.js";
@@ -118,7 +119,7 @@ function DataReviewApprover(props) {
   const currentQuater = getCurrentQuarter();
 
   const getQuarterMonths = (quarter) => {
-    const quarters = {
+    const quarters = { 
       Q1: ["Jan", "Feb", "Mar"],
       Q2: ["Apr", "May", "Jun"],
       Q3: ["Jul", "Aug", "Sep"],
@@ -462,6 +463,58 @@ function DataReviewApprover(props) {
     }
   };
 
+  const onExpandCol = useCallback((e) => {
+    console.log('onExpandCol', e.target.value);
+
+    gridRef.current.api.collapseAll();
+    
+    if(e.target.value === 'Zone'){
+    gridRef.current.api.forEachNode((node) => {
+      console.log('node.level', node.level);
+      if (node.level === 0) {
+        gridRef.current.api.setRowNodeExpanded(node, true);
+        return;
+      }
+    });
+    }
+    else if(e.target.value === 'Country'){
+      gridRef.current.api.forEachNode((node) => {
+        console.log('node.level', node.level);
+        if (node.level === 0 || node.level === 1) {
+          gridRef.current.api.setRowNodeExpanded(node, true);
+          return;
+        }
+      });
+      }
+      else if(e.target.value === 'Model'){
+        gridRef.current.api.forEachNode((node) => {
+          console.log('node.level', node.level);
+          if (node.level === 0 || node.level === 1 || node.level === 2) {
+            gridRef.current.api.setRowNodeExpanded(node, true);
+            return;
+          }
+        });
+        }
+        else if(e.target.value === 'Partner'){
+          gridRef.current.api.forEachNode((node) => {
+            console.log('node.level', node.level);
+            if (node.level === 0 || node.level === 1 || node.level === 2 || node.level === 3) {
+              gridRef.current.api.setRowNodeExpanded(node, true);
+              return;
+            }
+          });
+        }
+        else{
+          gridRef.current.api.collapseAll();      
+        }
+    // gridRef.current.api.redrawRows();
+    // gridRef.current.api.refreshCells();
+  },[]);
+
+  const onCollapseAll = useCallback(() => {
+    gridRef.current.api.collapseAll();
+  },[]);
+
   const onGridReady = useCallback((params) => {
     fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
       .then((resp) => approverData)
@@ -503,6 +556,7 @@ function DataReviewApprover(props) {
           <Stack direction="horizontal" gap={4}>
             <div className="sell-out-header">Sell Out Data Review</div>
             <div className="mt-0 ms-auto">
+              
               <Row className="currency-mode">CURRENCY MODE</Row>
               <Col>
                 <ButtonGroup>
@@ -535,7 +589,35 @@ function DataReviewApprover(props) {
             </div>
           </Stack>
         </div>
-
+        <Row>
+          <Col md={3}>
+            <Row>
+          <Col md={6}>
+          <Form.Label size="sm" htmlFor="expand_by">
+                        Consolidate by
+                      </Form.Label></Col>
+                      <Col>
+                      <Form.Select
+                        size="sm"
+                        id="expand_by"
+                        name="expand_by"
+                        onChange={onExpandCol}
+                      >
+                        <option>Collapse all</option>
+                        <option value="Zone">Zone</option>
+                        <option selected value="Country">Country</option>
+                        <option value="Model">Model</option>
+                        <option value="Partner">Partner</option>
+                      </Form.Select>
+                      </Col>
+                      </Row>
+          </Col>
+          {/* <Col md={2}>
+            <Button className="btn-collapseall edit-header"
+            onClick={onCollapseAll}
+            >Collapse all</Button> 
+          </Col> */}
+        </Row>
         <Row
           className="ag-theme-alpine ag-grid-table"
           style={{ height: 350, marginTop: "10px" }}

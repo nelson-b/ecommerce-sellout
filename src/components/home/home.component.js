@@ -91,7 +91,6 @@ function Home(props) {
     {
       field: "Sellout Growth Vs Last Year",
       spanHeaderHeight: true,
-      // aggFunc: "sum",
       minWidth: 150,
       cellClass: "grid-cell-centered",
       valueFormatter: (params) => {
@@ -100,9 +99,6 @@ function Home(props) {
       valueGetter: (params) => {
         return calcSellOutCurrYTDvsLYYTD(params);
       },
-      // valueParser: (params) => {
-      //   return calcSellOutCurrYTDvsLYYTD(params);
-      // },
       cellStyle: function (params) {
         if (params.value < "0") {
           return { color: "#ff0000", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
