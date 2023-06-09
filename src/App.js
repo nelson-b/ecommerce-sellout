@@ -23,7 +23,7 @@ import UserRequestComponent from "./components/user/userRequest.js";
 import InputCalender from "./components/admin/inputCalender.js";
 //history
 import { history } from "./helper/history.js";
-import {RouteGuard} from "./RouteGuard.js"; 
+import RouteGuard from "./RouteGuard.js"; 
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,10 +44,15 @@ function App() {
           <Route path="/partner/list" element={<PartnerList />} />
           <Route path="/partner/requestList" element={<PartnerRequestList />} />
 
-          <Route
+          <RouteGuard
+                   exact
+                   path="/editor/home"
+                   element={<HomeComponent role={roles.editor} />}
+          />
+          {/* <Route
             path="/editor/home"
             element={<HomeComponent role={roles.editor} />}
-          />
+          /> */}
           <Route
             path="/approver/home"
             element={<HomeComponent role={roles.approver} />}

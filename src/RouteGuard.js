@@ -18,4 +18,4 @@ const RouteGuard = ({ component: Component, ...rest }) => {
     );
 }
 
-export default RouteGuard;
+export default RouteGuard; 
