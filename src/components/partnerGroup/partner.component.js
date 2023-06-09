@@ -61,7 +61,7 @@ function PartnerComponent(props) {
     headerLabel: "Success....",
     variant: "success",
     header: 'Data has been saved successfully!!',
-    content: ['Navigating you to the Partner list page.....']
+    content: []
   }
 
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -74,40 +74,62 @@ function PartnerComponent(props) {
   const errormsg = {
     headerLabel: "Error....",
     variant: "danger",
-    header: "There are below errors while processing. Please recitify and retry",
+    header: "There are below errors while processing.",
     content: errorRet
   }
 
   const onSubmit = (data) => {
     console.log("form data", data);
-    data.created_by = 'test123';
-    data.modified_by = 'test123';
-    data.status = 'approved';
-    data.partner_account_name = data.platform_name + '_' + data.reseller_name + '_' + data.se_entity;
+    
+    let reqData = {
+      platform_name: data.platform_name,
+      country_code: data.country_code,
+      partner_group: data.partner_group,
+      se_entity: data.se_entity,
+      reseller_name: data.reseller_name,
+      bopp_type: data.bopp_type,
+      activation_date: data.activation_date,
+      business_type: data.business_type,
+      model_type: data.model_type,
+      trans_currency_code: data.trans_currency_code,
+      data_collection_type: data.data_collection_type,
+      partner_sellout_margin: data.partner_sellout_margin,
+      partner_url: data.partner_url,
+      e2_playbook_type: data.e2_playbook_type,
+      gtm_type: data.gtm_type,
+      created_by: "thomas.decamps@se.com",
+      created_date: new Date(),
+      modified_by: "thomas.decamps@se.com",
+      last_modified_date: new Date(),
+      status: 'ACTIVE',
+      batch_upload_flag: false,
+      active_flag: "false"
+    };
     
     //create api
-    props.CreatePartnerData(data)
+    props.CreatePartnerData(reqData)
       .then((data) => {
         console.log(data);
         setShowSuccessModal(true);
         setShowErrorModal(false);
-        setTimeout(()=>navigate('/partner/list'), 3000);
+        document.getElementById("create-partner-form").reset();
       })
       .catch((e) => {
         setShowSuccessModal(false);
-        setErrorRet([e.message]);
+        setErrorRet([]);
         setShowErrorModal(true);
         console.log('Error', e);
       });
   };
 
   const onError = (error) => {
+    console.log('date with timezone', new Date());
     console.log("ERROR:::", error);
   };
 
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
 
-  const handlePatnerCancel = () => {
+  const handlePartnerCancel = () => {
     navigate(`/partner/list?role=${userRole}`);
   };
 
@@ -172,7 +194,7 @@ function PartnerComponent(props) {
       <Row>
         <h5 className="form-sellout-header">{props.module} New Partner</h5>
         <Container fluid>
-          <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
+          <Form id="create-partner-form" noValidate onSubmit={handleSubmit(onSubmit, onError)}>
             <Row>
               <Card className="card-Panel form-partner-card">
                 <Form.Group className="mb-4">
@@ -632,8 +654,8 @@ function PartnerComponent(props) {
                         })}
                       >
                         <option value="">N/A</option>
-                        <option>Active</option>
-                        <option>Inactive</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="INACTIVE">Inactive</option>
                       </Form.Select>
                       {errors.partner_status && (
                         <Form.Text className="text-danger">
@@ -816,7 +838,7 @@ function PartnerComponent(props) {
                   <Button
                     className="btn-upload cancel-header"
                     onClick={() => {
-                      handlePatnerCancel(userRole);
+                      handlePartnerCancel(userRole);
                     }}
                   >
                     Cancel
