@@ -61,8 +61,8 @@ function HistoricalData({}) {
       suppressSizeToFit: true,
     },
     {
-      headerName: "Partner Code",
-      field: "Partner_Code",
+      headerName: "Partner ID",
+      field: "partner_id",
       hide: true,
     },
     {

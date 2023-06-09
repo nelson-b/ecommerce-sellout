@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import * as xlsx from "xlsx-js-style";
 import AlertModel from "../modal/alertModel";
 import { allCalMonths } from "../constant";
+import { ckeckErrors } from "../utils/index.js";
 
 function BatchInputComponent({ getData }) {
   const navigate = useNavigate();
@@ -131,7 +132,9 @@ function BatchInputComponent({ getData }) {
           let errorJson = [];
           //console.log("Reading excel: ", json);
           setFileData(json);
-          //console.log("fileData: ", fileData);
+
+          errorJson = ckeckErrors(getData, json);
+
           json.forEach((i) => {
             if (i.Jan_Amount) {
               if (isNaN(i.Jan_Amount)) {
@@ -356,12 +359,12 @@ function BatchInputComponent({ getData }) {
       const monthField = monthName + "_Amount";
       totalValue.push(monthField);
     }
-    
+
     let totalAmount = 0;
     tempData.forEach((e, i) => {
       totalValue.forEach((m) => {
         totalAmount = Number(totalAmount) + Number(e[m]);
-      })
+      });
       tempData[i].GrandTotal = totalAmount;
       totalAmount = 0;
     });

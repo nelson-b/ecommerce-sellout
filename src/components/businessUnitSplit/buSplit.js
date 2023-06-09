@@ -22,6 +22,7 @@ import { useLocation } from "react-router-dom";
 import AlertModel from "../modal/alertModel";
 import { allCalMonths } from "../constant.js";
 import * as xlsx from "xlsx-js-style";
+import { ckeckErrors } from "../utils/index.js";
 
 function BusinessUnitSplit() {
   const navigate = useNavigate();
@@ -57,15 +58,17 @@ function BusinessUnitSplit() {
     let errorLog = [];
     //iterate in the grid
     gridRef.current.api.forEachNode((rowNode, index) => {
-      if(rowNode.data.Total != 100){
-        errorLog = errorLog.concat('Total not 100% at partner id: '+ rowNode.data.id);
-      };
+      if (rowNode.data.Total != 100) {
+        errorLog = errorLog.concat(
+          "Total not 100% at partner id: " + rowNode.data.id
+        );
+      }
     });
-    
-    console.log('errorLog', errorLog);
-    
-    if(errorLog.length > 0) {
-      setErrorData(['Total should be 100% for all Bussiness units']);
+
+    console.log("errorLog", errorLog);
+
+    if (errorLog.length > 0) {
+      setErrorData(["Total should be 100% for all Bussiness units"]);
       setShowErrorModal(true);
       setShowSuccessModal(false);
     } else {
@@ -73,13 +76,13 @@ function BusinessUnitSplit() {
       setShowErrorModal(false);
       setShowSuccessModal(true);
     }
-  },[]);
+  }, []);
 
   const gridRef = useRef(null);
 
   const buSplitData = [
     {
-      Partner_ID: "Adalbert",
+      partner_id: "Adalbert",
       Country: "France",
       Partner_Account_Name: "Adalbert Zajadacz (Part of DEHA) DEU",
       Model: "E1 - Dist",
@@ -88,10 +91,10 @@ function BusinessUnitSplit() {
       H_and_D: 15,
       PP: 10,
       DE: 27,
-      IA: 23
+      IA: 23,
     },
     {
-      Partner_ID: "AFB",
+      partner_id: "AFB",
       Country: "Caneda",
       Partner_Account_Name: "AFB eSolutions DEU",
       Model: "E1 - Dist",
@@ -100,10 +103,10 @@ function BusinessUnitSplit() {
       H_and_D: 20,
       PP: 30,
       DE: 20,
-      IA: 20
+      IA: 20,
     },
     {
-      Partner_ID: "Ahlsell",
+      partner_id: "Ahlsell",
       Country: "Norway",
       Partner_Account_Name: "Ahlsell ELKO NOR",
       Model: "E1 - Dist",
@@ -112,10 +115,10 @@ function BusinessUnitSplit() {
       H_and_D: 30,
       PP: 10,
       DE: 30,
-      IA: 15
+      IA: 15,
     },
     {
-      Partner_ID: "Ahlsell",
+      partner_id: "Ahlsell",
       Country: "Finland",
       Partner_Account_Name: "Ahlsell ELKO SWE",
       Model: "E2 - Dist",
@@ -124,47 +127,50 @@ function BusinessUnitSplit() {
       H_and_D: 25,
       PP: 10,
       DE: 25,
-      IA: 15
+      IA: 15,
     },
   ];
 
   const sumTotal = (params, index) => {
-    console.log('sumTotal');
+    console.log("sumTotal");
 
-    let totalBu = (
-      Number(Math.round(params.data.DE)) + 
-      Number(Math.round(params.data.H_and_D)) + 
-      Number(Math.round(params.data.IA)) + 
-      Number(Math.round(params.data.PP)) + 
-      Number(Math.round(params.data.SP)));
-    
-      params.data['Total'] = Number(Math.round(totalBu));
-      return params.data.Total;
-  }
+    let totalBu =
+      Number(Math.round(params.data.DE)) +
+      Number(Math.round(params.data.H_and_D)) +
+      Number(Math.round(params.data.IA)) +
+      Number(Math.round(params.data.PP)) +
+      Number(Math.round(params.data.SP));
+
+    params.data["Total"] = Number(Math.round(totalBu));
+    return params.data.Total;
+  };
 
   const isTot100Per = (params) => {
-    if(params.data.Total!==100){
+    if (params.data.Total !== 100) {
       return { backgroundColor: "red" };
     }
-    return { backgroundColor: "white", 'borderColor': '#e2e2e2'};
-  }
+    return { backgroundColor: "white", borderColor: "#e2e2e2" };
+  };
 
-  const checkNumericValue = (params,field) => {
-    console.log('checkNumericValue', params.newValue);
-    console.log('Is NAN', isNaN(params.newValue));
-    if(isNaN(params.newValue) === true){
+  const checkNumericValue = (params, field) => {
+    console.log("checkNumericValue", params.newValue);
+    console.log("Is NAN", isNaN(params.newValue));
+    if (isNaN(params.newValue) === true) {
       params.data[field] = Number(0);
       return params.data[field];
     }
-    console.log('Number(Math.round(params.newValue))', Number(Math.round(params.newValue)));
+    console.log(
+      "Number(Math.round(params.newValue))",
+      Number(Math.round(params.newValue))
+    );
     params.data[field] = Number(Math.round(params.newValue));
-    console.log('checkNumericValue', params.data[field]);
+    console.log("checkNumericValue", params.data[field]);
     return params.data[field];
-  }
+  };
 
   const columnDefs = [
     {
-      field: "Partner_ID",
+      field: "partner_id",
       hide: true,
     },
     {
@@ -215,11 +221,13 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { borderColor: "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
-      valueSetter: (params) => {return checkNumericValue(params, 'SP')},
+      valueSetter: (params) => {
+        return checkNumericValue(params, "SP");
+      },
     },
     {
       headerName: "H&D",
@@ -227,11 +235,13 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { borderColor: "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
-      valueSetter: (params) => {return checkNumericValue(params, 'H_and_D')},
+      valueSetter: (params) => {
+        return checkNumericValue(params, "H_and_D");
+      },
     },
     {
       headerName: "PP",
@@ -239,11 +249,13 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { borderColor: "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
-      valueSetter: (params) => {return checkNumericValue(params, 'PP')},
+      valueSetter: (params) => {
+        return checkNumericValue(params, "PP");
+      },
     },
     {
       headerName: "DE",
@@ -251,11 +263,13 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { borderColor: "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
-      valueSetter: (params) => {return checkNumericValue(params, 'DE')},
+      valueSetter: (params) => {
+        return checkNumericValue(params, "DE");
+      },
     },
     {
       headerName: "IA",
@@ -263,11 +277,13 @@ function BusinessUnitSplit() {
       minWidth: 70,
       editable: true,
       suppressMenu: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { borderColor: "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
-      valueSetter: (params) => {return checkNumericValue(params, 'IA')},
+      valueSetter: (params) => {
+        return checkNumericValue(params, "IA");
+      },
     },
     {
       headerName: "Total",
@@ -275,7 +291,7 @@ function BusinessUnitSplit() {
       minWidth: 80,
       editable: false,
       suppressMenu: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { borderColor: "#e2e2e2" },
       valueFormatter: (params) => {
         return Math.round(params.value) + "%";
       },
@@ -284,7 +300,7 @@ function BusinessUnitSplit() {
       },
       cellStyle: (params) => {
         return isTot100Per(params);
-      }
+      },
     },
   ];
 
@@ -320,8 +336,7 @@ function BusinessUnitSplit() {
   const errormsg = {
     headerLabel: "Error....",
     variant: "danger",
-    header:
-      "Please recitify and retry",
+    header: "Please recitify and retry",
     content: errorData,
   };
 
@@ -378,6 +393,36 @@ function BusinessUnitSplit() {
           let worksheet = workbook.Sheets[sheetName];
           let json = xlsx.utils.sheet_to_json(worksheet);
           let errorJson = [];
+
+          buSplitData.forEach((b) => {
+            if (
+              json.find(
+                (j) => j.Partner_Account_Name === b.Partner_Account_Name
+              ) == undefined
+            ) {
+              errorJson.push(`Partner account is not matched with the data`);
+            }
+          });
+
+          if (!errorJson.length) {
+            buSplitData.forEach((b) => {
+              json.forEach((j) => {
+                if (b.Partner_Account_Name === j.Partner_Account_Name) {
+                  if (
+                    b.Country === j.Country &&
+                    b.partner_id === j.partner_id &&
+                    b.Model === j.Model &&
+                    b.Quarter === j.Quarter
+                  ) {
+                    errorJson = [];
+                  } else {
+                    errorJson.push(`Busplit account details are not matched with the data`);
+                  }
+                }
+              });
+            });
+          }
+
           json.forEach((i) => {
             if (i.SP) {
               if (isNaN(i.SP)) {
@@ -439,10 +484,10 @@ function BusinessUnitSplit() {
           }
           errorJson = [];
         };
-        setSelectedFile(null);
         reader.readAsArrayBuffer(selectedFile.file[0]);
       }
     }
+    setSelectedFile(null);
   };
 
   const ShouldUpdate = () => {
