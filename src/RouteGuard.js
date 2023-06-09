@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Navigate } from 'react-router-dom';
 
 const RouteGuard = ({ component: Component, ...rest }) => {
     function hasJWT() {
@@ -12,7 +12,7 @@ const RouteGuard = ({ component: Component, ...rest }) => {
         <Route {...rest}
             render={props => (
                 //if valid token redirect to home page or redirect to login screen
-                hasJWT() ? <Component {...props} /> : <Redirect to={{ pathname: '/' }} />
+                hasJWT() ? <Component {...props} /> : <Navigate to={{ pathname: '/' }} />
             )}
         />
     );
