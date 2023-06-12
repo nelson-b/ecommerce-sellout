@@ -1065,7 +1065,7 @@ function DataReviewApprover(props) {
                 <Button
                   className="btn-upload cancel-header"
                   onClick={() => {
-                    handleReviewNavigation();
+                    handleReviewNavigation(historicalRole);
                   }}
                 >
                   Cancel
