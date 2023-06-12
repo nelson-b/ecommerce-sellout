@@ -31,6 +31,8 @@ import { components } from "react-select";
 import makeAnimated, { Input } from "react-select/animated";
 import PartnerAccountList from "../partnerAccountList.component.js";
 import "../save/save.css";
+import { retrieveAllPartnerData } from "../../../actions/partneraction.js";
+import { connect } from "react-redux";
 
 function SaveUser(props) {
   const navigate = useNavigate();
@@ -38,6 +40,7 @@ function SaveUser(props) {
   const location = useLocation();
   const userRole = new URLSearchParams(location.search).get("role");
 
+  const [partnerAccData, setPartnerAccData] = useState([]);
   const [form, setForm] = useState({
     username: null,
     useremailid: null,
@@ -146,12 +149,23 @@ function SaveUser(props) {
   };
 
   const handlePartnerChange = (selected) => {
+    console.log('handlePartnerChange', selected[0]?.value);
     let name = "partnerAccNm";
     setOptionPartnerSelected(selected);
     setForm((prev) => ({
       ...prev,
       [name]: selected,
     }));
+
+    //call api
+    props.retrieveAllPartnerData(selected) //i/p for test purpose
+    .then((data) => {
+      console.log("retrieveAllPartnerData", data);
+      setPartnerAccData(data);
+    })
+    .catch((e) => {
+      console.log(e);
+    });
   };
 
   const onHandleSelectChange = useCallback((value, name) => {
@@ -288,8 +302,7 @@ function SaveUser(props) {
                     placement="right"
                     overlay={tooltip(
                       "Enter a name to search or select from dropdown"
-                    )}
-                  >
+                    )}>
                     <span>
                       <BiHelpCircle />
                     </span>
@@ -497,7 +510,7 @@ function SaveUser(props) {
                   </span>
                 </Col>
                 <Col>
-                  <PartnerAccountList data={optionPartnerSelected} />
+                  <PartnerAccountList data={partnerAccData} />
                 </Col>
               </Row>
             </Card>
@@ -530,4 +543,4 @@ function SaveUser(props) {
   );
 }
 
-export default SaveUser;
+export default connect(null, { retrieveAllPartnerData })(SaveUser);
