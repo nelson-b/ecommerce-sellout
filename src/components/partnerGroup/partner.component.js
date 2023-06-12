@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
 import "./partner.component.css";
-import { createPartnerData, retrieveById, updatePartner } from "../../actions/partneraction";
+import { createPartnerData, retrieveById, updatePartner } from "../../actions/partneraction.js";
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
 import { roles } from "../constant.js";
@@ -205,13 +205,13 @@ function PartnerComponent(props) {
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
   };
-  
+
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
-    header: 'Data has been saved successfully!!',
-    content: []
-  }
+    header: "Data has been saved successfully!!",
+    content: [],
+  };
 
   const [showErrorModal, setShowErrorModal] = useState(false);
   const handleCloseErrorModal = () => {
@@ -351,7 +351,7 @@ function PartnerComponent(props) {
   } 
 
   const onError = (error) => {
-    console.log('date with timezone', new Date());
+    console.log("date with timezone", new Date());
     console.log("ERROR:::", error);
   };
 
@@ -377,55 +377,55 @@ function PartnerComponent(props) {
       </Row>
       <Row>
         <Breadcrumb>
-        {userRole === "editor" && (
-          <Breadcrumb.Item href="/editor/home">
-            <img
-              src={Home}
-              alt="home"
-              style={{ height: "20px", width: "80px", cursor: "pointer" }}
-            />
-          </Breadcrumb.Item>
+          {userRole === "editor" && (
+            <Breadcrumb.Item href="/editor/home">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
           )}
           {userRole === "approver" && (
-          <Breadcrumb.Item href="/approver/home">
-            <img
-              src={Home}
-              alt="home"
-              style={{ height: "20px", width: "80px", cursor: "pointer" }}
-            />
-          </Breadcrumb.Item>
+            <Breadcrumb.Item href="/approver/home">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
           )}
           {userRole === "superApproverUser" && (
-          <Breadcrumb.Item href="/superUser/home">
-            <img
-              src={Home}
-              alt="home"
-              style={{ height: "20px", width: "80px", cursor: "pointer" }}
-            />
-          </Breadcrumb.Item>
+            <Breadcrumb.Item href="/superUser/home">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
           )}
           {userRole === "superUser" && (
-          <Breadcrumb.Item href="/superUser">
-            <img
-              src={Home}
-              alt="home"
-              style={{ height: "20px", width: "80px", cursor: "pointer" }}
-            />
-          </Breadcrumb.Item>
+            <Breadcrumb.Item href="/superUser">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
           )}
           {userRole === "admin" && (
-          <Breadcrumb.Item href="/admin/home">
-            <img
-              src={Home}
-              alt="home"
-              style={{ height: "20px", width: "80px", cursor: "pointer" }}
-            />
-          </Breadcrumb.Item>
+            <Breadcrumb.Item href="/admin/home">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
           )}
           <span> &nbsp;{">"}</span>
-            <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
-              &nbsp;{props.module} Partner
-            </Breadcrumb.Item>
+          <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
+            &nbsp;{props.module} Partner
+          </Breadcrumb.Item>
         </Breadcrumb>
       </Row>
       <Row>
@@ -455,15 +455,14 @@ function PartnerComponent(props) {
                         size="sm"
                         id="platform_name"
                         name="platform_name"
-                        disabled={props.module === 'Update'}
+                        disabled={props.module === "Update"}
                         type="text"
                         defaultValue={partnerData.platform_name}
                         {...props.module === 'Create' && (
                         {...register("platform_name", {
                           required: "Platform name is required",
                           pattern: {
-                            value:
-                            /^[a-zA-Z ]*$/i,
+                            value: /^[a-zA-Z ]*$/i,
                             message: "Platform name can have only alphabets",
                           },
                         })}
@@ -561,8 +560,7 @@ function PartnerComponent(props) {
                         {...register("reseller_name", {
                           required: "Reseller name is required",
                           pattern: {
-                            value:
-                            /^[a-zA-Z ]*$/i,
+                            value: /^[a-zA-Z ]*$/i,
                             message: "Reseller name can have only alphabets",
                           },
                         })}
@@ -708,7 +706,8 @@ function PartnerComponent(props) {
                       &nbsp;
                       <OverlayTrigger
                         placement="right"
-                        overlay={tooltip("Enter valid Partner URL")}>
+                        overlay={tooltip("Enter valid Partner URL")}
+                      >
                         <span>
                           <BiHelpCircle />
                         </span>
@@ -842,9 +841,7 @@ function PartnerComponent(props) {
                 <Form.Group className="mb-4">
                   <Row
                     className={
-                      props.module === 'Create'
-                        ? "partnerRowCreate"
-                        : ""
+                      props.module === "Create" ? "partnerRowCreate" : ""
                     }
                   >
                     <Col>
@@ -897,7 +894,7 @@ function PartnerComponent(props) {
                         </Form.Text>
                       )}
                     </Col>
-                    {props.module === 'Update' && (
+                    {props.module === "Update" && (
                       <>
                       <Col>
                       <Form.Label size="sm" htmlFor="partner_status">
@@ -955,7 +952,7 @@ function PartnerComponent(props) {
                       </Col>
                       </>
                     )}
-                    {props.module === 'Update' && (
+                    {props.module === "Update" && (
                       <Col>
                         <Form.Label size="sm" htmlFor="deactivation_reason">
                           Deactivation reason
@@ -987,7 +984,7 @@ function PartnerComponent(props) {
                 </Form.Group>
               </Card>
             </Row>
-            { props.showHigherLevelModule && (
+            {props.showHigherLevelModule && (
               <Row>
                 <Card className="card-Panel form-partner-card">
                 <Form.Group className="mb-4">
@@ -1105,29 +1102,29 @@ function PartnerComponent(props) {
             )}
             <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
               <Col xs="auto">
-                  <Button
-                    className="btn-upload cancel-header"
-                    onClick={() => {
-                      handlePartnerCancel(userRole);
-                    }}
-                  >
-                    Cancel
-                  </Button>
+                <Button
+                  className="btn-upload cancel-header"
+                  onClick={() => {
+                    handlePartnerCancel(userRole);
+                  }}
+                >
+                  Cancel
+                </Button>
               </Col>
               <Col xs="auto">
                 <Button className="btn-upload save-header" type="submit">
-                  { props.module }
+                  {props.module}
                 </Button>
                 <AlertModel
-                      show={ showSuccessModal }
-                      handleClose={ handleCloseSuccessModal }
-                      body={ successmsg }
-                    />
+                  show={showSuccessModal}
+                  handleClose={handleCloseSuccessModal}
+                  body={successmsg}
+                />
                 <AlertModel
-                      show={ showErrorModal }
-                      handleClose={ handleCloseErrorModal }
-                      body={ errormsg }
-                    />
+                  show={showErrorModal}
+                  handleClose={handleCloseErrorModal}
+                  body={errormsg}
+                />
               </Col>
             </Row>
           </Form>
