@@ -11,6 +11,7 @@ import Home from "../../../images/home-icon.png";
 import "../list/list.css";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { RetrieveAllUserListData } from "../../../actions/userAction.js";
 import userEditIcon from "../../../images/edit-icon.png";
 
 function UserList(props) {
@@ -37,7 +38,6 @@ function UserList(props) {
       suppressMenu: true,
       cellRenderer: (params) => {
         const Status = params.value;
-        console.log("params data", params);
         return (
           <div>
             <img
@@ -51,8 +51,8 @@ function UserList(props) {
       },
     },
     {
-      headerName: "Username",
-      field: "username",
+      headerName: "UserName",
+      field: "first_name",
       width: 250,
       sortable: true,
       filter: true,
@@ -61,7 +61,7 @@ function UserList(props) {
     },
     {
       headerName: "User ID",
-      field: "userId",
+      field: "email_id",
       width: 250,
       sortable: true,
       filter: true,
@@ -70,7 +70,7 @@ function UserList(props) {
     },
     {
       headerName: "Role",
-      field: "userrole",
+      field: "role_id",
       width: 200,
       sortable: true,
       filter: true,
@@ -80,7 +80,7 @@ function UserList(props) {
     },
     {
       headerName: "Ops",
-      field: "userOps",
+      field: "last_name",
       width: 200,
       sortable: true,
       filter: true,
@@ -90,7 +90,7 @@ function UserList(props) {
     },
     {
       headerName: "Zone",
-      field: "userZone",
+      field: "modified_by",
       width: 200,
       sortable: true,
       filter: true,
@@ -99,7 +99,7 @@ function UserList(props) {
     },
     {
       headerName: "Country",
-      field: "usrCountry",
+      field: "created_date",
       width: 200,
       sortable: true,
       filter: true,
@@ -108,7 +108,7 @@ function UserList(props) {
     },
     {
       headerName: "Model",
-      field: "usrModel",
+      field: "modified_date",
       width: 180,
       sortable: true,
       filter: true,
@@ -132,35 +132,14 @@ function UserList(props) {
   );
 
   const onGridReady = useCallback((params) => {
-    setRowData([
-      {
-        username: "UserName 1",
-        userId: "UserId 1",
-        userrole: "Editor 1",
-        userOps: "Ops 1",
-        userZone: "Zone A",
-        usrCountry: "Country 1",
-        usrModel: "E1",
-      },
-      {
-        username: "UserName 2",
-        userId: "UserId 2",
-        userrole: "Editor 2",
-        userOps: "Ops 2",
-        userZone: "Zone A",
-        usrCountry: "Country 2",
-        usrModel: "E2",
-      },
-      {
-        username: "UserName 3",
-        userId: "UserId 3",
-        userrole: "Editor 3",
-        userOps: "Ops 3",
-        userZone: "Zone A",
-        usrCountry: "Country 3",
-        usrModel: "E3",
-      },
-    ]);
+    props
+      .RetrieveAllUserListData()
+      .then((data) => {
+        setRowData(data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, []);
 
   const handleRequest = () => {
@@ -279,4 +258,4 @@ function UserList(props) {
   );
 }
 
-export default connect(null, null)(UserList);
+export default connect(null, { RetrieveAllUserListData })(UserList);
