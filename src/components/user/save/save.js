@@ -28,7 +28,7 @@ import Home from "../../../images/home-icon.png";
 import { BiHelpCircle } from "react-icons/bi";
 import MultiSelectDrp from "../multiSelectDropdown.js";
 import { components } from "react-select";
-import makeAnimated from "react-select/animated";
+import makeAnimated, { Input } from "react-select/animated";
 import PartnerAccountList from "../partnerAccountList.component.js";
 import "../save/save.css";
 
@@ -60,7 +60,7 @@ function SaveUser(props) {
     username: {
       isReq: true,
       errorMsg: "",
-      onValidateFunc: onValidate,
+      // onValidateFunc: onValidate,
     },
     useremailid: {
       isReq: true,
@@ -154,23 +154,43 @@ function SaveUser(props) {
     }));
   };
 
-  const onHandleChange = useCallback((value, name) => {
+  const onHandleSelectChange = useCallback((value, name) => {
+    console.log('onHandleSelectChange',value, name);
     setForm((prev) => ({
       ...prev,
       [name]: value,
     }));
   }, []);
 
+  const onHandleTextChange = useCallback((event) => {
+    let value = event.target.value;
+    let name = event.target.name;
+    console.log('onHandleSelectChange', name, value);
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    console.log('form.username', form.username);
+  }, [form]);
+
   const validateForm = () => {
     let isInvalid = false;
     Object.keys(error).forEach((x) => {
       const errObj = error[x];
+      console.log('errObj',errObj);
       if (errObj.errorMsg) {
         isInvalid = true;
       } else if (errObj.isReq && !form[x]) {
+        console.log('error',error);
+        console.log('form[x]', form[x]);
         isInvalid = true;
         onValidate(true, x);
-      } else if (form.modelType.length === 0) {
+      }
+      else if (form.username === '' || form.username === undefined) { 
+        console.log('error',error);
+        isInvalid = true;
+      }
+      else if (form.modelType.length === 0) {
         isInvalid = true;
       } else if (form.usrcountry.length === 0) {
         isInvalid = true;
@@ -273,15 +293,20 @@ function SaveUser(props) {
                     <span>
                       <BiHelpCircle />
                     </span>
-                  </OverlayTrigger>
-                  <Select
+                  </OverlayTrigger><br/>
+                  <input type="text"   
                     name="username"
                     title="Username"
+                    className="create-usr-text"
+                    placeholder="Enter username"
                     value={form.username}
-                    options={userOptions}
-                    onChangeFunc={onHandleChange}
-                    {...error.username}
-                  />
+                    onChange={ onHandleTextChange }
+                    {...error.username} /><br/>
+                  <span className="text-danger">
+                    {(form.username === '' || form.username === undefined)
+                      ? "Username is required"
+                      : ""}
+                  </span>
                 </Col>
                 <Col className="col-3">
                   <Form.Label size="sm" htmlFor="useremailid">
@@ -298,14 +323,29 @@ function SaveUser(props) {
                       <BiHelpCircle />
                     </span>
                   </OverlayTrigger>
+                  <br/>
+                  <input type="text"
+                    name="useremailid"
+                    title="User email id"
+                    className="create-usr-text"
+                    placeholder="Enter User email id"
+                    value={form.useremailid}
+                    onChange={ onHandleTextChange }
+                    {...error.useremailid} /><br/>
+                  <span className="text-danger">
+                    {(form.useremailid === '' || form.useremailid === undefined)
+                      ? "User email id is required"
+                      : ""}
+                  </span>
+                  {/* 
                   <Select
                     name="useremailid"
                     title="User email id"
                     value={form.useremailid}
                     options={userEmailOptions}
-                    onChangeFunc={onHandleChange}
+                    onChangeFunc={onHandleSelectChange}
                     {...error.useremailid}
-                  />
+                  /> */}
                 </Col>
                 <Col className="col-3">
                   <Form.Label size="sm" htmlFor="userrole">
@@ -316,7 +356,7 @@ function SaveUser(props) {
                     title="User Role"
                     value={form.userrole}
                     options={userRoleOptions}
-                    onChangeFunc={onHandleChange}
+                    onChangeFunc={onHandleSelectChange}
                     {...error.userrole}
                   />
                 </Col>
@@ -338,7 +378,7 @@ function SaveUser(props) {
                     title="Ops"
                     value={form.userops}
                     options={opsOptions}
-                    onChangeFunc={onHandleChange}
+                    onChangeFunc={onHandleSelectChange}
                     {...error.userops}
                   />
                 </Col>
@@ -351,7 +391,7 @@ function SaveUser(props) {
                     title="Zone"
                     value={form.usrzone}
                     options={userZoneOptions}
-                    onChangeFunc={onHandleChange}
+                    onChangeFunc={onHandleSelectChange}
                     {...error.usrzone}
                   />
                 </Col>

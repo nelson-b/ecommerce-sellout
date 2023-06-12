@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
 import "./partner.component.css";
-import { createPartnerData, retrieveById, updatePartner } from "../../actions/partneraction.js";
+import { createPartnerData, retrieveAllPartnerData, updatePartner } from "../../actions/partneraction.js";
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
 import { roles } from "../constant.js";
@@ -67,51 +67,52 @@ function PartnerComponent(props) {
     if(props.module === 'Update'){
       if(partnerId){
         //testing purpose not final
-        let reqData = {
-          partner_id: "INT-MY-00061",
-          platform_name: "Lazada",
-          country_code: "MYS",
-          partner_group: "Lazada",
-          se_entity: "APC",
-          reseller_name: "Bun Seng Hardware",
-          partner_account_name: "Lazada Bun Seng Hardware APC MYS",
-          activation_date: "2023-04-03T16:18:04.614693",
-          deactivation_date: null,
-          deactivation_reason: null,
-          business_type: "Electric",
-          model_type: "E1-Dist",
-          trans_currency_code: "MYR",
-          data_collection_type: "Actual sellin + est. eCom penetration",
-          partner_sellout_margin: "25",
-          partner_url: "https://www.lazada.com.my/shop/aman-o2o-sdn-bhd/",
-          e2_playbook_type: "Not applicable",
-          bopp_type: "Not applicable",
-          gtm_type: "Direct",
-          created_by: "thomas.decamps@se.com",
-          created_date: "2023-06-01T10:33:01",
-          modified_by: "thomas.decamps@se.com",
-          last_modified_date: "2023-06-01T16:33:01",
-          status: "ACTIVE",
-          batch_upload_flag: false,
-          active_flag: "False"
-        }
+        // let reqData = {
+        //   partner_id: "INT-MY-00061",
+        //   platform_name: "Lazada",
+        //   country_code: "MYS",
+        //   partner_group: "Lazada",
+        //   se_entity: "APC",
+        //   reseller_name: "Bun Seng Hardware",
+        //   partner_account_name: "Lazada Bun Seng Hardware APC MYS",
+        //   activation_date: "2023-04-03T16:18:04.614693",
+        //   deactivation_date: null,
+        //   deactivation_reason: null,
+        //   business_type: "Electric",
+        //   model_type: "E1-Dist",
+        //   trans_currency_code: "MYR",
+        //   data_collection_type: "Actual sellin + est. eCom penetration",
+        //   partner_sellout_margin: "25",
+        //   partner_url: "https://www.lazada.com.my/shop/aman-o2o-sdn-bhd/",
+        //   e2_playbook_type: "Not applicable",
+        //   bopp_type: "Not applicable",
+        //   gtm_type: "Direct",
+        //   created_by: "thomas.decamps@se.com",
+        //   created_date: "2023-06-01T10:33:01",
+        //   modified_by: "thomas.decamps@se.com",
+        //   last_modified_date: "2023-06-01T16:33:01",
+        //   status: "ACTIVE",
+        //   batch_upload_flag: false,
+        //   active_flag: "False"
+        // }
 
-        console.log('getUIDateFormat', getUIDateFormat(reqData.activation_date));
-        setPartnerData(reqData);
-        console.log('partnerData', partnerData); 
-        //prefill form
-        setFormData(reqData);
+        // console.log('getUIDateFormat', getUIDateFormat(reqData.activation_date));
+        // setPartnerData(reqData);
+        // console.log('partnerData', partnerData); 
+        // //prefill form
+        // setFormData(reqData);
         //---------------------------//
 
         //call get by id api
         props
-        .retrieveById(partnerId) //i/p for test purpose
+        .retrieveAllPartnerData() //i/p for test purpose 
         .then((data) => {
-          console.log("retrieveById", data);
-          // const respData = data.filter(data => data.partner_id === partnerId);
-          // setPartnerData(respData);
-          // //prefill form
-          // setFormData(respData);
+          console.log("retrieveAllPartnerData", data);
+          const respData = data.filter(data => data.partner_id === partnerId)[0];
+          console.log("filter by id", respData);
+          setPartnerData(respData);
+          //prefill form
+          setFormData(respData);
           console.log('partnerData', partnerData);
         })
         .catch((e) => {
@@ -182,12 +183,12 @@ function PartnerComponent(props) {
     if(data.e2_playbook_type){
       // document.getElementById('e2_playbook_type').value = data.e2_playbook_type;
       // clearErrors('e2_playbook_type');
-      setValue('data_collection_type', data.e2_playbook_type);
+      setValue('e2_playbook_type', data.e2_playbook_type);
     }
     if(data.bopp_type){
       // document.getElementById('bopp_type').value = data.bopp_type;
       // clearErrors('bopp_type');
-      setValue('data_collection_type', data.data_collection_type);
+      setValue('bopp_type', data.bopp_type);
     }
     if(data.gtm_type){
       // document.getElementById('gtm_type').value = data.gtm_type;
@@ -274,63 +275,63 @@ function PartnerComponent(props) {
         } else {
         console.log('Calling update api');
         
-        // let reqData = {
-        //   partner_id: data.partner_id,
-        //   platform_name: data.platform_name,
-        //   country_code: data.country_code,
-        //   partner_group: data.partner_group,
-        //   se_entity: data.se_entity,
-        //   reseller_name: data.reseller_name,
-        //   partner_account_name: data.partner_account_name,
-        //   activation_date: data.activation_date,
-        //   deactivation_date: data.deactivation_date,
-        //   deactivation_reason: data.deactivation_reason,
-        //   business_type: data.business_type,
-        //   model_type: data.model_type,
-        //   trans_currency_code: data.trans_currency_code,
-        //   data_collection_type: data.data_collection_type,
-        //   partner_sellout_margin: data.partner_sellout_margin,
-        //   partner_url: data.partner_url,
-        //   e2_playbook_type: data.e2_playbook_type,
-        //   bopp_type: data.bopp_type,
-        //   gtm_type: data.gtm_type,
-        //   created_by: "thomas.decamps@se.com",
-        //   created_date: new Date().toUTCString(),
-        //   modified_by: "thomas.decamps@se.com",
-        //   last_modified_date: new Date().toUTCString(),
-        //   "status": data.partner_status,
-        //   "batch_upload_flag": false,
-        //   "active_flag": "False"
-        // };
-        
-      let reqData = {
-          partner_id: "INT-MY-00061",
-          platform_name: "Lazada",
-          country_code: "MYS",
-          partner_group: "Lazada",
-          se_entity: "APC",
-          reseller_name: "Bun Seng Hardware",
-          partner_account_name: "Lazada Bun Seng Hardware APC MYS",
-          activation_date: "2023-04-03T16:18:04.614693",
-          deactivation_date: null,
-          deactivation_reason: null,
-          business_type: "Electric",
-          model_type: "E1-Dist",
-          trans_currency_code: "MYR",
-          data_collection_type: "Actual sellin + est. eCom penetration",
-          partner_sellout_margin: "25",
-          partner_url: "https://www.lazada.com.my/shop/aman-o2o-sdn-bhd/",
-          e2_playbook_type: "Not applicable",
-          bopp_type: "Not applicable",
-          gtm_type: "Direct",
+        let reqData = {
+          partner_id: data.partner_id,
+          platform_name: data.platform_name,
+          country_code: data.country_code,
+          partner_group: data.partner_group,
+          se_entity: data.se_entity,
+          reseller_name: data.reseller_name,
+          partner_account_name: data.partner_account_name,
+          activation_date: data.activation_date,
+          deactivation_date: data.deactivation_date,
+          deactivation_reason: data.deactivation_reason,
+          business_type: data.business_type,
+          model_type: data.model_type,
+          trans_currency_code: data.trans_currency_code,
+          data_collection_type: data.data_collection_type,
+          partner_sellout_margin: data.partner_sellout_margin,
+          partner_url: data.partner_url,
+          e2_playbook_type: data.e2_playbook_type,
+          bopp_type: data.bopp_type,
+          gtm_type: data.gtm_type,
           created_by: "thomas.decamps@se.com",
-          created_date: "2023-06-01T10:33:01",
+          created_date: new Date().toUTCString(),
           modified_by: "thomas.decamps@se.com",
-          last_modified_date: "2023-06-01T16:33:01",
-          status: "ACTIVE",
-          batch_upload_flag: false,
-          active_flag: "False"
-      }
+          last_modified_date: new Date().toUTCString(),
+          "status": data.partner_status,
+          "batch_upload_flag": false,
+          "active_flag": "False"
+        };
+        
+      // let reqData = {
+      //     partner_id: "INT-MY-00061",
+      //     platform_name: "Lazada",
+      //     country_code: "MYS",
+      //     partner_group: "Lazada",
+      //     se_entity: "APC",
+      //     reseller_name: "Bun Seng Hardware",
+      //     partner_account_name: "Lazada Bun Seng Hardware APC MYS",
+      //     activation_date: "2023-04-03T16:18:04.614693",
+      //     deactivation_date: null,
+      //     deactivation_reason: null,
+      //     business_type: "Electric",
+      //     model_type: "E1-Dist",
+      //     trans_currency_code: "MYR",
+      //     data_collection_type: "Actual sellin + est. eCom penetration",
+      //     partner_sellout_margin: "25",
+      //     partner_url: "https://www.lazada.com.my/shop/aman-o2o-sdn-bhd/",
+      //     e2_playbook_type: "Not applicable",
+      //     bopp_type: "Not applicable",
+      //     gtm_type: "Direct",
+      //     created_by: "thomas.decamps@se.com",
+      //     created_date: "2023-06-01T10:33:01",
+      //     modified_by: "thomas.decamps@se.com",
+      //     last_modified_date: "2023-06-01T16:33:01",
+      //     status: "ACTIVE",
+      //     batch_upload_flag: false,
+      //     active_flag: "False"
+      // }
       
       //update api
       
@@ -514,7 +515,7 @@ function PartnerComponent(props) {
                       >
                         <option value="">N/A</option>
                         <option value={'Partner 1'}>Partner 1</option>
-                        <option value={'Partner 2'}>Partner 2</option>
+                        <option value={"Amazon"}>Amazon</option>
                         <option value={'Lazada'}>Lazada</option>
                       </Form.Select>
                       {errors.partner_group && (
@@ -538,7 +539,7 @@ function PartnerComponent(props) {
                       >
                         <option value="">N/A</option>
                         <option>APC</option>
-                        <option>Entity 2</option>
+                        <option value={"TEST"}>TEST</option>
                         <option>Entity 3</option>
                       </Form.Select>
                       {errors.se_entity && (
@@ -664,6 +665,7 @@ function PartnerComponent(props) {
                         <option value="">N/A</option>
                         <option>Electric</option>
                         <option>Solar</option>
+                        <option value={"TEST"}>TEST</option>
                       </Form.Select>
                       {errors.business_type && (
                         <Form.Text className="text-danger">
@@ -686,7 +688,7 @@ function PartnerComponent(props) {
                       >
                         <option value="">N/A</option>
                         <option value={'E1-Dist'}>E1-Dist</option>
-                        <option>E2</option>
+                        <option value={"TEST"}>TEST</option>
                         <option>E3</option>
                       </Form.Select>
                       {errors.model_type && (
@@ -772,7 +774,7 @@ function PartnerComponent(props) {
                       >
                         <option value="">N/A</option>
                         <option>Actual sellin + est. eCom penetration</option>
-                        <option>Estimated Sellout</option>
+                        <option value={"DCTYPE"}>DCTYPE</option>
                       </Form.Select>
                       {errors.data_collection_type && (
                         <Form.Text className="text-danger">
@@ -828,7 +830,7 @@ function PartnerComponent(props) {
                         <option value="Not applicable">Not applicable</option>
                         <option value={"type1"}>Type 1</option>
                         <option value={"type2"}>Type 2</option>
-                        <option value={"type3"}>Type 3</option>
+                        <option value={"E2"}>E2</option>
                       </Form.Select>
                       {errors.e2_playbook_type && (
                         <Form.Text className="text-danger">
@@ -862,7 +864,7 @@ function PartnerComponent(props) {
                         <option value={"Adopter"}>Adopter</option>
                         <option value={"Leader"}>Leader</option>
                         <option value={"Novice"}>Novice</option>
-                        <option value={"Rising Stars"}>Rising Stars</option>
+                        <option value={"BOPP"}>BOPP</option>
                       </Form.Select>
                       {errors.bopp_type && (
                         <Form.Text className="text-danger">
@@ -886,7 +888,7 @@ function PartnerComponent(props) {
                       >
                         <option value="">N/A</option>
                         <option>Direct</option>
-                        <option>Indirect</option>
+                        <option value={"GTM"}>GTM</option>
                       </Form.Select>
                       {errors.gtm_type && (
                         <Form.Text className="text-danger">
@@ -1134,4 +1136,4 @@ function PartnerComponent(props) {
   );
 }
 
-export default connect(null, { createPartnerData, retrieveById, updatePartner })(PartnerComponent);
+export default connect(null, { createPartnerData, retrieveAllPartnerData, updatePartner })(PartnerComponent);
