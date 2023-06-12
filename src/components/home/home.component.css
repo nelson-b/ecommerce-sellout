@@ -5,7 +5,7 @@
 .sell-out-home-header {
     letter-spacing: 0.32px;
     color: #626469;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 500;
     margin-top: 20px;
 }
@@ -54,6 +54,9 @@
     display: flex;
     justify-content: center;
     margin-top: -7px;
+    white-space: nowrap;
+    background-color: white !important;
+    border-bottom: 0px !important;
 }
 
 .card-body-header {
@@ -74,13 +77,8 @@
     color: #000000;
     font-weight: 600;
     font-size: 16px;
-    margin: 10px 10px 0px 10px;
+    margin: -2px 10px 0px 10px;
     justify-content: space-between;
-}
-
-.card-header {
-    background-color: white !important;
-    border-bottom: 0px !important;
 }
 
 .bottom-container {

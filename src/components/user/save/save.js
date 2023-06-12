@@ -464,7 +464,14 @@ function SaveUser(props) {
             <div>
               <Row className="mb-3" style={{ float: "right", padding: "20px" }}>
                 <Col xs="auto">
-                  <Button className="btn-upload cancel-header">Cancel</Button>
+                  <Button
+                    className="btn-upload cancel-header"
+                    onClick={() => {
+                      handleUserCancel(userRole);
+                    }}
+                  >
+                    Cancel
+                  </Button>
                 </Col>
                 <Col xs="auto">
                   <Button

@@ -53,7 +53,7 @@ function UserList(props) {
     {
       headerName: "UserName",
       field: "first_name",
-      width: 250,
+      width: 200,
       sortable: true,
       filter: true,
       suppressNavigable: true,
@@ -62,7 +62,7 @@ function UserList(props) {
     {
       headerName: "User ID",
       field: "email_id",
-      width: 250,
+      width: 200,
       sortable: true,
       filter: true,
       suppressNavigable: true,
@@ -71,7 +71,7 @@ function UserList(props) {
     {
       headerName: "Role",
       field: "role_id",
-      width: 200,
+      width: 150,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -81,7 +81,7 @@ function UserList(props) {
     {
       headerName: "Ops",
       field: "last_name",
-      width: 200,
+      width: 150,
       sortable: true,
       filter: true,
       suppressNavigable: true,
