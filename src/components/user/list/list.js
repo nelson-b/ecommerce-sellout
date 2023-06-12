@@ -90,7 +90,7 @@ function UserList(props) {
     },
     {
       headerName: "Zone",
-      field: "modified_by",
+      field: "Zone",
       width: 200,
       sortable: true,
       filter: true,
@@ -99,7 +99,7 @@ function UserList(props) {
     },
     {
       headerName: "Country",
-      field: "created_date",
+      field: "country_code",
       width: 200,
       sortable: true,
       filter: true,
@@ -108,7 +108,7 @@ function UserList(props) {
     },
     {
       headerName: "Model",
-      field: "modified_date",
+      field: "model_type",
       width: 180,
       sortable: true,
       filter: true,
