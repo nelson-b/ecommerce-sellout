@@ -325,7 +325,7 @@ function PartnerList(props) {
     props
       .retrieveAllPartnerData()
       .then((data) => {
-        setRowData(data);
+        setRowData(data.data);
       })
       .catch((e) => {
         console.log(e);
@@ -431,7 +431,7 @@ function PartnerList(props) {
         <>
           <div
             className="ag-theme-alpine ag-grid-table"
-            style={{ height: 370, margin: "7px 0px 0px 0px" }}
+            style={{ height: 350, margin: "7px 0px 0px 0px" }}
           >
             <AgGridReact
               className="ag-theme-alpine"
