@@ -293,10 +293,12 @@ function SaveUser(props) {
                     <span>
                       <BiHelpCircle />
                     </span>
-                  </OverlayTrigger>
+                  </OverlayTrigger><br/>
                   <input type="text"   
                     name="username"
                     title="Username"
+                    className="create-usr-text"
+                    placeholder="Enter username"
                     value={form.username}
                     onChange={ onHandleTextChange }
                     {...error.username} /><br/>
@@ -321,6 +323,21 @@ function SaveUser(props) {
                       <BiHelpCircle />
                     </span>
                   </OverlayTrigger>
+                  <br/>
+                  <input type="text"
+                    name="useremailid"
+                    title="User email id"
+                    className="create-usr-text"
+                    placeholder="Enter User email id"
+                    value={form.useremailid}
+                    onChange={ onHandleTextChange }
+                    {...error.useremailid} /><br/>
+                  <span className="text-danger">
+                    {(form.useremailid === '' || form.useremailid === undefined)
+                      ? "User email id is required"
+                      : ""}
+                  </span>
+{/* 
                   <Select
                     name="useremailid"
                     title="User email id"
@@ -328,7 +345,7 @@ function SaveUser(props) {
                     options={userEmailOptions}
                     onChangeFunc={onHandleSelectChange}
                     {...error.useremailid}
-                  />
+                  /> */}
                 </Col>
                 <Col className="col-3">
                   <Form.Label size="sm" htmlFor="userrole">
