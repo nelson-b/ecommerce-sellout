@@ -101,9 +101,9 @@ function Home(props) {
       },
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
+          return { color: "#ff0000", fontWeight: "bold", 'borderRightColor': '#e2e2e2'};
         } else if (params.value > "0") {
-          return { color: "#009530", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
+          return { color: "#009530", fontWeight: "bold", 'borderRightColor': '#e2e2e2'};
         } else {
           return null;
         }
@@ -117,11 +117,11 @@ function Home(props) {
       cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
-          return { color: "#e47f00", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
+          return { color: "#e47f00", fontWeight: "bold", 'borderRightColor': '#e2e2e2'};
         } else if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
+          return { color: "#ff0000", fontWeight: "bold", 'borderRightColor': '#e2e2e2'};
         } else if (params.value == 0) {
-          return { color: "#009530", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
+          return { color: "#009530", fontWeight: "bold", 'borderRightColor': '#e2e2e2'};
         } else {
           return null;
         }
@@ -179,9 +179,9 @@ function Home(props) {
       },
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
+          return { color: "#ff0000", fontWeight: "bold", 'borderRightColor': '#e2e2e2'};
         } else if (params.value > "0") {
-          return { color: "#009530", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
+          return { color: "#009530", fontWeight: "bold", 'borderRightColor': '#e2e2e2'};
         } else {
           return null;
         }
@@ -195,11 +195,11 @@ function Home(props) {
       cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
-          return { color: "#e47f00", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
+          return { color: "#e47f00", fontWeight: "bold", 'borderRightColor': '#e2e2e2'};
         } else if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
+          return { color: "#ff0000", fontWeight: "bold", 'borderRightColor': '#e2e2e2'};
         } else if (params.value == 0) {
-          return { color: "#009530", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
+          return { color: "#009530", fontWeight: "bold", 'borderRightColor': '#e2e2e2'};
         } else {
           return null;
         }
@@ -245,7 +245,7 @@ function Home(props) {
       aggFunc: "sum",
       minWidth: 170,
       cellClass: "grid-cell-centered",
-      cellStyle: {'border-right-color': '#e2e2e2'},
+      cellStyle: {'borderRightColor': '#e2e2e2'},
     },
     {
       field: "Sellout Growth Vs Last Year",
@@ -258,9 +258,9 @@ function Home(props) {
       },
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" , 'border-right-color': '#e2e2e2'};
+          return { color: "#ff0000", fontWeight: "bold" , 'borderRightColor': '#e2e2e2'};
         } else if (params.value > "0") {
-          return { color: "#009530", fontWeight: "bold" , 'border-right-color': '#e2e2e2'};
+          return { color: "#009530", fontWeight: "bold" , 'borderRightColor': '#e2e2e2'};
         } else {
           return null;
         }
@@ -272,14 +272,14 @@ function Home(props) {
       aggFunc: "sum",
       minWidth: 170,
       cellClass: "grid-cell-centered",
-      cellStyle: {'border-right-color': '#e2e2e2'},
+      cellStyle: {'borderRightColor': '#e2e2e2'},
       cellStyle: function (params) {
         if (params.value > "0") {
-          return { color: "#e47f00", fontWeight: "bold", 'border-right-color': '#e2e2e2'};
+          return { color: "#e47f00", fontWeight: "bold", 'borderRightColor': '#e2e2e2'};
         } else if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold" ,'border-right-color': '#e2e2e2'};
+          return { color: "#ff0000", fontWeight: "bold" ,'borderRightColor': '#e2e2e2'};
         } else if (params.value == 0) {
-          return { color: "#009530", fontWeight: "bold" , 'border-right-color': '#e2e2e2'};
+          return { color: "#009530", fontWeight: "bold" , 'borderRightColor': '#e2e2e2'};
         } else {
           return null;
         }
@@ -314,7 +314,7 @@ function Home(props) {
       resizable: true,
       flex: 1,
       minWidth: 150,
-      cellStyle: {'border-right-color': '#e2e2e2'},
+      cellStyle: {'borderRightColor': '#e2e2e2'},
     };
   }, []);
 

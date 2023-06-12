@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Button, Col, Form, Row, Container, Breadcrumb, Card, Tooltip, OverlayTrigger,
-} from "react-bootstrap";
+import { Button, Col, Form, Row, Container, Breadcrumb, Card, Tooltip, OverlayTrigger } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import MyMenu from "../menu/menu.component.js";
 import { BiHelpCircle } from "react-icons/bi";
@@ -9,40 +8,50 @@ import { useForm } from "react-hook-form";
 import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
 import "./partner.component.css";
-import { CreatePartnerData } from "../../actions/partneraction";
+import { createPartnerData, retrieveById, updatePartner } from "../../actions/partneraction";
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
 import { roles } from "../constant.js";
+import { getUIDateFormat } from "../../helper/helper.js";
+
 function PartnerComponent(props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const id = new URLSearchParams(location.search).get("id");
+  const partnerId = new URLSearchParams(location.search).get("id");
   const userRole = new URLSearchParams(location.search).get("role");
+  const isHigherLevelUser = (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser);
+  console.log('isHigherLevelUser',isHigherLevelUser);
   
-  const initialState = {
+  const initialData = {
+    partner_id: "",
     platform_name: "",
     country_code: "",
     partner_group: "",
     se_entity: "",
     reseller_name: "",
-    activation_date: "",
-    business_type:"",
     partner_account_name: "",
+    activation_date: "",
+    deactivation_date: "",
+    deactivation_reason: null,
+    business_type: "",
     model_type: "",
-    partner_url: "",
     trans_currency_code: "",
     data_collection_type: "",
     partner_sellout_margin: "",
+    partner_url: "",
     e2_playbook_type: "",
     bopp_type: "",
-    gtm_type: "",
-    deactivation_date: "",
-    deactivation_reason: "",
-  };
+    gtm_type: ""
+  }
 
+  const [partnerData, setPartnerData] = useState(initialData);
+  
   const {
     register,
     handleSubmit,
+    // trigger,
+    clearErrors,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: "onTouched",
@@ -50,7 +59,147 @@ function PartnerComponent(props) {
     reValidateMode: "onChange",
   });
   
-  const data = partnerData.find((e)=> e.partnerID === id);
+  useEffect(() => {
+    //let partnerInpId = 'Amazon_Amz_USA'; //Hardcoded for testing purpose
+    console.log('partnerId', partnerId);
+    console.log('props.module', props.module);
+    
+    if(props.module === 'Update'){
+      if(partnerId){
+        //testing purpose not final
+        let reqData = {
+          partner_id: "INT-MY-00061",
+          platform_name: "Lazada",
+          country_code: "MYS",
+          partner_group: "Lazada",
+          se_entity: "APC",
+          reseller_name: "Bun Seng Hardware",
+          partner_account_name: "Lazada Bun Seng Hardware APC MYS",
+          activation_date: "2023-04-03T16:18:04.614693",
+          deactivation_date: null,
+          deactivation_reason: null,
+          business_type: "Electric",
+          model_type: "E1-Dist",
+          trans_currency_code: "MYR",
+          data_collection_type: "Actual sellin + est. eCom penetration",
+          partner_sellout_margin: "25",
+          partner_url: "https://www.lazada.com.my/shop/aman-o2o-sdn-bhd/",
+          e2_playbook_type: "Not applicable",
+          bopp_type: "Not applicable",
+          gtm_type: "Direct",
+          created_by: "thomas.decamps@se.com",
+          created_date: "2023-06-01T10:33:01",
+          modified_by: "thomas.decamps@se.com",
+          last_modified_date: "2023-06-01T16:33:01",
+          status: "ACTIVE",
+          batch_upload_flag: false,
+          active_flag: "False"
+        }
+
+        console.log('getUIDateFormat', getUIDateFormat(reqData.activation_date));
+        setPartnerData(reqData);
+        console.log('partnerData', partnerData); 
+        //prefill form
+        setFormData(reqData);
+        //---------------------------//
+
+        //call get by id api
+        props
+        .retrieveById(partnerId) //i/p for test purpose
+        .then((data) => {
+          console.log("retrieveById", data);
+          // const respData = data.filter(data => data.partner_id === partnerId);
+          // setPartnerData(respData);
+          // //prefill form
+          // setFormData(respData);
+          console.log('partnerData', partnerData);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      }
+      else{
+        setErrorRet(['Partner id missing in url!!']);
+        setShowErrorModal(true);
+      }
+    }
+  }, []);
+
+  const setFormData = (data) => {
+    // trigger();
+    if(data.partner_id){
+      setValue('partner_id', data.partner_id);
+    }
+    if(data.reseller_name){
+      setValue('reseller_name', data.reseller_name);
+    }
+    if(data.partner_sellout_margin){
+      setValue('partner_sellout_margin', data.partner_sellout_margin);
+    }
+    if(data.activation_date){
+      setValue('activation_date', getUIDateFormat(data.activation_date));
+    }
+    if(data.country_code){
+      // document.getElementById('country_code').value = data.country_code;
+      setValue('country_code', data.country_code);
+      // clearErrors('country_code');
+    }
+    if(data.partner_group){
+      // document.getElementById('partner_group').value = data.partner_group;
+      // clearErrors('partner_group');
+      setValue('partner_group', data.partner_group);
+    }
+    if(data.se_entity){
+      // document.getElementById('se_entity').value = data.se_entity;
+      // clearErrors('se_entity');
+      setValue('se_entity', data.se_entity);
+    }
+    if(data.business_type){
+      // document.getElementById('business_type').value = data.business_type;
+      // clearErrors('business_type');
+      setValue('business_type', data.business_type);
+    }
+    if(data.model_type){
+      // document.getElementById('model_type').value = data.model_type;
+      // clearErrors('model_type');
+      setValue('model_type', data.model_type);
+    }
+    if(data.partner_url){
+      // document.getElementById('partner_url').value = data.partner_url;
+      // clearErrors('partner_url');
+      setValue('partner_url', data.partner_url);
+    }
+    if(data.trans_currency_code){
+      // document.getElementById('trans_currency_code').value = data.trans_currency_code;
+      // clearErrors('trans_currency_code');
+      setValue('trans_currency_code', data.trans_currency_code);
+    }
+    if(data.data_collection_type){
+      // document.getElementById('data_collection_type').value = data.data_collection_type;
+      // clearErrors('data_collection_type');
+      setValue('data_collection_type', data.data_collection_type);
+    }
+    if(data.e2_playbook_type){
+      // document.getElementById('e2_playbook_type').value = data.e2_playbook_type;
+      // clearErrors('e2_playbook_type');
+      setValue('data_collection_type', data.e2_playbook_type);
+    }
+    if(data.bopp_type){
+      // document.getElementById('bopp_type').value = data.bopp_type;
+      // clearErrors('bopp_type');
+      setValue('data_collection_type', data.data_collection_type);
+    }
+    if(data.gtm_type){
+      // document.getElementById('gtm_type').value = data.gtm_type;
+      // clearErrors('gtm_type');
+      setValue('gtm_type', data.gtm_type);
+    }
+    if(data.status){
+      setValue('partner_status', data.status)
+    }
+  }
+
+  //const data = partnerData.find((e)=> e.partnerID === id);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const handleCloseSuccessModal = () => {
@@ -74,53 +223,132 @@ function PartnerComponent(props) {
   const errormsg = {
     headerLabel: "Error....",
     variant: "danger",
-    header: "There are below errors while processing.",
+    header: "There are errors while processing.",
     content: errorRet
   }
 
   const onSubmit = (data) => {
     console.log("form data", data);
     
-    let reqData = {
-      platform_name: data.platform_name,
-      country_code: data.country_code,
-      partner_group: data.partner_group,
-      se_entity: data.se_entity,
-      reseller_name: data.reseller_name,
-      bopp_type: data.bopp_type,
-      activation_date: data.activation_date,
-      business_type: data.business_type,
-      model_type: data.model_type,
-      trans_currency_code: data.trans_currency_code,
-      data_collection_type: data.data_collection_type,
-      partner_sellout_margin: data.partner_sellout_margin,
-      partner_url: data.partner_url,
-      e2_playbook_type: data.e2_playbook_type,
-      gtm_type: data.gtm_type,
-      created_by: "thomas.decamps@se.com",
-      created_date: new Date(),
-      modified_by: "thomas.decamps@se.com",
-      last_modified_date: new Date(),
-      status: 'ACTIVE',
-      batch_upload_flag: false,
-      active_flag: "false"
-    };
-    
-    //create api
-    props.CreatePartnerData(reqData)
-      .then((data) => {
-        console.log(data);
-        setShowSuccessModal(true);
-        setShowErrorModal(false);
-        document.getElementById("create-partner-form").reset();
-      })
-      .catch((e) => {
-        setShowSuccessModal(false);
-        setErrorRet([]);
-        setShowErrorModal(true);
-        console.log('Error', e);
-      });
-  };
+    if(data.partner_id==='' || data.partner_id==undefined){
+      console.log('Calling create api');
+        let reqData = {
+          platform_name: data.platform_name,
+          country_code: data.country_code,
+          partner_group: data.partner_group,
+          se_entity: data.se_entity,
+          reseller_name: data.reseller_name,
+          bopp_type: data.bopp_type,
+          activation_date: data.activation_date,
+          business_type: data.business_type,
+          model_type: data.model_type,
+          trans_currency_code: data.trans_currency_code,
+          data_collection_type: data.data_collection_type,
+          partner_sellout_margin: data.partner_sellout_margin,
+          partner_url: data.partner_url,
+          e2_playbook_type: data.e2_playbook_type,
+          gtm_type: data.gtm_type,
+          created_by: "thomas.decamps@se.com",
+          created_date: new Date().toUTCString(),
+          modified_by: "thomas.decamps@se.com",
+          last_modified_date: new Date().toUTCString(),
+          status: 'ACTIVE',
+          batch_upload_flag: false,
+          active_flag: "false"
+        };
+      
+        //create api
+        props.createPartnerData(reqData)
+          .then((data) => {
+            console.log(data);
+            setShowSuccessModal(true);
+            setShowErrorModal(false);
+            document.getElementById("partner-form").reset();
+          })
+          .catch((e) => {
+            setShowSuccessModal(false);
+            setErrorRet([]);
+            setShowErrorModal(true);
+            console.log('Error', e);
+        });
+        } else {
+        console.log('Calling update api');
+        
+        // let reqData = {
+        //   partner_id: data.partner_id,
+        //   platform_name: data.platform_name,
+        //   country_code: data.country_code,
+        //   partner_group: data.partner_group,
+        //   se_entity: data.se_entity,
+        //   reseller_name: data.reseller_name,
+        //   partner_account_name: data.partner_account_name,
+        //   activation_date: data.activation_date,
+        //   deactivation_date: data.deactivation_date,
+        //   deactivation_reason: data.deactivation_reason,
+        //   business_type: data.business_type,
+        //   model_type: data.model_type,
+        //   trans_currency_code: data.trans_currency_code,
+        //   data_collection_type: data.data_collection_type,
+        //   partner_sellout_margin: data.partner_sellout_margin,
+        //   partner_url: data.partner_url,
+        //   e2_playbook_type: data.e2_playbook_type,
+        //   bopp_type: data.bopp_type,
+        //   gtm_type: data.gtm_type,
+        //   created_by: "thomas.decamps@se.com",
+        //   created_date: new Date().toUTCString(),
+        //   modified_by: "thomas.decamps@se.com",
+        //   last_modified_date: new Date().toUTCString(),
+        //   "status": data.partner_status,
+        //   "batch_upload_flag": false,
+        //   "active_flag": "False"
+        // };
+        
+      let reqData = {
+          partner_id: "INT-MY-00061",
+          platform_name: "Lazada",
+          country_code: "MYS",
+          partner_group: "Lazada",
+          se_entity: "APC",
+          reseller_name: "Bun Seng Hardware",
+          partner_account_name: "Lazada Bun Seng Hardware APC MYS",
+          activation_date: "2023-04-03T16:18:04.614693",
+          deactivation_date: null,
+          deactivation_reason: null,
+          business_type: "Electric",
+          model_type: "E1-Dist",
+          trans_currency_code: "MYR",
+          data_collection_type: "Actual sellin + est. eCom penetration",
+          partner_sellout_margin: "25",
+          partner_url: "https://www.lazada.com.my/shop/aman-o2o-sdn-bhd/",
+          e2_playbook_type: "Not applicable",
+          bopp_type: "Not applicable",
+          gtm_type: "Direct",
+          created_by: "thomas.decamps@se.com",
+          created_date: "2023-06-01T10:33:01",
+          modified_by: "thomas.decamps@se.com",
+          last_modified_date: "2023-06-01T16:33:01",
+          status: "ACTIVE",
+          batch_upload_flag: false,
+          active_flag: "False"
+      }
+      
+      //update api
+      
+      props.updatePartner(reqData)
+          .then((data) => {
+            console.log(data);
+            setShowSuccessModal(true);
+            setShowErrorModal(false);
+            document.getElementById("partner-form").reset();
+          })
+          .catch((e) => {
+            setShowSuccessModal(false);
+            setErrorRet([]);
+            setShowErrorModal(true);
+            console.log('Error', e);
+        });
+      }
+  } 
 
   const onError = (error) => {
     console.log('date with timezone', new Date());
@@ -132,6 +360,15 @@ function PartnerComponent(props) {
   const handlePartnerCancel = () => {
     navigate(`/partner/list?role=${userRole}`);
   };
+
+  const updateForm = useCallback((e) => {
+    console.log('updateForm', e);
+    // setPartnerData((prev) => ({
+    //   ...prev,
+    //   [name]: value,
+    // }));
+    console.log('updateForm', partnerData);
+  }, []);
 
   return (
     <Container fluid>
@@ -194,7 +431,7 @@ function PartnerComponent(props) {
       <Row>
         <h5 className="form-sellout-header">{props.module} New Partner</h5>
         <Container fluid>
-          <Form id="create-partner-form" noValidate onSubmit={handleSubmit(onSubmit, onError)}>
+          <Form id="partner-form" noValidate onSubmit={handleSubmit(onSubmit, onError)}>
             <Row>
               <Card className="card-Panel form-partner-card">
                 <Form.Group className="mb-4">
@@ -207,7 +444,7 @@ function PartnerComponent(props) {
                       <OverlayTrigger
                         placement="right"
                         overlay={tooltip(
-                          "Enter the Account Name to create new partner."
+                          "Enter the Account Name to create new partner"
                         )}
                       >
                         <span>
@@ -220,7 +457,8 @@ function PartnerComponent(props) {
                         name="platform_name"
                         disabled={props.module === 'Update'}
                         type="text"
-                        value={data?.platformNmae}
+                        defaultValue={partnerData.platform_name}
+                        {...props.module === 'Create' && (
                         {...register("platform_name", {
                           required: "Platform name is required",
                           pattern: {
@@ -229,31 +467,36 @@ function PartnerComponent(props) {
                             message: "Platform name can have only alphabets",
                           },
                         })}
+                        )}
                       />
-                      {errors.platform_name && (
+                      {errors.platform_name && props.module === 'Create' && (
                         <Form.Text className="text-danger">
                           {errors.platform_name.message}
                         </Form.Text>
                       )}
                     </Col>
                     <Col>
-                      <Form.Label size="sm" htmlFor="country_code">
+                      <Form.Label size="sm" htmlFor="`country_code`">
                         Country
                       </Form.Label>
                       <Form.Select
                         size="sm"
                         id="country_code"
                         name="country_code"
+                        // defaultValue={partnerData.country_code}
+                        // {...partnerData}
+                        // innerRef={partnerData.country_code}
+                        //onChange={ e=> {updateForm(e)} }
                         {...register("country_code", {
                           required: "Country is required",
-                        })}
-                      >
+                        })}>
                         <option value="">N/A</option>
                         <option value={"USA"}>USA</option>
+                        <option value={"MYS"}>Malaysia</option>
                       </Form.Select>
-                      {errors.country_code && (
+                      {errors?.country_code && (
                         <Form.Text className="text-danger">
-                          {errors.country_code.message}
+                          {errors?.country_code?.message} 
                         </Form.Text>
                       )}
                     </Col>
@@ -265,14 +508,15 @@ function PartnerComponent(props) {
                         size="sm"
                         id="partner_group"
                         name="partner_group"
+                        defaultValue={partnerData.partner_group}
                         {...register("partner_group", {
                           required: "Partner group is required",
                         })}
                       >
                         <option value="">N/A</option>
-                        <option>Partner 1</option>
-                        <option>Partner 2</option>
-                        <option>Partner 3</option>
+                        <option value={'Partner 1'}>Partner 1</option>
+                        <option value={'Partner 2'}>Partner 2</option>
+                        <option value={'Lazada'}>Lazada</option>
                       </Form.Select>
                       {errors.partner_group && (
                         <Form.Text className="text-danger">
@@ -288,12 +532,13 @@ function PartnerComponent(props) {
                         size="sm"
                         id="se_entity"
                         name="se_entity"
+                        defaultValue={partnerData.se_entity}
                         {...register("se_entity", {
                           required: "Schneider Electric Entity is required",
                         })}
                       >
                         <option value="">N/A</option>
-                        <option>Entity 1</option>
+                        <option>APC</option>
                         <option>Entity 2</option>
                         <option>Entity 3</option>
                       </Form.Select>
@@ -311,6 +556,7 @@ function PartnerComponent(props) {
                         size="sm"
                         id="reseller_name"
                         name="reseller_name"
+                        defaultValue={partnerData.reseller_name}
                         type="text"
                         {...register("reseller_name", {
                           required: "Reseller name is required",
@@ -338,11 +584,12 @@ function PartnerComponent(props) {
                       <Form.Control
                         size="sm"
                         id="partner_id"
-                        name="partner_id"
                         disabled
+                        {...register("partner_id")}
                         type="text"
-                        value={data?.partnerID}
+                        value={ partnerData.partner_id }
                       />
+                      <input type="hidden" name="partner_id" value={ partnerData.partner_id } />
                     </Col>
                     <Col>
                       <Form.Label size="sm" htmlFor="partner_account_name">
@@ -365,7 +612,7 @@ function PartnerComponent(props) {
                         name="partner_account_name"
                         type="text"
                         disabled
-                        value={data?.PartnerAccount}
+                        value={ partnerData.partner_account_name }
                       ></Form.Control>
                     </Col>
                     <Col>
@@ -385,14 +632,19 @@ function PartnerComponent(props) {
                         size="sm"
                         id="activation_date"
                         name="activation_date"
-                        disabled={props.module === 'Update'}
+                        disabled={props.module === 'Update'} 
                         max={new Date().toISOString().split('T')[0]}
+                        defaultValue={getUIDateFormat(partnerData.activation_date)}
                         type="date"
+                        // {...props.module === 'Create' && (
                         {...register("activation_date", {
                           required: "Activation Date is required",
                         })}
+                        // )}
                       />
-                      {errors.activation_date && (
+                      {errors.activation_date 
+                      // && props.module === 'Create' 
+                      && (
                         <Form.Text className="text-danger">
                           {errors.activation_date.message}
                         </Form.Text>
@@ -405,13 +657,14 @@ function PartnerComponent(props) {
                       <Form.Select
                         size="sm"
                         id="business_type"
+                        defaultValue={partnerData.business_type}
                         name="business_type"
                         {...register("business_type", {
                           required: "Business Type is required",
                         })}
                       >
                         <option value="">N/A</option>
-                        <option>Electrical</option>
+                        <option>Electric</option>
                         <option>Solar</option>
                       </Form.Select>
                       {errors.business_type && (
@@ -428,12 +681,13 @@ function PartnerComponent(props) {
                         size="sm"
                         id="model_type"
                         name="model_type"
+                        defaultValue={partnerData.model_type}
                         {...register("model_type", {
                           required: "Model Type is required",
                         })}
                       >
                         <option value="">N/A</option>
-                        <option>E1 - Dist</option>
+                        <option value={'E1-Dist'}>E1-Dist</option>
                         <option>E2</option>
                         <option>E3</option>
                       </Form.Select>
@@ -464,14 +718,14 @@ function PartnerComponent(props) {
                         id="partner_url"
                         name="partner_url"
                         type="url"
-                        value={data?.partnerURL}
+                        defaultValue={ partnerData.partner_url }
                         {...register("partner_url", {
                           required: "URL Address of Partner is required",
-                          pattern: {
-                            value:
-                              /^((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?)*$/i,
-                            message: "URL format incorrect",
-                          },
+                          // pattern: {
+                          //   value:
+                          //     /^((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?)*$/i,
+                          //   message: "URL format incorrect",
+                          // },
                         })}
                       />
                       {errors.partner_url && (
@@ -496,6 +750,7 @@ function PartnerComponent(props) {
                         <option>AUD</option>
                         <option>INR</option>
                         <option>USD</option>
+                        <option value={'MYR'}>MYR</option>
                       </Form.Select>
                       {errors.trans_currency_code && (
                         <Form.Text className="text-danger">
@@ -511,12 +766,13 @@ function PartnerComponent(props) {
                         size="sm"
                         id="data_collection_type"
                         name="data_collection_type"
+                        defaultValue={partnerData.data_collection_type}
                         {...register("data_collection_type", {
                           required: "Data Collection Type is required",
                         })}
                       >
                         <option value="">N/A</option>
-                        <option>Actual Sellout</option>
+                        <option>Actual sellin + est. eCom penetration</option>
                         <option>Estimated Sellout</option>
                       </Form.Select>
                       {errors.data_collection_type && (
@@ -532,8 +788,7 @@ function PartnerComponent(props) {
                       &nbsp;
                       <OverlayTrigger
                         placement="right"
-                        overlay={tooltip("% with 2 decimals")}
-                      >
+                        overlay={tooltip("% with 2 decimals")}>
                         <span>
                           <BiHelpCircle />
                         </span>
@@ -543,6 +798,7 @@ function PartnerComponent(props) {
                         id="partner_sellout_margin"
                         name="partner_sellout_margin"
                         type="number"
+                        defaultValue={ partnerData.partner_sellout_margin }
                         {...register("partner_sellout_margin", {
                           required: "Partner Sellout Margin is required",
                           pattern: {
@@ -565,11 +821,12 @@ function PartnerComponent(props) {
                         size="sm"
                         id="e2_playbook_type"
                         name="e2_playbook_type"
+                        defaultValue={partnerData.e2_playbook_type}
                         {...register("e2_playbook_type", {
                           required: "E2 Playbook Type is required",
                         })}
                       >
-                        <option value="">N/A</option>
+                        <option value="Not applicable">Not applicable</option>
                         <option value={"type1"}>Type 1</option>
                         <option value={"type2"}>Type 2</option>
                         <option value={"type3"}>Type 3</option>
@@ -599,11 +856,12 @@ function PartnerComponent(props) {
                         id="bopp_type"
                         className="field-Prop"
                         name="bopp_type"
+                        defaultValue={partnerData.bopp_type}
                         {...register("bopp_type", {
                           required: "Bopp Type is required",
                         })}
                       >
-                        <option value="">N/A</option>
+                        <option value="Not applicable">Not applicable</option>
                         <option value={"Adopter"}>Adopter</option>
                         <option value={"Leader"}>Leader</option>
                         <option value={"Novice"}>Novice</option>
@@ -624,6 +882,7 @@ function PartnerComponent(props) {
                         className="field-Prop"
                         id="gtm_type"
                         name="gtm_type"
+                        defaultValue={partnerData.gtm_type}
                         {...register("gtm_type", {
                           required: "GTM Type is required",
                         })}
@@ -649,6 +908,7 @@ function PartnerComponent(props) {
                         className="field-Prop"
                         id="partner_status"
                         name="partner_status"
+                        defaultValue={partnerData.partner_status}
                         {...register("partner_status", {
                           required: "Partner status is required",
                         })}
@@ -681,9 +941,10 @@ function PartnerComponent(props) {
                           id="deactivation_date"
                           name="deactivation_date"
                           className="field-Prop"
+                          defaultValue={ partnerData.deactivation_date }
                           type="date"
                           {...register("deactivation_date", {
-                            required: "Deactivation Date is required",
+                            // required: "Deactivation Date is required",
                           })}
                         />
                         {errors.deactivation_date && (
@@ -704,8 +965,9 @@ function PartnerComponent(props) {
                           className="field-Prop"
                           id="deactivation_reason"
                           name="deactivation_reason"
+                          defaultValue={partnerData.deactivation_reason}
                           {...register("deactivation_reason", {
-                            required: "GTM Type is required",
+                            // required: "Deactivation reason is required",
                           })}
                         >
                           <option value="">N/A</option>
@@ -736,20 +998,22 @@ function PartnerComponent(props) {
                       </Form.Label>
                       &nbsp;
                       <Form.Select
-                        disabled={ (userRole===roles.editor || userRole===roles.approver)?true:false}
+                        disabled={ (userRole===roles.editor || userRole===roles.approver) ? true : false }
                         size="sm"
                         className="field-Prop"
                         id="editor"
                         name="editor"
+                        {...isHigherLevelUser && (
                         {...register("editor", {
                           required: "Editor is required",
                         })}
+                        )}
                       >
                         <option value="">N/A</option>
                         <option>Direct</option>
                         <option>Indirect</option>
                       </Form.Select>
-                      {errors.editor && (
+                      {errors.editor && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">
                           {errors.editor.message}
                         </Form.Text>
@@ -766,15 +1030,17 @@ function PartnerComponent(props) {
                         className="field-Prop"
                         id="backupEditor"
                         name="backupEditor"
-                        {...register("backupEditor", {
-                          required: "Backup Editor is required",
-                        })}
+                        {...isHigherLevelUser && (
+                          {...register("backupEditor", {
+                            required: "Backup Editor is required",
+                          })}
+                        )}
                       >
                         <option value="">N/A</option>
                         <option>Direct</option>
                         <option>Indirect</option>
                       </Form.Select>
-                      {errors.editor && (
+                      {errors.editor && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">
                           {errors.editor.message}
                         </Form.Text>
@@ -790,15 +1056,17 @@ function PartnerComponent(props) {
                         className="field-Prop"
                         id="approver1"
                         name="approver1"
+                        {...isHigherLevelUser && (
                         {...register("approver1", {
                           required: "Approver 1 is required",
                         })}
+                        )}
                       >
                         <option value="">N/A</option>
                         <option>Direct</option>
                         <option>Indirect</option>
                       </Form.Select>
-                      {errors.approver1 && (
+                      {errors.approver1 && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">
                           {errors.approver1.message}
                         </Form.Text>
@@ -814,15 +1082,17 @@ function PartnerComponent(props) {
                         className="field-Prop"
                         id="approver2"
                         name="approver2"
-                        {...register("approver2", {
-                          required: "Approver 2 is required",
-                        })}
+                        {...isHigherLevelUser && (
+                          {...register("approver2", {
+                            required: "Approver 2 is required",
+                          })}
+                        )}
                       >
                         <option value="">N/A</option>
                         <option>Direct</option>
                         <option>Indirect</option>
                       </Form.Select>
-                      {errors.approver2 && (
+                      {errors.approver2 && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">
                           {errors.approver2.message}
                         </Form.Text>
@@ -867,4 +1137,4 @@ function PartnerComponent(props) {
   );
 }
 
-export default connect(null, { CreatePartnerData })(PartnerComponent);
+export default connect(null, { createPartnerData, retrieveById, updatePartner })(PartnerComponent);

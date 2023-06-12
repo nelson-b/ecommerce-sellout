@@ -14,9 +14,10 @@ import partnerEdit from "../../images/edit-icon.png";
 import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
 import "../partnerList/partnerList.css";
-import { RetrieveAllPartnerData } from "../../actions/partneraction";
+import { retrieveAllPartnerData } from "../../actions/partneraction";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { getUIDateFormat } from "../../helper/helper.js";
 
 function PartnerList(props) {
   const navigate = useNavigate();
@@ -319,9 +320,9 @@ function PartnerList(props) {
 
   const onGridReady = useCallback((params) => {
     let data = props
-      .RetrieveAllPartnerData()
+      .retrieveAllPartnerData()
       .then((data) => {
-        console.log("RetrieveAllPartnerData", data);
+        console.log("retrieveAllPartnerData", data);
         setRowData(data);
       })
       .catch((e) => {
@@ -450,4 +451,4 @@ function PartnerList(props) {
   );
 }
 
-export default connect(null, { RetrieveAllPartnerData })(PartnerList);
+export default connect(null, { retrieveAllPartnerData })(PartnerList);
