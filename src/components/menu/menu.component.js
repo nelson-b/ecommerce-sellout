@@ -235,7 +235,7 @@ function MyMenu(props) {
         <Container fluid>
           <Navbar.Brand>
             <Nav.Link href="/">
-              <img alt="logo" src={logo} style={{ height: 70, width: 200 }} />
+              <img alt="logo" src={logo} style={{ height: 50 }} />
             </Nav.Link>
           </Navbar.Brand>
 
