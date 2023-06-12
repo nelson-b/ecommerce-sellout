@@ -997,9 +997,9 @@ function DataReviewApprover(props) {
         <Row>
           <Col md={3}>
             <Row>
-              <Col md={6}>
+              <Col md={4}>
                 <Form.Label size="sm" htmlFor="expand_by">
-                  Consolidate by
+                  Expand by
                 </Form.Label>
               </Col>
               <Col>
