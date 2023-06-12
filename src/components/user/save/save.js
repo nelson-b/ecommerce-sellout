@@ -53,6 +53,7 @@ function SaveUser(props) {
   });
 
   const onValidate = (value, name) => {
+    console.log('onValidate',value, name);
     setError((prev) => ({
       ...prev,
       [name]: { ...prev[name], errorMsg: value },
@@ -63,7 +64,7 @@ function SaveUser(props) {
     username: {
       isReq: true,
       errorMsg: "",
-      // onValidateFunc: onValidate,
+      onValidateFunc: onValidate,
     },
     useremailid: {
       isReq: true,
@@ -137,6 +138,13 @@ function SaveUser(props) {
       ...prev,
       [name]: selected,
     }));
+    
+    if(selected.length===0){
+      onValidate(true, name);
+    } else
+    {
+      onValidate(false, name);
+    }
   };
 
   const handleModelChange = (selected) => {
@@ -146,6 +154,13 @@ function SaveUser(props) {
       ...prev,
       [name]: selected,
     }));
+
+    if(selected.length===0){
+      onValidate(true, name);
+    } else
+    {
+      onValidate(false, name);
+    }
   };
 
   const handlePartnerChange = (selected) => {
@@ -157,19 +172,26 @@ function SaveUser(props) {
       [name]: selected,
     }));
 
+    if(selected.length===0){
+      onValidate(true, name);
+    } else
+    {
+      onValidate(false, name);
+    }
+
     //call api
-    props.retrieveAllPartnerData(selected) //i/p for test purpose
-    .then((data) => {
-      console.log("retrieveAllPartnerData", data);
-      setPartnerAccData(data);
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+    // props.retrieveAllPartnerData(selected) //i/p for test purpose
+    // .then((data) => {
+    //   console.log("retrieveAllPartnerData", data);
+    //   setPartnerAccData(data);
+    // })
+    // .catch((e) => {
+    //   console.log(e);
+    // });
   };
 
   const onHandleSelectChange = useCallback((value, name) => {
-    console.log('onHandleSelectChange',value, name);
+    console.log('onHandleSelectChange', value, name);
     setForm((prev) => ({
       ...prev,
       [name]: value,
@@ -184,32 +206,52 @@ function SaveUser(props) {
       ...prev,
       [name]: value,
     }));
+
+    if(value===''){
+      onValidate(true, name);
+    }
+    else
+    {
+      onValidate(false, name);
+    }
+
     console.log('form.username', form.username);
-  }, [form]);
+  }, []);
 
   const validateForm = () => {
     let isInvalid = false;
+    console.log('error', error);
     Object.keys(error).forEach((x) => {
       const errObj = error[x];
-      console.log('errObj',errObj);
+      
       if (errObj.errorMsg) {
         isInvalid = true;
       } else if (errObj.isReq && !form[x]) {
-        console.log('error',error);
-        console.log('form[x]', form[x]);
+        // console.log('value of x', x);
         isInvalid = true;
         onValidate(true, x);
       }
-      else if (form.username === '' || form.username === undefined) { 
-        console.log('error',error);
-        isInvalid = true;
-      }
+      // else if (form.username === '' || form.username === undefined) { 
+      //   isInvalid = true;
+      //   onValidate(true, x);
+      // }
+      // else if (form.useremailid === '' || form.useremailid === undefined) {
+      //   isInvalid = true;
+      //   onValidate(true, x);
+      // }
       else if (form.modelType.length === 0) {
         isInvalid = true;
-      } else if (form.usrcountry.length === 0) {
+        console.log('value of x', x);
+        onValidate(true, x);
+      } 
+      else if (form.usrcountry.length === 0) {
+        console.log('value of x', x);
         isInvalid = true;
-      } else if (form.partnerAccNm.length === 0) {
+        onValidate(true, x);
+      } 
+      else if (form.partnerAccNm.length === 0) {
         isInvalid = true;
+        onValidate(true, x);
       }
     });
 
@@ -219,8 +261,6 @@ function SaveUser(props) {
   const handleSubmit = () => {
     const isValid = validateForm();
 
-    if (form.usrcountry.length > 0) {
-    }
     if (!isValid) {
       console.error("Invalid Form!");
       return false;
@@ -315,11 +355,14 @@ function SaveUser(props) {
                     value={form.username}
                     onChange={ onHandleTextChange }
                     {...error.username} /><br/>
-                  <span className="text-danger">
-                    {(form.username === '' || form.username === undefined)
-                      ? "Username is required"
-                      : ""}
-                  </span>
+                    {error.username.errorMsg && (
+                    <span className="text-danger">
+                      {/* {(form.username === '' || form.username === undefined)
+                        ? "Username is required"
+                        : ""} */}
+                        {error.username.errorMsg === true ? "Username is required":""}
+                    </span>
+                    )}
                 </Col>
                 <Col className="col-3">
                   <Form.Label size="sm" htmlFor="useremailid">
@@ -345,11 +388,14 @@ function SaveUser(props) {
                     value={form.useremailid}
                     onChange={ onHandleTextChange }
                     {...error.useremailid} /><br/>
+                  {error.useremailid.errorMsg && (
                   <span className="text-danger">
-                    {(form.useremailid === '' || form.useremailid === undefined)
-                      ? "User email id is required"
-                      : ""}
+                    {/* {(form.username === '' || form.username === undefined)
+                      ? "Username is required"
+                      : ""} */}
+                      {error.useremailid.errorMsg === true ? "User email id is required":""}
                   </span>
+                  )}
                   {/* 
                   <Select
                     name="useremailid"
@@ -427,11 +473,16 @@ function SaveUser(props) {
                     value={optionModelSelected}
                     {...error.modelType}
                   />
-                  <span className="text-danger">
+                  {/* <span className="text-danger">
                     {form.modelType.length === 0
                       ? "Please select Model Type"
                       : ""}
+                  </span> */}
+                  {error.modelType.errorMsg && (
+                  <span className="text-danger">
+                      {error.modelType.errorMsg === true ? "Please select Model Type" : ""}
                   </span>
+                  )}
                 </Col>
               </Row>
               <Row>
@@ -465,13 +516,17 @@ function SaveUser(props) {
                     inputId="usrcountry"
                     name="usrcountry"
                     onChange={handleCountryChange}
-                    {...error.usrcountry}
                   />
-                  <span className="text-danger">
+                  {/* <span className="text-danger">
                     {form.usrcountry.length === 0
                       ? "Please select Country"
                       : ""}
+                  </span> */}
+                  {error.usrcountry.errorMsg && (
+                  <span className="text-danger">
+                      {error.usrcountry.errorMsg === true ? "Please select Country" : ""}
                   </span>
+                  )}
                 </Col>
               </Row>
               <br />
@@ -503,11 +558,16 @@ function SaveUser(props) {
                     onChange={handlePartnerChange}
                     {...error.partnerAccNm}
                   />
-                  <span className="text-danger">
+                  {/* <span className="text-danger">
                     {form.partnerAccNm.length === 0
                       ? "Please select Partner Account Name"
                       : ""}
+                  </span> */}
+                  {error.partnerAccNm.errorMsg && (
+                  <span className="text-danger">
+                      {error.partnerAccNm.errorMsg === true ? "Please select Partner Account Name" : ""}
                   </span>
+                  )}
                 </Col>
                 <Col>
                   <PartnerAccountList data={partnerAccData} />
@@ -529,8 +589,7 @@ function SaveUser(props) {
                 <Col xs="auto">
                   <Button
                     className="btn-upload save-header"
-                    onClick={handleSubmit}
-                  >
+                    onClick={handleSubmit}>
                     {props.module}
                   </Button>
                 </Col>
