@@ -195,11 +195,7 @@ function PartnerList(props) {
       editable: false,
       suppressMenu: true,
       valueFormatter: (params) => {
-        var date = new Date(params.value);
-        var day = date.getDate().toString().padStart(2, "0");
-        var month = (date.getMonth() + 1).toString().padStart(2, "0");
-        var year = date.getFullYear().toString().substring(2);
-        return day + "/" + month + "/" + year;
+        return getUIDateFormat(params.value);
       },
     },
     {
@@ -329,7 +325,7 @@ function PartnerList(props) {
     props
       .retrieveAllPartnerData()
       .then((data) => {
-        setRowData(data.data);
+        setRowData(data);
       })
       .catch((e) => {
         console.log(e);
@@ -435,7 +431,7 @@ function PartnerList(props) {
         <>
           <div
             className="ag-theme-alpine ag-grid-table"
-            style={{ height: 350, margin: "7px 0px 0px 0px" }}
+            style={{ height: 370, margin: "7px 0px 0px 0px" }}
           >
             <AgGridReact
               className="ag-theme-alpine"
