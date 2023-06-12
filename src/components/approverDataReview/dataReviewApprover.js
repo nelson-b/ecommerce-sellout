@@ -895,8 +895,6 @@ function DataReviewApprover(props) {
     } else {
       gridRef.current.api.collapseAll();
     }
-    // gridRef.current.api.redrawRows();
-    // gridRef.current.api.refreshCells();
   }, []);
 
   const onCollapseAll = useCallback(() => {

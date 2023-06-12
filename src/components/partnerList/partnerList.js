@@ -30,10 +30,10 @@ function PartnerList(props) {
       screenRole === "admin" ||
       screenRole === "superApproverUser"
     ) {
-      navigate(`/higerLevelUser/partner/update?role=${screenRole}`);
+      navigate(`/higerLevelUser/partner/update?id=${params.data.partner_id}&role=${screenRole}`);
     } else {
       navigate(
-        `/partner/update?id=${params.data.partnerID}&role=${screenRole}`
+        `/partner/update?id=${params.data.partner_id}&role=${screenRole}`
       );
     }
   };
