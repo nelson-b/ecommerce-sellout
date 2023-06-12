@@ -13,9 +13,10 @@ import Pending from "../../images/pending.png";
 import partnerEdit from "../../images/edit-icon.png";
 import Home from "../../images/home-icon.png";
 import "../partnerList/partnerList.css";
-import { RetrieveAllPartnerData } from "../../actions/partneraction";
+import { retrieveAllPartnerData } from "../../actions/partneraction";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { getUIDateFormat } from "../../helper/helper.js";
 
 function PartnerList(props) {
   const navigate = useNavigate();
@@ -326,7 +327,7 @@ function PartnerList(props) {
 
   const onGridReady = useCallback((params) => {
     props
-      .RetrieveAllPartnerData()
+      .retrieveAllPartnerData()
       .then((data) => {
         setRowData(data);
       })
@@ -455,4 +456,4 @@ function PartnerList(props) {
   );
 }
 
-export default connect(null, { RetrieveAllPartnerData })(PartnerList);
+export default connect(null, { retrieveAllPartnerData })(PartnerList);
