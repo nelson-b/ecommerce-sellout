@@ -60,7 +60,7 @@ function DataReviewComponent({}) {
       suppressSizeToFit: true,
     },
     {
-      field: "Partner_Code",
+      field: "partner_id",
       hide: true,
     },
     {
