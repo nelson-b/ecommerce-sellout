@@ -60,8 +60,10 @@ function DataReviewComponent({}) {
       suppressSizeToFit: true,
     },
     {
+      headerName: "partner_id",
       field: "partner_id",
       hide: true,
+      columnExportSuppress: true,
     },
     {
       headerName: "Country",

@@ -12,7 +12,6 @@ import closed from "../../images/closed.png";
 import Pending from "../../images/pending.png";
 import partnerEdit from "../../images/edit-icon.png";
 import Home from "../../images/home-icon.png";
-import partnerData from "../../data/partnerList.json";
 import "../partnerList/partnerList.css";
 import { RetrieveAllPartnerData } from "../../actions/partneraction";
 import { connect } from "react-redux";
@@ -25,19 +24,27 @@ function PartnerList(props) {
   const screenRole = new URLSearchParams(location.search).get("role");
 
   const handlePartnerEdit = (params) => {
-    if(screenRole==="superUser" || screenRole ==="admin" || screenRole === "superApproverUser"){
-      navigate(`/higerLevelUser/partner/update?role=${screenRole}`);      
-    }
-    else{
-      navigate(`/partner/update?id=${params.data.partnerID}&role=${screenRole}`);
+    if (
+      screenRole === "superUser" ||
+      screenRole === "admin" ||
+      screenRole === "superApproverUser"
+    ) {
+      navigate(`/higerLevelUser/partner/update?role=${screenRole}`);
+    } else {
+      navigate(
+        `/partner/update?id=${params.data.partnerID}&role=${screenRole}`
+      );
     }
   };
 
   const handleCreate = () => {
-    if(screenRole==="superUser" || screenRole ==="admin" || screenRole === "superApproverUser"){
-      navigate(`/higerLevelUser/partner/create?role=${screenRole}`); 
-    }
-    else{
+    if (
+      screenRole === "superUser" ||
+      screenRole === "admin" ||
+      screenRole === "superApproverUser"
+    ) {
+      navigate(`/higerLevelUser/partner/create?role=${screenRole}`);
+    } else {
       navigate(`/partner/create?role=${screenRole}`);
     }
   };
@@ -81,7 +88,7 @@ function PartnerList(props) {
     {
       headerName: "Partner Account Name",
       field: "partner_account_name",
-      width: 150,
+      width: 250,
       sortable: true,
       filter: true,
       suppressNavigable: true,
@@ -90,7 +97,7 @@ function PartnerList(props) {
     {
       headerName: "Reseller Name",
       field: "reseller_name",
-      width: 140,
+      width: 170,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -120,7 +127,7 @@ function PartnerList(props) {
     {
       headerName: "Partner ID",
       field: "partner_id",
-      width: 150,
+      width: 200,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -135,7 +142,7 @@ function PartnerList(props) {
         const Status = params.value;
         return (
           <div>
-            {Status === "Active" && (
+            {Status === "ACTIVE" && (
               <img src={active} alt="active" style={{ width: "80px" }} />
             )}
             {Status === "Closed" && (
@@ -160,7 +167,7 @@ function PartnerList(props) {
     {
       headerName: "Business Type",
       field: "business_type",
-      width: 120,
+      width: 150,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -170,7 +177,7 @@ function PartnerList(props) {
     {
       headerName: "E2 Playbook Type",
       field: "e2_playbook_type",
-      width: 150,
+      width: 120,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -217,7 +224,7 @@ function PartnerList(props) {
     {
       headerName: "Data Collection Type",
       field: "data_collection_type",
-      width: 150,
+      width: 200,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -257,7 +264,7 @@ function PartnerList(props) {
     {
       headerName: "Partner URL",
       field: "partner_url",
-      width: 170,
+      width: 200,
       sortable: true,
       filter: true,
       suppressSizeToFit: true,
@@ -318,10 +325,9 @@ function PartnerList(props) {
   );
 
   const onGridReady = useCallback((params) => {
-    let data = props
+    props
       .RetrieveAllPartnerData()
       .then((data) => {
-        console.log("RetrieveAllPartnerData", data);
         setRowData(data);
       })
       .catch((e) => {
@@ -387,8 +393,7 @@ function PartnerList(props) {
               </Breadcrumb.Item>
             </Breadcrumb>
           ) : (
-          <div></div>
-            
+            <div></div>
           )}
         </div>
         <Row>
@@ -429,7 +434,7 @@ function PartnerList(props) {
         <>
           <div
             className="ag-theme-alpine ag-grid-table"
-            style={{ height: 350, margin: "7px 0px 0px 0px" }}
+            style={{ height: 370, margin: "7px 0px 0px 0px" }}
           >
             <AgGridReact
               className="ag-theme-alpine"

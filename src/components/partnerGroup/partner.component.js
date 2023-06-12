@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button, Col, Form, Row, Container, Breadcrumb, Card, Tooltip, OverlayTrigger,
+import {
+  Button,
+  Col,
+  Form,
+  Row,
+  Container,
+  Breadcrumb,
+  Card,
+  Tooltip,
+  OverlayTrigger,
 } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import MyMenu from "../menu/menu.component.js";
@@ -13,12 +22,15 @@ import { CreatePartnerData } from "../../actions/partneraction";
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
 import { roles } from "../constant.js";
+
 function PartnerComponent(props) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [rowData, setRowData] = useState();
+
   const id = new URLSearchParams(location.search).get("id");
   const userRole = new URLSearchParams(location.search).get("role");
-  
+
   const initialState = {
     platform_name: "",
     country_code: "",
@@ -26,7 +38,7 @@ function PartnerComponent(props) {
     se_entity: "",
     reseller_name: "",
     activation_date: "",
-    business_type:"",
+    business_type: "",
     partner_account_name: "",
     model_type: "",
     partner_url: "",
@@ -49,20 +61,20 @@ function PartnerComponent(props) {
     reValidateMode: "onSubmit",
     reValidateMode: "onChange",
   });
-  
-  const data = partnerData.find((e)=> e.partnerID === id);
+
+  const data = partnerData.find((e) => e.partner_id === id);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
   };
-  
+
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
-    header: 'Data has been saved successfully!!',
-    content: []
-  }
+    header: "Data has been saved successfully!!",
+    content: [],
+  };
 
   const [showErrorModal, setShowErrorModal] = useState(false);
   const handleCloseErrorModal = () => {
@@ -75,12 +87,12 @@ function PartnerComponent(props) {
     headerLabel: "Error....",
     variant: "danger",
     header: "There are below errors while processing.",
-    content: errorRet
-  }
+    content: errorRet,
+  };
 
   const onSubmit = (data) => {
     console.log("form data", data);
-    
+
     let reqData = {
       platform_name: data.platform_name,
       country_code: data.country_code,
@@ -101,13 +113,14 @@ function PartnerComponent(props) {
       created_date: new Date(),
       modified_by: "thomas.decamps@se.com",
       last_modified_date: new Date(),
-      status: 'ACTIVE',
+      status: "ACTIVE",
       batch_upload_flag: false,
-      active_flag: "false"
+      active_flag: "false",
     };
-    
+
     //create api
-    props.CreatePartnerData(reqData)
+    props
+      .CreatePartnerData(reqData)
       .then((data) => {
         console.log(data);
         setShowSuccessModal(true);
@@ -118,12 +131,12 @@ function PartnerComponent(props) {
         setShowSuccessModal(false);
         setErrorRet([]);
         setShowErrorModal(true);
-        console.log('Error', e);
+        console.log("Error", e);
       });
   };
 
   const onError = (error) => {
-    console.log('date with timezone', new Date());
+    console.log("date with timezone", new Date());
     console.log("ERROR:::", error);
   };
 
@@ -140,61 +153,65 @@ function PartnerComponent(props) {
       </Row>
       <Row>
         <Breadcrumb>
-        {userRole === "editor" && (
-          <Breadcrumb.Item href="/editor/home">
-            <img
-              src={Home}
-              alt="home"
-              style={{ height: "20px", width: "80px", cursor: "pointer" }}
-            />
-          </Breadcrumb.Item>
+          {userRole === "editor" && (
+            <Breadcrumb.Item href="/editor/home">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
           )}
           {userRole === "approver" && (
-          <Breadcrumb.Item href="/approver/home">
-            <img
-              src={Home}
-              alt="home"
-              style={{ height: "20px", width: "80px", cursor: "pointer" }}
-            />
-          </Breadcrumb.Item>
+            <Breadcrumb.Item href="/approver/home">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
           )}
           {userRole === "superApproverUser" && (
-          <Breadcrumb.Item href="/superUser/home">
-            <img
-              src={Home}
-              alt="home"
-              style={{ height: "20px", width: "80px", cursor: "pointer" }}
-            />
-          </Breadcrumb.Item>
+            <Breadcrumb.Item href="/superUser/home">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
           )}
           {userRole === "superUser" && (
-          <Breadcrumb.Item href="/superUser">
-            <img
-              src={Home}
-              alt="home"
-              style={{ height: "20px", width: "80px", cursor: "pointer" }}
-            />
-          </Breadcrumb.Item>
+            <Breadcrumb.Item href="/superUser">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
           )}
           {userRole === "admin" && (
-          <Breadcrumb.Item href="/admin/home">
-            <img
-              src={Home}
-              alt="home"
-              style={{ height: "20px", width: "80px", cursor: "pointer" }}
-            />
-          </Breadcrumb.Item>
+            <Breadcrumb.Item href="/admin/home">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
           )}
           <span> &nbsp;{">"}</span>
-            <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
-              &nbsp;{props.module} Partner
-            </Breadcrumb.Item>
+          <Breadcrumb.Item active style={{ fontWeight: "bold" }}>
+            &nbsp;{props.module} Partner
+          </Breadcrumb.Item>
         </Breadcrumb>
       </Row>
       <Row>
         <h5 className="form-sellout-header">{props.module} New Partner</h5>
         <Container fluid>
-          <Form id="create-partner-form" noValidate onSubmit={handleSubmit(onSubmit, onError)}>
+          <Form
+            id="create-partner-form"
+            noValidate
+            onSubmit={handleSubmit(onSubmit, onError)}
+          >
             <Row>
               <Card className="card-Panel form-partner-card">
                 <Form.Group className="mb-4">
@@ -218,14 +235,13 @@ function PartnerComponent(props) {
                         size="sm"
                         id="platform_name"
                         name="platform_name"
-                        disabled={props.module === 'Update'}
+                        disabled={props.module === "Update"}
                         type="text"
-                        value={data?.platformNmae}
+                        value={data?.platform_name}
                         {...register("platform_name", {
                           required: "Platform name is required",
                           pattern: {
-                            value:
-                            /^[a-zA-Z ]*$/i,
+                            value: /^[a-zA-Z ]*$/i,
                             message: "Platform name can have only alphabets",
                           },
                         })}
@@ -315,8 +331,7 @@ function PartnerComponent(props) {
                         {...register("reseller_name", {
                           required: "Reseller name is required",
                           pattern: {
-                            value:
-                            /^[a-zA-Z ]*$/i,
+                            value: /^[a-zA-Z ]*$/i,
                             message: "Reseller name can have only alphabets",
                           },
                         })}
@@ -341,7 +356,7 @@ function PartnerComponent(props) {
                         name="partner_id"
                         disabled
                         type="text"
-                        value={data?.partnerID}
+                        value={data?.partner_id}
                       />
                     </Col>
                     <Col>
@@ -365,7 +380,7 @@ function PartnerComponent(props) {
                         name="partner_account_name"
                         type="text"
                         disabled
-                        value={data?.PartnerAccount}
+                        value={data?.partner_account_name}
                       ></Form.Control>
                     </Col>
                     <Col>
@@ -385,8 +400,8 @@ function PartnerComponent(props) {
                         size="sm"
                         id="activation_date"
                         name="activation_date"
-                        disabled={props.module === 'Update'}
-                        max={new Date().toISOString().split('T')[0]}
+                        disabled={props.module === "Update"}
+                        max={new Date().toISOString().split("T")[0]}
                         type="date"
                         {...register("activation_date", {
                           required: "Activation Date is required",
@@ -454,7 +469,8 @@ function PartnerComponent(props) {
                       &nbsp;
                       <OverlayTrigger
                         placement="right"
-                        overlay={tooltip("Enter valid Partner URL")}>
+                        overlay={tooltip("Enter valid Partner URL")}
+                      >
                         <span>
                           <BiHelpCircle />
                         </span>
@@ -464,7 +480,7 @@ function PartnerComponent(props) {
                         id="partner_url"
                         name="partner_url"
                         type="url"
-                        value={data?.partnerURL}
+                        value={data?.partner_url}
                         {...register("partner_url", {
                           required: "URL Address of Partner is required",
                           pattern: {
@@ -585,9 +601,7 @@ function PartnerComponent(props) {
                 <Form.Group className="mb-4">
                   <Row
                     className={
-                      props.module === 'Create'
-                        ? "partnerRowCreate"
-                        : ""
+                      props.module === "Create" ? "partnerRowCreate" : ""
                     }
                   >
                     <Col>
@@ -638,63 +652,63 @@ function PartnerComponent(props) {
                         </Form.Text>
                       )}
                     </Col>
-                    {props.module === 'Update' && (
+                    {props.module === "Update" && (
                       <>
-                      <Col>
-                      <Form.Label size="sm" htmlFor="partner_status">
-                        Partner Status
-                      </Form.Label>
-                      <Form.Select
-                        size="sm"
-                        className="field-Prop"
-                        id="partner_status"
-                        name="partner_status"
-                        {...register("partner_status", {
-                          required: "Partner status is required",
-                        })}
-                      >
-                        <option value="">N/A</option>
-                        <option value="ACTIVE">Active</option>
-                        <option value="INACTIVE">Inactive</option>
-                      </Form.Select>
-                      {errors.partner_status && (
-                        <Form.Text className="text-danger">
-                          {errors.partner_status.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                      <Col>
-                        <Form.Label size="sm" htmlFor="deactivation_date">
-                          Deactivation Date
-                        </Form.Label>
-                        &nbsp;
-                        <OverlayTrigger
-                          placement="right"
-                          overlay={tooltip("dd-mm-yyyy")}
-                        >
-                          <span>
-                            <BiHelpCircle />
-                          </span>
-                        </OverlayTrigger>
-                        <Form.Control
-                          size="sm"
-                          id="deactivation_date"
-                          name="deactivation_date"
-                          className="field-Prop"
-                          type="date"
-                          {...register("deactivation_date", {
-                            required: "Deactivation Date is required",
-                          })}
-                        />
-                        {errors.deactivation_date && (
-                          <Form.Text className="text-danger">
-                            {errors.deactivation_date.message}
-                          </Form.Text>
-                        )}
-                      </Col>
+                        <Col>
+                          <Form.Label size="sm" htmlFor="partner_status">
+                            Partner Status
+                          </Form.Label>
+                          <Form.Select
+                            size="sm"
+                            className="field-Prop"
+                            id="partner_status"
+                            name="partner_status"
+                            {...register("partner_status", {
+                              required: "Partner status is required",
+                            })}
+                          >
+                            <option value="">N/A</option>
+                            <option value="ACTIVE">Active</option>
+                            <option value="INACTIVE">Inactive</option>
+                          </Form.Select>
+                          {errors.partner_status && (
+                            <Form.Text className="text-danger">
+                              {errors.partner_status.message}
+                            </Form.Text>
+                          )}
+                        </Col>
+                        <Col>
+                          <Form.Label size="sm" htmlFor="deactivation_date">
+                            Deactivation Date
+                          </Form.Label>
+                          &nbsp;
+                          <OverlayTrigger
+                            placement="right"
+                            overlay={tooltip("dd-mm-yyyy")}
+                          >
+                            <span>
+                              <BiHelpCircle />
+                            </span>
+                          </OverlayTrigger>
+                          <Form.Control
+                            size="sm"
+                            id="deactivation_date"
+                            name="deactivation_date"
+                            className="field-Prop"
+                            type="date"
+                            {...register("deactivation_date", {
+                              required: "Deactivation Date is required",
+                            })}
+                          />
+                          {errors.deactivation_date && (
+                            <Form.Text className="text-danger">
+                              {errors.deactivation_date.message}
+                            </Form.Text>
+                          )}
+                        </Col>
                       </>
                     )}
-                    {props.module === 'Update' && (
+                    {props.module === "Update" && (
                       <Col>
                         <Form.Label size="sm" htmlFor="deactivation_reason">
                           Deactivation reason
@@ -725,139 +739,153 @@ function PartnerComponent(props) {
                 </Form.Group>
               </Card>
             </Row>
-            { props.showHigherLevelModule && (
+            {props.showHigherLevelModule && (
               <Row>
                 <Card className="card-Panel form-partner-card">
-                <Form.Group className="mb-4">
-                  <Row>
-                    <Col>
-                      <Form.Label size="sm" htmlFor="editor">
-                        Editor
-                      </Form.Label>
-                      &nbsp;
-                      <Form.Select
-                        disabled={ (userRole===roles.editor || userRole===roles.approver)?true:false}
-                        size="sm"
-                        className="field-Prop"
-                        id="editor"
-                        name="editor"
-                        {...register("editor", {
-                          required: "Editor is required",
-                        })}
-                      >
-                        <option value="">N/A</option>
-                        <option>Direct</option>
-                        <option>Indirect</option>
-                      </Form.Select>
-                      {errors.editor && (
-                        <Form.Text className="text-danger">
-                          {errors.editor.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                    <Col>
-                      <Form.Label size="sm" htmlFor="backupEditor">
-                        Backup Editor
-                      </Form.Label>
-                      &nbsp;
-                      <Form.Select
-                        disabled={ (userRole===roles.editor || userRole===roles.approver)}
-                        size="sm"
-                        className="field-Prop"
-                        id="backupEditor"
-                        name="backupEditor"
-                        {...register("backupEditor", {
-                          required: "Backup Editor is required",
-                        })}
-                      >
-                        <option value="">N/A</option>
-                        <option>Direct</option>
-                        <option>Indirect</option>
-                      </Form.Select>
-                      {errors.editor && (
-                        <Form.Text className="text-danger">
-                          {errors.editor.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                    <Col>
-                      <Form.Label size="sm" htmlFor="approver1">
-                        Approver 1
-                      </Form.Label>
-                      <Form.Select
-                        disabled={ (userRole===roles.editor || userRole===roles.approver)}
-                        size="sm"
-                        className="field-Prop"
-                        id="approver1"
-                        name="approver1"
-                        {...register("approver1", {
-                          required: "Approver 1 is required",
-                        })}
-                      >
-                        <option value="">N/A</option>
-                        <option>Direct</option>
-                        <option>Indirect</option>
-                      </Form.Select>
-                      {errors.approver1 && (
-                        <Form.Text className="text-danger">
-                          {errors.approver1.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                    <Col>
-                      <Form.Label size="sm" htmlFor="approver2">
-                        Approver 2
-                      </Form.Label>
-                      <Form.Select
-                        disabled={ (userRole===roles.editor || userRole===roles.approver)}
-                        size="sm"
-                        className="field-Prop"
-                        id="approver2"
-                        name="approver2"
-                        {...register("approver2", {
-                          required: "Approver 2 is required",
-                        })}
-                      >
-                        <option value="">N/A</option>
-                        <option>Direct</option>
-                        <option>Indirect</option>
-                      </Form.Select>
-                      {errors.approver2 && (
-                        <Form.Text className="text-danger">
-                          {errors.approver2.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                  </Row>
-                </Form.Group>
+                  <Form.Group className="mb-4">
+                    <Row>
+                      <Col>
+                        <Form.Label size="sm" htmlFor="editor">
+                          Editor
+                        </Form.Label>
+                        &nbsp;
+                        <Form.Select
+                          disabled={
+                            userRole === roles.editor ||
+                            userRole === roles.approver
+                              ? true
+                              : false
+                          }
+                          size="sm"
+                          className="field-Prop"
+                          id="editor"
+                          name="editor"
+                          {...register("editor", {
+                            required: "Editor is required",
+                          })}
+                        >
+                          <option value="">N/A</option>
+                          <option>Direct</option>
+                          <option>Indirect</option>
+                        </Form.Select>
+                        {errors.editor && (
+                          <Form.Text className="text-danger">
+                            {errors.editor.message}
+                          </Form.Text>
+                        )}
+                      </Col>
+                      <Col>
+                        <Form.Label size="sm" htmlFor="backupEditor">
+                          Backup Editor
+                        </Form.Label>
+                        &nbsp;
+                        <Form.Select
+                          disabled={
+                            userRole === roles.editor ||
+                            userRole === roles.approver
+                          }
+                          size="sm"
+                          className="field-Prop"
+                          id="backupEditor"
+                          name="backupEditor"
+                          {...register("backupEditor", {
+                            required: "Backup Editor is required",
+                          })}
+                        >
+                          <option value="">N/A</option>
+                          <option>Direct</option>
+                          <option>Indirect</option>
+                        </Form.Select>
+                        {errors.editor && (
+                          <Form.Text className="text-danger">
+                            {errors.editor.message}
+                          </Form.Text>
+                        )}
+                      </Col>
+                      <Col>
+                        <Form.Label size="sm" htmlFor="approver1">
+                          Approver 1
+                        </Form.Label>
+                        <Form.Select
+                          disabled={
+                            userRole === roles.editor ||
+                            userRole === roles.approver
+                          }
+                          size="sm"
+                          className="field-Prop"
+                          id="approver1"
+                          name="approver1"
+                          {...register("approver1", {
+                            required: "Approver 1 is required",
+                          })}
+                        >
+                          <option value="">N/A</option>
+                          <option>Direct</option>
+                          <option>Indirect</option>
+                        </Form.Select>
+                        {errors.approver1 && (
+                          <Form.Text className="text-danger">
+                            {errors.approver1.message}
+                          </Form.Text>
+                        )}
+                      </Col>
+                      <Col>
+                        <Form.Label size="sm" htmlFor="approver2">
+                          Approver 2
+                        </Form.Label>
+                        <Form.Select
+                          disabled={
+                            userRole === roles.editor ||
+                            userRole === roles.approver
+                          }
+                          size="sm"
+                          className="field-Prop"
+                          id="approver2"
+                          name="approver2"
+                          {...register("approver2", {
+                            required: "Approver 2 is required",
+                          })}
+                        >
+                          <option value="">N/A</option>
+                          <option>Direct</option>
+                          <option>Indirect</option>
+                        </Form.Select>
+                        {errors.approver2 && (
+                          <Form.Text className="text-danger">
+                            {errors.approver2.message}
+                          </Form.Text>
+                        )}
+                      </Col>
+                    </Row>
+                  </Form.Group>
                 </Card>
               </Row>
             )}
             <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
               <Col xs="auto">
-                  <Button
-                    className="btn-upload cancel-header"
-                    onClick={() => {
-                      handlePartnerCancel(userRole);
-                    }}
-                  >
-                    Cancel
-                  </Button>
+                <Button
+                  className="btn-upload cancel-header"
+                  onClick={() => {
+                    handlePartnerCancel(userRole);
+                  }}
+                >
+                  Cancel
+                </Button>
               </Col>
               <Col xs="auto">
                 <Button className="btn-upload save-header" type="submit">
-                  { props.module }
+                  {props.module}
                 </Button>
                 <AlertModel
-                      show={ showSuccessModal }
-                      handleClose={ handleCloseSuccessModal }
-                      body={ successmsg }
-                    />
+                  show={showSuccessModal}
+                  handleClose={handleCloseSuccessModal}
+                  body={successmsg}
+                />
                 <AlertModel
-                      show={ showErrorModal }
-                      handleClose={ handleCloseErrorModal }
-                      body={ errormsg }
-                    />
+                  show={showErrorModal}
+                  handleClose={handleCloseErrorModal}
+                  body={errormsg}
+                />
               </Col>
             </Row>
           </Form>
