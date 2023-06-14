@@ -952,17 +952,22 @@ function DataReviewApprover(props) {
               <Row className="quarter-months">Quarter Months</Row>
               <Col className="">
                 <Button
-                  className={`show-data toggle-button ${isYearColumnVisible ? "active" : ""}`}
+                  className={`show-data toggle-button ${
+                    isYearColumnVisible ? "active" : ""
+                  }`}
                   onClick={() => {
                     onBtShowYearColumn();
                     setTimeout(() => {
                       onBtShowYearColumn();
                     }, 10);
-                  }}>
+                  }}
+                >
                   Show
                 </Button>
                 <Button
-                  className={`show-data toggle-button ${!isYearColumnVisible ? "active" : ""}`}
+                  className={`show-data toggle-button ${
+                    !isYearColumnVisible ? "active" : ""
+                  }`}
                   onClick={() => onBtHideYearColumn()}
                 >
                   Hide
@@ -983,7 +988,11 @@ function DataReviewApprover(props) {
                       name="radio"
                       value={radio.value}
                       checked={radioValue === radio.value}
-                      onChange={(e) => setRadioValue(e.currentTarget.value)}
+                      onChange={(e) => {
+                        setRadioValue(e.currentTarget.value);
+                        setMessage(0);
+                        setIsYearColumnVisible(false);
+                      }}
                     >
                       {radio.name}
                     </ToggleButton>

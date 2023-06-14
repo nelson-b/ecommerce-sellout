@@ -35,6 +35,7 @@ function UserList(props) {
       hide: false,
       editable: false,
       width: 80,
+      flex: 0,
       suppressMenu: true,
       cellRenderer: (params) => {
         const Status = params.value;
@@ -80,8 +81,8 @@ function UserList(props) {
     },
     {
       headerName: "Ops",
-      field: "last_name",
-      width: 150,
+      field: "ops",
+      width: 200,
       sortable: true,
       filter: true,
       suppressNavigable: true,
@@ -135,7 +136,14 @@ function UserList(props) {
     props
       .RetrieveAllUserListData()
       .then((data) => {
-        setRowData(data);
+        // const selectedRole = userRole === 'admin' ? 'admin' : 'superApproverUser';
+        const selectedRole = "editor";
+        const rolesData = data.map((e) => {
+          if (e.role_id.toLowerCase() == selectedRole) {
+            return e;
+          }
+        });
+        setRowData(rolesData);
       })
       .catch((e) => {
         console.log(e);

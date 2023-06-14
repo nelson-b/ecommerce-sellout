@@ -7,6 +7,7 @@ import { AgGridReact } from "ag-grid-react";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
 import userRequestData from "../../data/userRequestData.json";
+import { RetrieveAllUserListData } from "../../actions/userAction";
 import "../home/home.component.css";
 
 function UserRequestComponent(props) {
@@ -20,15 +21,15 @@ function UserRequestComponent(props) {
   const ChildMessageRenderer = (props) => {
     const invokeReject = () => {
       alert(
-        props.data.user_name?.length
-          ? `${props.data.user_name} Sent for Reject Approval`
+        props.data.first_name?.length
+          ? `${props.data.first_name} has been rejected `
           : ""
       );
     };
     const invokeApprove = () => {
       alert(
-        props.data.user_name?.length
-          ? `${props.data.user_name} Sent for Validate`
+        props.data.first_name?.length
+          ? `${props.data.first_name} has been approved`
           : ""
       );
     };
@@ -72,12 +73,24 @@ function UserRequestComponent(props) {
   };
 
   const columnDefs = [
-    { headerName: "Country", field: "Country", minWidth: 170,},
-    { headerName: "Model", field: "Model", minWidth: 150, },
-    { headerName: "Partner Account Name", field: "partneraccname", minWidth: 250},
-    { headerName: "Current Editor", field: "currentEditor", minWidth: 200, },
-    { headerName: "Current 1st Approver", field: "current1stApprover", minWidth: 200,},
-    { headerName: "Current 2nd Approver", field: "current2ndApprover", minWidth: 200,},
+    { headerName: "Country", field: "Country", minWidth: 170 },
+    { headerName: "Model", field: "Model", minWidth: 150 },
+    {
+      headerName: "Partner Account Name",
+      field: "partneraccname",
+      minWidth: 250,
+    },
+    { headerName: "Current Editor", field: "currentEditor", minWidth: 200 },
+    {
+      headerName: "Current 1st Approver",
+      field: "current1stApprover",
+      minWidth: 200,
+    },
+    {
+      headerName: "Current 2nd Approver",
+      field: "current2ndApprover",
+      minWidth: 200,
+    },
   ];
 
   const requestData = [
@@ -102,7 +115,7 @@ function UserRequestComponent(props) {
   const userRequestDef = [
     {
       headerName: "UserName",
-      field: "user_name",
+      field: "first_name",
       width: 150,
       editable: false,
       cellClassRules: { "cursor-pointer": () => true },
@@ -113,12 +126,12 @@ function UserRequestComponent(props) {
     },
     {
       headerName: "User ID",
-      field: "user_id",
+      field: "email_id",
       width: 100,
     },
     {
       headerName: "Role",
-      field: "role",
+      field: "role_id",
       width: 100,
     },
     {
@@ -174,9 +187,20 @@ function UserRequestComponent(props) {
   };
 
   const onGridReady = useCallback((params) => {
-    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => resp.json())
-      .then((data) => setRowData(data));
+    props
+      .RetrieveAllUserListData()
+      .then((data) => {
+        const rolesData = data.map((e) => {
+          if (e.role_id.toLowerCase() == 'editor') {
+            return e;
+          }
+        });
+        setRowData(rolesData);
+        console.log('rowData', rowData);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, []);
 
   const handleShowModal = (rowData) => {
@@ -218,7 +242,7 @@ function UserRequestComponent(props) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={userRequestData}
+            rowData={rowData}
             columnDefs={userRequestDef}
             defaultColDef={defaultColDef}
             animateRows={true}
@@ -236,7 +260,9 @@ function UserRequestComponent(props) {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>Partner Accounts Associated with {modalData}</Modal.Title>
+            <Modal.Title>
+              Partner Accounts Associated with {modalData}
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="ag-theme-alpine" style={{ height: "200px" }}>
@@ -264,4 +290,5 @@ function UserRequestComponent(props) {
   );
 }
 
-export default UserRequestComponent;
+export default connect(null, { RetrieveAllUserListData })(UserRequestComponent);
+

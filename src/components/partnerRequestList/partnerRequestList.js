@@ -289,9 +289,9 @@ function PartnerRequestList(props) {
   const handleReject = () => {
     alert(
       message === 1
-        ? `${message} Partner Account Sent for Reject `
+        ? `${message} Partner Account has been rejected `
         : message > 1
-        ? `${message} Partners Account Sent for Reject`
+        ? `${message} Partners Account has been rejected`
         : ""
     );
   };
@@ -299,9 +299,9 @@ function PartnerRequestList(props) {
   const handleApprove = () => {
     alert(
       message === 1
-        ? `${message} Partner Account Sent for Approval `
+        ? `${message} Partner Account has been approved`
         : message > 1
-        ? `${message} Partners Account Sent for Approval`
+        ? `${message} Partners Account has been approved`
         : ""
     );
   };

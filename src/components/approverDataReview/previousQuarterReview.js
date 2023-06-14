@@ -178,7 +178,7 @@ function PartnerQuarterApprover({ props }) {
       cellStyle: { "border-color": "#e2e2e2" },
     },
     {
-      headerName: "User that made the change",
+      headerName: "Modified By",
       field: "userChange",
       editable: false,
       minWidth: 140,
@@ -300,7 +300,10 @@ function PartnerQuarterApprover({ props }) {
                       name="radio"
                       value={radio.value}
                       checked={radioValue === radio.value}
-                      onChange={(e) => setRadioValue(e.currentTarget.value)}
+                      onChange={(e) => {
+                        setRadioValue(e.currentTarget.value);
+                        setMessage(0);
+                      }}
                     >
                       {radio.name}
                     </ToggleButton>
