@@ -580,7 +580,7 @@ function DataReviewComponent({}) {
   };
 
   const handleDtaInputNavigation = () => {
-    navigate("/dataInput");
+    navigate(`/dataInput?role=${historicalRole}`);
   };
 
   const historicalDataNavigation = () => {
@@ -618,6 +618,7 @@ function DataReviewComponent({}) {
   }, []);
 
   const handleExport = useCallback(() => {
+    console.log('prasanna', params);
     const params = {
       fileName: "Sell out Data Review.xlsx",
       sheetName: "Data Review",
@@ -625,7 +626,7 @@ function DataReviewComponent({}) {
     gridRef.current.api.exportDataAsExcel(params);
   }, []);
 
-  const onGridReady = useCallback((params) => {
+  const onGridReady = useCallback(() => {
     fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
       .then((resp) => data)
       .then((data) => setRowData(data));
@@ -713,7 +714,7 @@ function DataReviewComponent({}) {
                 <Button
                   className="btn-upload cancel-header"
                   onClick={() => {
-                    handleDtaInputNavigation();
+                    handleDtaInputNavigation(historicalRole);
                   }}
                 >
                   Cancel

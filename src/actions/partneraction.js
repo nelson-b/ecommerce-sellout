@@ -1,5 +1,5 @@
 import { CREATE_PARTNERDATA, RETRIEVE_PARTNERDATA,  RETRIEVE_PARTNERDATA_BY_ID,
-  UPDATE_PARTNERDATA } from "./type";
+  UPDATE_PARTNERDATA, RETRIEVE_PARTNER_ROLE } from "./type";
 import PartnerService from "../services/partnerServices";
 
 export const createPartnerData = (data) => async (dispatch) => {
@@ -22,6 +22,21 @@ export const retrieveAllPartnerData = () => async (dispatch) => {
 
     dispatch({
       type: RETRIEVE_PARTNERDATA,
+      payload: res.data,
+    });
+
+    return Promise.resolve(res.data);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+export const retrievePartnerByRole = (id, user) => async (dispatch) => {
+  try {
+    const res = await PartnerService.getByRole(id, user);
+
+    dispatch({
+      type: RETRIEVE_PARTNER_ROLE,
       payload: res.data,
     });
 
