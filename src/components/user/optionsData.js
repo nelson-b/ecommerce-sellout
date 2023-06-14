@@ -35,7 +35,7 @@ export const countryOptions = [
 ];
 
 export const partnerOptions = [
-    { value: "Partner 1", label: "Partner 1" },
+    { value: "TEST", label: "TEST" },
     { value: "Partner 2", label: "Partner 2" },
     {value: "Ahlsell", label: "Ahlsell"}
 ];

@@ -102,13 +102,13 @@ function PartnerComponent(props) {
         // //prefill form
         // setFormData(reqData);
         //---------------------------//
-
+        
         //call get by id api
         props
         .retrieveAllPartnerData() //i/p for test purpose 
         .then((data) => {
           console.log("retrieveAllPartnerData", data);
-          const respData = data.filter(data => data.partner_id === partnerId)[0];
+          const respData = data.data.filter(data => data.partner_id === partnerId)[0];
           console.log("filter by id", respData);
           setPartnerData(respData);
           //prefill form
