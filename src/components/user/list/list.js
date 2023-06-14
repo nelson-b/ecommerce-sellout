@@ -119,7 +119,7 @@ function UserList(props) {
 
   const defaultColDef = useMemo(
     () => ({
-      // flex: 1,
+      flex: 1,
       wrapHeaderText: true,
       autoHeaderHeight: true,
       resizable: true,

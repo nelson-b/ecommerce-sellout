@@ -16,7 +16,7 @@ class PartnerService {
     //return http.get(`/default/SamFunction?partner_id=${id}&country_code=MYS`);
     console.log('partnerid',id);
     return http.get(
-      "/create-partner/ecomm-sellout-dev-lamda-createpartner/get-partner-list"
+      `/default/SamFunction?partner_id=${id}&country_code=MYS`
     ); //temp using partner list
   }
 

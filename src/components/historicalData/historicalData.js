@@ -45,6 +45,14 @@ function HistoricalData({}) {
     { name: "Euro", value: "2" },
   ];
 
+  const getParams = () => {
+    return {
+      allColumns: true,
+      fileName: "Sell out Historical Data.xlsx",
+      sheetName: "Historical Data",
+    };
+  };
+
   const columnDefs = [
     {
       field: "Zone",
@@ -301,7 +309,8 @@ function HistoricalData({}) {
       fileName: "Sell out Historical Data.xlsx",
       sheetName: "Historical Data",
     };
-    gridRef.current.api.exportDataAsExcel(params);
+    // gridRef.current.api.exportDataAsExcel(params);
+    gridRef.current.api.exportDataAsCsv(getParams());
   }, []);
 
   const handleChange = (event) => {
@@ -474,6 +483,7 @@ function HistoricalData({}) {
             excelStyles={excelStyles}
             suppressMenuHide={true}
             groupDefaultExpanded={-1}
+            suppressExcelExport={true}
           ></AgGridReact>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>

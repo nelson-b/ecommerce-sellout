@@ -226,7 +226,11 @@ function PartnerQuarterApprover({ props }) {
   };
 
   const handleReviewNavigation = () => {
-    navigate("/approver/home");
+    if (quarterRole === 'superApproverUser') {
+      navigate("/superUser/home");
+    } else {
+      navigate("/approver/home");
+    }
   };
 
   const handleConfirm = () => {
@@ -341,7 +345,7 @@ function PartnerQuarterApprover({ props }) {
                 <Button
                   className="btn-upload cancel-header"
                   onClick={() => {
-                    handleReviewNavigation();
+                    handleReviewNavigation(quarterRole);
                   }}
                 >
                   Cancel
