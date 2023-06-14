@@ -1,5 +1,6 @@
 import { CREATE_PARTNERDATA, RETRIEVE_PARTNERDATA,  RETRIEVE_PARTNERDATA_BY_ID,
   UPDATE_PARTNERDATA } from "./type";
+
 import PartnerService from "../services/partnerServices";
 
 export const createPartnerData = (data) => async (dispatch) => {

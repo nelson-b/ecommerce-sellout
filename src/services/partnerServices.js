@@ -3,7 +3,7 @@ import http from "../http-common";
 class PartnerService {
   create(data) {
     console.log("PartnerService", data);
-    return http.post("/ecomm-sellout-dev-lamda-createpartner", data);
+    return http.post("/prod/ecomm-sellout-dev-lamda-createpartner/create-partner", data);
   }
 
   getAll() {

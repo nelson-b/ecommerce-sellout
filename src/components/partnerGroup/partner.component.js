@@ -9,10 +9,12 @@ import Home from "../../images/home-icon.png";
 import partnerData from "../../data/partnerList.json";
 import "./partner.component.css";
 import { createPartnerData, retrieveAllPartnerData, updatePartner } from "../../actions/partneraction.js";
+import { retrieveAllCountryData } from "../../actions/staticDataAction.js";
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
 import { roles } from "../constant.js";
 import { getUIDateFormat } from "../../helper/helper.js";
+import { PropertyKeys } from "ag-grid-community";
 
 function PartnerComponent(props) {
   const navigate = useNavigate();
@@ -45,7 +47,8 @@ function PartnerComponent(props) {
   }
 
   const [partnerData, setPartnerData] = useState(initialData);
-  
+  const [countryData, setCountryData] = useState([]);
+
   const {
     register,
     handleSubmit,
@@ -64,6 +67,16 @@ function PartnerComponent(props) {
     console.log('partnerId', partnerId);
     console.log('props.module', props.module);
     
+    //country api
+    props.retrieveAllCountryData() //i/p for test purpose
+    .then((data) => {
+      console.log('retrieveAllCountryData', data);
+      setCountryData(data.data);
+    })
+    .catch((e) => {
+      console.log('retrieveAllCountryData', e);
+    });
+
     if(props.module === 'Update'){
       if(partnerId){
         //testing purpose not final
@@ -105,7 +118,7 @@ function PartnerComponent(props) {
         
         //call get by id api
         props
-        .retrieveAllPartnerData() //i/p for test purpose 
+        .retrieveAllPartnerData() //i/p for test purpose
         .then((data) => {
           console.log("retrieveAllPartnerData", data);
           const respData = data.data.filter(data => data.partner_id === partnerId)[0];
@@ -200,8 +213,6 @@ function PartnerComponent(props) {
     }
   }
 
-  //const data = partnerData.find((e)=> e.partnerID === id);
-
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
@@ -261,7 +272,7 @@ function PartnerComponent(props) {
         //create api
         props.createPartnerData(reqData)
           .then((data) => {
-            console.log(data);
+            console.log('createPartnerData', data);
             setShowSuccessModal(true);
             setShowErrorModal(false);
             document.getElementById("partner-form").reset();
@@ -303,36 +314,7 @@ function PartnerComponent(props) {
           "batch_upload_flag": false,
           "active_flag": "False"
         };
-        
-      // let reqData = {
-      //     partner_id: "INT-MY-00061",
-      //     platform_name: "Lazada",
-      //     country_code: "MYS",
-      //     partner_group: "Lazada",
-      //     se_entity: "APC",
-      //     reseller_name: "Bun Seng Hardware",
-      //     partner_account_name: "Lazada Bun Seng Hardware APC MYS",
-      //     activation_date: "2023-04-03T16:18:04.614693",
-      //     deactivation_date: null,
-      //     deactivation_reason: null,
-      //     business_type: "Electric",
-      //     model_type: "E1-Dist",
-      //     trans_currency_code: "MYR",
-      //     data_collection_type: "Actual sellin + est. eCom penetration",
-      //     partner_sellout_margin: "25",
-      //     partner_url: "https://www.lazada.com.my/shop/aman-o2o-sdn-bhd/",
-      //     e2_playbook_type: "Not applicable",
-      //     bopp_type: "Not applicable",
-      //     gtm_type: "Direct",
-      //     created_by: "thomas.decamps@se.com",
-      //     created_date: "2023-06-01T10:33:01",
-      //     modified_by: "thomas.decamps@se.com",
-      //     last_modified_date: "2023-06-01T16:33:01",
-      //     status: "ACTIVE",
-      //     batch_upload_flag: false,
-      //     active_flag: "False"
-      // }
-      
+              
       //update api
       
       props.updatePartner(reqData)
@@ -364,10 +346,6 @@ function PartnerComponent(props) {
 
   const updateForm = useCallback((e) => {
     console.log('updateForm', e);
-    // setPartnerData((prev) => ({
-    //   ...prev,
-    //   [name]: value,
-    // }));
     console.log('updateForm', partnerData);
   }, []);
 
@@ -483,16 +461,13 @@ function PartnerComponent(props) {
                         size="sm"
                         id="country_code"
                         name="country_code"
-                        // defaultValue={partnerData.country_code}
-                        // {...partnerData}
-                        // innerRef={partnerData.country_code}
-                        //onChange={ e=> {updateForm(e)} }
                         {...register("country_code", {
                           required: "Country is required",
                         })}>
                         <option value="">N/A</option>
-                        <option value={"USA"}>USA</option>
-                        <option value={"MYS"}>Malaysia</option>
+                        {countryData && (countryData.map((row) =>(
+                          <option value={row.country_code}>{row.country_name}</option>
+                        )))}
                       </Form.Select>
                       {errors?.country_code && (
                         <Form.Text className="text-danger">
@@ -1136,4 +1111,8 @@ function PartnerComponent(props) {
   );
 }
 
-export default connect(null, { createPartnerData, retrieveAllPartnerData, updatePartner })(PartnerComponent);
+export default connect(null, { 
+  createPartnerData,
+  retrieveAllPartnerData,
+  updatePartner,
+  retrieveAllCountryData })(PartnerComponent);

@@ -69,7 +69,7 @@ function DataInputComponent(props) {
     setShowSuccessModal(false);
   };
 
-  const postData = () => {
+  const postData = useCallback(() => {
     //console.log('api call to save manual data');
     setShowShouldUpdModal(false);
     let payload = [];
@@ -111,8 +111,10 @@ function DataInputComponent(props) {
     });
 
     console.log('payload', payload);
+    gridRef.current.api.refreshCells();
+    setRowData(getData);
     setShowSuccessModal(true);
-  }
+  }, []);
   
   const gridRef = useRef(null);
 
@@ -226,7 +228,7 @@ function DataInputComponent(props) {
       GrandTotal: 0,
     },
     {
-      id: "Ahlsellr",
+      id: "Ahlsellr1",
       Zone: "Nordics",
       Country: "Sweden",
       Partner_Account_Name: "Ahlsell ELKO SWE",
@@ -413,9 +415,7 @@ function DataInputComponent(props) {
 
     var isEstimated = filterMonths[monthYrKey] == true;
     if (isEstimated == true) return { backgroundColor: "#EEB265" };
-    return { backgroundColor: "white", 
-    // 'borderColor': '#e2e2e2'
-  };
+    return { backgroundColor: "white" };
   };
 
   const currentDate = new Date();
@@ -634,7 +634,7 @@ function DataInputComponent(props) {
             rowData={rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
-            pagination={true}
+            // pagination={true}
             paginationAutoPageSize={true}
             animateRows={true}
             getRowId={getRowId}

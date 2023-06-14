@@ -42,7 +42,8 @@ function SaveUser(props) {
 
   const [partnerAccData, setPartnerAccData] = useState([]);
   const [form, setForm] = useState({
-    username: null,
+    firstname: null,
+    lastname: null,
     useremailid: null,
     userrole: null,
     userops: null,
@@ -61,7 +62,12 @@ function SaveUser(props) {
   };
 
   const [error, setError] = useState({
-    username: {
+    firstname: {
+      isReq: true,
+      errorMsg: "",
+      onValidateFunc: onValidate,
+    },
+    lastname: {
       isReq: true,
       errorMsg: "",
       onValidateFunc: onValidate,
@@ -214,8 +220,6 @@ function SaveUser(props) {
     {
       onValidate(false, name);
     }
-
-    console.log('form.username', form.username);
   }, []);
 
   const validateForm = () => {
@@ -227,25 +231,14 @@ function SaveUser(props) {
       if (errObj.errorMsg) {
         isInvalid = true;
       } else if (errObj.isReq && !form[x]) {
-        // console.log('value of x', x);
         isInvalid = true;
         onValidate(true, x);
       }
-      // else if (form.username === '' || form.username === undefined) { 
-      //   isInvalid = true;
-      //   onValidate(true, x);
-      // }
-      // else if (form.useremailid === '' || form.useremailid === undefined) {
-      //   isInvalid = true;
-      //   onValidate(true, x);
-      // }
       else if (form.modelType.length === 0) {
         isInvalid = true;
-        console.log('value of x', x);
         onValidate(true, x);
       } 
       else if (form.usrcountry.length === 0) {
-        console.log('value of x', x);
         isInvalid = true;
         onValidate(true, x);
       } 
@@ -334,33 +327,43 @@ function SaveUser(props) {
             <Card className="card-Panel form-userCreate-card">
               <Row className="mt-2 username-header">
                 <Col className="col-3">
-                  <Form.Label size="sm" htmlFor="username">
-                    Username
+                  <Form.Label size="sm" htmlFor="firstname">
+                    First Name
                   </Form.Label>
-                  &nbsp;
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={tooltip(
-                      "Enter a name to search or select from dropdown"
-                    )}>
-                    <span>
-                      <BiHelpCircle />
-                    </span>
-                  </OverlayTrigger><br/>
+                  &nbsp;<br/>
                   <input type="text"   
-                    name="username"
-                    title="Username"
+                    name="firstname"
+                    title="firstname"
                     className="create-usr-text"
-                    placeholder="Enter username"
-                    value={form.username}
+                    placeholder="Enter First Name"
+                    value={form.firstname}
                     onChange={ onHandleTextChange }
-                    {...error.username} /><br/>
-                    {error.username.errorMsg && (
+                    {...error.firstname} /><br/>
+                    {error.firstname.errorMsg && (
+                    <span className="text-danger">
+                        {error.firstname.errorMsg === true ? "First Name is required":""}
+                    </span>
+                    )}
+                </Col>
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="lastname">
+                    Last Name
+                  </Form.Label>
+                  &nbsp;<br/>
+                  <input type="text"   
+                    name="lastname"
+                    title="lastname"
+                    className="create-usr-text"
+                    placeholder="Enter Last Name"
+                    value={form.lastname}
+                    onChange={ onHandleTextChange }
+                    {...error.lastname} /><br/>
+                    {error.lastname.errorMsg && (
                     <span className="text-danger">
                       {/* {(form.username === '' || form.username === undefined)
                         ? "Username is required"
                         : ""} */}
-                        {error.username.errorMsg === true ? "Username is required":""}
+                        {error.lastname.errorMsg === true ? "Last Name is required":""}
                     </span>
                     )}
                 </Col>
