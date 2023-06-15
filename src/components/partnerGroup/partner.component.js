@@ -7,7 +7,7 @@ import { BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import Home from "../../images/home-icon.png";
 import "./partner.component.css";
-import { createPartnerData, retrieveAllPartnerData, updatePartner } from "../../actions/partneraction.js";
+import { createPartnerData, retrieveAllPartnerData, retrievePartnerByRole, updatePartner } from "../../actions/partneraction.js";
 import { retrieveAllCountryData, retrieveAllStaticData } from "../../actions/staticDataAction.js";
 import { retrieveAllUserListData, createUserPartnerRoleConfig } from "../../actions/userAction.js";
 import AlertModel from "../modal/alertModel";
@@ -102,7 +102,7 @@ function PartnerComponent(props) {
       if(partnerId){        
         //call get by id api
         props
-        .retrieveAllPartnerData() //i/p for test purpose
+        .retrievePartnerByRole(partnerId,"nelson@se.com") //i/p for test purpose
         .then((data) => {
           console.log("retrieveAllPartnerData", data);
           const respData = data.data.filter(data => data.partner_id === partnerId)[0];
@@ -207,18 +207,18 @@ function PartnerComponent(props) {
     content: errorRet
   }
 
-  const saveUserPartnerConfigDetails = (data) => {
+  const saveUserPartnerConfigDetails = (partner_id, reqData) => {
       let reqUserPartConfData = {
-        partner_id: data.partner_id,
+        partner_id: partner_id,
         role_id: userRole,
-        country_code: data.country_code,
+        country_code: reqData.country_code,
         email_id: "abc@example.com", //login user email
         created_by: "abc@example.com", //login user email
         updated_by: "abc@example.com", //login user email
-        editor: data.editor,
+        editor: reqData.editor,
         //backup editor 
-        approve_1: data.approve_1,
-        approver_2: data.approve_2,
+        approve_1: reqData.approver1,
+        approver_2: reqData.approver2,
         supervisor: "example@example.com", //super usr
         supervisor_approv_1_2: "example@example.com" //super approver usr
       };
@@ -241,6 +241,7 @@ function PartnerComponent(props) {
   }
 
   const onSubmit = (data) => {
+    let formData = data;
     console.log("form data", data);
     
     if(data.partner_id==='' || data.partner_id==undefined){
@@ -276,7 +277,18 @@ function PartnerComponent(props) {
             console.log('createPartnerData', data);
             //create user partner role config for higher level user
             if(userRole === roles.superUser || userRole === roles.superApproverUser || userRole === roles.admin){
-              saveUserPartnerConfigDetails(data);
+              //call get by id api
+              props
+              .retrievePartnerByRole(partnerId,"nelson@se.com") //i/p for test purpose
+              .then((data) => {
+                console.log("retrieveAllPartnerData", data, reqData.partner_account_name);
+                const respData = data.data.filter(data => data.platform_name === reqData.platform_name)[0];
+                console.log("filter by id", respData);
+                saveUserPartnerConfigDetails(respData.partner_id, formData);
+              })
+              .catch((e) => {
+                console.log(e);
+              });
             }
             else{
               setShowSuccessModal(true);
@@ -331,7 +343,7 @@ function PartnerComponent(props) {
             console.log(data);
             //update user partner role config for higher level user
             if(userRole === roles.superUser || userRole === roles.superApproverUser || userRole === roles.admin){
-              saveUserPartnerConfigDetails(data);
+              saveUserPartnerConfigDetails(data.partner_id, formData);
             }
             else{
               setShowSuccessModal(true);
@@ -1152,4 +1164,5 @@ export default connect(null, {
   retrieveAllCountryData,
   retrieveAllStaticData,
   retrieveAllUserListData,
-  createUserPartnerRoleConfig })(PartnerComponent);
+  createUserPartnerRoleConfig,
+  retrievePartnerByRole })(PartnerComponent);

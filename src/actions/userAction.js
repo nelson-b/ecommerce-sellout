@@ -19,7 +19,7 @@ export const retrieveAllUserListData = (id) => async (dispatch) => {
 export const createUserPartnerRoleConfig = (data) => async(dispatch) => {
   try{
       console.log('createUserPartnerRoleConfig', data);
-      const res = await UserService.createUserPartnerRoleConfig(data);
+      const res = await UserService.createPartnerUserRoleConfig(data);
 
       dispatch({
           type: CREATE_USR_PARTNER_ROLE_CONFIG,
