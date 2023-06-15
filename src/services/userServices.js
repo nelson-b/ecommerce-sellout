@@ -8,6 +8,10 @@ class UserService {
   createPartnerUserRoleConfig(data) {
     return http.post("/ecomm-sellout-dev-lamda-createpartner/create-user-role-partnerconfig", data);
   }
+
+  createUserProfile(data){
+    return http.post("/ecomm-sellout-dev-lamda-createpartner/create-user-profile", data);
+  }
 }
 
 export default new UserService();

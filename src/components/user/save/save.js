@@ -323,17 +323,6 @@ function SaveUser(props) {
     console.log("Data:", form);
 
     //api call
-    // props.createUserPartnerRoleConfig((()))
-
-    // firstname: null,
-    // lastname: null,
-    // useremailid: null,
-    // userrole: null,
-    // userops: null,
-    // usrzone: null,
-    // modelType: [],
-    // usrcountry: [],
-    // partnerAccNm: [],
 
     let userData = {
       email_id: form.useremailid,

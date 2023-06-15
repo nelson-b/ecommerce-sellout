@@ -491,10 +491,10 @@ function PartnerComponent(props) {
                           required: "Country is required",
                         })}>
                         <option value="">Not applicable</option>
-                        <option value="USA">USA</option>
-                        {/* {countryData && (countryData.map((row) =>(
+                        {/* <option value="USA">USA</option> */}
+                        {countryData && (countryData.map((row) =>(
                           <option value={row.country_code}>{row.country_name}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors?.country_code && (
                         <Form.Text className="text-danger">
@@ -515,12 +515,12 @@ function PartnerComponent(props) {
                           required: "Partner group is required",
                         })}>
                         <option value="">Not applicable</option>
-                        <option value={'Partner 1'}>Partner 1</option>
+                        {/* <option value={'Partner 1'}>Partner 1</option>
                         <option value={"Amazon"}>Amazon</option>
-                        <option value={'Lazada'}>Lazada</option>
-                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'partner_group').map((row) =>(
+                        <option value={'Lazada'}>Lazada</option> */}
+                        {staticData && (staticData.filter(data => data.attribute_name === 'partner_group').map((row) =>(
                           <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.partner_group && (
                         <Form.Text className="text-danger">
@@ -542,12 +542,12 @@ function PartnerComponent(props) {
                         })}
                       >
                         <option value="">Not applicable</option>
-                        <option value={"APC"}>APC</option>
+                        {/* <option value={"APC"}>APC</option>
                         <option value={"TEST"}>TEST</option>
-                        <option value={"Entity 3"}>Entity 3</option>
-                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'se_entity').map((row) =>(
+                        <option value={"Entity 3"}>Entity 3</option> */}
+                        {staticData && (staticData.filter(data => data.attribute_name === 'se_entity').map((row) =>(
                           <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.se_entity && (
                         <Form.Text className="text-danger">
@@ -667,12 +667,12 @@ function PartnerComponent(props) {
                         })}
                       >
                         <option value="">Not applicable</option>
-                        <option value={"Electric"}>Electric</option>
+                        {/* <option value={"Electric"}>Electric</option>
                         <option value={"Solar"}>Solar</option>
-                        <option value={"TEST"}>TEST</option>
-                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'business_type').map((row) =>(
+                        <option value={"TEST"}>TEST</option> */}
+                        {staticData && (staticData.filter(data => data.attribute_name === 'business_type').map((row) =>(
                           <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.business_type && (
                         <Form.Text className="text-danger">
@@ -694,12 +694,12 @@ function PartnerComponent(props) {
                         })}
                       >
                         <option value="">Not applicable</option>
-                        <option value={'E1-Dist'}>E1-Dist</option>
+                        {/* <option value={'E1-Dist'}>E1-Dist</option>
                         <option value={"TEST"}>TEST</option>
-                        <option value={"E3"}>E3</option>
-                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'model_type').map((row) =>(
+                        <option value={"E3"}>E3</option> */}
+                        {staticData && (staticData.filter(data => data.attribute_name === 'model_type').map((row) =>(
                           <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.model_type && (
                         <Form.Text className="text-danger">
@@ -757,13 +757,13 @@ function PartnerComponent(props) {
                           required: "Currency of Sellout Reporting is required",
                         })}>
                         <option value="">Not applicable</option>
-                        <option>AUD</option>
+                        {/* <option>AUD</option>
                         <option>INR</option>
                         <option>USD</option>
-                        <option value={'MYR'}>MYR</option>
-                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'trans_currency_code').map((row) =>(
+                        <option value={'MYR'}>MYR</option> */}
+                        {staticData && (staticData.filter(data => data.attribute_name === 'trans_currency_code').map((row) =>(
                           <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.trans_currency_code && (
                         <Form.Text className="text-danger">
@@ -785,11 +785,11 @@ function PartnerComponent(props) {
                         })}
                       >
                         <option value="">Not applicable</option>
-                        <option>Actual sellin + est. eCom penetration</option>
-                        <option value={"DCTYPE"}>DCTYPE</option>
-                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'data_collection_type').map((row) =>(
+                        {/* <option>Actual sellin + est. eCom penetration</option>
+                        <option value={"DCTYPE"}>DCTYPE</option> */}
+                        {staticData && (staticData.filter(data => data.attribute_name === 'data_collection_type').map((row) =>(
                           <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.data_collection_type && (
                         <Form.Text className="text-danger">
@@ -836,12 +836,12 @@ function PartnerComponent(props) {
                         })}
                       >
                         <option value="">Not applicable</option>
-                        <option value={"type1"}>Type 1</option>
+                        {/* <option value={"type1"}>Type 1</option>
                         <option value={"type2"}>Type 2</option>
-                        <option value={"E2"}>E2</option>
-                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'e2_playbook_type').map((row) =>(
+                        <option value={"E2"}>E2</option> */}
+                        {staticData && (staticData.filter(data => data.attribute_name === 'e2_playbook_type').map((row) =>(
                           <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.e2_playbook_type && (
                         <Form.Text className="text-danger">
@@ -872,13 +872,13 @@ function PartnerComponent(props) {
                         })}
                       >
                         <option value="">Not applicable</option>
-                        <option value={"Adopter"}>Adopter</option>
+                        {/* <option value={"Adopter"}>Adopter</option>
                         <option value={"Leader"}>Leader</option>
                         <option value={"Novice"}>Novice</option>
-                        <option value={"BOPP"}>BOPP</option>
-                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'bopp_type').map((row) =>(
+                        <option value={"BOPP"}>BOPP</option> */}
+                        {staticData && (staticData.filter(data => data.attribute_name === 'bopp_type').map((row) =>(
                           <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.bopp_type && (
                         <Form.Text className="text-danger">
@@ -900,11 +900,11 @@ function PartnerComponent(props) {
                           required: "GTM Type is required",
                         })}>
                         <option value="">Not applicable</option>
-                        <option>Direct</option>
-                        <option value={"GTM"}>GTM</option>
-                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'gtm_type').map((row) =>(
+                        {/* <option>Direct</option>
+                        <option value={"GTM"}>GTM</option> */}
+                        {staticData && (staticData.filter(data => data.attribute_name === 'gtm_type').map((row) =>(
                           <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.gtm_type && (
                         <Form.Text className="text-danger">
@@ -929,8 +929,9 @@ function PartnerComponent(props) {
                         })}
                       >
                         <option value="">Not applicable</option>
-                        <option value="ACTIVE">Active</option>
-                        <option value="INACTIVE">Inactive</option>
+                        {staticData && (staticData.filter(data => data.attribute_name === 'partner_status').map((row) =>(
+                          <option value={row.attribute_value}>{row.attribute_value}</option>
+                        )))}
                       </Form.Select>
                       {errors.partner_status && (
                         <Form.Text className="text-danger">
@@ -984,10 +985,9 @@ function PartnerComponent(props) {
                           })}
                         >
                           <option value="">Not applicable</option>
-                          <option>Partner not working with SE anymore</option>
-                          <option>
-                            Acquired by/ integrated in one of our other partners
-                          </option>
+                          {staticData && (staticData.filter(data => data.attribute_name === 'deactivation_reason').map((row) =>(
+                            <option value={row.attribute_value}>{row.attribute_value}</option>
+                        )))}
                         </Form.Select>
                         {errors.deactivation_reason && (
                           <Form.Text className="text-danger">
@@ -1022,10 +1022,10 @@ function PartnerComponent(props) {
                         })}
                         )}>
                         <option value="">Not applicable</option>
-                        <option value="nelson@gmail.com">Nelson</option>
-                        {/* {usrRoleData && (usrRoleData.filter(role => role.role_id == 'EDITOR').map((row) =>(
+                        {/* <option value="nelson@gmail.com">Nelson</option> */}
+                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'EDITOR').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.editor && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">
@@ -1051,10 +1051,10 @@ function PartnerComponent(props) {
                         )}
                       >
                         <option value="">Not applicable</option>
-                        <option value="maite@gmail.com">Maite</option>
-                        {/* {usrRoleData && (usrRoleData.filter(role => role.role_id == 'BCK_EDITOR').map((row) =>(
+                        {/* <option value="maite@gmail.com">Maite</option> */}
+                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'EDITOR').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.backupEditor && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">
@@ -1079,10 +1079,10 @@ function PartnerComponent(props) {
                         )}
                       >
                         <option value="">Not applicable</option>
-                        <option value="maite@gmail.com">Maite</option>
-                        {/* {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER1').map((row) =>(
+                        {/* <option value="maite@gmail.com">Maite</option> */}
+                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER1').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.approver1 && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">
@@ -1107,10 +1107,10 @@ function PartnerComponent(props) {
                         )}
                       >
                         <option value="">Not applicable</option>
-                        <option value="thomas@gmail.com">Thomas</option>
-                        {/* {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER2').map((row) =>(
+                        {/* <option value="thomas@gmail.com">Thomas</option> */}
+                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER2').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
-                        )))} */}
+                        )))}
                       </Form.Select>
                       {errors.approver2 && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">

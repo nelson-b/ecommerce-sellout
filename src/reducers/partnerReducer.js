@@ -10,8 +10,7 @@ function partnerReducer(data = initialState, action) {
 
     switch (type) {
         case CREATE_PARTNERDATA:
-            // return [...data, payload];
-            return payload;
+            return [...data, payload];
         case RETRIEVE_PARTNERDATA:
             return payload;
 

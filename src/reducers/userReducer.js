@@ -1,4 +1,4 @@
-import { RETRIEVE_USERSDATA, CREATE_USR_PARTNER_ROLE_CONFIG } from "../actions/type";
+import { RETRIEVE_USERSDATA, CREATE_USR_PARTNER_ROLE_CONFIG, CREATE_USER_PROFILE } from "../actions/type";
 
 const initialState = [];
 
@@ -7,6 +7,8 @@ function userReducer(data = initialState, action) {
 
     switch (type) {
         case CREATE_USR_PARTNER_ROLE_CONFIG:
+            return [...data, payload];
+        case CREATE_USER_PROFILE:
             return [...data, payload];
         case RETRIEVE_USERSDATA:
             return payload;
