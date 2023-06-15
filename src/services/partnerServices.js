@@ -13,7 +13,7 @@ class PartnerService {
   }
 
   getByRole(id, user) {
-    console.log(`baseUrl: https://8ghiehyd0f.execute-api.eu-west-1.amazonaws.com/create-partner/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${user}&role_id=${id}`)
+    //console.log(`baseUrl: https://8ghiehyd0f.execute-api.eu-west-1.amazonaws.com/create-partner/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${user}&role_id=${id}`)
     return http.get(
       `/create-partner/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${user}&role_id=${id}`
     );
