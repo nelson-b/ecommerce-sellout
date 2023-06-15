@@ -7,7 +7,7 @@ import { AgGridReact } from "ag-grid-react";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
 import userRequestData from "../../data/userRequestData.json";
-import { RetrieveAllUserListData } from "../../actions/userAction";
+import { retrieveAllUserListData } from "../../actions/userAction";
 import "../home/home.component.css";
 
 function UserRequestComponent(props) {
@@ -136,22 +136,22 @@ function UserRequestComponent(props) {
     },
     {
       headerName: "OPS",
-      field: "ops",
+      field: "ops_val",
       width: 100,
     },
     {
       headerName: "Zone",
-      field: "zone",
+      field: "zone_val",
       width: 120,
     },
     {
       headerName: "Country",
-      field: "country",
+      field: "country_code",
       width: 120,
     },
     {
       headerName: "Model",
-      field: "Model",
+      field: "model_val",
       width: 100,
     },
     {
@@ -188,15 +188,9 @@ function UserRequestComponent(props) {
 
   const onGridReady = useCallback((params) => {
     props
-      .RetrieveAllUserListData()
+      .retrieveAllUserListData(screenRole)
       .then((data) => {
-        const rolesData = data.map((e) => {
-          if (e.role_id.toLowerCase() == 'editor') {
-            return e;
-          }
-        });
-        setRowData(rolesData);
-        console.log('rowData', rowData);
+        setRowData(data);
       })
       .catch((e) => {
         console.log(e);
@@ -290,5 +284,5 @@ function UserRequestComponent(props) {
   );
 }
 
-export default connect(null, { RetrieveAllUserListData })(UserRequestComponent);
+export default connect(null, { retrieveAllUserListData })(UserRequestComponent);
 
