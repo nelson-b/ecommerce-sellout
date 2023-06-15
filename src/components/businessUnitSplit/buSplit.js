@@ -23,8 +23,13 @@ import AlertModel from "../modal/alertModel";
 import { allCalMonths } from "../constant.js";
 import * as xlsx from "xlsx-js-style";
 import { ckeckErrors } from "../utils/index.js";
+import { connect } from "react-redux";
+import {
+  updateBuSplitData,
+  retrieveBuSplitData,
+} from "../../actions/buSplitAction.js";
 
-function BusinessUnitSplit() {
+function BusinessUnitSplit(props) {
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -83,63 +88,171 @@ function BusinessUnitSplit() {
   const buSplitData = [
     {
       partner_id: "Adalbert",
-      Country: "France",
+      country_code: "France",
       Partner_Account_Name: "Adalbert Zajadacz (Part of DEHA) DEU",
-      Model: "E1 - Dist",
-      Quarter: "Q1 2023",
-      SP: 25,
-      H_and_D: 15,
-      PP: 10,
-      DE: 27,
-      IA: 23,
+      model_type: "E1 - Dist",
+      quarter: "Q1 2023",
+      //ag grid format
+      // SP: 10,
+      // H_and_D: 20,
+      // PP: 30,
+      // DE: 20,
+      // IA: 20,
+      // wrong format
+      // attribute_name: "bopp_type",
+      // attribute_val: "SP",
+      // total: 400.89,
+      // attribute_name: "bopp_type",
+      // attribute_val: "H&D",
+      // total: 400.89,
+      // attribute_name: "bopp_type",
+      // attribute_val: "PP",
+      // total: 400.89,
+      // attribute_name: "bopp_type",
+      // attribute_val: "DE",
+      // total: 400.89,
+      // attribute_name: "bopp_type",
+      // attribute_val: "IA",
+      // total: 400.89,
+      attributes: [
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "SP",
+          total: 25,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "H&D",
+          total: 25,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "PP",
+          total: 20,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "DE",
+          total: 15,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "IA",
+          total: 5,
+        },
+      ],
     },
     {
       partner_id: "AFB",
-      Country: "Caneda",
+      country_code: "Canada",
       Partner_Account_Name: "AFB eSolutions DEU",
-      Model: "E1 - Dist",
-      Quarter: "Q1 2023",
-      SP: 10,
-      H_and_D: 20,
-      PP: 30,
-      DE: 20,
-      IA: 20,
+      model_type: "E1 - Dist",
+      quarter: "Q1 2023",
+      attributes: [
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "SP",
+          total: 25,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "H&D",
+          total: 25,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "PP",
+          total: 20,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "DE",
+          total: 15,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "IA",
+          total: 15,
+        },
+      ],
     },
     {
       partner_id: "Ahlsell",
-      Country: "Norway",
+      country_code: "Norway",
       Partner_Account_Name: "Ahlsell ELKO NOR",
-      Model: "E1 - Dist",
-      Quarter: "Q1 2023",
-      SP: 15,
-      H_and_D: 30,
-      PP: 10,
-      DE: 30,
-      IA: 15,
+      model_type: "E1 - Dist",
+      quarter: "Q1 2023",
+      attributes: [
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "SP",
+          total: 25,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "H&D",
+          total: 25,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "PP",
+          total: 20,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "DE",
+          total: 15,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "IA",
+          total: 15,
+        },
+      ],
     },
     {
       partner_id: "Ahlsell",
-      Country: "Finland",
+      country_code: "Finland",
       Partner_Account_Name: "Ahlsell ELKO SWE",
-      Model: "E2 - Dist",
-      Quarter: "Q2 2023",
-      SP: 25,
-      H_and_D: 25,
-      PP: 10,
-      DE: 25,
-      IA: 15,
+      model_type: "E2 - Dist",
+      quarter: "Q2 2023",
+      attributes: [
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "SP",
+          total: 25,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "H&D",
+          total: 25,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "PP",
+          total: 20,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "DE",
+          total: 15,
+        },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "IA",
+          total: 15,
+        },
+      ],
     },
   ];
 
   const sumTotal = (params, index) => {
-    console.log("sumTotal");
-
     let totalBu =
-      Number(Math.round(params.data.DE)) +
-      Number(Math.round(params.data.H_and_D)) +
-      Number(Math.round(params.data.IA)) +
-      Number(Math.round(params.data.PP)) +
-      Number(Math.round(params.data.SP));
+      Number(Math.round(params.data.attributes[0].total)) +
+      Number(Math.round(params.data.attributes[1].total)) +
+      Number(Math.round(params.data.attributes[2].total)) +
+      Number(Math.round(params.data.attributes[3].total)) +
+      Number(Math.round(params.data.attributes[4].total));
 
     params.data["Total"] = Number(Math.round(totalBu));
     return params.data.Total;
@@ -175,7 +288,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "Country",
-      field: "Country",
+      field: "country_code",
       sortable: true,
       filter: true,
       pinned: "left",
@@ -197,7 +310,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "Model",
-      field: "Model",
+      field: "model_type",
       sortable: true,
       filter: true,
       pinned: "left",
@@ -207,7 +320,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "Quarter",
-      field: "Quarter",
+      field: "quarter",
       sortable: true,
       filter: true,
       pinned: "left",
@@ -217,7 +330,7 @@ function BusinessUnitSplit() {
     },
     {
       headerName: "SP",
-      field: "SP",
+      field: "attributes",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
@@ -228,10 +341,16 @@ function BusinessUnitSplit() {
       valueSetter: (params) => {
         return checkNumericValue(params, "SP");
       },
+      valueGetter: (params) => {
+        const attributeSP = params.data.attributes.find(
+          (attr) => attr.attribute_val === "SP"
+        );
+        return attributeSP ? attributeSP.total : null;
+      },
     },
     {
       headerName: "H&D",
-      field: "H_and_D",
+      field: "attributes",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
@@ -240,12 +359,18 @@ function BusinessUnitSplit() {
         return Math.round(params.value) + "%";
       },
       valueSetter: (params) => {
-        return checkNumericValue(params, "H_and_D");
+        return checkNumericValue(params, "H&D");
+      },
+      valueGetter: (params) => {
+        const attributeSP = params.data.attributes.find(
+          (attr) => attr.attribute_val === "H&D"
+        );
+        return attributeSP ? attributeSP.total : null;
       },
     },
     {
       headerName: "PP",
-      field: "PP",
+      field: "attributes",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
@@ -256,10 +381,16 @@ function BusinessUnitSplit() {
       valueSetter: (params) => {
         return checkNumericValue(params, "PP");
       },
+      valueGetter: (params) => {
+        const attributeSP = params.data.attributes.find(
+          (attr) => attr.attribute_val === "PP"
+        );
+        return attributeSP ? attributeSP.total : null;
+      },
     },
     {
       headerName: "DE",
-      field: "DE",
+      field: "attributes",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
@@ -270,10 +401,16 @@ function BusinessUnitSplit() {
       valueSetter: (params) => {
         return checkNumericValue(params, "DE");
       },
+      valueGetter: (params) => {
+        const attributeSP = params.data.attributes.find(
+          (attr) => attr.attribute_val === "DE"
+        );
+        return attributeSP ? attributeSP.total : null;
+      },
     },
     {
       headerName: "IA",
-      field: "IA",
+      field: "attributes",
       minWidth: 70,
       editable: true,
       suppressMenu: true,
@@ -283,6 +420,12 @@ function BusinessUnitSplit() {
       },
       valueSetter: (params) => {
         return checkNumericValue(params, "IA");
+      },
+      valueGetter: (params) => {
+        const attributeSP = params.data.attributes.find(
+          (attr) => attr.attribute_val === "IA"
+        );
+        return attributeSP ? attributeSP.total : null;
       },
     },
     {
@@ -296,6 +439,7 @@ function BusinessUnitSplit() {
         return Math.round(params.value) + "%";
       },
       valueGetter: (params) => {
+        console.log("xxx", params);
         return sumTotal(params);
       },
       cellStyle: (params) => {
@@ -319,9 +463,14 @@ function BusinessUnitSplit() {
   );
 
   const onGridReady = useCallback((params) => {
-    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => buSplitData)
-      .then((data) => setRowData(data));
+    props
+      .retrieveBuSplitData()
+      .then((data) => {
+        setRowData(data.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, []);
 
   const name = "John Bae";
@@ -416,7 +565,9 @@ function BusinessUnitSplit() {
                   ) {
                     errorJson = [];
                   } else {
-                    errorJson.push(`Busplit account details are not matched with the data`);
+                    errorJson.push(
+                      `Busplit account details are not matched with the data`
+                    );
                   }
                 }
               });
@@ -614,7 +765,7 @@ function BusinessUnitSplit() {
               </Breadcrumb>
             ) : buRole === "superApproverUser" ? (
               <Breadcrumb>
-                <Breadcrumb.Item href="/superUser/home">
+                <Breadcrumb.Item href="/superApproverUser/home">
                   <img
                     src={Home}
                     alt="home"
@@ -750,4 +901,6 @@ function BusinessUnitSplit() {
   );
 }
 
-export default BusinessUnitSplit;
+export default connect(null, { retrieveBuSplitData, updateBuSplitData })(
+  BusinessUnitSplit
+);

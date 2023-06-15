@@ -335,6 +335,9 @@ function PartnerList(props) {
   if(screenRole == 'admin') {
     userMail = 'jean@se.com'
   } 
+  if(screenRole == 'superUser') {
+    userMail = 'marie@se.com'
+  } 
   
   const onGridReady = useCallback((params) => {
     props.retrievePartnerByRole(screenRole, userMail)
@@ -365,7 +368,7 @@ function PartnerList(props) {
             </Breadcrumb>
           ) : screenRole === "superApproverUser" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUser/home">
+              <Breadcrumb.Item href="/superApproverUser/home">
                 <img
                   src={Home}
                   alt="home"

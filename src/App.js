@@ -47,20 +47,20 @@ function App() {
             element={<HomeComponent role={roles.approver} />}
           />
           <Route
-            path="/superUser/home"
+            path="/superApproverUser/home"
             element={<HomeComponent role={roles.superApproverUser} />}
           />
-
           <Route
             path="/admin/home"
             element={<AdminOverview role={roles.admin} />}
           />
+          <Route path="/superUser" element={<SuperUserOverview />} />
+
           <Route
             path="/admin/inputCalendar"
             exact
             element={<InputCalender />}
           />
-          <Route path="/superUser" element={<SuperUserOverview />} />
 
           <Route path="/historicalData" element={<HistoricalData />} />
           <Route path="/buSplit" element={<BusinessUnitSplit />} />

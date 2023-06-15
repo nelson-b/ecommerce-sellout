@@ -52,10 +52,13 @@ function Login() {
       navigate("/approver/home");
     }
     if(data.username=="thomas@se.com" && data.usrpassword=="test@123"){
-      navigate("/superUser/home");
+      navigate("/superApproverUser/home");
     }
     if(data.username=="jean@se.com" && data.usrpassword=="test@123"){
       navigate("/admin/home");
+    }
+    if(data.username=="marie@se.com" && data.usrpassword=="test@123"){
+      navigate("/superUser");
     }
 
     console.log('loginNavigation', data);

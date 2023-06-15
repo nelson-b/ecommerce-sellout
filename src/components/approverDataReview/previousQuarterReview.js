@@ -88,10 +88,13 @@ function PartnerQuarterApprover({ props }) {
     );
   };
 
-  const CustomHeader = ({ displayName }) => {
+  const CustomHeader = ({ displayName, radioValue }) => {
+    const unit = radioValue === "1" ? "K": "K\u20AC";
     return (
       <div>
-        <span style={{ fontSize: "13px" }}>{displayName} (in K&euro;)</span>
+        <span style={{ fontSize: "13px" }}>
+          {displayName} (in {unit})
+        </span>
       </div>
     );
   };
@@ -136,7 +139,10 @@ function PartnerQuarterApprover({ props }) {
     {
       headerName: "Sellout value Approved",
       headerComponentFramework: CustomHeader,
-      headerComponentParams: { displayName: "Sellout value Approved" },
+      headerComponentParams: {
+        displayName: "Sellout value Approved",
+        radioValue,
+      },
       field: "SelloutValue",
       editable: false,
       minWidth: 150,
@@ -148,7 +154,10 @@ function PartnerQuarterApprover({ props }) {
     {
       headerName: "New value",
       headerComponentFramework: CustomHeader,
-      headerComponentParams: { displayName: "New value" },
+      headerComponentParams: {
+        displayName: "New value",
+        radioValue,
+      },
       field: "newValue",
       editable: false,
       minWidth: 100,
@@ -227,7 +236,7 @@ function PartnerQuarterApprover({ props }) {
 
   const handleReviewNavigation = () => {
     if (quarterRole === 'superApproverUser') {
-      navigate("/superUser/home");
+      navigate("/superApproverUser/home");
     } else {
       navigate("/approver/home");
     }
@@ -272,7 +281,7 @@ function PartnerQuarterApprover({ props }) {
             </Breadcrumb>
           ) : quarterRole === "superApproverUser" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUser/home">
+              <Breadcrumb.Item href="/superApproverUser/home">
                 <img
                   src={Home}
                   alt="home"
