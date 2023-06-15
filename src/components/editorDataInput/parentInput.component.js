@@ -69,7 +69,7 @@ function DataInputComponent(props) {
     setShowSuccessModal(false);
   };
 
-  const postData = () => {
+  const postData = useCallback(() => {
     //console.log('api call to save manual data');
     setShowShouldUpdModal(false);
     let payload = [];
@@ -111,8 +111,10 @@ function DataInputComponent(props) {
     });
 
     console.log('payload', payload);
+    gridRef.current.api.refreshCells();
+    setRowData(getData);
     setShowSuccessModal(true);
-  }
+  }, []);
   
   const gridRef = useRef(null);
 
@@ -226,7 +228,7 @@ function DataInputComponent(props) {
       GrandTotal: 0,
     },
     {
-      id: "Ahlsellr",
+      id: "Ahlsellr4",
       Zone: "Nordics",
       Country: "Sweden",
       Partner_Account_Name: "Ahlsell ELKO SWE",
@@ -262,7 +264,7 @@ function DataInputComponent(props) {
       GrandTotal: 0,
     },
     {
-      id: "Ahlsellr",
+      id: "Ahlsellr3",
       Zone: "Nordics",
       Country: "Sweden",
       Partner_Account_Name: "Ahlsell ELKO MkW",
@@ -296,7 +298,79 @@ function DataInputComponent(props) {
       Nov_Estimated: true,
       Dec_Estimated: "",
       GrandTotal: 0,
-    }
+    },
+    {
+      id: "Ahlsell2",
+      Zone: "Nordics",
+      Country: "Sweden",
+      Partner_Account_Name: "Ahlsell ELKO MkW",
+      partner_id: "Ahlsell",
+      Model: "E2 - Dist",
+      Currency_Of_Reporting: "SEK",
+      Status: "Closed",
+      Year: 2023,
+      Jan_Amount: 1515,
+      Feb_Amount: 1535,
+      Mar_Amount: 4665,
+      Apr_Amount: 4665,
+      May_Amount: 5655,
+      Jun_Amount: 230,
+      Jul_Amount: 0,
+      Aug_Amount: 0,
+      Sep_Amount: 0,
+      Oct_Amount: 0,
+      Nov_Amount: 0,
+      Dec_Amount: 0,
+      Jan_Estimated: "",
+      Feb_Estimated: true,
+      Mar_Estimated: "",
+      Apr_Estimated: "",
+      May_Estimated: true,
+      Jun_Estimated: "",
+      Jul_Estimated: "",
+      Aug_Estimated: true,
+      Sep_Estimated: true,
+      Oct_Estimated: "",
+      Nov_Estimated: true,
+      Dec_Estimated: "",
+      GrandTotal: 0,
+    },
+    {
+      id: "Ahlsellr1",
+      Zone: "Nordics",
+      Country: "Sweden",
+      Partner_Account_Name: "Ahlsell ELKO MkW",
+      partner_id: "Ahlsell",
+      Model: "E2 - Dist",
+      Currency_Of_Reporting: "SEK",
+      Status: "Closed",
+      Year: 2023,
+      Jan_Amount: 1515,
+      Feb_Amount: 1535,
+      Mar_Amount: 4665,
+      Apr_Amount: 4665,
+      May_Amount: 5655,
+      Jun_Amount: 230,
+      Jul_Amount: 0,
+      Aug_Amount: 0,
+      Sep_Amount: 0,
+      Oct_Amount: 0,
+      Nov_Amount: 0,
+      Dec_Amount: 0,
+      Jan_Estimated: "",
+      Feb_Estimated: true,
+      Mar_Estimated: "",
+      Apr_Estimated: "",
+      May_Estimated: true,
+      Jun_Estimated: "",
+      Jul_Estimated: "",
+      Aug_Estimated: true,
+      Sep_Estimated: true,
+      Oct_Estimated: "",
+      Nov_Estimated: true,
+      Dec_Estimated: "",
+      GrandTotal: 0,
+    } 
   ];
   
   const columnDefs = [
@@ -413,9 +487,7 @@ function DataInputComponent(props) {
 
     var isEstimated = filterMonths[monthYrKey] == true;
     if (isEstimated == true) return { backgroundColor: "#EEB265" };
-    return { backgroundColor: "white", 
-    // 'borderColor': '#e2e2e2'
-  };
+    return { backgroundColor: "white" };
   };
 
   const currentDate = new Date();
@@ -634,7 +706,7 @@ function DataInputComponent(props) {
             rowData={rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
-            pagination={true}
+            // pagination={true}
             paginationAutoPageSize={true}
             animateRows={true}
             getRowId={getRowId}

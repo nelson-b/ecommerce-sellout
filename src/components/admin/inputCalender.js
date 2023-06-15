@@ -125,24 +125,24 @@ function InputCalendar() {
                                 <Form.Label
                                   size="sm"
                                   className="calendar-label"
-                                  htmlFor="currmonth_opndt"
+                                  htmlFor={"currmonth_opndt_"+month}
                                 >
                                   Opening Date
                                 </Form.Label>
                                 &nbsp;
                                 <Form.Control
                                   size="sm"
-                                  id="currmonth_opndt"
-                                  name="currmonth_opndt"
+                                  id={"currmonth_opndt_"+month}
+                                  name={"currmonth_opndt_"+month}
                                   min={new Date().toISOString().split('T')[0]}
                                   type="date"
-                                  {...register("currmonth_opndt", {
+                                  {...register(`currmonth_opndt_${month}`, {
                                     required: "Opening date is required",
                                   })}
                                 />
-                                {errors.currmonth_opndt && (
+                                {errors[`currmonth_opndt_${month}`] && (
                                   <Form.Text className="text-danger">
-                                    {errors.currmonth_opndt.message}
+                                    {errors[`currmonth_opndt_${month}`].message}
                                   </Form.Text>
                                 )}
                               </Col>
@@ -150,23 +150,23 @@ function InputCalendar() {
                                 <Form.Label
                                   size="sm"
                                   className="calendar-label"
-                                  htmlFor="currmonth_closedt"
+                                  htmlFor={"currmonth_closedt_"+month}
                                 >
                                   Closing Date
                                 </Form.Label>
                                 &nbsp;
                                 <Form.Control
                                   size="sm"
-                                  id="currmonth_closedt"
-                                  name="currmonth_closedt"
+                                  id={"currmonth_closedt_"+month}
+                                  name={"currmonth_closedt_"+month}
                                   type="date"
-                                  {...register("currmonth_closedt", {
+                                  {...register(`currmonth_closedt_${month}`, {
                                     required: "Close date is required",
                                   })}
                                 />
-                                {errors.currmonth_closedt && (
+                                {errors[`currmonth_closedt_${month}`] && (
                                   <Form.Text className="text-danger">
-                                    {errors.currmonth_closedt.message}
+                                    {errors[`currmonth_closedt_${month}`].message}
                                   </Form.Text>
                                 )}
                               </Col>
@@ -231,24 +231,24 @@ function InputCalendar() {
                                 <Form.Label
                                   size="sm"
                                   className="calendar-label"
-                                  htmlFor="currmonth_opndt"
+                                  htmlFor={"currmonth_opndt_"+quarter}
                                 >
                                   Opening Date
                                 </Form.Label>
                                 &nbsp;
                                 <Form.Control
                                   size="sm"
-                                  id="currmonth_opndt"
-                                  name="currmonth_opndt"
+                                  id={"currmonth_opndt_"+quarter}
+                                  name={"currmonth_opndt_"+quarter}
                                   min={new Date().toISOString().split('T')[0]}
                                   type="date"
-                                  {...register("currmonth_opndt", {
+                                  {...register(`currmonth_opndt_${quarter}`, {
                                     required: "Opening date is required",
                                   })}
                                 />
-                                {errors.currmonth_opndt && (
+                                {errors[`currmonth_opndt_${quarter}`] && (
                                   <Form.Text className="text-danger">
-                                    {errors.currmonth_opndt.message}
+                                    {errors[`currmonth_opndt_${quarter}`].message}
                                   </Form.Text>
                                 )}
                               </Col>
@@ -256,23 +256,23 @@ function InputCalendar() {
                                 <Form.Label
                                   size="sm"
                                   className="calendar-label"
-                                  htmlFor="currmonth_closedt"
+                                  htmlFor={"currmonth_closedt_"+quarter}
                                 >
                                   Closing Date
                                 </Form.Label>
                                 &nbsp;
                                 <Form.Control
                                   size="sm"
-                                  id="currmonth_closedt"
-                                  name="currmonth_closedt"
+                                  id={"currmonth_closedt_"+quarter}
+                                  name={"currmonth_closedt_"+quarter}
                                   type="date"
-                                  {...register("currmonth_closedt", {
+                                  {...register(`currmonth_closedt_${quarter}`, {
                                     required: "Close date is required",
                                   })}
                                 />
-                                {errors.currmonth_closedt && (
+                                {errors[`currmonth_closedt_${quarter}`] && (
                                   <Form.Text className="text-danger">
-                                    {errors.currmonth_closedt.message}
+                                    {errors[`currmonth_closedt_${quarter}`].message}
                                   </Form.Text>
                                 )}
                               </Col>

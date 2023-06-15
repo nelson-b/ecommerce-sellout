@@ -3,7 +3,7 @@ import http from "../http-common";
 class SellOutDataService {
   getAll(user, year, id) {
     return http.get(
-      `prod/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?USER=${user}&YEAR_VAL=${year}&ROLE_ID=${id}`
+      `/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?USER=${user}&YEAR_VAL=${year}&ROLE_ID=${id}`
       // https://8ghiehyd0f.execute-api.eu-west-1.amazonaws.com/prod/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?USER="mno@example.com"&YEAR_VAL=2023&ROLE_ID="supervisor_approv_1_2"
     );
   }

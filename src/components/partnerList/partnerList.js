@@ -200,7 +200,7 @@ function PartnerList(props) {
       editable: false,
       suppressMenu: true,
       valueFormatter: (params) => {
-        return getUIDateFormat(params.value);
+        return getUIDateFormat(params.value, true);
       },
     },
     {

@@ -3,19 +3,19 @@ import http from "../http-common";
 class PartnerService {
   create(data) {
     console.log("PartnerService", data);
-    return http.post("/ecomm-sellout-dev-lamda-createpartner", data);
+    return http.post("/ecomm-sellout-dev-lamda-createpartner/create-partner", data);
   }
 
   getAll() {
     return http.get(
-      "/create-partner/ecomm-sellout-dev-lamda-createpartner/get-partner-list"
+      "/ecomm-sellout-dev-lamda-createpartner/get-partner-list" 
     );
   }
 
   getByRole(id, user) {
-    console.log(`baseUrl: https://8ghiehyd0f.execute-api.eu-west-1.amazonaws.com/create-partner/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${user}&role_id=${id}`)
+    //console.log(`baseUrl: https://8ghiehyd0f.execute-api.eu-west-1.amazonaws.com/create-partner/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${user}&role_id=${id}`)
     return http.get(
-      `/create-partner/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${user}&role_id=${id}`
+      `/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${user}&role_id=${id}`
     );
   }
 

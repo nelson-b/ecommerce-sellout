@@ -9,9 +9,8 @@ import { connect } from "react-redux";
 
 function PartnerAccountList(props) {
     const gridRef = useRef();
-    console.log('PartnerAccountList',props.data.data);
+    console.log('PartnerAccountList', props.data.data);
     const [rowData, setRowData] = useState([]);
-    // gridRef.current.api.refreshCells();
 
     const columnDefs = [
         { headerName: "Partner Account Name", field: "partner_account_name" },
@@ -57,10 +56,10 @@ function PartnerAccountList(props) {
         //   const respData = data.filter(data => data.partner_id === partnerId);
         //   console.log("filter by id", respData);
         //   console.log('partnerData', partnerData);
-        console.log('partner grid onload');
-        // if(props.data){
-        //     setRowData(props.data.data);
-        // }
+        console.log('partner grid onload', props.data.data);
+        if(props.data){
+            setRowData(props.data.data);
+        }
         // })
         // .catch((e) => {
         //   console.log(e);

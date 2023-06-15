@@ -575,7 +575,7 @@ function DataReviewApprover(props) {
     });
 
     let selloutCQ = sellOutValArr.reduce(function (prev, current) {
-      return prev + +current;
+      return prev + + current;
     }, 0);
 
     console.log("selloutCQ", selloutCQ);

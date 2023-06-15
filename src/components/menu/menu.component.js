@@ -300,8 +300,7 @@ function MyMenu(props) {
                 className="pull-right"
                 id="navbarScrollingDropdown"
               >
-                <NavDropdown.Item href="/action1">Action 1</NavDropdown.Item>
-                <NavDropdown.Item href="/action2">Action 2</NavDropdown.Item>
+                <NavDropdown.Item href="/">logout</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>
