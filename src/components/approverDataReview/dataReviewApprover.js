@@ -35,6 +35,7 @@ function DataReviewApprover(props) {
   const [message, setMessage] = useState(0);
   const location = useLocation();
   const historicalRole = new URLSearchParams(location.search).get("role");
+  const [isYearColumnVisible, setIsYearColumnVisible] = useState(false);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -156,6 +157,7 @@ function DataReviewApprover(props) {
     }
     const q2Values = quarters[resultQuarter];
 
+    setIsYearColumnVisible(true);
     gridRef.current.api.setColumnDefs([
       {
         field: "Zone",
@@ -362,6 +364,7 @@ function DataReviewApprover(props) {
   }, []);
 
   const onBtHideYearColumn = useCallback(() => {
+    setIsYearColumnVisible(false);
     gridRef.current.api.setColumnDefs([
       {
         field: "Zone",
@@ -823,7 +826,11 @@ function DataReviewApprover(props) {
   };
 
   const handleReviewNavigation = () => {
-    navigate("/approver/home");
+    if (historicalRole === "superApproverUser") {
+      navigate("/superUser/home");
+    } else {
+      navigate("/approver/home");
+    }
   };
 
   const handleInvestigation = () => {
@@ -945,14 +952,23 @@ function DataReviewApprover(props) {
               <Row className="quarter-months">Quarter Months</Row>
               <Col className="">
                 <Button
-                  className="show-data save-header"
-                  onClick={onBtShowYearColumn}
+                  className={`show-data toggle-button ${
+                    isYearColumnVisible ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    onBtShowYearColumn();
+                    setTimeout(() => {
+                      onBtShowYearColumn();
+                    }, 10);
+                  }}
                 >
                   Show
                 </Button>
                 <Button
-                  className="hide-data hide-header"
-                  onClick={onBtHideYearColumn}
+                  className={`show-data toggle-button ${
+                    !isYearColumnVisible ? "active" : ""
+                  }`}
+                  onClick={() => onBtHideYearColumn()}
                 >
                   Hide
                 </Button>
@@ -972,7 +988,11 @@ function DataReviewApprover(props) {
                       name="radio"
                       value={radio.value}
                       checked={radioValue === radio.value}
-                      onChange={(e) => setRadioValue(e.currentTarget.value)}
+                      onChange={(e) => {
+                        setRadioValue(e.currentTarget.value);
+                        setMessage(0);
+                        setIsYearColumnVisible(false);
+                      }}
                     >
                       {radio.name}
                     </ToggleButton>
@@ -995,7 +1015,7 @@ function DataReviewApprover(props) {
         <Row>
           <Col md={3}>
             <Row>
-              <Col md={6}>
+              <Col md={4}>
                 <Form.Label size="sm" htmlFor="expand_by">
                   Expand by
                 </Form.Label>

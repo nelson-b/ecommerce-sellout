@@ -13,7 +13,7 @@ import Pending from "../../images/pending.png";
 import partnerEdit from "../../images/edit-icon.png";
 import Home from "../../images/home-icon.png";
 import "../partnerList/partnerList.css";
-import { retrieveAllPartnerData } from "../../actions/partneraction";
+import { retrieveAllPartnerData, retrievePartnerByRole } from "../../actions/partneraction";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { getUIDateFormat } from "../../helper/helper.js";
@@ -321,9 +321,23 @@ function PartnerList(props) {
     []
   );
 
+  let userMail = '';
+
+  if(screenRole == 'editor') {
+    userMail = 'nelson@se.com';
+  }
+  if(screenRole == 'approver') {
+    userMail = 'katie@se.com'
+  }
+  if(screenRole == 'superApproverUser') {
+    userMail = 'thomas@se.com'
+  }
+  if(screenRole == 'admin') {
+    userMail = 'jean@se.com'
+  } 
+  
   const onGridReady = useCallback((params) => {
-    props
-      .retrieveAllPartnerData()
+    props.retrievePartnerByRole(screenRole, userMail)
       .then((data) => {
         setRowData(data.data);
       })
@@ -452,4 +466,4 @@ function PartnerList(props) {
   );
 }
 
-export default connect(null, { retrieveAllPartnerData })(PartnerList);
+export default connect(null, { retrieveAllPartnerData, retrievePartnerByRole })(PartnerList);

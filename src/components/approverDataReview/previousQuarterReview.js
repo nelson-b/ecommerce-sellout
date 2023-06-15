@@ -178,7 +178,7 @@ function PartnerQuarterApprover({ props }) {
       cellStyle: { "border-color": "#e2e2e2" },
     },
     {
-      headerName: "User that made the change",
+      headerName: "Modified By",
       field: "userChange",
       editable: false,
       minWidth: 140,
@@ -226,7 +226,11 @@ function PartnerQuarterApprover({ props }) {
   };
 
   const handleReviewNavigation = () => {
-    navigate("/approver/home");
+    if (quarterRole === 'superApproverUser') {
+      navigate("/superUser/home");
+    } else {
+      navigate("/approver/home");
+    }
   };
 
   const handleConfirm = () => {
@@ -296,7 +300,10 @@ function PartnerQuarterApprover({ props }) {
                       name="radio"
                       value={radio.value}
                       checked={radioValue === radio.value}
-                      onChange={(e) => setRadioValue(e.currentTarget.value)}
+                      onChange={(e) => {
+                        setRadioValue(e.currentTarget.value);
+                        setMessage(0);
+                      }}
                     >
                       {radio.name}
                     </ToggleButton>
@@ -341,7 +348,7 @@ function PartnerQuarterApprover({ props }) {
                 <Button
                   className="btn-upload cancel-header"
                   onClick={() => {
-                    handleReviewNavigation();
+                    handleReviewNavigation(quarterRole);
                   }}
                 >
                   Cancel
