@@ -6,9 +6,10 @@ import MyMenu from "../menu/menu.component.js";
 import { BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import Home from "../../images/home-icon.png";
-import partnerData from "../../data/partnerList.json";
 import "./partner.component.css";
-import { createPartnerData, retrieveAllPartnerData, updatePartner } from "../../actions/partneraction.js";
+import { createPartnerData, retrieveAllPartnerData, retrievePartnerByRole, updatePartner } from "../../actions/partneraction.js";
+import { retrieveAllCountryData, retrieveAllStaticData } from "../../actions/staticDataAction.js";
+import { retrieveAllUserListData, createUserPartnerRoleConfig } from "../../actions/userAction.js";
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
 import { roles } from "../constant.js";
@@ -45,7 +46,10 @@ function PartnerComponent(props) {
   }
 
   const [partnerData, setPartnerData] = useState(initialData);
-  
+  const [countryData, setCountryData] = useState([]);
+  const [staticData, setStaticData] = useState([]);
+  const [usrRoleData, setUsrRoleData] = useState([]);
+
   const {
     register,
     handleSubmit,
@@ -64,48 +68,41 @@ function PartnerComponent(props) {
     console.log('partnerId', partnerId);
     console.log('props.module', props.module);
     
-    if(props.module === 'Update'){
-      if(partnerId){
-        //testing purpose not final
-        // let reqData = {
-        //   partner_id: "INT-MY-00061",
-        //   platform_name: "Lazada",
-        //   country_code: "MYS",
-        //   partner_group: "Lazada",
-        //   se_entity: "APC",
-        //   reseller_name: "Bun Seng Hardware",
-        //   partner_account_name: "Lazada Bun Seng Hardware APC MYS",
-        //   activation_date: "2023-04-03T16:18:04.614693",
-        //   deactivation_date: null,
-        //   deactivation_reason: null,
-        //   business_type: "Electric",
-        //   model_type: "E1-Dist",
-        //   trans_currency_code: "MYR",
-        //   data_collection_type: "Actual sellin + est. eCom penetration",
-        //   partner_sellout_margin: "25",
-        //   partner_url: "https://www.lazada.com.my/shop/aman-o2o-sdn-bhd/",
-        //   e2_playbook_type: "Not applicable",
-        //   bopp_type: "Not applicable",
-        //   gtm_type: "Direct",
-        //   created_by: "thomas.decamps@se.com",
-        //   created_date: "2023-06-01T10:33:01",
-        //   modified_by: "thomas.decamps@se.com",
-        //   last_modified_date: "2023-06-01T16:33:01",
-        //   status: "ACTIVE",
-        //   batch_upload_flag: false,
-        //   active_flag: "False"
-        // }
+    //country api
+    props.retrieveAllCountryData() //i/p for test purpose
+    .then((data) => {
+      console.log('retrieveAllCountryData', data);
+      setCountryData(data.data);
+    })
+    .catch((e) => {
+      console.log('retrieveAllCountryData', e);
+    });
 
-        // console.log('getUIDateFormat', getUIDateFormat(reqData.activation_date));
-        // setPartnerData(reqData);
-        // console.log('partnerData', partnerData); 
-        // //prefill form
-        // setFormData(reqData);
-        //---------------------------//
-        
+    //all static data
+    props.retrieveAllStaticData()
+    .then((data) => {
+      console.log('retrieveAllStaticData', data);
+      setStaticData(data);
+    })
+    .catch((e) => {
+      console.log('retrieveAllStaticData', e);
+    });
+
+    //all static data
+    props.retrieveAllUserListData()
+    .then((data) => {
+      console.log('retrieveAllUserListData', data);
+          setUsrRoleData(data);
+      })
+      .catch((e) => {
+        console.log('retrieveAllUserListData', e);
+    });
+
+    if(props.module === 'Update'){
+      if(partnerId){        
         //call get by id api
         props
-        .retrieveAllPartnerData() //i/p for test purpose 
+        .retrievePartnerByRole(partnerId,"nelson@se.com") //i/p for test purpose
         .then((data) => {
           console.log("retrieveAllPartnerData", data);
           const respData = data.data.filter(data => data.partner_id === partnerId)[0];
@@ -131,6 +128,12 @@ function PartnerComponent(props) {
     if(data.partner_id){
       setValue('partner_id', data.partner_id);
     }
+    if(data.partner_account_name){
+      setValue('partner_account_name', data.partner_account_name);
+    }
+    if(data.platform_name){
+      setValue('platform_name', data.platform_name);
+    }
     if(data.reseller_name){
       setValue('reseller_name', data.reseller_name);
     }
@@ -141,66 +144,42 @@ function PartnerComponent(props) {
       setValue('activation_date', getUIDateFormat(data.activation_date));
     }
     if(data.country_code){
-      // document.getElementById('country_code').value = data.country_code;
       setValue('country_code', data.country_code);
-      // clearErrors('country_code');
     }
     if(data.partner_group){
-      // document.getElementById('partner_group').value = data.partner_group;
-      // clearErrors('partner_group');
       setValue('partner_group', data.partner_group);
     }
     if(data.se_entity){
-      // document.getElementById('se_entity').value = data.se_entity;
-      // clearErrors('se_entity');
       setValue('se_entity', data.se_entity);
     }
     if(data.business_type){
-      // document.getElementById('business_type').value = data.business_type;
-      // clearErrors('business_type');
       setValue('business_type', data.business_type);
     }
     if(data.model_type){
-      // document.getElementById('model_type').value = data.model_type;
-      // clearErrors('model_type');
       setValue('model_type', data.model_type);
     }
     if(data.partner_url){
-      // document.getElementById('partner_url').value = data.partner_url;
-      // clearErrors('partner_url');
       setValue('partner_url', data.partner_url);
     }
     if(data.trans_currency_code){
-      // document.getElementById('trans_currency_code').value = data.trans_currency_code;
-      // clearErrors('trans_currency_code');
       setValue('trans_currency_code', data.trans_currency_code);
     }
     if(data.data_collection_type){
-      // document.getElementById('data_collection_type').value = data.data_collection_type;
-      // clearErrors('data_collection_type');
       setValue('data_collection_type', data.data_collection_type);
     }
     if(data.e2_playbook_type){
-      // document.getElementById('e2_playbook_type').value = data.e2_playbook_type;
-      // clearErrors('e2_playbook_type');
       setValue('e2_playbook_type', data.e2_playbook_type);
     }
     if(data.bopp_type){
-      // document.getElementById('bopp_type').value = data.bopp_type;
-      // clearErrors('bopp_type');
       setValue('bopp_type', data.bopp_type);
     }
     if(data.gtm_type){
-      // document.getElementById('gtm_type').value = data.gtm_type;
-      // clearErrors('gtm_type');
       setValue('gtm_type', data.gtm_type);
     }
     if(data.status){
       setValue('partner_status', data.status)
     }
   }
-
-  //const data = partnerData.find((e)=> e.partnerID === id);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const handleCloseSuccessModal = () => {
@@ -228,7 +207,41 @@ function PartnerComponent(props) {
     content: errorRet
   }
 
+  const saveUserPartnerConfigDetails = (partner_id, reqData) => {
+      let reqUserPartConfData = {
+        partner_id: partner_id,
+        role_id: userRole,
+        country_code: reqData.country_code,
+        email_id: "abc@example.com", //login user email
+        created_by: "abc@example.com", //login user email
+        updated_by: "abc@example.com", //login user email
+        editor: reqData.editor,
+        //backup editor 
+        approve_1: reqData.approver1,
+        approver_2: reqData.approver2,
+        supervisor: "example@example.com", //super usr
+        supervisor_approv_1_2: "example@example.com" //super approver usr
+      };
+  
+      //create user role config
+      props.createUserPartnerRoleConfig(reqUserPartConfData)
+        .then((data) => {
+          console.log('createUserPartnerRoleConfig', data);
+          setShowSuccessModal(true);
+          setShowErrorModal(false);
+          document.getElementById("partner-form").reset();
+        })
+        .catch((e) => {
+          setShowSuccessModal(false);
+          setErrorRet([]);
+          setShowErrorModal(true);
+          console.log('Error', e);
+          return;
+      });
+  }
+
   const onSubmit = (data) => {
+    let formData = data;
     console.log("form data", data);
     
     if(data.partner_id==='' || data.partner_id==undefined){
@@ -261,10 +274,27 @@ function PartnerComponent(props) {
         //create api
         props.createPartnerData(reqData)
           .then((data) => {
-            console.log(data);
-            setShowSuccessModal(true);
-            setShowErrorModal(false);
-            document.getElementById("partner-form").reset();
+            console.log('createPartnerData', data);
+            //create user partner role config for higher level user
+            if(userRole === roles.superUser || userRole === roles.superApproverUser || userRole === roles.admin){
+              //call get by id api
+              props
+              .retrievePartnerByRole(partnerId,"nelson@se.com") //i/p for test purpose
+              .then((data) => {
+                console.log("retrieveAllPartnerData", data, reqData.partner_account_name);
+                const respData = data.data.filter(data => data.platform_name === reqData.platform_name)[0];
+                console.log("filter by id", respData);
+                saveUserPartnerConfigDetails(respData.partner_id, formData);
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+            }
+            else{
+              setShowSuccessModal(true);
+              setShowErrorModal(false);
+              document.getElementById("partner-form").reset();
+            }
           })
           .catch((e) => {
             setShowSuccessModal(false);
@@ -272,17 +302,17 @@ function PartnerComponent(props) {
             setShowErrorModal(true);
             console.log('Error', e);
         });
-        } else {
+    } else {
         console.log('Calling update api');
         
         let reqData = {
           partner_id: data.partner_id,
-          platform_name: data.platform_name,
+          platform_name: data.platform_name,//
           country_code: data.country_code,
           partner_group: data.partner_group,
           se_entity: data.se_entity,
           reseller_name: data.reseller_name,
-          partner_account_name: data.partner_account_name,
+          partner_account_name: data.partner_account_name,//
           activation_date: data.activation_date,
           deactivation_date: data.deactivation_date,
           deactivation_reason: data.deactivation_reason,
@@ -302,45 +332,23 @@ function PartnerComponent(props) {
           "status": data.partner_status,
           "batch_upload_flag": false,
           "active_flag": "False"
-        };
-        
-      // let reqData = {
-      //     partner_id: "INT-MY-00061",
-      //     platform_name: "Lazada",
-      //     country_code: "MYS",
-      //     partner_group: "Lazada",
-      //     se_entity: "APC",
-      //     reseller_name: "Bun Seng Hardware",
-      //     partner_account_name: "Lazada Bun Seng Hardware APC MYS",
-      //     activation_date: "2023-04-03T16:18:04.614693",
-      //     deactivation_date: null,
-      //     deactivation_reason: null,
-      //     business_type: "Electric",
-      //     model_type: "E1-Dist",
-      //     trans_currency_code: "MYR",
-      //     data_collection_type: "Actual sellin + est. eCom penetration",
-      //     partner_sellout_margin: "25",
-      //     partner_url: "https://www.lazada.com.my/shop/aman-o2o-sdn-bhd/",
-      //     e2_playbook_type: "Not applicable",
-      //     bopp_type: "Not applicable",
-      //     gtm_type: "Direct",
-      //     created_by: "thomas.decamps@se.com",
-      //     created_date: "2023-06-01T10:33:01",
-      //     modified_by: "thomas.decamps@se.com",
-      //     last_modified_date: "2023-06-01T16:33:01",
-      //     status: "ACTIVE",
-      //     batch_upload_flag: false,
-      //     active_flag: "False"
-      // }
-      
+      };
+              
       //update api
       
+      console.log('update', reqData);
+
       props.updatePartner(reqData)
           .then((data) => {
             console.log(data);
-            setShowSuccessModal(true);
-            setShowErrorModal(false);
-            document.getElementById("partner-form").reset();
+            //update user partner role config for higher level user
+            if(userRole === roles.superUser || userRole === roles.superApproverUser || userRole === roles.admin){
+              saveUserPartnerConfigDetails(data.partner_id, formData);
+            }
+            else{
+              setShowSuccessModal(true);
+              setShowErrorModal(false);
+            }
           })
           .catch((e) => {
             setShowSuccessModal(false);
@@ -348,7 +356,7 @@ function PartnerComponent(props) {
             setShowErrorModal(true);
             console.log('Error', e);
         });
-      }
+    }
   } 
 
   const onError = (error) => {
@@ -364,10 +372,6 @@ function PartnerComponent(props) {
 
   const updateForm = useCallback((e) => {
     console.log('updateForm', e);
-    // setPartnerData((prev) => ({
-    //   ...prev,
-    //   [name]: value,
-    // }));
     console.log('updateForm', partnerData);
   }, []);
 
@@ -483,16 +487,14 @@ function PartnerComponent(props) {
                         size="sm"
                         id="country_code"
                         name="country_code"
-                        // defaultValue={partnerData.country_code}
-                        // {...partnerData}
-                        // innerRef={partnerData.country_code}
-                        //onChange={ e=> {updateForm(e)} }
                         {...register("country_code", {
                           required: "Country is required",
                         })}>
-                        <option value="">N/A</option>
-                        <option value={"USA"}>USA</option>
-                        <option value={"MYS"}>Malaysia</option>
+                        <option value="">Not applicable</option>
+                        <option value="USA">USA</option>
+                        {/* {countryData && (countryData.map((row) =>(
+                          <option value={row.country_code}>{row.country_name}</option>
+                        )))} */}
                       </Form.Select>
                       {errors?.country_code && (
                         <Form.Text className="text-danger">
@@ -511,12 +513,14 @@ function PartnerComponent(props) {
                         defaultValue={partnerData.partner_group}
                         {...register("partner_group", {
                           required: "Partner group is required",
-                        })}
-                      >
-                        <option value="">N/A</option>
+                        })}>
+                        <option value="">Not applicable</option>
                         <option value={'Partner 1'}>Partner 1</option>
                         <option value={"Amazon"}>Amazon</option>
                         <option value={'Lazada'}>Lazada</option>
+                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'partner_group').map((row) =>(
+                          <option value={row.attribute_value}>{row.attribute_value}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.partner_group && (
                         <Form.Text className="text-danger">
@@ -537,10 +541,13 @@ function PartnerComponent(props) {
                           required: "Schneider Electric Entity is required",
                         })}
                       >
-                        <option value="">N/A</option>
-                        <option>APC</option>
+                        <option value="">Not applicable</option>
+                        <option value={"APC"}>APC</option>
                         <option value={"TEST"}>TEST</option>
-                        <option>Entity 3</option>
+                        <option value={"Entity 3"}>Entity 3</option>
+                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'se_entity').map((row) =>(
+                          <option value={row.attribute_value}>{row.attribute_value}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.se_entity && (
                         <Form.Text className="text-danger">
@@ -563,7 +570,7 @@ function PartnerComponent(props) {
                           pattern: {
                             value: /^[a-zA-Z ]*$/i,
                             message: "Reseller name can have only alphabets",
-                          },
+                          }
                         })}
                       />
                       {errors.reseller_name && (
@@ -635,14 +642,11 @@ function PartnerComponent(props) {
                         max={new Date().toISOString().split('T')[0]}
                         defaultValue={getUIDateFormat(partnerData.activation_date)}
                         type="date"
-                        // {...props.module === 'Create' && (
                         {...register("activation_date", {
                           required: "Activation Date is required",
                         })}
-                        // )}
                       />
                       {errors.activation_date 
-                      // && props.module === 'Create' 
                       && (
                         <Form.Text className="text-danger">
                           {errors.activation_date.message}
@@ -662,10 +666,13 @@ function PartnerComponent(props) {
                           required: "Business Type is required",
                         })}
                       >
-                        <option value="">N/A</option>
-                        <option>Electric</option>
-                        <option>Solar</option>
+                        <option value="">Not applicable</option>
+                        <option value={"Electric"}>Electric</option>
+                        <option value={"Solar"}>Solar</option>
                         <option value={"TEST"}>TEST</option>
+                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'business_type').map((row) =>(
+                          <option value={row.attribute_value}>{row.attribute_value}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.business_type && (
                         <Form.Text className="text-danger">
@@ -686,10 +693,13 @@ function PartnerComponent(props) {
                           required: "Model Type is required",
                         })}
                       >
-                        <option value="">N/A</option>
+                        <option value="">Not applicable</option>
                         <option value={'E1-Dist'}>E1-Dist</option>
                         <option value={"TEST"}>TEST</option>
-                        <option>E3</option>
+                        <option value={"E3"}>E3</option>
+                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'model_type').map((row) =>(
+                          <option value={row.attribute_value}>{row.attribute_value}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.model_type && (
                         <Form.Text className="text-danger">
@@ -722,11 +732,11 @@ function PartnerComponent(props) {
                         defaultValue={ partnerData.partner_url }
                         {...register("partner_url", {
                           required: "URL Address of Partner is required",
-                          // pattern: {
-                          //   value:
-                          //     /^((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?)*$/i,
-                          //   message: "URL format incorrect",
-                          // },
+                          pattern: {
+                            value:
+                              /^((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?)*$/i,
+                            message: "URL format incorrect",
+                          },
                         })}
                       />
                       {errors.partner_url && (
@@ -745,13 +755,15 @@ function PartnerComponent(props) {
                         name="trans_currency_code"
                         {...register("trans_currency_code", {
                           required: "Currency of Sellout Reporting is required",
-                        })}
-                      >
-                        <option value="">N/A</option>
+                        })}>
+                        <option value="">Not applicable</option>
                         <option>AUD</option>
                         <option>INR</option>
                         <option>USD</option>
                         <option value={'MYR'}>MYR</option>
+                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'trans_currency_code').map((row) =>(
+                          <option value={row.attribute_value}>{row.attribute_value}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.trans_currency_code && (
                         <Form.Text className="text-danger">
@@ -772,9 +784,12 @@ function PartnerComponent(props) {
                           required: "Data Collection Type is required",
                         })}
                       >
-                        <option value="">N/A</option>
+                        <option value="">Not applicable</option>
                         <option>Actual sellin + est. eCom penetration</option>
                         <option value={"DCTYPE"}>DCTYPE</option>
+                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'data_collection_type').map((row) =>(
+                          <option value={row.attribute_value}>{row.attribute_value}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.data_collection_type && (
                         <Form.Text className="text-danger">
@@ -787,13 +802,6 @@ function PartnerComponent(props) {
                         Partner Sellout Margin (%)
                       </Form.Label>
                       &nbsp;
-                      <OverlayTrigger
-                        placement="right"
-                        overlay={tooltip("% with 2 decimals")}>
-                        <span>
-                          <BiHelpCircle />
-                        </span>
-                      </OverlayTrigger>
                       <Form.Control
                         size="sm"
                         id="partner_sellout_margin"
@@ -804,7 +812,7 @@ function PartnerComponent(props) {
                           required: "Partner Sellout Margin is required",
                           pattern: {
                             value: /^([0-9]|[1-9][0-9]|100)$/i,
-                            message: "Decimal not allowed",
+                            message: "Decimal or Negative values are not allowed",
                           },
                         })}
                       />
@@ -827,10 +835,13 @@ function PartnerComponent(props) {
                           required: "E2 Playbook Type is required",
                         })}
                       >
-                        <option value="Not applicable">Not applicable</option>
+                        <option value="">Not applicable</option>
                         <option value={"type1"}>Type 1</option>
                         <option value={"type2"}>Type 2</option>
                         <option value={"E2"}>E2</option>
+                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'e2_playbook_type').map((row) =>(
+                          <option value={row.attribute_value}>{row.attribute_value}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.e2_playbook_type && (
                         <Form.Text className="text-danger">
@@ -860,11 +871,14 @@ function PartnerComponent(props) {
                           required: "Bopp Type is required",
                         })}
                       >
-                        <option value="Not applicable">Not applicable</option>
+                        <option value="">Not applicable</option>
                         <option value={"Adopter"}>Adopter</option>
                         <option value={"Leader"}>Leader</option>
                         <option value={"Novice"}>Novice</option>
                         <option value={"BOPP"}>BOPP</option>
+                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'bopp_type').map((row) =>(
+                          <option value={row.attribute_value}>{row.attribute_value}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.bopp_type && (
                         <Form.Text className="text-danger">
@@ -884,11 +898,13 @@ function PartnerComponent(props) {
                         defaultValue={partnerData.gtm_type}
                         {...register("gtm_type", {
                           required: "GTM Type is required",
-                        })}
-                      >
-                        <option value="">N/A</option>
+                        })}>
+                        <option value="">Not applicable</option>
                         <option>Direct</option>
                         <option value={"GTM"}>GTM</option>
+                        {/* {staticData && (staticData.filter(data => data.attribute_name === 'gtm_type').map((row) =>(
+                          <option value={row.attribute_value}>{row.attribute_value}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.gtm_type && (
                         <Form.Text className="text-danger">
@@ -912,7 +928,7 @@ function PartnerComponent(props) {
                           required: "Partner status is required",
                         })}
                       >
-                        <option value="">N/A</option>
+                        <option value="">Not applicable</option>
                         <option value="ACTIVE">Active</option>
                         <option value="INACTIVE">Inactive</option>
                       </Form.Select>
@@ -943,7 +959,6 @@ function PartnerComponent(props) {
                           defaultValue={ partnerData.deactivation_date }
                           type="date"
                           {...register("deactivation_date", {
-                            // required: "Deactivation Date is required",
                           })}
                         />
                         {errors.deactivation_date && (
@@ -966,10 +981,9 @@ function PartnerComponent(props) {
                           name="deactivation_reason"
                           defaultValue={partnerData.deactivation_reason}
                           {...register("deactivation_reason", {
-                            // required: "Deactivation reason is required",
                           })}
                         >
-                          <option value="">N/A</option>
+                          <option value="">Not applicable</option>
                           <option>Partner not working with SE anymore</option>
                           <option>
                             Acquired by/ integrated in one of our other partners
@@ -1006,11 +1020,12 @@ function PartnerComponent(props) {
                         {...register("editor", {
                           required: "Editor is required",
                         })}
-                        )}
-                      >
-                        <option value="">N/A</option>
-                        <option>Direct</option>
-                        <option>Indirect</option>
+                        )}>
+                        <option value="">Not applicable</option>
+                        <option value="nelson@gmail.com">Nelson</option>
+                        {/* {usrRoleData && (usrRoleData.filter(role => role.role_id == 'EDITOR').map((row) =>(
+                          <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.editor && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">
@@ -1035,13 +1050,15 @@ function PartnerComponent(props) {
                           })}
                         )}
                       >
-                        <option value="">N/A</option>
-                        <option>Direct</option>
-                        <option>Indirect</option>
+                        <option value="">Not applicable</option>
+                        <option value="maite@gmail.com">Maite</option>
+                        {/* {usrRoleData && (usrRoleData.filter(role => role.role_id == 'BCK_EDITOR').map((row) =>(
+                          <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
+                        )))} */}
                       </Form.Select>
-                      {errors.editor && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
+                      {errors.backupEditor && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">
-                          {errors.editor.message}
+                          {errors.backupEditor.message}
                         </Form.Text>
                       )}
                     </Col>
@@ -1061,9 +1078,11 @@ function PartnerComponent(props) {
                         })}
                         )}
                       >
-                        <option value="">N/A</option>
-                        <option>Direct</option>
-                        <option>Indirect</option>
+                        <option value="">Not applicable</option>
+                        <option value="maite@gmail.com">Maite</option>
+                        {/* {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER1').map((row) =>(
+                          <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.approver1 && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">
@@ -1087,9 +1106,11 @@ function PartnerComponent(props) {
                           })}
                         )}
                       >
-                        <option value="">N/A</option>
-                        <option>Direct</option>
-                        <option>Indirect</option>
+                        <option value="">Not applicable</option>
+                        <option value="thomas@gmail.com">Thomas</option>
+                        {/* {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER2').map((row) =>(
+                          <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
+                        )))} */}
                       </Form.Select>
                       {errors.approver2 && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
                         <Form.Text className="text-danger">
@@ -1136,4 +1157,12 @@ function PartnerComponent(props) {
   );
 }
 
-export default connect(null, { createPartnerData, retrieveAllPartnerData, updatePartner })(PartnerComponent);
+export default connect(null, {
+  createPartnerData,
+  retrieveAllPartnerData,
+  updatePartner,
+  retrieveAllCountryData,
+  retrieveAllStaticData,
+  retrieveAllUserListData,
+  createUserPartnerRoleConfig,
+  retrievePartnerByRole })(PartnerComponent);

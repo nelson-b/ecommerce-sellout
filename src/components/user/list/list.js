@@ -134,7 +134,7 @@ function UserList(props) {
 
   const onGridReady = useCallback((params) => {
     props
-      .retrieveAllUserListData(userRole)
+      .retrieveAllUserListData()
       .then((data) => {
         setRowData(data);
       })

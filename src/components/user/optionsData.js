@@ -12,8 +12,11 @@ export const userEmailOptions = [
 
 export const userRoleOptions = [
     { value: "Editor", label: "Editor" },
-    { value: "Approver", label: "Approver" },
-    {value: "Editor", label: "Editor"}
+    { value: "Approver 1", label: "Approver 1" },
+    { value: "Approver 2", label: "Approver 2"},
+    { value: "SuperUser", label: "SuperUser"},
+    { value: "SuperApproverUser", label: "SuperApproverUser"},
+    { value: "Admin", label: "Admin"}
 ];
 
 export const opsOptions = [
@@ -25,7 +28,7 @@ export const opsOptions = [
 export const userZoneOptions = [
     { value: "Zone 1", label: "Zone 1" },
     { value: "Zone 2", label: "Zone 2" },
-    {value: "US", label: "US"}
+    { value: "US", label: "US"}
 ];
 
 export const countryOptions = [

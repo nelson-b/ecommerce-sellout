@@ -300,18 +300,17 @@ function BatchInputComponent({ getData }) {
 
         reader.readAsArrayBuffer(selectedFile.file[0]);
       }
-      //console.log("Reading excel useState: ", fileData);
-      //console.log("fileError", fileError);
     }
   };
 
   const onSubmit = (frmData) => {
+    document.getElementById('sellout-editor-input').reset();
     setSelectedFile(frmData);
     saveData();
   };
 
   const onError = (error) => {
-    //console.log("ERROR:::", error);
+    console.log("ERROR:::", error);
   };
 
   const readMeData = [
@@ -376,15 +375,6 @@ function BatchInputComponent({ getData }) {
 
     const sheet2 = xlsx.utils.json_to_sheet(tempData);
     xlsx.utils.book_append_sheet(workbook, sheet2, "Sell out Data Input");
-    //console.log("workbook", workbook);
-    // console.log(
-    //   'workbook sheets["Sell out Data Input"]["A1"]',
-    //   workbook.Sheets["Sell out Data Input"]["A1"]
-    // );
-    // console.log(
-    //   "convert Object.keys(params.data): ",
-    //   Object.keys(workbook.Sheets["Sell out Data Input"])
-    // );
 
     //style excel header with green bgcolor and white forecolor
     workbook.Sheets["Sell out Data Input"]["A1"].s = {
@@ -535,14 +525,13 @@ function BatchInputComponent({ getData }) {
               <Form.Label>BATCH UPLOAD</Form.Label>
             </Col>
             <Col xs="auto">
-              <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
+              <Form id="sellout-editor-input" noValidate onSubmit={handleSubmit(onSubmit, onError)}>
                 <Row>
                   <Col xs="auto">
                     <Form.Group className="mb-3">
                       <Form.Control
                         type="file"
                         accept=".xlsx,.xls"
-                        // value={selectedFile}
                         onClick={handleClick}
                         onChange={handleChange}
                         {...register("file", {
