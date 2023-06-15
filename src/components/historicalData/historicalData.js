@@ -29,9 +29,11 @@ import active from "../../images/active.png";
 import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
+import { connect } from "react-redux";
+import { retrieveHistoricalData } from "../../actions/selloutaction";
 import "./historicalData.css";
 
-function HistoricalData({}) {
+function HistoricalData(props) {
   const gridRef = useRef();
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
@@ -149,9 +151,7 @@ function HistoricalData({}) {
     );
     const monthName = allCalMonths[date.getMonth()];
 
-    if (
-      !(allCalMonths[currentDate.getMonth()] === monthName)
-    ) {
+    if (!(allCalMonths[currentDate.getMonth()] === monthName)) {
       const year =
         selectedValue == new Date().getFullYear()
           ? String(date.getFullYear()).slice(-2)
@@ -303,6 +303,17 @@ function HistoricalData({}) {
       .then((resp) => rowData)
       .then((rowData) => setRowData(rowData));
   }, []);
+
+  // const onGridReady = useCallback((params) => {
+  //   props
+  //     .retrieveHistoricalData()
+  //     .then((data) => {
+  //       setRowData(data.data);
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //     });
+  // }, []);
 
   const handleExport = useCallback(() => {
     const params = {
@@ -503,4 +514,4 @@ function HistoricalData({}) {
   );
 }
 
-export default HistoricalData;
+export default connect(null, { retrieveHistoricalData })(HistoricalData);
