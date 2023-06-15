@@ -81,7 +81,7 @@ function UserList(props) {
     },
     {
       headerName: "Ops",
-      field: "ops",
+      field: "ops_val",
       width: 200,
       sortable: true,
       filter: true,
@@ -91,7 +91,7 @@ function UserList(props) {
     },
     {
       headerName: "Zone",
-      field: "Zone",
+      field: "zone_val",
       width: 200,
       sortable: true,
       filter: true,
@@ -109,7 +109,7 @@ function UserList(props) {
     },
     {
       headerName: "Model",
-      field: "model_type",
+      field: "model_val",
       width: 180,
       sortable: true,
       filter: true,
@@ -136,14 +136,7 @@ function UserList(props) {
     props
       .retrieveAllUserListData()
       .then((data) => {
-        // const selectedRole = userRole === 'admin' ? 'admin' : 'superApproverUser';
-        const selectedRole = "editor";
-        const rolesData = data.map((e) => {
-          if (e.role_id.toLowerCase() == selectedRole) {
-            return e;
-          }
-        });
-        setRowData(rolesData);
+        setRowData(data);
       })
       .catch((e) => {
         console.log(e);
@@ -177,7 +170,7 @@ function UserList(props) {
             </Breadcrumb>
           ) : userRole === "superApproverUser" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUser/home">
+              <Breadcrumb.Item href="/superApproverUser/home">
                 <img
                   src={Home}
                   alt="home"

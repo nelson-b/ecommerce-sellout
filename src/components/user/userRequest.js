@@ -136,22 +136,22 @@ function UserRequestComponent(props) {
     },
     {
       headerName: "OPS",
-      field: "ops",
+      field: "ops_val",
       width: 100,
     },
     {
       headerName: "Zone",
-      field: "zone",
+      field: "zone_val",
       width: 120,
     },
     {
       headerName: "Country",
-      field: "country",
+      field: "country_code",
       width: 120,
     },
     {
       headerName: "Model",
-      field: "Model",
+      field: "model_val",
       width: 100,
     },
     {
@@ -188,15 +188,9 @@ function UserRequestComponent(props) {
 
   const onGridReady = useCallback((params) => {
     props
-      .retrieveAllUserListData()
+      .retrieveAllUserListData(screenRole)
       .then((data) => {
-        const rolesData = data.map((e) => {
-          if (e.role_id.toLowerCase() == 'editor') {
-            return e;
-          }
-        });
-        setRowData(rolesData);
-        console.log('rowData', rowData);
+        setRowData(data);
       })
       .catch((e) => {
         console.log(e);

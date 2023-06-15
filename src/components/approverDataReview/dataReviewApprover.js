@@ -827,7 +827,7 @@ function DataReviewApprover(props) {
 
   const handleReviewNavigation = () => {
     if (historicalRole === "superApproverUser") {
-      navigate("/superUser/home");
+      navigate("/superApproverUser/home");
     } else {
       navigate("/approver/home");
     }
@@ -933,7 +933,7 @@ function DataReviewApprover(props) {
             </Breadcrumb>
           ) : historicalRole === "superApproverUser" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/superUser/home">
+              <Breadcrumb.Item href="/superApproverUser/home">
                 <img
                   src={Home}
                   alt="home"

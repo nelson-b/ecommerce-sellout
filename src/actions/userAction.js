@@ -2,9 +2,9 @@ import { RETRIEVE_USERSDATA, CREATE_USR_PARTNER_ROLE_CONFIG, RETRIEVE_USER_PROFI
 
 import UserService from "../services/userServices";
 
-export const retrieveAllUserListData = () => async (dispatch) => {
+export const retrieveAllUserListData = (id) => async (dispatch) => {
   try {
-    const res = await UserService.getAll();
+    const res = await UserService.getAll(id);
     dispatch({
       type: RETRIEVE_USERSDATA,
       payload: res.data,

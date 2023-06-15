@@ -1,16 +1,10 @@
 import http from "../http-common";
 
 class UserService {
-  getAll() {
-    return http.get("/ecomm-sellout-dev-lamda-createpartner/get-userlist");
-  }
 
-  createUpdateUserPartnerRoleConfig(data) {
-    return http.post("/ecomm-sellout-dev-lamda-createpartner/create-user-role-partnerconfig", data);
-  }
-
-  getUserProfileById(id){
-    return http.get(`/get/${id}`);
+  getAll(id) {
+    return http.get(`/prod/ecomm-sellout-dev-lamda-createpartner/get-userlist?ROLE_ID=${id.toUpperCase()}`);
+    // https://8ghiehyd0f.execute-api.eu-west-1.amazonaws.com/prod/ecomm-sellout-dev-lamda-createpartner/get-userlist?ROLE_ID=EDITOR
   }
 }
 
