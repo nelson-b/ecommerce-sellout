@@ -521,6 +521,7 @@ function SaveUser(props) {
                   <input type="text"   
                     name="firstname"
                     title="firstname"
+                    disabled={props.module === 'Update'} 
                     className="create-usr-text"
                     placeholder="Enter First Name"
                     value={form.firstname}
@@ -540,6 +541,7 @@ function SaveUser(props) {
                   <input type="text"   
                     name="lastname"
                     title="lastname"
+                    disabled={props.module === 'Update'}
                     className="create-usr-text"
                     placeholder="Enter Last Name"
                     value={form.lastname}
@@ -570,6 +572,7 @@ function SaveUser(props) {
                   <input type="text"
                     name="useremailid"
                     title="User email id"
+                    disabled={props.module === 'Update'}
                     className="create-usr-text"
                     placeholder="Enter User email id"
                     value={form.useremailid}
@@ -589,6 +592,7 @@ function SaveUser(props) {
                     name="userrole"
                     title="User Role"
                     value={form.userrole} // staticData
+                    isDisabled={props.module === 'Update'}
                     options={[
                       { value: "Editor", label: "Editor" },
                       { value: "Approver 1", label: "Approver 1" },
