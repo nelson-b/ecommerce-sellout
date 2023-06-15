@@ -132,9 +132,21 @@ function UserList(props) {
     []
   );
 
+  let userMail = '';
+
+  if(userRole == 'superApproverUser') {
+    userMail = 'thomas@se.com'
+  }
+  if(userRole == 'admin') {
+    userMail = 'jean@se.com'
+  } 
+  if(userRole == 'superUser') {
+    userMail = 'marie@se.com'
+  } 
+
   const onGridReady = useCallback((params) => {
     props
-      .retrieveAllUserListData(userRole)
+      .retrieveAllUserListData(userRole, userMail)
       .then((data) => {
         setRowData(data);
       })

@@ -3,7 +3,8 @@ import {
     RETRIEVE_SELLOUTDATA,
     UPDATE_SELLOUTDATA,
     DELETE_SELLOUTDATA,
-    DELETE_ALL_SELLOUTDATA
+    DELETE_ALL_SELLOUTDATA,
+    RETRIEVE_HISTORICAL_DATA
   } from "./type";
 
   import SellOutDataService from "../services/selloutdata";
@@ -85,6 +86,21 @@ import {
   
       dispatch({
         type: DELETE_ALL_SELLOUTDATA,
+        payload: res.data,
+      });
+  
+      return Promise.resolve(res.data);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  };
+
+  export const retrieveHistoricalData = (user, year, id) => async (dispatch) => {
+    try {
+      const res = await SellOutDataService.getAll(user, year, id);
+  
+      dispatch({
+        type: RETRIEVE_HISTORICAL_DATA,
         payload: res.data,
       });
   

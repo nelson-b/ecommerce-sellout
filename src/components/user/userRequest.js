@@ -7,7 +7,7 @@ import { AgGridReact } from "ag-grid-react";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
 import userRequestData from "../../data/userRequestData.json";
-import { retrieveAllUserListData } from "../../actions/userAction";
+import { retrieveAllNewListByRole } from "../../actions/userAction";
 import "../home/home.component.css";
 
 function UserRequestComponent(props) {
@@ -188,7 +188,7 @@ function UserRequestComponent(props) {
 
   const onGridReady = useCallback((params) => {
     props
-      .retrieveAllUserListData(screenRole)
+      .retrieveAllNewListByRole(screenRole)
       .then((data) => {
         setRowData(data);
       })
@@ -284,5 +284,5 @@ function UserRequestComponent(props) {
   );
 }
 
-export default connect(null, { retrieveAllUserListData })(UserRequestComponent);
+export default connect(null, { retrieveAllNewListByRole })(UserRequestComponent);
 

@@ -13,7 +13,10 @@ import Pending from "../../images/pending.png";
 import partnerEdit from "../../images/edit-icon.png";
 import Home from "../../images/home-icon.png";
 import "../partnerList/partnerList.css";
-import { retrieveAllPartnerData, retrievePartnerByRole } from "../../actions/partneraction";
+import {
+  retrieveAllPartnerData,
+  retrievePartnerByRole,
+} from "../../actions/partneraction";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { getUIDateFormat } from "../../helper/helper.js";
@@ -30,7 +33,9 @@ function PartnerList(props) {
       screenRole === "admin" ||
       screenRole === "superApproverUser"
     ) {
-      navigate(`/higerLevelUser/partner/update?id=${params.data.partner_id}&role=${screenRole}`);
+      navigate(
+        `/higerLevelUser/partner/update?id=${params.data.partner_id}&role=${screenRole}`
+      );
     } else {
       navigate(
         `/partner/update?id=${params.data.partner_id}&role=${screenRole}`
@@ -146,12 +151,12 @@ function PartnerList(props) {
             {Status === "ACTIVE" && (
               <img src={active} alt="active" style={{ width: "80px" }} />
             )}
-            {Status === "Closed" && (
+            {/* {Status === "Closed" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
-            )}
-            {Status === "Pending" && (
+            )} */}
+            {/* {Status === "Pending" && (
               <img src={Pending} alt="Pending" style={{ width: "80px" }} />
-            )}
+            )} */}
           </div>
         );
       },
@@ -268,46 +273,46 @@ function PartnerList(props) {
       editable: false,
       suppressMenu: true,
     },
-    // {
-    //   headerName: "Editor",
-    //   field: "created_by",
-    //   width: 120,
-    //   sortable: true,
-    //   filter: true,
-    //   suppressSizeToFit: true,
-    //   editable: false,
-    //   suppressMenu: true
-    // },
-    // {
-    //   headerName: "Backup Editor",
-    //   field: "created_by",
-    //   width: 140,
-    //   sortable: true,
-    //   filter: true,
-    //   suppressSizeToFit: true,
-    //   editable: false,
-    //   suppressMenu: true
-    // },
-    // {
-    //   headerName: "Approver 1",
-    //   field: "Approver1",
-    //   width: 180,
-    //   sortable: true,
-    //   filter: true,
-    //   suppressSizeToFit: true,
-    //   editable: false,
-    //   suppressMenu: true
-    // },
-    // {
-    //   headerName: "Approver 2",
-    //   field: "Approver2",
-    //   width: 180,
-    //   sortable: true,
-    //   filter: true,
-    //   suppressSizeToFit: true,
-    //   editable: false,
-    //   suppressMenu: true
-    // },
+    {
+      headerName: "Editor",
+      field: "created_by",
+      width: 120,
+      sortable: true,
+      filter: true,
+      suppressSizeToFit: true,
+      editable: false,
+      suppressMenu: true,
+    },
+    {
+      headerName: "Backup Editor",
+      field: "modified_by",
+      width: 140,
+      sortable: true,
+      filter: true,
+      suppressSizeToFit: true,
+      editable: false,
+      suppressMenu: true,
+    },
+    {
+      headerName: "Approver 1",
+      field: "Approver1",
+      width: 180,
+      sortable: true,
+      filter: true,
+      suppressSizeToFit: true,
+      editable: false,
+      suppressMenu: true,
+    },
+    {
+      headerName: "Approver 2",
+      field: "Approver2",
+      width: 180,
+      sortable: true,
+      filter: true,
+      suppressSizeToFit: true,
+      editable: false,
+      suppressMenu: true,
+    },
   ];
 
   const defaultColDef = useMemo(
@@ -321,28 +326,29 @@ function PartnerList(props) {
     []
   );
 
-  let userMail = '';
+  let userMail = "";
 
-  if(screenRole == 'editor') {
-    userMail = 'nelson@se.com';
+  if (screenRole == "editor") {
+    userMail = "nelson@se.com";
   }
-  if(screenRole == 'approver') {
-    userMail = 'katie@se.com'
+  if (screenRole == "approver") {
+    userMail = "katie@se.com";
   }
-  if(screenRole == 'superApproverUser') {
-    userMail = 'thomas@se.com'
+  if (screenRole == "superApproverUser") {
+    userMail = "thomas@se.com";
   }
-  if(screenRole == 'admin') {
-    userMail = 'jean@se.com'
-  } 
-  if(screenRole == 'superUser') {
-    userMail = 'marie@se.com'
-  } 
-  
+  if (screenRole == "admin") {
+    userMail = "jean@se.com";
+  }
+  if (screenRole == "superUser") {
+    userMail = "marie@se.com";
+  }
+
   const onGridReady = useCallback((params) => {
-    props.retrievePartnerByRole(screenRole, userMail)
+    props
+      .retrievePartnerByRole(screenRole, userMail)
       .then((data) => {
-        setRowData(data.data);
+        setRowData(data.data.filter((e) => e.status == "ACTIVE"));
       })
       .catch((e) => {
         console.log(e);
@@ -469,4 +475,6 @@ function PartnerList(props) {
   );
 }
 
-export default connect(null, { retrieveAllPartnerData, retrievePartnerByRole })(PartnerList);
+export default connect(null, { retrieveAllPartnerData, retrievePartnerByRole })(
+  PartnerList
+);

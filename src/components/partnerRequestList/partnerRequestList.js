@@ -22,6 +22,8 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import partnerRequest from "../../data/partnerRequestList.json";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
+import { connect } from "react-redux";
+import { retrievePartnerByRole } from "../../actions/partneraction";
 
 function PartnerRequestList(props) {
   const gridRef = useRef();
@@ -33,8 +35,8 @@ function PartnerRequestList(props) {
 
   const columnDefs = [
     {
-      field: "Partner_Account_Name",
       headerName: "Partner Account Name",
+      field: "partner_account_name",
       filter: true,
       pinned: "left",
       width: 220,
@@ -46,7 +48,7 @@ function PartnerRequestList(props) {
     },
     {
       headerName: "Partner Group",
-      field: "partner_Grooup",
+      field: "partner_group",
       filter: true,
       width: 150,
       pinned: "left",
@@ -55,7 +57,7 @@ function PartnerRequestList(props) {
     },
     {
       headerName: "Partner ID",
-      field: "Partner_id",
+      field: "partner_id",
       filter: true,
       pinned: "left",
       width: 140,
@@ -63,7 +65,7 @@ function PartnerRequestList(props) {
     },
     {
       headerName: "Status",
-      field: "Status",
+      field: "status",
       pinned: "left",
       width: 120,
       editable: false,
@@ -71,13 +73,13 @@ function PartnerRequestList(props) {
         const Status = params.value;
         return (
           <div>
-            {Status === "Active" && (
+            {/* {Status === "Active" && (
               <img src={active} alt="active" style={{ width: "80px" }} />
             )}
             {Status === "Closed" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
-            )}
-            {Status === "Pending" && (
+            )} */}
+            {Status === "pending" && (
               <img src={Pending} alt="Pending" style={{ width: "80px" }} />
             )}
           </div>
@@ -233,7 +235,7 @@ function PartnerRequestList(props) {
     },
     {
       headerName: "Backup Editor",
-      field: "created_by",
+      field: "modified_by",
       minWidth: 140,
       sortable: true,
       filter: true,
@@ -306,10 +308,23 @@ function PartnerRequestList(props) {
     );
   };
 
+  let userMail = '';
+
+  if(screenRole == 'superApproverUser') {
+    userMail = 'thomas@se.com'
+  }
+  if(screenRole == 'admin') {
+    userMail = 'jean@se.com'
+  } 
+
   const onGridReady = useCallback((params) => {
-    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => partnerRequest)
-      .then((partnerRequest) => setRowData(partnerRequest));
+    props.retrievePartnerByRole(screenRole, userMail)
+      .then((data) => {
+        setRowData(data.data.filter((e) => e.status == "PENDING"));
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, []);
 
   return (
@@ -360,7 +375,7 @@ function PartnerRequestList(props) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={partnerRequest}
+            rowData={rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             groupHideOpenParents={true}
@@ -410,4 +425,5 @@ function PartnerRequestList(props) {
   );
 }
 
-export default PartnerRequestList;
+export default connect(null, { retrievePartnerByRole })(PartnerRequestList);
+
