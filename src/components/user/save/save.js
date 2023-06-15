@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Select from "../singleSelect.js";
 import {
-  countryOptions,
+  // countryOptions,
   partnerOptions,
   modelOptions,
   userRoleOptions,
@@ -32,7 +32,9 @@ import makeAnimated, { Input } from "react-select/animated";
 import PartnerAccountList from "../partnerAccountList.component.js";
 import "../save/save.css";
 import { retrieveAllPartnerData } from "../../../actions/partneraction.js";
+import { retrieveAllStaticData, retrieveAllCountryData } from "../../../actions/staticDataAction.js";
 import { connect } from "react-redux";
+import { createUserPartnerRoleConfig } from "../../../actions/userAction.js";
 
 function SaveUser(props) {
   const navigate = useNavigate();
@@ -135,6 +137,39 @@ function SaveUser(props) {
   const [optionCountrySelected, setOptionCountrySelected] = useState([]);
   const [optionModelSelected, setOptionModelSelected] = useState([]);
   const [optionPartnerSelected, setOptionPartnerSelected] = useState([]);
+  const [countryData, setCountryData] = useState([]);
+  const [staticData, setStaticData] = useState([]);
+  
+  useEffect(() => {
+  //country api
+  props.retrieveAllCountryData() //i/p for test purpose
+    .then((data) => {
+      console.log('retrieveAllCountryData', data);
+      let countryOptions = [];
+      data.data.forEach((countryData, index) => {
+        let indvCountData = {
+          value: countryData.country_code,
+          label: countryData.country_name
+        }
+        countryOptions = countryOptions.concat(indvCountData);
+      });
+      //set data
+      setCountryData(countryOptions);
+    })
+    .catch((e) => {
+      console.log('retrieveAllCountryData', e);
+    });
+
+  //all static data
+  props.retrieveAllStaticData()
+    .then((data) => {
+      console.log('retrieveAllStaticData', data);
+        setStaticData(data);
+      })
+      .catch((e) => {
+        console.log('retrieveAllStaticData', e);
+      });
+  }, []);
 
   const handleCountryChange = (selected) => {
     let name = "usrcountry";
@@ -186,14 +221,14 @@ function SaveUser(props) {
     }
 
     //call api
-    // props.retrieveAllPartnerData(selected) //i/p for test purpose
-    // .then((data) => {
-    //   console.log("retrieveAllPartnerData", data);
-    //   setPartnerAccData(data);
-    // })
-    // .catch((e) => {
-    //   console.log(e);
-    // });
+    props.retrieveAllPartnerData() //i/p for test purpose
+    .then((data) => {
+      console.log("retrieveAllPartnerData", data);
+      setPartnerAccData(data);
+    })
+    .catch((e) => {
+      console.log(e);
+    });
   };
 
   const onHandleSelectChange = useCallback((value, name) => {
@@ -251,6 +286,32 @@ function SaveUser(props) {
     return !isInvalid;
   };
 
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+  };
+
+  const successmsg = {
+    headerLabel: "Success....",
+    variant: "success",
+    header: "Data has been saved successfully!!",
+    content: [],
+  };
+
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
+  };
+
+  const [errorRet, setErrorRet] = useState([]);
+
+  const errormsg = {
+    headerLabel: "Error....",
+    variant: "danger",
+    header: "There are errors while processing.",
+    content: errorRet
+  }
+
   const handleSubmit = () => {
     const isValid = validateForm();
 
@@ -260,6 +321,49 @@ function SaveUser(props) {
     }
 
     console.log("Data:", form);
+
+    //api call
+    // props.createUserPartnerRoleConfig((()))
+
+    // firstname: null,
+    // lastname: null,
+    // useremailid: null,
+    // userrole: null,
+    // userops: null,
+    // usrzone: null,
+    // modelType: [],
+    // usrcountry: [],
+    // partnerAccNm: [],
+
+    let userData = {
+      email_id: form.useremailid,
+      role_id: form.userrole,
+      first_name: form.firstname,
+      last_name: form.lastname,
+      ops_val: form.userops,
+      zone_val: form.usrzone,
+      model_val: form.modelType,
+      country_code: form.usrcountry,
+      status: "active",
+      modified_by: "def@example.com" //login user email id
+    };
+
+    console.log("Req Data:", userData);
+
+    props.createUserPartnerRoleConfig(userData)
+        .then((data) => {
+          console.log('createUserPartnerRoleConfig', data);
+          setShowSuccessModal(true);
+          setShowErrorModal(false);
+          document.getElementById("partner-form").reset();
+        })
+        .catch((e) => {
+          setShowSuccessModal(false);
+          setErrorRet([]);
+          setShowErrorModal(true);
+          console.log('Error', e);
+          return;
+      });
   };
 
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
@@ -360,9 +464,6 @@ function SaveUser(props) {
                     {...error.lastname} /><br/>
                     {error.lastname.errorMsg && (
                     <span className="text-danger">
-                      {/* {(form.username === '' || form.username === undefined)
-                        ? "Username is required"
-                        : ""} */}
                         {error.lastname.errorMsg === true ? "Last Name is required":""}
                     </span>
                     )}
@@ -393,21 +494,9 @@ function SaveUser(props) {
                     {...error.useremailid} /><br/>
                   {error.useremailid.errorMsg && (
                   <span className="text-danger">
-                    {/* {(form.username === '' || form.username === undefined)
-                      ? "Username is required"
-                      : ""} */}
                       {error.useremailid.errorMsg === true ? "User email id is required":""}
                   </span>
                   )}
-                  {/* 
-                  <Select
-                    name="useremailid"
-                    title="User email id"
-                    value={form.useremailid}
-                    options={userEmailOptions}
-                    onChangeFunc={onHandleSelectChange}
-                    {...error.useremailid}
-                  /> */}
                 </Col>
                 <Col className="col-3">
                   <Form.Label size="sm" htmlFor="userrole">
@@ -416,8 +505,16 @@ function SaveUser(props) {
                   <Select
                     name="userrole"
                     title="User Role"
-                    value={form.userrole}
-                    options={userRoleOptions}
+                    value={form.userrole} // staticData
+                    options={[
+                      { value: "Editor", label: "Editor" },
+                      { value: "Approver 1", label: "Approver 1" },
+                      { value: "Approver 2", label: "Approver 2"},
+                      { value: "SuperUser", label: "SuperUser"},
+                      { value: "SuperApproverUser", label: "SuperApproverUser"},
+                      { value: "Admin", label: "Admin"}
+                      // userRoleOptions
+                    ]}
                     onChangeFunc={onHandleSelectChange}
                     {...error.userrole}
                   />
@@ -476,11 +573,6 @@ function SaveUser(props) {
                     value={optionModelSelected}
                     {...error.modelType}
                   />
-                  {/* <span className="text-danger">
-                    {form.modelType.length === 0
-                      ? "Please select Model Type"
-                      : ""}
-                  </span> */}
                   {error.modelType.errorMsg && (
                   <span className="text-danger">
                       {error.modelType.errorMsg === true ? "Please select Model Type" : ""}
@@ -508,7 +600,7 @@ function SaveUser(props) {
                     </span>
                   </OverlayTrigger>
                   <MultiSelectDrp
-                    options={countryOptions}
+                    options={countryData}
                     isMulti
                     closeMenuOnSelect={false}
                     hideSelectedOptions={false}
@@ -561,11 +653,6 @@ function SaveUser(props) {
                     onChange={handlePartnerChange}
                     {...error.partnerAccNm}
                   />
-                  {/* <span className="text-danger">
-                    {form.partnerAccNm.length === 0
-                      ? "Please select Partner Account Name"
-                      : ""}
-                  </span> */}
                   {error.partnerAccNm.errorMsg && (
                   <span className="text-danger">
                       {error.partnerAccNm.errorMsg === true ? "Please select Partner Account Name" : ""}
@@ -573,7 +660,9 @@ function SaveUser(props) {
                   )}
                 </Col>
                 <Col>
+                {partnerAccData && partnerAccData.length > 0 &&(  
                   <PartnerAccountList data={partnerAccData} />
+                )}
                 </Col>
               </Row>
             </Card>
@@ -605,4 +694,8 @@ function SaveUser(props) {
   );
 }
 
-export default connect(null, { retrieveAllPartnerData })(SaveUser);
+export default connect(null, { 
+  retrieveAllPartnerData, 
+  retrieveAllCountryData, 
+  retrieveAllStaticData,
+  createUserPartnerRoleConfig })(SaveUser);

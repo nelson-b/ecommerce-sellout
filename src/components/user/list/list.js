@@ -11,7 +11,7 @@ import Home from "../../../images/home-icon.png";
 import "../list/list.css";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { RetrieveAllUserListData } from "../../../actions/userAction.js";
+import { retrieveAllUserListData } from "../../../actions/userAction.js";
 import userEditIcon from "../../../images/edit-icon.png";
 
 function UserList(props) {
@@ -133,7 +133,7 @@ function UserList(props) {
 
   const onGridReady = useCallback((params) => {
     props
-      .RetrieveAllUserListData()
+      .retrieveAllUserListData()
       .then((data) => {
         setRowData(data);
       })
@@ -258,4 +258,4 @@ function UserList(props) {
   );
 }
 
-export default connect(null, { RetrieveAllUserListData })(UserList);
+export default connect(null, { retrieveAllUserListData })(UserList);
