@@ -1,4 +1,4 @@
-import { RETRIEVE_USERSDATA, CREATE_USR_PARTNER_ROLE_CONFIG, RETRIEVE_USER_PROFILE_BY_ID} from "./type";
+import { RETRIEVE_USERSDATA, CREATE_USR_PARTNER_ROLE_CONFIG, RETRIEVE_USER_PROFILE_BY_ID, CREATE_USER_PROFILE} from "./type";
 
 import UserService from "../services/userServices";
 
@@ -23,6 +23,22 @@ export const createUserPartnerRoleConfig = (data) => async(dispatch) => {
 
       dispatch({
           type: CREATE_USR_PARTNER_ROLE_CONFIG,
+          payload: res.data,
+        });
+      
+        return Promise.resolve(res.data); 
+  } catch (err){
+      return Promise.reject(err);
+  }
+}
+
+export const createUserProfileConfig = (data) => async(dispatch) => {
+  try{
+      console.log('createUserPartnerRoleConfig', data);
+      const res = await UserService.createUserProfile(data);
+
+      dispatch({
+          type: CREATE_USER_PROFILE,
           payload: res.data,
         });
       

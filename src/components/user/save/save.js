@@ -31,18 +31,20 @@ import { components } from "react-select";
 import makeAnimated, { Input } from "react-select/animated";
 import PartnerAccountList from "../partnerAccountList.component.js";
 import "../save/save.css";
-import { retrieveAllPartnerData } from "../../../actions/partneraction.js";
+import { retrieveAllPartnerData, retrievePartnerByRole } from "../../../actions/partneraction.js";
 import { retrieveAllStaticData, retrieveAllCountryData } from "../../../actions/staticDataAction.js";
 import { connect } from "react-redux";
-import { createUserPartnerRoleConfig } from "../../../actions/userAction.js";
+import { createUserPartnerRoleConfig, createUserProfileConfig, retrieveAllUserListData } from "../../../actions/userAction.js";
+import { getRoles } from "@testing-library/react";
 
 function SaveUser(props) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const userRole = new URLSearchParams(location.search).get("role");
+  const userEmailId = new URLSearchParams(location.search).get("id");
 
-  const [partnerAccData, setPartnerAccData] = useState([]);
+  const [partnerAccData, setPartnerAccData] = useState({});
   const [form, setForm] = useState({
     firstname: null,
     lastname: null,
@@ -138,7 +140,9 @@ function SaveUser(props) {
   const [optionModelSelected, setOptionModelSelected] = useState([]);
   const [optionPartnerSelected, setOptionPartnerSelected] = useState([]);
   const [countryData, setCountryData] = useState([]);
+  const [partnerDrpData, setPartnerDrpData] = useState([]);
   const [staticData, setStaticData] = useState([]);
+  // const [userScreenData, setUserScreenData] = useState([]);
   
   useEffect(() => {
   //country api
@@ -158,7 +162,26 @@ function SaveUser(props) {
     })
     .catch((e) => {
       console.log('retrieveAllCountryData', e);
+  });
+
+  //partner api
+  props.retrievePartnerByRole(userRole, "nelson@se.com")
+  .then((data) => {
+    console.log('retrieveAllPartnerData', data);
+    let partnerOptions = [];
+    data.data.forEach((partnerData, index) => {
+      let indvPartData = {
+        value: partnerData.partner_id,
+        label: partnerData.partner_account_name
+      }
+      partnerOptions = partnerOptions.concat(indvPartData);
     });
+    //set data
+    setPartnerDrpData(partnerOptions);
+  })
+  .catch((e) => {
+    console.log(e);
+  });
 
   //all static data
   props.retrieveAllStaticData()
@@ -168,7 +191,23 @@ function SaveUser(props) {
       })
       .catch((e) => {
         console.log('retrieveAllStaticData', e);
-      });
+  });
+  
+  //prefil the data
+  props
+  .retrieveAllUserListData(userRole)
+    .then((data) => {
+      console.log('retrieveAllUserListData', data);
+      const respData = data.data.filter(data => data.email_id === userEmailId)[0];
+      console.log('filter data', respData);
+      // setUserScreenData(respData);
+      //format to form
+      //set state of form
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+
   }, []);
 
   const handleCountryChange = (selected) => {
@@ -221,10 +260,15 @@ function SaveUser(props) {
     }
 
     //call api
-    props.retrieveAllPartnerData() //i/p for test purpose
+    props.retrievePartnerByRole(userRole, "nelson@se.com") //i/p for test purpose
     .then((data) => {
       console.log("retrieveAllPartnerData", data);
-      setPartnerAccData(data);
+      let gridInput = {
+        dropdownField: selected,
+        data: data.data
+      }
+
+      setPartnerAccData(gridInput);
     })
     .catch((e) => {
       console.log(e);
@@ -312,6 +356,58 @@ function SaveUser(props) {
     content: errorRet
   }
 
+  const upsertUserProfile =(data) =>{
+    let payload = {
+      partner_id: null,
+      role_id: null,
+      country_code: null,
+      email_id: null,
+      created_by: "abc@example.com", //login user
+      updated_by: "abc@example.com", //login user
+      editor: null,
+      approve_1: null,
+      approver_2: null,
+      supervisor: null,
+      supervisor_approv_1_2: null
+    }
+
+    if(data.partnerAccNm){
+      data.partnerAccNm.forEach((row, index)=>{
+        payload.partner_id = row.partner_id;
+        payload.role_id = data.userrole;
+        payload.country_code = null;
+        payload.email_id = data.email_id;
+
+        switch(data.role)
+        {
+          case 'Editor': payload.editor = data.useremailid; break;
+          case 'Approver 1': payload.editor = data.useremailid; break;
+          case 'Approver 2': payload.approve_1 = data.useremailid; break;
+          case 'Super User': payload.supervisor = data.useremailid; break;
+          case 'Super Approver User': payload.supervisor_approv_1_2 = data.useremailid; break;
+        }
+
+        let userData = {};
+
+        props.createUserPartnerRoleConfig(userData)
+          .then((data) => {
+            console.log('createUserPartnerRoleConfig', data);
+          })
+          .catch((e) => {
+            setShowSuccessModal(false);
+            setErrorRet([]);
+            setShowErrorModal(true);
+            console.log('Error', e);
+            return;
+          });
+      });
+
+      setShowSuccessModal(true);
+      setShowErrorModal(false);
+      document.getElementById("partner-form").reset();
+    }
+  }
+
   const handleSubmit = () => {
     const isValid = validateForm();
 
@@ -339,12 +435,10 @@ function SaveUser(props) {
 
     console.log("Req Data:", userData);
 
-    props.createUserPartnerRoleConfig(userData)
+    props.createUserProfileConfig(userData)
         .then((data) => {
           console.log('createUserPartnerRoleConfig', data);
-          setShowSuccessModal(true);
-          setShowErrorModal(false);
-          document.getElementById("partner-form").reset();
+          upsertUserProfile(form);
         })
         .catch((e) => {
           setShowSuccessModal(false);
@@ -352,7 +446,7 @@ function SaveUser(props) {
           setShowErrorModal(true);
           console.log('Error', e);
           return;
-      });
+    });
   };
 
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
@@ -601,11 +695,6 @@ function SaveUser(props) {
                     name="usrcountry"
                     onChange={handleCountryChange}
                   />
-                  {/* <span className="text-danger">
-                    {form.usrcountry.length === 0
-                      ? "Please select Country"
-                      : ""}
-                  </span> */}
                   {error.usrcountry.errorMsg && (
                   <span className="text-danger">
                       {error.usrcountry.errorMsg === true ? "Please select Country" : ""}
@@ -629,7 +718,7 @@ function SaveUser(props) {
                     </span>
                   </OverlayTrigger>
                   <MultiSelectDrp
-                    options={partnerOptions}
+                    options={partnerDrpData}
                     isMulti
                     closeMenuOnSelect={false}
                     title="Partner Account Name"
@@ -649,8 +738,8 @@ function SaveUser(props) {
                   )}
                 </Col>
                 <Col>
-                {partnerAccData && partnerAccData.length > 0 &&(  
-                  <PartnerAccountList data={partnerAccData} />
+                { partnerAccData && partnerAccData.data && optionPartnerSelected && (
+                  <PartnerAccountList data={ partnerAccData } />
                 )}
                 </Col>
               </Row>
@@ -687,4 +776,7 @@ export default connect(null, {
   retrieveAllPartnerData, 
   retrieveAllCountryData, 
   retrieveAllStaticData,
-  createUserPartnerRoleConfig })(SaveUser);
+  createUserPartnerRoleConfig,
+  createUserProfileConfig,
+  retrievePartnerByRole,
+  retrieveAllUserListData })(SaveUser);
