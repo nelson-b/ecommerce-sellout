@@ -148,9 +148,9 @@ function SaveUser(props) {
     let outputData = [];
     data.forEach((row,index) => {
       outputData = outputData.concat(row.value);
-  });
+    });
 
-  let retValue = outputData.reduce(function (prev, current) {
+    let retValue = outputData.reduce(function (prev, current) {
       if(prev!=0 || prev!=undefined)
         return prev +","+current;
     }, 0);
