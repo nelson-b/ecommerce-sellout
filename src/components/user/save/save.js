@@ -46,7 +46,8 @@ function SaveUser(props) {
   const userEmailId = new URLSearchParams(location.search).get("id");
 
   const [partnerAccData, setPartnerAccData] = useState({});
-  const [form, setForm] = useState({
+  
+  const initialForm = {
     firstname: null,
     lastname: null,
     useremailid: null,
@@ -56,7 +57,9 @@ function SaveUser(props) {
     modelType: [],
     usrcountry: [],
     partnerAccNm: [],
-  });
+  };
+
+  const [form, setForm] = useState(initialForm);
 
   const onValidate = (value, name) => {
     console.log('onValidate',value, name);
@@ -159,15 +162,15 @@ function SaveUser(props) {
 
   const convertInputDataToMultiSelectDrp = (data) => {
     let outputData = [];
-    data.forEach((row, index) => {
-      outputData = outputData.concat(row.value);
+    let inputData = data.split(',');
+    inputData.forEach((row, index) => {
+      outputData = outputData.concat({
+        value: row,
+        label: row
+      });
     });
 
-    let retValue = outputData.reduce(function (prev, current) {
-      if(prev!=0 || prev!=undefined)
-        return prev +","+current;
-    }, 0);
-    return retValue.replace('0,','');
+    return outputData;
   }
 
   useEffect(() => {
@@ -236,12 +239,16 @@ function SaveUser(props) {
           userrole: respData.role_id,
           userops: respData.ops_val,
           usrzone: respData.zone_val,
-          modelType: convertMultiSelectDrpToInputData(respData.modelType),
-          usrcountry: convertMultiSelectDrpToInputData(respData.usrcountry),
-          partnerAccNm: convertMultiSelectDrpToInputData(respData.partnerAccNm)
+          modelType: convertInputDataToMultiSelectDrp(respData.modelType),
+          usrcountry: convertInputDataToMultiSelectDrp(respData.usrcountry),
+          partnerAccNm: convertInputDataToMultiSelectDrp(respData.partnerAccNm)
         }
         //set state of form
         setForm(prefillForm);
+
+        setOptionModelSelected(convertInputDataToMultiSelectDrp(respData.modelType));
+        setOptionCountrySelected(convertInputDataToMultiSelectDrp(respData.usrcountry));
+        setOptionPartnerSelected(convertInputDataToMultiSelectDrp(respData.partnerAccNm));
       })
       .catch((e) => {
         console.log(e);
@@ -411,8 +418,9 @@ function SaveUser(props) {
     }
 
     if(data.partnerAccNm){
+      console.log('data.partnerAccNm', data.partnerAccNm);
       data.partnerAccNm.forEach((row, index)=>{
-        payload.partner_id = row.partner_id;
+        payload.partner_id = row.value; //partner id from multiselect drp
         payload.role_id = data.userrole;
         payload.country_code = null;
         payload.email_id = data.email_id;
@@ -422,15 +430,14 @@ function SaveUser(props) {
           case 'Editor': payload.editor = data.useremailid; break;
           case 'Approver 1': payload.editor = data.useremailid; break;
           case 'Approver 2': payload.approve_1 = data.useremailid; break;
-          case 'Super User': payload.supervisor = data.useremailid; break;
-          case 'Super Approver User': payload.supervisor_approv_1_2 = data.useremailid; break;
+          case 'SuperUser': payload.supervisor = data.useremailid; break;
+          case 'SuperApproverUser': payload.supervisor_approv_1_2 = data.useremailid; break;
         }
 
-        let userData = {};
-
-        props.createUserPartnerRoleConfig(userData)
+        console.log('input createUserPartnerRoleConfig', payload);
+        props.createUserPartnerRoleConfig(payload)
           .then((data) => {
-            console.log('createUserPartnerRoleConfig', data);
+            console.log('createUserPartnerRoleConfig o/p', data);
           })
           .catch((e) => {
             setShowSuccessModal(false);
@@ -443,7 +450,8 @@ function SaveUser(props) {
 
       setShowSuccessModal(true);
       setShowErrorModal(false);
-      document.getElementById("partner-form").reset();
+      //reset form
+      // setForm(initialForm);
     }
   }
 
