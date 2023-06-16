@@ -157,6 +157,19 @@ function SaveUser(props) {
     return retValue.replace('0,','');
   }
 
+  const convertInputDataToMultiSelectDrp = (data) => {
+    let outputData = [];
+    data.forEach((row, index) => {
+      outputData = outputData.concat(row.value);
+    });
+
+    let retValue = outputData.reduce(function (prev, current) {
+      if(prev!=0 || prev!=undefined)
+        return prev +","+current;
+    }, 0);
+    return retValue.replace('0,','');
+  }
+
   useEffect(() => {
   //country api
   props.retrieveAllCountryData() //i/p for test purpose
