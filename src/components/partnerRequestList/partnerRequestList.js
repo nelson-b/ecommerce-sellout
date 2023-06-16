@@ -79,7 +79,7 @@ function PartnerRequestList(props) {
             {Status === "Closed" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )} */}
-            {Status === "pending" && (
+            {Status === "Pending" && (
               <img src={Pending} alt="Pending" style={{ width: "80px" }} />
             )}
           </div>
@@ -320,7 +320,7 @@ function PartnerRequestList(props) {
   const onGridReady = useCallback((params) => {
     props.retrievePartnerByRole(screenRole, userMail)
       .then((data) => {
-        setRowData(data.data.filter((e) => e.status == "PENDING"));
+        setRowData(data.data.filter((e) => e.status == "Pending"));
       })
       .catch((e) => {
         console.log(e);
