@@ -34,8 +34,9 @@ import "../save/save.css";
 import { retrieveAllPartnerData, retrievePartnerByRole } from "../../../actions/partneraction.js";
 import { retrieveAllStaticData, retrieveAllCountryData } from "../../../actions/staticDataAction.js";
 import { connect } from "react-redux";
-import { createUserPartnerRoleConfig, createUserProfileConfig, retrieveAllUserListData } from "../../../actions/userAction.js";
+import { createUserPartnerRoleConfig, createUserProfileConfig, retrieveAllNewListByRole } from "../../../actions/userAction.js";
 import { getRoles } from "@testing-library/react";
+import AlertModal from "../../modal/alertModel.js";
 
 function SaveUser(props) {
   const navigate = useNavigate();
@@ -142,8 +143,20 @@ function SaveUser(props) {
   const [countryData, setCountryData] = useState([]);
   const [partnerDrpData, setPartnerDrpData] = useState([]);
   const [staticData, setStaticData] = useState([]);
-  // const [userScreenData, setUserScreenData] = useState([]);
-  
+    
+  const convertMultiSelectDrpToInputData = (data) => {
+    let outputData = [];
+    data.forEach((row,index) => {
+      outputData = outputData.concat(row.value);
+  });
+
+  let retValue = outputData.reduce(function (prev, current) {
+      if(prev!=0 || prev!=undefined)
+        return prev +","+current;
+    }, 0);
+    return retValue.replace('0,','');
+  }
+
   useEffect(() => {
   //country api
   props.retrieveAllCountryData() //i/p for test purpose
@@ -193,21 +206,34 @@ function SaveUser(props) {
         console.log('retrieveAllStaticData', e);
   });
   
-  //prefil the data
-  props
-  .retrieveAllUserListData(userRole)
-    .then((data) => {
-      console.log('retrieveAllUserListData', data);
-      const respData = data.data.filter(data => data.email_id === userEmailId)[0];
-      console.log('filter data', respData);
-      // setUserScreenData(respData);
-      //format to form
-      //set state of form
-    })
-    .catch((e) => {
-      console.log(e);
-    });
-
+  if(props.module === 'Update'){
+    //prefil the data
+    props
+    .retrieveAllNewListByRole(userRole)
+      .then((data) => {
+        console.log('retrieveAllNewListByRole', data);
+        const respData = data.filter(data => data.email_id === userEmailId)[0];
+        console.log('filter data', respData);
+        // setUserScreenData(respData);
+        //format to form
+        let prefillForm = {
+          firstname: respData.first_name,
+          lastname: respData.last_name,
+          useremailid: respData.email_id,
+          userrole: respData.role_id,
+          userops: respData.ops_val,
+          usrzone: respData.zone_val,
+          modelType: convertMultiSelectDrpToInputData(respData.modelType),
+          usrcountry: convertMultiSelectDrpToInputData(respData.usrcountry),
+          partnerAccNm: convertMultiSelectDrpToInputData(respData.partnerAccNm)
+        }
+        //set state of form
+        setForm(prefillForm);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    }
   }, []);
 
   const handleCountryChange = (selected) => {
@@ -427,12 +453,12 @@ function SaveUser(props) {
       last_name: form.lastname,
       ops_val: form.userops,
       zone_val: form.usrzone,
-      model_val: form.modelType,
-      country_code: form.usrcountry,
+      model_val: convertMultiSelectDrpToInputData(form.modelType),
+      country_code: convertMultiSelectDrpToInputData(form.usrcountry),
       status: "active",
       modified_by: "def@example.com" //login user email id
     };
-
+    console.log('model type', convertMultiSelectDrpToInputData(form.modelType));
     console.log("Req Data:", userData);
 
     props.createUserProfileConfig(userData)
@@ -593,15 +619,7 @@ function SaveUser(props) {
                     title="User Role"
                     value={form.userrole} // staticData
                     isDisabled={props.module === 'Update'}
-                    options={[
-                      { value: "Editor", label: "Editor" },
-                      { value: "Approver 1", label: "Approver 1" },
-                      { value: "Approver 2", label: "Approver 2"},
-                      { value: "SuperUser", label: "SuperUser"},
-                      { value: "SuperApproverUser", label: "SuperApproverUser"},
-                      { value: "Admin", label: "Admin"}
-                      // userRoleOptions
-                    ]}
+                    options={ userRoleOptions }
                     onChangeFunc={onHandleSelectChange}
                     {...error.userrole}
                   />
@@ -766,6 +784,16 @@ function SaveUser(props) {
                     onClick={handleSubmit}>
                     {props.module}
                   </Button>
+                  <AlertModal
+                  show={showSuccessModal}
+                  handleClose={handleCloseSuccessModal}
+                  body={successmsg}
+                />
+                <AlertModal
+                  show={showErrorModal}
+                  handleClose={handleCloseErrorModal}
+                  body={errormsg}
+                />
                 </Col>
               </Row>
             </div>
@@ -783,4 +811,4 @@ export default connect(null, {
   createUserPartnerRoleConfig,
   createUserProfileConfig,
   retrievePartnerByRole,
-  retrieveAllUserListData })(SaveUser);
+  retrieveAllNewListByRole })(SaveUser);
