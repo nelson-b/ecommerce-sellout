@@ -11,7 +11,7 @@ import Home from "../../../images/home-icon.png";
 import "../list/list.css";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { retrieveAllUserListData } from "../../../actions/userAction.js";
+import { retrieveAllNewListByRole } from "../../../actions/userAction.js";
 import userEditIcon from "../../../images/edit-icon.png";
 
 function UserList(props) {
@@ -21,7 +21,7 @@ function UserList(props) {
   const userRole = new URLSearchParams(location.search).get("role");
 
   const handleUserEdit = (params) => {
-    navigate(`/user/update?id=${params.data.userId}&role=${userRole}`);
+    navigate(`/user/update?id=${params.data.email_id}&role=${userRole}`);
   };
 
   const handleCreate = () => {
@@ -52,8 +52,17 @@ function UserList(props) {
       },
     },
     {
-      headerName: "UserName",
+      headerName: "First Name",
       field: "first_name",
+      width: 200,
+      sortable: true,
+      filter: true,
+      suppressNavigable: true,
+      editable: false,
+    },
+    {
+      headerName: "Last Name",
+      field: "last_name",
       width: 200,
       sortable: true,
       filter: true,
@@ -146,7 +155,7 @@ function UserList(props) {
 
   const onGridReady = useCallback((params) => {
     props
-      .retrieveAllUserListData(userRole, userMail)
+      .retrieveAllNewListByRole(userRole)
       .then((data) => {
         setRowData(data);
       })
@@ -271,4 +280,4 @@ function UserList(props) {
   );
 }
 
-export default connect(null, { retrieveAllUserListData })(UserList);
+export default connect(null, { retrieveAllNewListByRole })(UserList);

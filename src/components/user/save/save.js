@@ -148,28 +148,33 @@ function SaveUser(props) {
   const [staticData, setStaticData] = useState([]);
     
   const convertMultiSelectDrpToInputData = (data) => {
-    let outputData = [];
-    data.forEach((row,index) => {
-      outputData = outputData.concat(row.value);
-    });
+    let retData = '';
+    if(data){
+      let outputData = [];
+      data.forEach((row,index) => {
+        outputData = outputData.concat(row.value);
+      });
 
-    let retValue = outputData.reduce(function (prev, current) {
-      if(prev!=0 || prev!=undefined)
-        return prev +","+current;
-    }, 0);
-    return retValue.replace('0,','');
+      let retValue = outputData.reduce(function (prev, current) {
+        if(prev!=0 || prev!=undefined)
+          return prev +","+current;
+      }, 0);
+      retData = retValue.replace('0,','');
+    }
+    return retData;
   }
 
   const convertInputDataToMultiSelectDrp = (data) => {
     let outputData = [];
-    let inputData = data.split(',');
-    inputData.forEach((row, index) => {
-      outputData = outputData.concat({
-        value: row,
-        label: row
+    if(data){
+      let inputData = data.split(',');
+      inputData.forEach((row, index) => {
+        outputData = outputData.concat({
+          value: row,
+          label: row
+        });
       });
-    });
-
+    }
     return outputData;
   }
 
@@ -180,11 +185,10 @@ function SaveUser(props) {
       console.log('retrieveAllCountryData', data);
       let countryOptions = [];
       data.data.forEach((countryData, index) => {
-        let indvCountData = {
+        countryOptions = countryOptions.concat({
           value: countryData.country_code,
           label: countryData.country_name
-        }
-        countryOptions = countryOptions.concat(indvCountData);
+        });
       });
       //set data
       setCountryData(countryOptions);
@@ -199,11 +203,10 @@ function SaveUser(props) {
     console.log('retrieveAllPartnerData', data);
     let partnerOptions = [];
     data.data.forEach((partnerData, index) => {
-      let indvPartData = {
+      partnerOptions = partnerOptions.concat({
         value: partnerData.partner_id,
         label: partnerData.partner_account_name
-      }
-      partnerOptions = partnerOptions.concat(indvPartData);
+      });
     });
     //set data
     setPartnerDrpData(partnerOptions);
@@ -216,7 +219,15 @@ function SaveUser(props) {
   props.retrieveAllStaticData()
     .then((data) => {
       console.log('retrieveAllStaticData', data);
-        setStaticData(data);
+        let staticAllOptions = [];
+        data.forEach((row, index) => {
+          staticAllOptions = staticAllOptions.concat({
+            value: row.attribute_value,
+            label: row.attribute_value,
+            category: row.attribute_name
+          });
+        });
+        setStaticData(staticAllOptions);
       })
       .catch((e) => {
         console.log('retrieveAllStaticData', e);
@@ -227,7 +238,7 @@ function SaveUser(props) {
     props
     .retrieveAllNewListByRole(userRole)
       .then((data) => {
-        console.log('retrieveAllNewListByRole', data);
+        console.log('retrieveAllNewListByRole', data, userEmailId);
         const respData = data.filter(data => data.email_id === userEmailId)[0];
         console.log('filter data', respData);
         // setUserScreenData(respData);
@@ -245,7 +256,7 @@ function SaveUser(props) {
         }
         //set state of form
         setForm(prefillForm);
-
+        console.log('convertInputDataToMultiSelectDrp', convertInputDataToMultiSelectDrp('model 1,model 2'));
         setOptionModelSelected(convertInputDataToMultiSelectDrp(respData.modelType));
         setOptionCountrySelected(convertInputDataToMultiSelectDrp(respData.usrcountry));
         setOptionPartnerSelected(convertInputDataToMultiSelectDrp(respData.partnerAccNm));
@@ -422,10 +433,10 @@ function SaveUser(props) {
       data.partnerAccNm.forEach((row, index)=>{
         payload.partner_id = row.value; //partner id from multiselect drp
         payload.role_id = data.userrole;
-        payload.country_code = null;
-        payload.email_id = data.email_id;
+        payload.country_code = 'CHN';
+        payload.email_id = data.useremailid;
 
-        switch(data.role)
+        switch(data.userrole)
         {
           case 'Editor': payload.editor = data.useremailid; break;
           case 'Approver 1': payload.editor = data.useremailid; break;
@@ -640,7 +651,7 @@ function SaveUser(props) {
                     title="User Role"
                     value={form.userrole} // staticData
                     isDisabled={props.module === 'Update'}
-                    options={ userRoleOptions }
+                    options={ staticData.filter(data => data.category === "role_id") }
                     onChangeFunc={onHandleSelectChange}
                     {...error.userrole}
                   />
@@ -662,7 +673,7 @@ function SaveUser(props) {
                     name="userops"
                     title="Ops"
                     value={form.userops}
-                    options={opsOptions}
+                    options={staticData.filter(data => data.category === "ops_val")}
                     onChangeFunc={onHandleSelectChange}
                     {...error.userops}
                   />
@@ -675,7 +686,7 @@ function SaveUser(props) {
                     name="usrzone"
                     title="Zone"
                     value={form.usrzone}
-                    options={userZoneOptions}
+                    options={staticData.filter(data => data.category === "zone_val")}
                     onChangeFunc={onHandleSelectChange}
                     {...error.usrzone}
                   />
@@ -685,7 +696,7 @@ function SaveUser(props) {
                     Model Type
                   </Form.Label>
                   <MultiSelectDrp
-                    options={modelOptions}
+                    options={staticData.filter(data => data.category === "model_val")}
                     isMulti
                     closeMenuOnSelect={false}
                     name="modelType"
@@ -719,8 +730,7 @@ function SaveUser(props) {
                   &nbsp;
                   <OverlayTrigger
                     placement="right"
-                    overlay={tooltip("Type to search or select from dropdown")}
-                  >
+                    overlay={tooltip("Type to search or select from dropdown")}>
                     <span>
                       <BiHelpCircle />
                     </span>
