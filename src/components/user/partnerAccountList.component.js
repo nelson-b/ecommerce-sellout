@@ -15,7 +15,7 @@ function PartnerAccountList(props) {
     const columnDefs = [
         { headerName: "Partner Account Name", field: "partner_account_name" },
         { headerName: "Country", field: "country_code", minWidth: 100, suppressSizeToFit: true, suppressMenu: true },
-        { headerName: "Model", field: "model_type", minWidth: 100, suppressSizeToFit: true, suppressMenu: true },
+        { headerName: "Model", field: "model_type", minWidth: 100, suppressSizeToFit: true, suppressMenu: true }
         // { headerName: "Current Editor", field: "currentEditor" },
         // { headerName: "Current 1st Approver", field: "current1stApprover" },
         // { headerName: "Current 2nd Approver", field: "current2ndApprover" }
