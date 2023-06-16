@@ -3,13 +3,13 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { AgGridReact } from "ag-grid-react";
 import { Container, Row } from "react-bootstrap";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { retrieveAllPartnerData } from "../../actions/partneraction";
 import { connect } from "react-redux";
 
 function PartnerAccountList(props) {
     const gridRef = useRef();
-    console.log('PartnerAccountList', props.data.data);
+    console.log('PartnerAccountList', props.data);
     const [rowData, setRowData] = useState([]);
 
     const columnDefs = [
@@ -31,39 +31,21 @@ function PartnerAccountList(props) {
         }),
         []
     );
+    
+    useEffect(() => {
+        console.log('partner grid onload', props.data);
+        let gridData = [];
+        if(props.data.data){
+            props.data.dropdownField.forEach((row, index) => {
+                //filter the based on partner id
+                let filterData = props.data.data.filter(data => data.partner_id === row.value);
+                gridData = gridData.concat(filterData);
+            });
+        }
+        setRowData(gridData);
+    },[props.data.dropdownField]);
 
     const onGridReady = useCallback(() => {
-        // let data =[ 
-        // {
-        //     partner_account_name:"Partner 1",
-        //     country_code: "USA",
-        //     model_type: "Model 1",
-        //     // currentEditor: "Editor 1", 
-        //     // current1stApprover: "Approver 1", 
-        //     // current2ndApprover: "Approver 2"
-        // },
-        // {
-        //     partner_account_name:"Partner 2",
-        //     country_code: "Ireland",
-        //     model_type: "Model 2", 
-        //     // currentEditor: "Editor 2", 
-        //     // current1stApprover: "Approver 1", 
-        //     // current2ndApprover: "Approver 2"
-        // }];
-        // props.api.retrieveAllPartnerData() //i/p for test purpose
-        // .then((data) => {
-        //   console.log("retrieveAllPartnerData", data);
-        //   const respData = data.filter(data => data.partner_id === partnerId);
-        //   console.log("filter by id", respData);
-        //   console.log('partnerData', partnerData);
-        console.log('partner grid onload', props.data.data);
-        if(props.data){
-            setRowData(props.data.data);
-        }
-        // })
-        // .catch((e) => {
-        //   console.log(e);
-        // });
     },[]);
 
     return (

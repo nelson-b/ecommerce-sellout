@@ -13,6 +13,10 @@ h3{
   color:grey;
 }
 
+input[type="text"]:disabled {
+  background: #eeeeee;
+}
+
 .form-sellout-header {
   margin-top: 5px;
   padding-left: 10px;
