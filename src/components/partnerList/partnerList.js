@@ -351,7 +351,7 @@ function PartnerList(props) {
         setRowData(data.data.filter((e) => e.status == "ACTIVE"));
       })
       .catch((e) => {
-        console.log(e);
+        console.log('Partner list', e);
       });
   }, []);
 

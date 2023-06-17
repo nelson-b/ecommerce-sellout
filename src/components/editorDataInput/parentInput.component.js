@@ -16,6 +16,8 @@ import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
 import AlertModal from "../modal/alertModel";
 import { useLocation } from "react-router-dom";
+import { createData, retrieveAllData, updateSellOutData } from "../../actions/dataInputAction";
+import { connect } from "react-redux";
 
 function DataInputComponent(props) {
   const navigate = useNavigate();
@@ -70,7 +72,6 @@ function DataInputComponent(props) {
   };
 
   const postData = useCallback(() => {
-    //console.log('api call to save manual data');
     setShowShouldUpdModal(false);
     let payload = [];
 
@@ -663,15 +664,19 @@ function DataInputComponent(props) {
   });
   
   const onGridReady = useCallback((params) => {
-    //console.log("onGridReady");
-    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => getData)
-      .then((data) => setRowData(data));
+    props.retrieveAllData()
+    .then((data)=>{
+      
+    })
+    .catch((e) => {
+      console.log("Data Input",e);
+    });
   }, []);
 
   const handleNavigation = () => {
     navigate(`/dataReview?role=${dataRole}`);
   };
+
 
   return (
     <>
@@ -769,4 +774,4 @@ function DataInputComponent(props) {
   );
 }
 
-export default DataInputComponent;
+export default connect(null, { createData, retrieveAllData, updateSellOutData })(DataInputComponent);
