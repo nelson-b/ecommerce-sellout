@@ -73,12 +73,6 @@ function PartnerRequestList(props) {
         const Status = params.value;
         return (
           <div>
-            {/* {Status === "Active" && (
-              <img src={active} alt="active" style={{ width: "80px" }} />
-            )}
-            {Status === "Closed" && (
-              <img src={closed} alt="closed" style={{ width: "80px" }} />
-            )} */}
             {Status === "Pending" && (
               <img src={Pending} alt="Pending" style={{ width: "80px" }} />
             )}

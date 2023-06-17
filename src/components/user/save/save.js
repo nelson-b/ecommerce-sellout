@@ -1,16 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import Select from "../singleSelect.js";
 import {
-  // countryOptions,
-  partnerOptions,
-  modelOptions,
-  userRoleOptions,
-  opsOptions,
-  userZoneOptions,
-  userOptions,
-  userEmailOptions,
-} from "../optionsData.js";
-import {
   Breadcrumb,
   Card,
   Container,
@@ -28,14 +18,22 @@ import Home from "../../../images/home-icon.png";
 import { BiHelpCircle } from "react-icons/bi";
 import MultiSelectDrp from "../multiSelectDropdown.js";
 import { components } from "react-select";
-import makeAnimated, { Input } from "react-select/animated";
+import makeAnimated from "react-select/animated";
 import PartnerAccountList from "../partnerAccountList.component.js";
 import "../save/save.css";
-import { retrieveAllPartnerData, retrievePartnerByRole } from "../../../actions/partneraction.js";
+import { 
+  retrieveAllPartnerData, 
+  retrievePartnerByRole, 
+  retrieveUserRoleConfigByPartnerId, 
+  retrieveUserRoleConfigByEmailIdRoleId 
+} from "../../../actions/partneraction.js";
 import { retrieveAllStaticData, retrieveAllCountryData } from "../../../actions/staticDataAction.js";
 import { connect } from "react-redux";
-import { createUserPartnerRoleConfig, createUserProfileConfig, retrieveAllNewListByRole } from "../../../actions/userAction.js";
-import { getRoles } from "@testing-library/react";
+import { 
+  createUserPartnerRoleConfig, 
+  createUserProfileConfig, 
+  retrieveAllNewListByRole 
+} from "../../../actions/userAction.js";
 import AlertModal from "../../modal/alertModel.js";
 
 function SaveUser(props) {
@@ -151,7 +149,7 @@ function SaveUser(props) {
     let retData = '';
     if(data){
       let outputData = [];
-      data.forEach((row,index) => {
+      data.forEach((row) => {
         outputData = outputData.concat(row.value);
       });
 
@@ -168,7 +166,7 @@ function SaveUser(props) {
     let outputData = [];
     if(data){
       let inputData = data.split(',');
-      inputData.forEach((row, index) => {
+      inputData.forEach((row) => {
         outputData = outputData.concat({
           value: row,
           label: row
@@ -184,7 +182,7 @@ function SaveUser(props) {
     .then((data) => {
       console.log('retrieveAllCountryData', data);
       let countryOptions = [];
-      data.data.forEach((countryData, index) => {
+      data.data.forEach((countryData) => {
         countryOptions = countryOptions.concat({
           value: countryData.country_code,
           label: countryData.country_name
@@ -202,7 +200,7 @@ function SaveUser(props) {
   .then((data) => {
     console.log('retrieveAllPartnerData', data);
     let partnerOptions = [];
-    data.data.forEach((partnerData, index) => {
+    data.data.forEach((partnerData) => {
       partnerOptions = partnerOptions.concat({
         value: partnerData.partner_id,
         label: partnerData.partner_account_name
@@ -220,7 +218,7 @@ function SaveUser(props) {
     .then((data) => {
       console.log('retrieveAllStaticData', data);
         let staticAllOptions = [];
-        data.forEach((row, index) => {
+        data.forEach((row) => {
           staticAllOptions = staticAllOptions.concat({
             value: row.attribute_value,
             label: row.attribute_value,
@@ -235,13 +233,11 @@ function SaveUser(props) {
   
   if(props.module === 'Update'){
     //prefil the data
-    props
-    .retrieveAllNewListByRole(userRole)
+    props.retrieveAllNewListByRole(userRole)
       .then((data) => {
         console.log('retrieveAllNewListByRole', data, userEmailId);
         const respData = data.filter(data => data.email_id === userEmailId)[0];
         console.log('filter data', respData);
-        // setUserScreenData(respData);
         //format to form
         let prefillForm = {
           firstname: respData.first_name,
@@ -259,12 +255,30 @@ function SaveUser(props) {
         console.log('convertInputDataToMultiSelectDrp', convertInputDataToMultiSelectDrp('model 1,model 2'));
         setOptionModelSelected(convertInputDataToMultiSelectDrp(respData.modelType));
         setOptionCountrySelected(convertInputDataToMultiSelectDrp(respData.usrcountry));
-        setOptionPartnerSelected(convertInputDataToMultiSelectDrp(respData.partnerAccNm));
       })
       .catch((e) => {
         console.log(e);
+    });
+
+    props.retrieveUserRoleConfigByEmailIdRoleId(userEmailId, userRole)
+    .then((data) => {
+      console.log('retrieveUserRoleConfigByEmailIdRoleId', data);
+      let filterData = data.data.filter(data => data.EMAIL_ID === userEmailId && data.ROLE_ID === userRole)
+      let partnerData = [];
+      filterData.forEach((rows, index)=> {
+        let partner_account_name = partnerDrpData.filter(data.value == rows.PARTNER_ID);
+        let partnerDataIndv = {
+          value: rows.PARTNER_ID,
+          label: partner_account_name.label
+        }
+        partnerData = partnerData.concat(partnerDataIndv);
       });
-    }
+
+      setOptionPartnerSelected(partnerData);
+    });
+  }
+
+
   }, []);
 
   const handleCountryChange = (selected) => {
@@ -317,7 +331,7 @@ function SaveUser(props) {
     }
 
     //call api
-    props.retrievePartnerByRole(userRole, "nelson@se.com") //i/p for test purpose
+    props.retrieveUserRoleConfigByPartnerId(selected[0]?selected[0].value:'') //i/p for test purpose
     .then((data) => {
       console.log("retrieveAllPartnerData", data);
       let gridInput = {
@@ -430,7 +444,7 @@ function SaveUser(props) {
 
     if(data.partnerAccNm){
       console.log('data.partnerAccNm', data.partnerAccNm);
-      data.partnerAccNm.forEach((row, index)=>{
+      data.partnerAccNm.forEach((row)=>{
         payload.partner_id = row.value; //partner id from multiselect drp
         payload.role_id = data.userrole;
         payload.country_code = 'CHN';
@@ -836,10 +850,13 @@ function SaveUser(props) {
 }
 
 export default connect(null, { 
-  retrieveAllPartnerData, 
+  retrieveAllPartnerData,
   retrieveAllCountryData, 
   retrieveAllStaticData,
   createUserPartnerRoleConfig,
   createUserProfileConfig,
   retrievePartnerByRole,
-  retrieveAllNewListByRole })(SaveUser);
+  retrieveAllNewListByRole,
+  retrieveUserRoleConfigByPartnerId,
+  retrieveUserRoleConfigByEmailIdRoleId
+ })(SaveUser);

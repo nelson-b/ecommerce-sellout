@@ -14,11 +14,11 @@ function PartnerAccountList(props) {
 
     const columnDefs = [
         { headerName: "Partner Account Name", field: "partner_account_name" },
-        { headerName: "Country", field: "country_code", minWidth: 100, suppressSizeToFit: true, suppressMenu: true },
-        { headerName: "Model", field: "model_type", minWidth: 100, suppressSizeToFit: true, suppressMenu: true }
-        // { headerName: "Current Editor", field: "currentEditor" },
-        // { headerName: "Current 1st Approver", field: "current1stApprover" },
-        // { headerName: "Current 2nd Approver", field: "current2ndApprover" }
+        // { headerName: "Country", field: "country_code", minWidth: 100, suppressSizeToFit: true, suppressMenu: true },
+        // { headerName: "Model", field: "model_type", minWidth: 100, suppressSizeToFit: true, suppressMenu: true }
+        { headerName: "Current Editor", field: "EDITOR" },
+        { headerName: "Current 1st Approver", field: "APPROVE_1" },
+        { headerName: "Current 2nd Approver", field: "APPROVER_2" }
     ];
 
     const defaultColDef = useMemo(
@@ -37,9 +37,13 @@ function PartnerAccountList(props) {
         let gridData = [];
         if(props.data.data){
             props.data.dropdownField.forEach((row, index) => {
-                //filter the based on partner id
                 let filterData = props.data.data.filter(data => data.partner_id === row.value);
-                gridData = gridData.concat(filterData);
+                gridData = gridData.concat({
+                    partner_account_name: row.label,
+                    EDITOR: filterData.EDITOR,
+                    APPROVE_1: filterData.APPROVE_1,
+                    APPROVER_2: filterData.APPROVER_2
+                });
             });
         }
         setRowData(gridData);
