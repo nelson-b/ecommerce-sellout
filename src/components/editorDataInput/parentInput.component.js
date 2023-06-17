@@ -598,53 +598,39 @@ function DataInputComponent(props) {
               if (monthField != undefined) {
                 switch (monthField) {
                   case "Jan_Amount":
-                    //console.log("Jan");
                     data.Jan_Estimated = isEstimate;
-                    //console.log(data.Jan_Estimated);
                     break;
                   case "Feb_Amount":
-                    //console.log("Feb");
                     data.Feb_Estimated = isEstimate;
-                    //console.log(data.Feb_Estimated);
                     break;
                   case "Mar_Amount":
-                    //console.log("Mar");
                     data.Mar_Estimated = isEstimate;
                     break;
                   case "Apr_Amount":
-                    //console.log("Apr");
                     data.Apr_Estimated = isEstimate;
                     break;
                   case "May_Amount":
-                    //console.log("May");
                     data.May_Estimated = isEstimate;
                     break;
                   case "Jun_Amount":
-                    //console.log("Jun");
                     data.Jun_Estimated = isEstimate;
                     break;
                   case "Jul_Amount":
-                    //console.log("Jul");
                     data.Jul_Estimated = isEstimate;
                     break;
                   case "Aug_Amount":
-                    //console.log("Aug");
                     data.Aug_Estimated = isEstimate;
                     break;
                   case "Sep_Amount":
-                    //console.log("Sep");
                     data.Sep_Estimated = isEstimate;
                     break;
                   case "Oct_Amount":
-                    //console.log("Oct");
                     data.Oct_Estimated = isEstimate;
                     break;
                   case "Oct_Amount":
-                    //console.log("Oct");
                     data.Nov_Estimated = isEstimate;
                     break;
                   case "Dec_Amount":
-                    //console.log("Dec");
                     data.Dec_Estimated = isEstimate;
                     break;
                 }
@@ -667,23 +653,25 @@ function DataInputComponent(props) {
     let respPayload = [];
     data.forEach((row, index) => {
       let indvRespPayload = {
-        partner_id: "CHN-CN-00071",
-        partner_name: "Lazada",
-        country_code: "CHN",
-        country_name: "China",
-        region_name: "CHN",
-        region_code: "China",
-        zone_val: "CN",
-        year_val: 2023,
+        id: row.partner_id,
+        partner_id: row.partner_id,
+        platform_name: row.platform_name,
+        country_code: row.country_code,
+        country_name: row.country_name,
+        region_name: row.region_name,
+        region_code: row.region_code,
+        Zone: row.zone_val,
+        year_val: row.year_val,
+        
         months: [],
-        created_by: "ss@example.com",
-        created_date: "2023-06-01 12:29:00",
-        approved_by: null,
-        approved_date: "None",
-        approval_status: 0,
-        editor_comment: "editor",
-        comments: "waiting for approver",
-        batch_upload_flag: false
+        created_by: row.created_by,
+        created_date: row.created_date,
+        approved_by: row.approved_by,
+        approved_date: row.approved_date,
+        approval_status: row.approval_status,
+        editor_comment: row.editor_comment,
+        comments: row.comments,
+        batch_upload_flag: row.batch_upload_flag
       }
     })
   });

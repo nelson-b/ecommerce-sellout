@@ -24,6 +24,18 @@ class PartnerService {
     );
   }
 
+  getAllUserRoleConfig() {
+    return http.get(
+      `/ecomm-sellout-dev-lamda-createpartner/get-user-role-partner-config?fetch=all`
+    );
+  }
+
+  getUserRoleConfigByPartnerId(id) {
+    return http.get(
+      `/ecomm-sellout-dev-lamda-createpartner/get-user-role-partner-config?fetch=by_partner_id&partner_id=${id}`
+    );
+  }
+
   getUserRoleConfigByEmailRole(id, role) {
     return http.get(
       `/ecomm-sellout-dev-lamda-createpartner/get-user-role-partner-config?fetch=by_email_role&email_id=${id}&role_id=${role.toUpperCase()}`
