@@ -663,10 +663,35 @@ function DataInputComponent(props) {
     toggleActualEstimate(param.target.checked);
   });
   
+  const formatGetPayload = useCallback((data) =>{
+    let respPayload = [];
+    data.forEach((row, index) => {
+      let indvRespPayload = {
+        partner_id: "CHN-CN-00071",
+        partner_name: "Lazada",
+        country_code: "CHN",
+        country_name: "China",
+        region_name: "CHN",
+        region_code: "China",
+        zone_val: "CN",
+        year_val: 2023,
+        months: [],
+        created_by: "ss@example.com",
+        created_date: "2023-06-01 12:29:00",
+        approved_by: null,
+        approved_date: "None",
+        approval_status: 0,
+        editor_comment: "editor",
+        comments: "waiting for approver",
+        batch_upload_flag: false
+      }
+    })
+  });
+
   const onGridReady = useCallback((params) => {
     props.retrieveAllData()
-    .then((data)=>{
-      
+    .then((data) => {
+
     })
     .catch((e) => {
       console.log("Data Input",e);
@@ -711,7 +736,6 @@ function DataInputComponent(props) {
             rowData={rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
-            // pagination={true}
             paginationAutoPageSize={true}
             animateRows={true}
             getRowId={getRowId}

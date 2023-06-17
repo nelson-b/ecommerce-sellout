@@ -1071,7 +1071,7 @@ function PartnerComponent(props) {
                           })}
                         )}>
                         <option value="">Not applicable</option>
-                        {usrRoleData && (usrRoleData.filter(role => role.role_id.toUpperCase() == 'EDITOR').map((row) =>(
+                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'EDITOR').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
                       </Form.Select>
@@ -1098,7 +1098,7 @@ function PartnerComponent(props) {
                         )}
                       >
                         <option value="">Not applicable</option>
-                        {usrRoleData && (usrRoleData.filter(role => role.role_id.toUpperCase().replace(' ','') == 'APPROVER1').map((row) =>(
+                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER1').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
                       </Form.Select>
@@ -1125,7 +1125,7 @@ function PartnerComponent(props) {
                         )}
                       >
                         <option value="">Not applicable</option>
-                        {usrRoleData && (usrRoleData.filter(role => role.role_id.toUpperCase().replace(' ','') == 'APPROVER2').map((row) =>(
+                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER2').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
                       </Form.Select>
