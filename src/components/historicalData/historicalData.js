@@ -57,13 +57,14 @@ function HistoricalData(props) {
 
   const columnDefs = [
     {
-      field: "Zone",
+      headerName: "Zone",
+      field: "zone_val",
       rowGroup: true,
       hide: true,
     },
     {
       headerName: "Partner Account Name",
-      field: "Partner",
+      field: "partner_name",
       filter: true,
       sortable: true,
       pinned: "left",
@@ -77,7 +78,7 @@ function HistoricalData(props) {
     },
     {
       headerName: "Country",
-      field: "Country",
+      field: "country_code",
       rowGroup: true,
       width: 140,
       hide: true,
@@ -101,7 +102,7 @@ function HistoricalData(props) {
     },
     {
       headerName: "Currency of Reporting",
-      field: "currency",
+      field: "trans_currency_code",
       sortable: true,
       filter: true,
       pinned: "left",
@@ -298,22 +299,36 @@ function HistoricalData(props) {
     ];
   }, []);
 
-  const onGridReady = useCallback((params) => {
-    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => rowData)
-      .then((rowData) => setRowData(rowData));
-  }, []);
-
   // const onGridReady = useCallback((params) => {
-  //   props
-  //     .retrieveHistoricalData()
-  //     .then((data) => {
-  //       setRowData(data.data);
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //     });
+  //   fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
+  //     .then((resp) => rowData)
+  //     .then((rowData) => setRowData(rowData));
   // }, []);
+
+  let userMail = "";
+
+  if (screenRole == "editor") {
+    userMail = "nelson@se.com";
+  }
+  if (screenRole == "approver") {
+    userMail = "katie@se.com";
+  }
+  if (screenRole == "superApproverUser") {
+    userMail = "thomas@se.com";
+  }
+  let year =  "2023";
+
+  const onGridReady = useCallback((params) => {
+    props
+      .retrieveHistoricalData(userMail, year, screenRole)
+      .then((data) => {
+        console.log('daata', data)
+        setRowData(data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
 
   const handleExport = useCallback(() => {
     const params = {
