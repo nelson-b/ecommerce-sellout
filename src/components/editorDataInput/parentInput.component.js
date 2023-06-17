@@ -25,6 +25,7 @@ function DataInputComponent(props) {
   const [rowData, setRowData] = useState(null);
   const location = useLocation();
   const dataRole = new URLSearchParams(location.search).get("role");
+  const loginUser = "example@example.com";
 
   const handleClearClick = () => {
     window.location.reload();
@@ -116,7 +117,7 @@ function DataInputComponent(props) {
     setRowData(getData);
     setShowSuccessModal(true);
   }, []);
-  
+
   const gridRef = useRef(null);
 
   const getData = [
@@ -449,10 +450,10 @@ function DataInputComponent(props) {
         const Status = params.value;
         return (
           <div>
-            {Status === "Active" && (
+            {Status === "ACTIVE" && (
               <img src={active} alt="active" style={{ width: "80px" }} />
             )}
-            {Status === "Closed" && (
+            {Status === "ClOSED" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )}
           </div>
@@ -475,7 +476,7 @@ function DataInputComponent(props) {
     }),
     []
   );
-
+  
   //fn set is estimated
   const fnSetIsEstimated = (params, monthField) => {
     let monthYrKey = monthField.replace('_Amount','') + "_Estimated";
@@ -568,7 +569,7 @@ function DataInputComponent(props) {
           suppressMenu: true
         });
   }
-
+  
   // callback tells the grid to use the 'id' attribute for IDs, IDs should always be strings
   const getRowId = useMemo(() => {
     return (params) => {
@@ -584,9 +585,7 @@ function DataInputComponent(props) {
       //row level loop
       currRow.columns.forEach((currCol) => {
         //col level loop
-        for (
-          let i = currRow.startRow.rowIndex; i < currRow.endRow.rowIndex + 1; i++
-        ) {
+        for (let i = currRow.startRow.rowIndex; i < currRow.endRow.rowIndex + 1; i++) {
           gridRef.current.api.forEachNodeAfterFilterAndSort(function (
             rowNodes,
             index
@@ -656,14 +655,39 @@ function DataInputComponent(props) {
         id: row.partner_id,
         partner_id: row.partner_id,
         platform_name: row.platform_name,
-        country_code: row.country_code,
-        country_name: row.country_name,
+        Partner_Account_Name: row.partner_account_name,
+        Country: row.country_name,
+        country_name: row.country_code,
         region_name: row.region_name,
         region_code: row.region_code,
         Zone: row.zone_val,
+        Jan_Amount: row.months[0].month_val == "jan" ? row.months[0].sellout_local_currency: '',
+        Feb_Amount: row.months[0].month_val == "feb" ? row.months[0].sellout_local_currency: '',
+        Mar_Amount: row.months[0].month_val == "march" ? row.months[0].sellout_local_currency: '',
+        Apr_Amount: row.months[0].month_val == "apr" ? row.months[0].sellout_local_currency: '',
+        May_Amount: row.months[0].month_val == "may" ? row.months[0].sellout_local_currency: '',
+        Jun_Amount: row.months[0].month_val == "jun" ? row.months[0].sellout_local_currency: '',
+        Jul_Amount: row.months[0].month_val == "jul" ? row.months[0].sellout_local_currency: '',
+        Aug_Amount: row.months[0].month_val == "aug" ? row.months[0].sellout_local_currency: '',
+        Sep_Amount: row.months[0].month_val == "sep" ? row.months[0].sellout_local_currency: '',
+        Oct_Amount: row.months[0].month_val == "oct" ? row.months[0].sellout_local_currency: '',
+        Nov_Amount: row.months[0].month_val == "nov" ? row.months[0].sellout_local_currency: '',
+        Dec_Amount: row.months[0].month_val == "dec" ? row.months[0].sellout_local_currency: '',
+        Jan_Estimated: row.months[0].month_val == "jan" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Feb_Estimated: row.months[0].month_val == "feb" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Mar_Estimated: row.months[0].month_val == "mar" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Apr_Estimated: row.months[0].month_val == "apr" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        May_Estimated: row.months[0].month_val == "may" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Jun_Estimated: row.months[0].month_val == "jun" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Jul_Estimated: row.months[0].month_val == "jul" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Aug_Estimated: row.months[0].month_val == "aug" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Sep_Estimated: row.months[0].month_val == "sep" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Oct_Estimated: row.months[0].month_val == "oct" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Nov_Estimated: row.months[0].month_val == "nov" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Dec_Estimated: row.months[0].month_val == "dec" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Currency_Of_Reporting: row.trans_currency_code,
+        Model: row.model_type,
         year_val: row.year_val,
-        
-        months: [],
         created_by: row.created_by,
         created_date: row.created_date,
         approved_by: row.approved_by,
@@ -671,15 +695,22 @@ function DataInputComponent(props) {
         approval_status: row.approval_status,
         editor_comment: row.editor_comment,
         comments: row.comments,
-        batch_upload_flag: row.batch_upload_flag
-      }
+        batch_upload_flag: row.batch_upload_flag,
+        Status: row.status
+      };
+      respPayload = respPayload.concat(indvRespPayload);
     })
+    return respPayload;
   });
 
   const onGridReady = useCallback((params) => {
-    props.retrieveAllData()
+    let currentYear = String(currentDate.getFullYear());
+    props.retrieveAllData(loginUser, currentYear, dataRole)
     .then((data) => {
-
+      console.log('retrieveAllData', data);
+      if(data){
+        setRowData(formatGetPayload(data));
+      }
     })
     .catch((e) => {
       console.log("Data Input",e);
@@ -689,8 +720,7 @@ function DataInputComponent(props) {
   const handleNavigation = () => {
     navigate(`/dataReview?role=${dataRole}`);
   };
-
-
+  
   return (
     <>
       <Container fluid>
