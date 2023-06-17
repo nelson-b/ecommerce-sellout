@@ -1,5 +1,5 @@
 import { CREATE_PARTNERDATA, RETRIEVE_PARTNERDATA,  RETRIEVE_PARTNERDATA_BY_ID,
-  UPDATE_PARTNERDATA, RETRIEVE_PARTNER_ROLE, RETRIEVE_USERROLE_CONFIG_BY_PARTNERID, RETRIEVE_USERROLE_CONFIG_BY_EMAILIDROLEID } from "./type";
+  UPDATE_PARTNERDATA, RETRIEVE_PARTNER_ROLE, RETRIEVE_USERROLE_CONFIG_BY_PARTNERID, RETRIEVE_USERROLE_CONFIG_BY_EMAILIDROLEID, RETRIEVE_ALL_USERROLE_CONFIG } from "./type";
 import PartnerService from "../services/partnerServices";
 
 export const createPartnerData = (data) => async (dispatch) => {
@@ -37,6 +37,21 @@ export const retrievePartnerByRole = (id, user) => async (dispatch) => {
 
     dispatch({
       type: RETRIEVE_PARTNER_ROLE,
+      payload: res.data,
+    });
+
+    return Promise.resolve(res.data);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+export const retrieveAllUserRoleConfig = () => async (dispatch) => {
+  try {
+    const res = await PartnerService.getAllUserRoleConfig();
+
+    dispatch({
+      type: RETRIEVE_ALL_USERROLE_CONFIG,
       payload: res.data,
     });
 
