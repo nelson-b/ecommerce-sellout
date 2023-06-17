@@ -23,12 +23,10 @@ function BatchInputComponent({ getData }) {
   });
 
   const handleChange = ({ target }) => {
-    //console.log("target", target);
     setSelectedFile(target);
   };
 
   const handleClick = (event) => {
-    //console.log("event", event);
     setSelectedFile(event.target.files);
   };
 
@@ -94,10 +92,8 @@ function BatchInputComponent({ getData }) {
       if (currentYear !== year && currentMonth !== 0) continue;
 
       let data = getData.filter((item) => item[monthField] != "");
-      //console.log("data", data);
 
       if (data.length > 0) {
-        //console.log("show data already exist popup");
         setShowShouldUpdModal(true);
         return;
       }
@@ -106,7 +102,6 @@ function BatchInputComponent({ getData }) {
   };
 
   const postBatchData = () => {
-    //console.log("selectedFile", selectedFile);
     const file = selectedFile.file[0];
 
     if (
