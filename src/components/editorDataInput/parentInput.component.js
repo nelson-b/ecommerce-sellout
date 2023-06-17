@@ -16,6 +16,8 @@ import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
 import AlertModal from "../modal/alertModel";
 import { useLocation } from "react-router-dom";
+import { createData, retrieveAllData, updateSellOutData } from "../../actions/dataInputAction";
+import { connect } from "react-redux";
 
 function DataInputComponent(props) {
   const navigate = useNavigate();
@@ -70,7 +72,6 @@ function DataInputComponent(props) {
   };
 
   const postData = useCallback(() => {
-    //console.log('api call to save manual data');
     setShowShouldUpdModal(false);
     let payload = [];
 
@@ -662,16 +663,45 @@ function DataInputComponent(props) {
     toggleActualEstimate(param.target.checked);
   });
   
+  const formatGetPayload = useCallback((data) =>{
+    let respPayload = [];
+    data.forEach((row, index) => {
+      let indvRespPayload = {
+        partner_id: "CHN-CN-00071",
+        partner_name: "Lazada",
+        country_code: "CHN",
+        country_name: "China",
+        region_name: "CHN",
+        region_code: "China",
+        zone_val: "CN",
+        year_val: 2023,
+        months: [],
+        created_by: "ss@example.com",
+        created_date: "2023-06-01 12:29:00",
+        approved_by: null,
+        approved_date: "None",
+        approval_status: 0,
+        editor_comment: "editor",
+        comments: "waiting for approver",
+        batch_upload_flag: false
+      }
+    })
+  });
+
   const onGridReady = useCallback((params) => {
-    //console.log("onGridReady");
-    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => getData)
-      .then((data) => setRowData(data));
+    props.retrieveAllData()
+    .then((data) => {
+
+    })
+    .catch((e) => {
+      console.log("Data Input",e);
+    });
   }, []);
 
   const handleNavigation = () => {
     navigate(`/dataReview?role=${dataRole}`);
   };
+
 
   return (
     <>
@@ -706,7 +736,6 @@ function DataInputComponent(props) {
             rowData={rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
-            // pagination={true}
             paginationAutoPageSize={true}
             animateRows={true}
             getRowId={getRowId}
@@ -769,4 +798,4 @@ function DataInputComponent(props) {
   );
 }
 
-export default DataInputComponent;
+export default connect(null, { createData, retrieveAllData, updateSellOutData })(DataInputComponent);

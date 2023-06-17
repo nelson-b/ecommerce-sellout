@@ -7,7 +7,12 @@ import { BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import Home from "../../images/home-icon.png";
 import "./partner.component.css";
-import { createPartnerData, retrieveAllPartnerData, retrievePartnerByRole, updatePartner } from "../../actions/partneraction.js";
+import { 
+  createPartnerData, 
+  retrieveAllPartnerData, 
+  retrievePartnerByRole,
+  updatePartner,
+  retrieveUserRoleConfigByPartnerId } from "../../actions/partneraction.js";
 import { retrieveAllCountryData, retrieveAllStaticData } from "../../actions/staticDataAction.js";
 import { retrieveAllUserListData, createUserPartnerRoleConfig } from "../../actions/userAction.js";
 import AlertModel from "../modal/alertModel";
@@ -53,7 +58,6 @@ function PartnerComponent(props) {
   const {
     register,
     handleSubmit,
-    // trigger,
     clearErrors,
     setValue,
     formState: { errors },
@@ -64,7 +68,6 @@ function PartnerComponent(props) {
   });
   
   useEffect(() => {
-    //let partnerInpId = 'Amazon_Amz_USA'; //Hardcoded for testing purpose
     console.log('partnerId', partnerId);
     console.log('props.module', props.module);
     
@@ -114,6 +117,25 @@ function PartnerComponent(props) {
         })
         .catch((e) => {
           console.log(e);
+        });
+
+        //call get user role config
+        props.retrieveUserRoleConfigByPartnerId(partnerId)
+        .then((data) => {
+          const respData = data.data.filter(data => data.PARTNER_ID === partnerId)[0];
+          console.log("filter by id", respData);
+          if(respData.EDITOR){
+            setValue('editor', respData.EDITOR);
+          }
+          if(respData.BACKUP_EDITOR){
+            setValue('backupEditor', respData.BACKUP_EDITOR);
+          }
+          if(respData.APPROVE_1){
+            setValue('approver1', respData.APPROVE_1);
+          }
+          if(respData.APPROVE_2){
+            setValue('approver2', respData.APPROVE_2);
+          }
         });
       }
       else{
@@ -216,7 +238,7 @@ function PartnerComponent(props) {
         created_by: "abc@example.com", //login user email
         updated_by: "abc@example.com", //login user email
         editor: reqData.editor,
-        //backup editor 
+        backup_editor: reqData.backupEditor,
         approve_1: reqData.approver1,
         approver_2: reqData.approver2,
         supervisor: "example@example.com", //super usr
@@ -1022,7 +1044,6 @@ function PartnerComponent(props) {
                         })}
                         )}>
                         <option value="">Not applicable</option>
-                        {/* <option value="nelson@gmail.com">Nelson</option> */}
                         {usrRoleData && (usrRoleData.filter(role => role.role_id == 'EDITOR').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
@@ -1048,11 +1069,9 @@ function PartnerComponent(props) {
                           {...register("backupEditor", {
                             required: "Backup Editor is required",
                           })}
-                        )}
-                      >
+                        )}>
                         <option value="">Not applicable</option>
-                        {/* <option value="maite@gmail.com">Maite</option> */}
-                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'EDITOR').map((row) =>(
+                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'BACKUP_EDITOR').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
                       </Form.Select>
@@ -1079,8 +1098,7 @@ function PartnerComponent(props) {
                         )}
                       >
                         <option value="">Not applicable</option>
-                        {/* <option value="maite@gmail.com">Maite</option> */}
-                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER1').map((row) =>(
+                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVE_1').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
                       </Form.Select>
@@ -1107,8 +1125,7 @@ function PartnerComponent(props) {
                         )}
                       >
                         <option value="">Not applicable</option>
-                        {/* <option value="thomas@gmail.com">Thomas</option> */}
-                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER2').map((row) =>(
+                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER_2').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
                       </Form.Select>
@@ -1165,4 +1182,6 @@ export default connect(null, {
   retrieveAllStaticData,
   retrieveAllUserListData,
   createUserPartnerRoleConfig,
-  retrievePartnerByRole })(PartnerComponent);
+  retrievePartnerByRole,
+  retrieveUserRoleConfigByPartnerId
+})(PartnerComponent);

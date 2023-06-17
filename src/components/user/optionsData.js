@@ -11,12 +11,12 @@ export const userEmailOptions = [
 ];
 
 export const userRoleOptions = [
-    { value: "Editor", label: "Editor" },
-    { value: "Approver 1", label: "Approver 1" },
-    { value: "Approver 2", label: "Approver 2"},
-    { value: "SuperUser", label: "SuperUser"},
-    { value: "SuperApproverUser", label: "SuperApproverUser"},
-    { value: "Admin", label: "Admin"}
+    { value: "Editor", label: "Editor", category: "Role" },
+    { value: "Approver 1", label: "Approver 1", category: "Role" },
+    { value: "Approver 2", label: "Approver 2", category: "Role"},
+    { value: "SuperUser", label: "SuperUser", category: "Role"},
+    { value: "SuperApproverUser", label: "SuperApproverUser", category: "Role"},
+    { value: "Admin", label: "Admin", category: "Role"}
 ];
 
 export const opsOptions = [

@@ -13,18 +13,28 @@ class PartnerService {
   }
 
   getByRole(id, user) {
-    //console.log(`baseUrl: https://8ghiehyd0f.execute-api.eu-west-1.amazonaws.com/create-partner/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${user}&role_id=${id}`)
     return http.get(
       `/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${user}&role_id=${id}`
     );
   }
 
+  getUserRoleConfigByPartnerId(id) {
+    return http.get(
+      `/ecomm-sellout-dev-lamda-createpartner/get-user-role-partner-config?fetch=by_partner_id&partner_id=${id}`
+    );
+  }
+
+  getUserRoleConfigByEmailRole(id, role) {
+    return http.get(
+      `/ecomm-sellout-dev-lamda-createpartner/get-user-role-partner-config?fetch=by_email_role&email_id=${id}&role_id=${role.toUpperCase()}`
+    );
+  }
+
   get(id) {
-    //return http.get(`/default/SamFunction?partner_id=${id}&country_code=MYS`);
     console.log('partnerid',id);
     return http.get(
       `/default/SamFunction?partner_id=${id}&country_code=MYS`
-    ); //temp using partner list
+    ); 
   }
 
   update(data) {
