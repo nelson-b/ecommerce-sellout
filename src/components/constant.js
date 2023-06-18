@@ -20,7 +20,8 @@ export const roles ={
   "superApproverUser": "superApproverUser",
   "admin": "admin",
   "approver1": "approver1",
-  "approver2": "approver2"
+  "approver2": "approver2",
+  "supervisor_approv_1_2": "supervisor_approv_1_2" // superApproverUser
 };
 
 export const quarters = {

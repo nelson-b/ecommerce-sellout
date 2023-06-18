@@ -97,7 +97,7 @@ import {
 
   export const retrieveHistoricalData = (user, year, id) => async (dispatch) => {
     try {
-      const res = await SellOutDataService.getAll(user, year, id);
+      const res = await SellOutDataService.getHistoricalData(user, year, id);
   
       dispatch({
         type: RETRIEVE_HISTORICAL_DATA,
