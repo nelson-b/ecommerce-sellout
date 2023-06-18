@@ -2,7 +2,7 @@ import http from "../http-common";
 
 class DataInputService {
     create(data) {
-        return http.post("/create-partner/ecomm-sellout-dev-lamda-createpartner/update-sellout-data", data);
+        return http.post("/ecomm-sellout-dev-lamda-createpartner/create-update-input-calander/create-sellout-transactions", data);
     }
 
     update(data) {

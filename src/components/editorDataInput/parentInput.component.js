@@ -25,7 +25,11 @@ function DataInputComponent(props) {
   const [rowData, setRowData] = useState(null);
   const location = useLocation();
   const dataRole = new URLSearchParams(location.search).get("role");
-  const loginUser = "example@example.com";
+  const filterGlobalData = {
+    loginUser: "example@example.com",
+    currentYear: String(new Date().getFullYear()),
+    dataRole: dataRole
+  };
 
   const handleClearClick = () => {
     window.location.reload();
@@ -59,6 +63,7 @@ function DataInputComponent(props) {
     postData();
   }
 
+  const [fileError, setFileError] = useState([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   
   const successmsg = {
@@ -72,10 +77,23 @@ function DataInputComponent(props) {
     setShowSuccessModal(false);
   };
 
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
+  };
+
+  const errormsg = {
+    headerLabel: "Error....",
+    variant: "danger",
+    header:
+      "There are errors while processing",
+    content: [],
+  };
+
   const postData = useCallback(() => {
     setShowShouldUpdModal(false);
     let payload = [];
-
     //iterate in the grid
     gridRef.current.api.forEachNode((rowNode, index) => {
       console.log('index', index);
@@ -100,10 +118,10 @@ function DataInputComponent(props) {
           year_val: rowNode.data.Year,
           months: monthArray,
           trans_currency_code: rowNode.data.Currency_Of_Reporting,
-          created_by: 'thomas@se.com',
+          created_by: '', //login user
           created_date: new Date(),
           approval_status: 0,
-          editor_comment: rowNode.data.comment,
+          editor_comment: rowNode.data.Comment,
           comments: 'waiting for approver',
           batch_upload_flag: false
         };
@@ -113,9 +131,28 @@ function DataInputComponent(props) {
     });
 
     console.log('payload', payload);
+
+    payload.forEach((row, index) => {
+      console.log('updateSellOutData', row);
+      props.updateSellOutData(row)
+      .then((data) => {
+        console.log(data);
+        setFileError([]);
+        setShowErrorModal(false);
+        setShowSuccessModal(true);
+        setShowShouldUpdModal(false);
+      })
+      .catch((e) => {
+        console.log('error', e);
+        setFileError([]);
+        setShowErrorModal(true);
+        setShowSuccessModal(false);
+        setShowShouldUpdModal(false);
+      })
+    })
+
+    console.log('payload', payload);
     gridRef.current.api.refreshCells();
-    setRowData(getData);
-    setShowSuccessModal(true);
   }, []);
 
   const gridRef = useRef(null);
@@ -547,7 +584,7 @@ function DataInputComponent(props) {
           },
           {
             headerName: "Editor's Comment",
-            field: "comment",
+            field: "Comment",
             editable: true,
             singleClickEdit: true,
             minWidth: 300,
@@ -569,7 +606,7 @@ function DataInputComponent(props) {
           suppressMenu: true
         });
   }
-  
+
   // callback tells the grid to use the 'id' attribute for IDs, IDs should always be strings
   const getRowId = useMemo(() => {
     return (params) => {
@@ -648,19 +685,19 @@ function DataInputComponent(props) {
     toggleActualEstimate(param.target.checked);
   });
   
-  const formatGetPayload = useCallback((data) =>{
+  const formatGetPayload = useCallback((data, isManualInput) =>{
     let respPayload = [];
     data.forEach((row, index) => {
       let indvRespPayload = {
-        id: row.partner_id,
-        partner_id: row.partner_id,
-        platform_name: row.platform_name,
-        Partner_Account_Name: row.partner_account_name,
-        Country: row.country_name,
-        country_name: row.country_code,
-        region_name: row.region_name,
-        region_code: row.region_code,
         Zone: row.zone_val,
+        Country: row.country_name,
+        Partner_Account_Name: row.partner_account_name,
+        id: row.partner_id,
+        Partner_id: row.partner_id,
+        Model: row.model_type,
+        Currency_Of_Reporting: row.trans_currency_code,
+        Status: row.status,
+        Year: row.year_val,
         Jan_Amount: row.months[0].month_val == "jan" ? row.months[0].sellout_local_currency: '',
         Feb_Amount: row.months[0].month_val == "feb" ? row.months[0].sellout_local_currency: '',
         Mar_Amount: row.months[0].month_val == "march" ? row.months[0].sellout_local_currency: '',
@@ -685,35 +722,31 @@ function DataInputComponent(props) {
         Oct_Estimated: row.months[0].month_val == "oct" ? (row.months[0].trans_type == "EST" ? true : false): '',
         Nov_Estimated: row.months[0].month_val == "nov" ? (row.months[0].trans_type == "EST" ? true : false): '',
         Dec_Estimated: row.months[0].month_val == "dec" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Currency_Of_Reporting: row.trans_currency_code,
-        Model: row.model_type,
-        year_val: row.year_val,
-        created_by: row.created_by,
-        created_date: row.created_date,
-        approved_by: row.approved_by,
-        approved_date: row.approved_date,
-        approval_status: row.approval_status,
-        editor_comment: row.editor_comment,
-        comments: row.comments,
-        batch_upload_flag: row.batch_upload_flag,
-        Status: row.status
+        // created_by: row.created_by,
+        // created_date: row.created_date,
+        // approved_by: row.approved_by,
+        // approved_date: row.approved_date,
+        // approval_status: row.approval_status,
+        // editor_comment: row.editor_comment,
+        Comment: row.comments,
+        // batch_upload_flag: row.batch_upload_flag,
       };
+
       respPayload = respPayload.concat(indvRespPayload);
     })
     return respPayload;
   });
 
   const onGridReady = useCallback((params) => {
-    let currentYear = String(currentDate.getFullYear());
-    props.retrieveAllData(loginUser, currentYear, dataRole)
+    props.retrieveAllData(filterGlobalData.loginUser, filterGlobalData.currentYear, filterGlobalData.dataRole)
     .then((data) => {
       console.log('retrieveAllData', data);
       if(data){
-        setRowData(formatGetPayload(data));
+        setRowData(formatGetPayload(data, true));
       }
     })
     .catch((e) => {
-      console.log("Data Input",e);
+      console.log("Data Input", e);
     });
   }, []);
 
@@ -737,7 +770,7 @@ function DataInputComponent(props) {
               />
             </Breadcrumb.Item>
           </Breadcrumb>
-          <BatchInputComponent getData={getData} />
+          <BatchInputComponent savedData={rowData} props={props} />
         </Row>
         <Row className="justify-content-end">
           <Col md={2} className="estimate-container">
@@ -765,15 +798,13 @@ function DataInputComponent(props) {
         </Row>
         <Row
           className="mb-3"
-          style={{ float: "right", marginTop: "20px" }}
-        >
+          style={{ float: "right", marginTop: "20px" }}>
           <Col xs="auto">
             <Button
               className="btn-upload cancel-header"
               onClick={() => {
                 handleClearClick();
-              }}
-            >
+              }}>
               Clear
             </Button>
           </Col>
@@ -782,8 +813,7 @@ function DataInputComponent(props) {
               className="btn-upload edit-header"
               onClick={() => {
                 handleSave();
-              }}
-            >
+              }}>
               Save
             </Button>
             <AlertModal
@@ -793,6 +823,11 @@ function DataInputComponent(props) {
                 handleConfirm={ postData }
                 button1Label = {'Confirm'}
                 button2Label = {'Cancel'}
+            />
+            <AlertModal
+                      show={showErrorModal}
+                      handleClose={handleCloseErrorModal}
+                      body={errormsg}
             />
             <AlertModal
                 show={ showSuccessModal }
