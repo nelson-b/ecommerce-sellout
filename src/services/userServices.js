@@ -1,9 +1,8 @@
 import http from "../http-common";
 
 class UserService {
-
   getAll(id, user) {
-    return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-userlist?fetch=by_user_role&ROLE_ID=${id.toUpperCase()}&EMAIL_ID=${user}`);
+    return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-userlist?fetch=all`);
   }
   
   getByUserRole(id) {

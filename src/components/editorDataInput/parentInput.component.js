@@ -18,6 +18,7 @@ import AlertModal from "../modal/alertModel";
 import { useLocation } from "react-router-dom";
 import { createData, retrieveAllData, updateSellOutData } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
+import { getUIDateFormat } from "../../helper/helper";
 
 function DataInputComponent(props) {
   const navigate = useNavigate();
@@ -25,6 +26,11 @@ function DataInputComponent(props) {
   const [rowData, setRowData] = useState(null);
   const location = useLocation();
   const dataRole = new URLSearchParams(location.search).get("role");
+  const filterGlobalData = {
+    loginUser: "example@example.com",
+    currentYear: String(new Date().getFullYear()),
+    dataRole: dataRole
+  };
 
   const handleClearClick = () => {
     window.location.reload();
@@ -58,6 +64,7 @@ function DataInputComponent(props) {
     postData();
   }
 
+  const [fileError, setFileError] = useState([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   
   const successmsg = {
@@ -71,10 +78,23 @@ function DataInputComponent(props) {
     setShowSuccessModal(false);
   };
 
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
+  };
+
+  const errormsg = {
+    headerLabel: "Error....",
+    variant: "danger",
+    header:
+      "There are errors while processing",
+    content: [],
+  };
+
   const postData = useCallback(() => {
     setShowShouldUpdModal(false);
     let payload = [];
-
     //iterate in the grid
     gridRef.current.api.forEachNode((rowNode, index) => {
       console.log('index', index);
@@ -86,7 +106,7 @@ function DataInputComponent(props) {
           if(rowNode.data[`${element}_Amount`]>0){
             monthArray.push({
               month: element,
-              sellout_local_currency: rowNode.data[`${element}_Amount`],
+              sellout_local_currency: String(rowNode.data[`${element}_Amount`]),
               trans_type: rowNode.data[`${element}_Estimated`] == true ? 'EST' : 'ACT'
             });
           }
@@ -95,16 +115,16 @@ function DataInputComponent(props) {
         let formatPayload = {
           partner_id: rowNode.data.id,
           partner_name: rowNode.data.Partner_Account_Name,
-          country_code: rowNode.data.Country,
-          year_val: rowNode.data.Year,
+          country_code: rowNode.data.Country_code,
+          year_val: String(rowNode.data.Year),
           months: monthArray,
           trans_currency_code: rowNode.data.Currency_Of_Reporting,
-          created_by: 'thomas@se.com',
-          created_date: new Date(),
-          approval_status: 0,
-          editor_comment: rowNode.data.comment,
+          created_by: 'abc@gmail.com', //login user
+          created_date: getUIDateFormat(new Date().toUTCString()),
+          approval_status: "0",
+          editor_comment: rowNode.data.editor_comment,
           comments: 'waiting for approver',
-          batch_upload_flag: false
+          batch_upload_flag: "false"
         };
 
         console.log('formatPayload', formatPayload);
@@ -112,11 +132,30 @@ function DataInputComponent(props) {
     });
 
     console.log('payload', payload);
+
+    payload.forEach((row, index) => {
+      console.log('updateSellOutData', row);
+      props.updateSellOutData(row)
+      .then((data) => {
+        console.log(data);
+        setFileError([]);
+        setShowErrorModal(false);
+        setShowSuccessModal(true);
+        setShowShouldUpdModal(false);
+      })
+      .catch((e) => {
+        console.log('error', e);
+        setFileError([]);
+        setShowErrorModal(true);
+        setShowSuccessModal(false);
+        setShowShouldUpdModal(false);
+      })
+    })
+
+    console.log('payload', payload);
     gridRef.current.api.refreshCells();
-    setRowData(getData);
-    setShowSuccessModal(true);
   }, []);
-  
+
   const gridRef = useRef(null);
 
   const getData = [
@@ -407,6 +446,10 @@ function DataInputComponent(props) {
       editable: false,
     },
     {
+      field: 'Country_code',
+      hide: true
+    },
+    {
       headerName: "Partner Account Name",
       field: "Partner_Account_Name",
       sortable: true,
@@ -449,10 +492,10 @@ function DataInputComponent(props) {
         const Status = params.value;
         return (
           <div>
-            {Status === "Active" && (
+            {Status === "ACTIVE" && (
               <img src={active} alt="active" style={{ width: "80px" }} />
             )}
-            {Status === "Closed" && (
+            {Status === "ClOSED" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )}
           </div>
@@ -475,7 +518,7 @@ function DataInputComponent(props) {
     }),
     []
   );
-
+  
   //fn set is estimated
   const fnSetIsEstimated = (params, monthField) => {
     let monthYrKey = monthField.replace('_Amount','') + "_Estimated";
@@ -546,7 +589,7 @@ function DataInputComponent(props) {
           },
           {
             headerName: "Editor's Comment",
-            field: "comment",
+            field: "Comment",
             editable: true,
             singleClickEdit: true,
             minWidth: 300,
@@ -584,9 +627,7 @@ function DataInputComponent(props) {
       //row level loop
       currRow.columns.forEach((currCol) => {
         //col level loop
-        for (
-          let i = currRow.startRow.rowIndex; i < currRow.endRow.rowIndex + 1; i++
-        ) {
+        for (let i = currRow.startRow.rowIndex; i < currRow.endRow.rowIndex + 1; i++) {
           gridRef.current.api.forEachNodeAfterFilterAndSort(function (
             rowNodes,
             index
@@ -598,53 +639,39 @@ function DataInputComponent(props) {
               if (monthField != undefined) {
                 switch (monthField) {
                   case "Jan_Amount":
-                    //console.log("Jan");
                     data.Jan_Estimated = isEstimate;
-                    //console.log(data.Jan_Estimated);
                     break;
                   case "Feb_Amount":
-                    //console.log("Feb");
                     data.Feb_Estimated = isEstimate;
-                    //console.log(data.Feb_Estimated);
                     break;
                   case "Mar_Amount":
-                    //console.log("Mar");
                     data.Mar_Estimated = isEstimate;
                     break;
                   case "Apr_Amount":
-                    //console.log("Apr");
                     data.Apr_Estimated = isEstimate;
                     break;
                   case "May_Amount":
-                    //console.log("May");
                     data.May_Estimated = isEstimate;
                     break;
                   case "Jun_Amount":
-                    //console.log("Jun");
                     data.Jun_Estimated = isEstimate;
                     break;
                   case "Jul_Amount":
-                    //console.log("Jul");
                     data.Jul_Estimated = isEstimate;
                     break;
                   case "Aug_Amount":
-                    //console.log("Aug");
                     data.Aug_Estimated = isEstimate;
                     break;
                   case "Sep_Amount":
-                    //console.log("Sep");
                     data.Sep_Estimated = isEstimate;
                     break;
                   case "Oct_Amount":
-                    //console.log("Oct");
                     data.Oct_Estimated = isEstimate;
                     break;
                   case "Oct_Amount":
-                    //console.log("Oct");
                     data.Nov_Estimated = isEstimate;
                     break;
                   case "Dec_Amount":
-                    //console.log("Dec");
                     data.Dec_Estimated = isEstimate;
                     break;
                 }
@@ -663,46 +690,78 @@ function DataInputComponent(props) {
     toggleActualEstimate(param.target.checked);
   });
   
-  const formatGetPayload = useCallback((data) =>{
+  const formatGetPayload = useCallback((data, isManualInput) =>{
     let respPayload = [];
     data.forEach((row, index) => {
+      console.log('row.country_code', row.country_code);
       let indvRespPayload = {
-        partner_id: "CHN-CN-00071",
-        partner_name: "Lazada",
-        country_code: "CHN",
-        country_name: "China",
-        region_name: "CHN",
-        region_code: "China",
-        zone_val: "CN",
-        year_val: 2023,
-        months: [],
-        created_by: "ss@example.com",
-        created_date: "2023-06-01 12:29:00",
-        approved_by: null,
-        approved_date: "None",
-        approval_status: 0,
-        editor_comment: "editor",
-        comments: "waiting for approver",
-        batch_upload_flag: false
-      }
-    })
+        Zone: row.zone_val,
+        Country: row.country_name,
+        Country_code: row.country_code,
+        Partner_Account_Name: row.partner_account_name,
+        id: row.partner_id,
+        Partner_id: row.partner_id,
+        Model: row.model_type,
+        Currency_Of_Reporting: row.trans_currency_code,
+        Status: row.status,
+        Year: row.year_val,
+        Jan_Amount: row.months[0].month_val == "jan" ? row.months[0].sellout_local_currency: '',
+        Feb_Amount: row.months[0].month_val == "feb" ? row.months[0].sellout_local_currency: '',
+        Mar_Amount: row.months[0].month_val == "march" ? row.months[0].sellout_local_currency: '',
+        Apr_Amount: row.months[0].month_val == "apr" ? row.months[0].sellout_local_currency: '',
+        May_Amount: row.months[0].month_val == "may" ? row.months[0].sellout_local_currency: '',
+        Jun_Amount: row.months[0].month_val == "jun" ? row.months[0].sellout_local_currency: '',
+        Jul_Amount: row.months[0].month_val == "jul" ? row.months[0].sellout_local_currency: '',
+        Aug_Amount: row.months[0].month_val == "aug" ? row.months[0].sellout_local_currency: '',
+        Sep_Amount: row.months[0].month_val == "sep" ? row.months[0].sellout_local_currency: '',
+        Oct_Amount: row.months[0].month_val == "oct" ? row.months[0].sellout_local_currency: '',
+        Nov_Amount: row.months[0].month_val == "nov" ? row.months[0].sellout_local_currency: '',
+        Dec_Amount: row.months[0].month_val == "dec" ? row.months[0].sellout_local_currency: '',
+        Jan_Estimated: row.months[0].month_val == "jan" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Feb_Estimated: row.months[0].month_val == "feb" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Mar_Estimated: row.months[0].month_val == "mar" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Apr_Estimated: row.months[0].month_val == "apr" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        May_Estimated: row.months[0].month_val == "may" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Jun_Estimated: row.months[0].month_val == "jun" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Jul_Estimated: row.months[0].month_val == "jul" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Aug_Estimated: row.months[0].month_val == "aug" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Sep_Estimated: row.months[0].month_val == "sep" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Oct_Estimated: row.months[0].month_val == "oct" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Nov_Estimated: row.months[0].month_val == "nov" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Dec_Estimated: row.months[0].month_val == "dec" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        // created_by: row.created_by,
+        // created_date: row.created_date,
+        // approved_by: row.approved_by,
+        // approved_date: row.approved_date,
+        // approval_status: row.approval_status,
+        // editor_comment: row.editor_comment,
+        Comment: row.editor_comment,
+        // batch_upload_flag: row.batch_upload_flag,
+      };
+      
+      respPayload = respPayload.concat(indvRespPayload);
+    });
+    console.log('respPayload', respPayload);
+    return respPayload;
   });
 
   const onGridReady = useCallback((params) => {
-    props.retrieveAllData()
+    props.retrieveAllData(filterGlobalData.loginUser, filterGlobalData.currentYear, filterGlobalData.dataRole)
     .then((data) => {
-
+      console.log('retrieveAllData', data);
+      if(data){
+        setRowData(formatGetPayload(data, true));
+      }
     })
     .catch((e) => {
-      console.log("Data Input",e);
+      console.log("Data Input", e);
     });
   }, []);
 
   const handleNavigation = () => {
     navigate(`/dataReview?role=${dataRole}`);
   };
-
-
+  
   return (
     <>
       <Container fluid>
@@ -719,7 +778,7 @@ function DataInputComponent(props) {
               />
             </Breadcrumb.Item>
           </Breadcrumb>
-          <BatchInputComponent getData={getData} />
+          <BatchInputComponent savedData={rowData} props={props} />
         </Row>
         <Row className="justify-content-end">
           <Col md={2} className="estimate-container">
@@ -747,15 +806,13 @@ function DataInputComponent(props) {
         </Row>
         <Row
           className="mb-3"
-          style={{ float: "right", marginTop: "20px" }}
-        >
+          style={{ float: "right", marginTop: "20px" }}>
           <Col xs="auto">
             <Button
               className="btn-upload cancel-header"
               onClick={() => {
                 handleClearClick();
-              }}
-            >
+              }}>
               Clear
             </Button>
           </Col>
@@ -764,8 +821,7 @@ function DataInputComponent(props) {
               className="btn-upload edit-header"
               onClick={() => {
                 handleSave();
-              }}
-            >
+              }}>
               Save
             </Button>
             <AlertModal
@@ -775,6 +831,11 @@ function DataInputComponent(props) {
                 handleConfirm={ postData }
                 button1Label = {'Confirm'}
                 button2Label = {'Cancel'}
+            />
+            <AlertModal
+                      show={showErrorModal}
+                      handleClose={handleCloseErrorModal}
+                      body={errormsg}
             />
             <AlertModal
                 show={ showSuccessModal }

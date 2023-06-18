@@ -18,14 +18,17 @@ export const createData = (data) => async(dispatch) => {
     }
   }
 
-  export const retrieveAllData = () => async (dispatch) => {
+  export const retrieveAllData = (user, year, role) => async (dispatch) => {
     try {
-      const res = await dataInputServices.getAll();
-  
+      const res = await dataInputServices.getAll(user, year, role);
+      
       dispatch({
         type: RETRIEVE_ALL_DATA_INPUT,
         payload: res.data,
       });
+
+      return Promise.resolve(res.data);
+
     } catch (err) {
       console.log(err);
     }
@@ -41,6 +44,7 @@ export const createData = (data) => async(dispatch) => {
       });
   
       return Promise.resolve(res.data);
+      
     } catch (err) {
       return Promise.reject(err);
     }

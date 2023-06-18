@@ -7,8 +7,11 @@ import * as xlsx from "xlsx-js-style";
 import AlertModel from "../modal/alertModel";
 import { allCalMonths } from "../constant";
 import { ckeckErrors } from "../utils/index.js";
+import { retrieveAllData, createData } from "../../actions/dataInputAction";
+import { connect } from "react-redux";
+import { getUIDateFormat } from "../../helper/helper";
 
-function BatchInputComponent({ getData }) {
+function BatchInputComponent({ savedData, props }) {
   const navigate = useNavigate();
 
   const {
@@ -23,12 +26,10 @@ function BatchInputComponent({ getData }) {
   });
 
   const handleChange = ({ target }) => {
-    //console.log("target", target);
     setSelectedFile(target);
   };
 
   const handleClick = (event) => {
-    //console.log("event", event);
     setSelectedFile(event.target.files);
   };
 
@@ -39,6 +40,7 @@ function BatchInputComponent({ getData }) {
   const [showShouldUpdModal, setShowShouldUpdModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
+  let selectedFrmFile = null;
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
   };
@@ -62,7 +64,7 @@ function BatchInputComponent({ getData }) {
     headerLabel: "Error....",
     variant: "danger",
     header:
-      "There are below errors while processing. Please recitify and retry",
+      "There are errors while processing",
     content: fileError,
   };
 
@@ -75,40 +77,10 @@ function BatchInputComponent({ getData }) {
     ],
   };
 
-  const saveData = () => {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    const currentYear = String(currentDate.getFullYear()).slice(-2);
-
-    for (let i = 7; i > 0; i--) {
-      let date = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth() - (i - 1),
-        1
-      );
-
-      const monthName = allCalMonths[date.getMonth()];
-      const year = String(date.getFullYear()).slice(-2);
-      const monthField = monthName + "_Amount";
-
-      if (currentYear !== year && currentMonth !== 0) continue;
-
-      let data = getData.filter((item) => item[monthField] != "");
-      //console.log("data", data);
-
-      if (data.length > 0) {
-        //console.log("show data already exist popup");
-        setShowShouldUpdModal(true);
-        return;
-      }
-    }
-    postBatchData();
-  };
-
-  const postBatchData = () => {
-    //console.log("selectedFile", selectedFile);
-    const file = selectedFile.file[0];
-
+  const postBatchData = (frmData) => {
+    console.log('postBatchData', frmData);
+    const file = frmData.file[0];
+    console.log('file', file);
     if (
       file.type !==
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -122,18 +94,15 @@ function BatchInputComponent({ getData }) {
       if (file) {
         let reader = new FileReader();
         reader.onload = (e) => {
-          //console.log("reader onload");
           let result = e.target.result;
           let workbook = xlsx.read(result, { type: "array" });
           let sheetName = workbook.SheetNames[1];
-          //console.log("sheetName", sheetName);
           let worksheet = workbook.Sheets[sheetName];
           let json = xlsx.utils.sheet_to_json(worksheet);
           let errorJson = [];
-          //console.log("Reading excel: ", json);
           setFileData(json);
-
-          errorJson = ckeckErrors(getData, json);
+          console.log('json', json);
+          errorJson = ckeckErrors(json, json);
 
           json.forEach((i) => {
             if (i.Jan_Amount) {
@@ -142,10 +111,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number for Jan month at partner : " +
                     i["Partner Account Name"]
                 );
-                //console.log(
-                //   "There should be number for Jan month at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
             if (i.Feb_Amount) {
@@ -154,10 +119,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number for Feb month at partner : " +
                     i["Partner Account Name"]
                 );
-                // console.log(
-                //   "There should be number for Feb at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
             if (i.Mar_Amount) {
@@ -166,10 +127,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number for Mar month at partner : " +
                     i["Partner Account Name"]
                 );
-                // console.log(
-                //   "There should be number for Mar month at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
             if (i.Apr_Amount) {
@@ -178,10 +135,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Apr at partner : " +
                     i["Partner Account Name"]
                 );
-                // console.log(
-                //   "There should be number at Apr at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
             if (i.May_Amount) {
@@ -190,10 +143,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number at May at partner : " +
                     i["Partner Account Name"]
                 );
-                // console.log(
-                //   "There should be number at May at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
             if (i.Jun_Amount) {
@@ -202,10 +151,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Jun at partner : " +
                     i["Partner Account Name"]
                 );
-                // console.log(
-                //   "There should be number at Jun at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
             if (i.Jul_Amount) {
@@ -214,10 +159,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Jul at partner : " +
                     i["Partner Account Name"]
                 );
-                // console.log(
-                //   "There should be number at Jul at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
             if (i.Aug_Amount) {
@@ -226,10 +167,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Jul at partner : " +
                     i["Partner Account Name"]
                 );
-                // console.log(
-                //   "There should be number at Aug at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
             if (i.Sep_Amount) {
@@ -238,10 +175,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Jul at partner : " +
                     i["Partner Account Name"]
                 );
-                // console.log(
-                //   "There should be number at Sep at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
             if (i.Oct_Amount) {
@@ -250,10 +183,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Oct at partner : " +
                     i["Partner Account Name"]
                 );
-                // console.log(
-                //   "There should be number at Oct at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
             if (i.Nov_Amount) {
@@ -262,10 +191,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Nov at partner : " +
                     i["Partner Account Name"]
                 );
-                // console.log(
-                //   "There should be number at Nov at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
             if (i.Dec_Amount) {
@@ -274,10 +199,6 @@ function BatchInputComponent({ getData }) {
                   "There should be number at Dec at partner : " +
                     i["Partner Account Name"]
                 );
-                // console.log(
-                //   "There should be number at Dec at partner : " +
-                //     i["Partner Account Name"]
-                // );
               }
             }
           });
@@ -288,25 +209,82 @@ function BatchInputComponent({ getData }) {
             setShowSuccessModal(false);
             setShowShouldUpdModal(false);
           } else {
-            setFileError([]);
-            setShowErrorModal(false);
-            setShowSuccessModal(true);
-            setShowShouldUpdModal(false);
-            setTimeout(() => navigate("/dataReview"), 3000);
+            //call api
+            let payload = [];
+
+            // //iterate in the grid
+            json.forEach((rowNode, index) => {
+              console.log('index', index);
+              //api to save data
+                console.log('editor inp grid', rowNode);
+                let monthArray = [];
+                //12 months loop 
+                allCalMonths.forEach(element => {          
+                  if(rowNode[`${element}_Amount`]>0){
+                    monthArray.push({
+                      month: element,
+                      sellout_local_currency: String(rowNode[`${element}_Amount`]),
+                      trans_type: rowNode[`${element}_Estimated`] == true ? 'EST' : 'ACT'
+                    });
+                  }
+                });
+              
+                let formatPayload = {
+                  partner_id: rowNode.Partner_id,
+                  partner_name: rowNode.Partner_Account_Name,
+                  country_code: rowNode.Country_code,
+                  year_val: String(rowNode.Year),
+                  months: monthArray,
+                  trans_currency_code: rowNode.Currency_Of_Reporting,
+                  created_by: 'abc@gmail.com', //login user
+                  created_date: getUIDateFormat(new Date().toUTCString()),
+                  approval_status: "0",
+                  editor_comment: '',
+                  comments: 'waiting for approver',
+                  batch_upload_flag: "false"
+                };
+        
+                console.log('formatPayload', formatPayload);
+                payload.push(formatPayload);
+            });
+        
+            console.log('payload', payload);
+            
+            payload.forEach((row, index) => {
+              console.log('createData', row);
+              console.log('createData row length', payload.length); 
+              props.createData(row)
+              .then((data) => {
+                console.log(data);
+                document.getElementById('sellout-editor-input').reset();
+                setFileError([]);
+                setShowErrorModal(false);
+                setShowSuccessModal(true);
+                setShowShouldUpdModal(false);
+                setTimeout(() => navigate("/dataReview"), 3000);
+              })
+              .catch((e) => {
+                document.getElementById('sellout-editor-input').reset();
+                setFileError([]);
+                setShowErrorModal(true);
+                setShowSuccessModal(false);
+                setShowShouldUpdModal(false);
+                return;
+              });
+            });
           }
 
           errorJson = [];
         };
 
-        reader.readAsArrayBuffer(selectedFile.file[0]);
+        reader.readAsArrayBuffer(frmData.file[0]);
       }
     }
   };
 
   const onSubmit = (frmData) => {
-    document.getElementById('sellout-editor-input').reset();
-    setSelectedFile(frmData);
-    saveData();
+    console.log('frmData', frmData);
+    postBatchData(frmData);
   };
 
   const onError = (error) => {
@@ -339,11 +317,54 @@ function BatchInputComponent({ getData }) {
     ["8. Please verify the values in each cell before the upload"],
   ];
 
-  const exportToExcel = async (exportedData) => {
-    const tempData = exportedData.map((e) => {
+  const exportToExcel = async () => {
+    let exportExcelData = [];
+    console.log('savedData', savedData);
+    savedData.forEach((row, index) => {
+    let indvRespPayload = {
+      Zone: row.Zone,
+      Country: row.Country,
+      Country_code: row.Country_code,
+      Partner_Account_Name: row.Partner_Account_Name,
+      Partner_id: row.Partner_id,
+      Model: row.Model,
+      Currency_Of_Reporting: row.Currency_Of_Reporting,
+      Status: row.Status,
+      Year: row.Year,
+      Jan_Amount: row.Jan_Amount,
+      Feb_Amount: row.Feb_Amount,
+      Mar_Amount: row.Mar_Amount,
+      Apr_Amount: row.Apr_Amount,
+      May_Amount: row.May_Amount,
+      Jun_Amount: row.Jun_Amount,
+      Jul_Amount: row.Jul_Amount,
+      Aug_Amount: row.Aug_Amount,
+      Sep_Amount: row.Sep_Amount,
+      Oct_Amount: row.Oct_Amount,
+      Nov_Amount: row.Nov_Amount,
+      Dec_Amount: row.Dec_Amount,
+      Jan_Estimated: row.Jan_Estimated,
+      Feb_Estimated: row.Feb_Estimated,
+      Mar_Estimated: row.Mar_Estimated,
+      Apr_Estimated: row.Apr_Estimated,
+      May_Estimated: row.May_Estimated,
+      Jun_Estimated: row.Jun_Estimated,
+      Jul_Estimated: row.Jul_Estimated,
+      Aug_Estimated: row.Aug_Estimated,
+      Sep_Estimated: row.Sep_Estimated,
+      Oct_Estimated: row.Oct_Estimated,
+      Nov_Estimated: row.Nov_Estimated,
+      Dec_Estimated: row.Dec_Estimated
+    };
+    
+    exportExcelData = exportExcelData.concat(indvRespPayload);
+    });
+
+    console.log('exportExcelData', exportExcelData);
+    const tempData = exportExcelData.map((e) => {
       const { id, status, ...rest } = e;
       return rest;
-    });
+    }); 
 
     const currentDate = new Date();
     const totalValue = [];
@@ -354,6 +375,7 @@ function BatchInputComponent({ getData }) {
         currentDate.getMonth() - (i - 1),
         1
       );
+
       const monthName = allCalMonths[date.getMonth()];
       const monthField = monthName + "_Amount";
       totalValue.push(monthField);
@@ -458,7 +480,7 @@ function BatchInputComponent({ getData }) {
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["U1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "e47f00" } },
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["V1"].s = {
@@ -506,6 +528,10 @@ function BatchInputComponent({ getData }) {
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["AG1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "e47f00" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
+    };
+    workbook.Sheets["Sell out Data Input"]["AH1"].s = {
       fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };
@@ -575,7 +601,7 @@ function BatchInputComponent({ getData }) {
               <Button
                 size="lg"
                 className="edit-header"
-                onClick={(e) => exportToExcel(getData)}
+                onClick={(e) => exportToExcel()}
               >
                 Download Template
               </Button>
@@ -587,4 +613,4 @@ function BatchInputComponent({ getData }) {
   );
 }
 
-export default BatchInputComponent;
+export default connect(null, { retrieveAllData })(BatchInputComponent);

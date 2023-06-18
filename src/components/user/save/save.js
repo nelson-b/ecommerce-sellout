@@ -24,7 +24,7 @@ import "../save/save.css";
 import { 
   retrieveAllPartnerData, 
   retrievePartnerByRole, 
-  retrieveUserRoleConfigByPartnerId, 
+  retrieveAllUserRoleConfig, 
   retrieveUserRoleConfigByEmailIdRoleId 
 } from "../../../actions/partneraction.js";
 import { retrieveAllStaticData, retrieveAllCountryData } from "../../../actions/staticDataAction.js";
@@ -218,7 +218,7 @@ function SaveUser(props) {
     .then((data) => {
       console.log('retrieveAllStaticData', data);
         let staticAllOptions = [];
-        data.forEach((row) => {
+        data.data.forEach((row) => {
           staticAllOptions = staticAllOptions.concat({
             value: row.attribute_value,
             label: row.attribute_value,
@@ -260,25 +260,23 @@ function SaveUser(props) {
         console.log(e);
     });
 
-    props.retrieveUserRoleConfigByEmailIdRoleId(userEmailId, userRole)
-    .then((data) => {
-      console.log('retrieveUserRoleConfigByEmailIdRoleId', data);
-      let filterData = data.data.filter(data => data.EMAIL_ID === userEmailId && data.ROLE_ID === userRole)
-      let partnerData = [];
-      filterData.forEach((rows, index)=> {
-        let partner_account_name = partnerDrpData.filter(data.value == rows.PARTNER_ID);
-        let partnerDataIndv = {
-          value: rows.PARTNER_ID,
-          label: partner_account_name.label
-        }
-        partnerData = partnerData.concat(partnerDataIndv);
+      props.retrieveUserRoleConfigByEmailIdRoleId(userEmailId, userRole)
+      .then((data) => {
+        console.log('retrieveUserRoleConfigByEmailIdRoleId', data);
+        let filterData = data.data.filter(data => data.EMAIL_ID === userEmailId && data.ROLE_ID === userRole)
+        let partnerData = [];
+        filterData.forEach((rows, index)=> {
+          let partner_account_name = partnerDrpData.filter(data.value == rows.PARTNER_ID);
+          let partnerDataIndv = {
+            value: rows.PARTNER_ID,
+            label: partner_account_name.label
+          }
+          partnerData = partnerData.concat(partnerDataIndv);
+        });
+
+        setOptionPartnerSelected(partnerData);
       });
-
-      setOptionPartnerSelected(partnerData);
-    });
-  }
-
-
+    }
   }, []);
 
   const handleCountryChange = (selected) => {
@@ -331,12 +329,14 @@ function SaveUser(props) {
     }
 
     //call api
-    props.retrieveUserRoleConfigByPartnerId(selected[0]?selected[0].value:'') //i/p for test purpose
+    // let partnerId = selected[0]?selected.value:'';
+    // console.log('partnerId',partnerId);
+    props.retrieveAllUserRoleConfig() //i/p for test purpose
     .then((data) => {
       console.log("retrieveAllPartnerData", data);
       let gridInput = {
         dropdownField: selected,
-        data: data.data
+        data: data
       }
 
       setPartnerAccData(gridInput);
@@ -857,6 +857,6 @@ export default connect(null, {
   createUserProfileConfig,
   retrievePartnerByRole,
   retrieveAllNewListByRole,
-  retrieveUserRoleConfigByPartnerId,
+  retrieveAllUserRoleConfig,
   retrieveUserRoleConfigByEmailIdRoleId
  })(SaveUser);

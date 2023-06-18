@@ -16,9 +16,9 @@ function PartnerAccountList(props) {
         { headerName: "Partner Account Name", field: "partner_account_name" },
         // { headerName: "Country", field: "country_code", minWidth: 100, suppressSizeToFit: true, suppressMenu: true },
         // { headerName: "Model", field: "model_type", minWidth: 100, suppressSizeToFit: true, suppressMenu: true }
-        { headerName: "Current Editor", field: "EDITOR" },
-        { headerName: "Current 1st Approver", field: "APPROVE_1" },
-        { headerName: "Current 2nd Approver", field: "APPROVER_2" }
+        { headerName: "Current Editor", field: "editor" },
+        { headerName: "Current 1st Approver", field: "approver1" },
+        { headerName: "Current 2nd Approver", field: "approver2" }
     ];
 
     const defaultColDef = useMemo(
@@ -37,14 +37,24 @@ function PartnerAccountList(props) {
         let gridData = [];
         if(props.data.data){
             props.data.dropdownField.forEach((row, index) => {
-                let filterData = props.data.data.filter(data => data.partner_id === row.value);
-                gridData = gridData.concat({
-                    partner_account_name: row.label,
-                    EDITOR: filterData.EDITOR,
-                    APPROVE_1: filterData.APPROVE_1,
-                    APPROVER_2: filterData.APPROVER_2
-                });
+                console.log('index', index);
+                console.log('row', row);
+                console.log('partner id', row.value);
+                let partnerid=row.value;
+                let filterData = props.data.data.filter(data => data.PARTNER_ID === partnerid);
+                console.log('filterData', filterData);
+                if(filterData.length > 0){
+                    gridData = gridData.concat({
+                        partner_account_name: row.label,
+                        editor: filterData[0].EDITOR ? filterData[0].EDITOR: '',
+                        approver1: (filterData[0].APPROVE_1) ? filterData[0].APPROVE_1: '',
+                        approver2: (filterData[0].APPROVER_2) ? filterData[0].APPROVER_2: '',
+                    });
+
+                    console.log('gridData', gridData);
+                }
             });
+            console.log('appended data', gridData);
         }
         setRowData(gridData);
     },[props.data.dropdownField]);
