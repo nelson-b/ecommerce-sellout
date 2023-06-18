@@ -63,6 +63,7 @@ function DataInputComponent(props) {
     postData();
   }
 
+  const [fileError, setFileError] = useState([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   
   const successmsg = {
@@ -76,10 +77,23 @@ function DataInputComponent(props) {
     setShowSuccessModal(false);
   };
 
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
+  };
+
+  const errormsg = {
+    headerLabel: "Error....",
+    variant: "danger",
+    header:
+      "There are errors while processing",
+    content: [],
+  };
+
   const postData = useCallback(() => {
     setShowShouldUpdModal(false);
     let payload = [];
-
     //iterate in the grid
     gridRef.current.api.forEachNode((rowNode, index) => {
       console.log('index', index);
@@ -104,10 +118,10 @@ function DataInputComponent(props) {
           year_val: rowNode.data.Year,
           months: monthArray,
           trans_currency_code: rowNode.data.Currency_Of_Reporting,
-          created_by: 'thomas@se.com',
+          created_by: '', //login user
           created_date: new Date(),
           approval_status: 0,
-          editor_comment: rowNode.data.comment,
+          editor_comment: rowNode.data.Comment,
           comments: 'waiting for approver',
           batch_upload_flag: false
         };
@@ -117,9 +131,28 @@ function DataInputComponent(props) {
     });
 
     console.log('payload', payload);
+
+    payload.forEach((row, index) => {
+      console.log('updateSellOutData', row);
+      props.updateSellOutData(row)
+      .then((data) => {
+        console.log(data);
+        setFileError([]);
+        setShowErrorModal(false);
+        setShowSuccessModal(true);
+        setShowShouldUpdModal(false);
+      })
+      .catch((e) => {
+        console.log('error', e);
+        setFileError([]);
+        setShowErrorModal(true);
+        setShowSuccessModal(false);
+        setShowShouldUpdModal(false);
+      })
+    })
+
+    console.log('payload', payload);
     gridRef.current.api.refreshCells();
-    setRowData(getData);
-    setShowSuccessModal(true);
   }, []);
 
   const gridRef = useRef(null);
@@ -698,7 +731,7 @@ function DataInputComponent(props) {
         Comment: row.comments,
         // batch_upload_flag: row.batch_upload_flag,
       };
-      
+
       respPayload = respPayload.concat(indvRespPayload);
     })
     return respPayload;
@@ -737,7 +770,7 @@ function DataInputComponent(props) {
               />
             </Breadcrumb.Item>
           </Breadcrumb>
-          <BatchInputComponent savedData={rowData}  />
+          <BatchInputComponent savedData={rowData} props={props} />
         </Row>
         <Row className="justify-content-end">
           <Col md={2} className="estimate-container">
@@ -790,6 +823,11 @@ function DataInputComponent(props) {
                 handleConfirm={ postData }
                 button1Label = {'Confirm'}
                 button2Label = {'Cancel'}
+            />
+            <AlertModal
+                      show={showErrorModal}
+                      handleClose={handleCloseErrorModal}
+                      body={errormsg}
             />
             <AlertModal
                 show={ showSuccessModal }
