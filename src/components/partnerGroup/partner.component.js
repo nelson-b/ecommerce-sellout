@@ -85,7 +85,7 @@ function PartnerComponent(props) {
     props.retrieveAllStaticData()
     .then((data) => {
       console.log('retrieveAllStaticData', data);
-      setStaticData(data);
+      setStaticData(data.data);
     })
     .catch((e) => {
       console.log('retrieveAllStaticData', e);
@@ -1098,7 +1098,7 @@ function PartnerComponent(props) {
                         )}
                       >
                         <option value="">Not applicable</option>
-                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVE_1').map((row) =>(
+                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER_1').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
                       </Form.Select>

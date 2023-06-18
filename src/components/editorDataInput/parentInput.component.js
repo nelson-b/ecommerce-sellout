@@ -106,7 +106,7 @@ function DataInputComponent(props) {
           if(rowNode.data[`${element}_Amount`]>0){
             monthArray.push({
               month: element,
-              sellout_local_currency: rowNode.data[`${element}_Amount`],
+              sellout_local_currency: String(rowNode.data[`${element}_Amount`]),
               trans_type: rowNode.data[`${element}_Estimated`] == true ? 'EST' : 'ACT'
             });
           }
@@ -115,14 +115,14 @@ function DataInputComponent(props) {
         let formatPayload = {
           partner_id: rowNode.data.id,
           partner_name: rowNode.data.Partner_Account_Name,
-          country_code: rowNode.data.country_code,
-          year_val: rowNode.data.Year,
+          country_code: rowNode.data.Country_code,
+          year_val: String(rowNode.data.Year),
           months: monthArray,
           trans_currency_code: rowNode.data.Currency_Of_Reporting,
-          created_by: '', //login user
-          created_date: new Date().toUTCString(),
+          created_by: 'abc@gmail.com', //login user
+          created_date: getUIDateFormat(new Date().toUTCString()),
           approval_status: "0",
-          editor_comment: rowNode.data.Comment,
+          editor_comment: rowNode.data.editor_comment,
           comments: 'waiting for approver',
           batch_upload_flag: "false"
         };
@@ -446,7 +446,8 @@ function DataInputComponent(props) {
       editable: false,
     },
     {
-      field: 'Country_code'
+      field: 'Country_code',
+      hide: true
     },
     {
       headerName: "Partner Account Name",
@@ -692,6 +693,7 @@ function DataInputComponent(props) {
   const formatGetPayload = useCallback((data, isManualInput) =>{
     let respPayload = [];
     data.forEach((row, index) => {
+      console.log('row.country_code', row.country_code);
       let indvRespPayload = {
         Zone: row.zone_val,
         Country: row.country_name,
@@ -733,12 +735,13 @@ function DataInputComponent(props) {
         // approved_date: row.approved_date,
         // approval_status: row.approval_status,
         // editor_comment: row.editor_comment,
-        Comment: row.comments,
+        Comment: row.editor_comment,
         // batch_upload_flag: row.batch_upload_flag,
       };
-
+      
       respPayload = respPayload.concat(indvRespPayload);
-    })
+    });
+    console.log('respPayload', respPayload);
     return respPayload;
   });
 

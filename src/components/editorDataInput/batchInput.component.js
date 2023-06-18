@@ -252,6 +252,7 @@ function BatchInputComponent({ savedData, props }) {
             
             payload.forEach((row, index) => {
               console.log('createData', row);
+              console.log('createData row length', payload.length); 
               props.createData(row)
               .then((data) => {
                 console.log(data);
@@ -268,6 +269,7 @@ function BatchInputComponent({ savedData, props }) {
                 setShowErrorModal(true);
                 setShowSuccessModal(false);
                 setShowShouldUpdModal(false);
+                return;
               });
             });
           }
@@ -322,7 +324,7 @@ function BatchInputComponent({ savedData, props }) {
     let indvRespPayload = {
       Zone: row.Zone,
       Country: row.Country,
-      Country_code: row.country_code,
+      Country_code: row.Country_code,
       Partner_Account_Name: row.Partner_Account_Name,
       Partner_id: row.Partner_id,
       Model: row.Model,
@@ -358,6 +360,7 @@ function BatchInputComponent({ savedData, props }) {
     exportExcelData = exportExcelData.concat(indvRespPayload);
     });
 
+    console.log('exportExcelData', exportExcelData);
     const tempData = exportExcelData.map((e) => {
       const { id, status, ...rest } = e;
       return rest;

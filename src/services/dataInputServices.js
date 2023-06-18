@@ -6,7 +6,7 @@ class DataInputService {
     }
 
     update(data) {
-        return http.put(`/create-partner/ecomm-sellout-dev-lamda-createpartner/update-sellout-data`, data);
+        return http.put(`/ecomm-sellout-dev-lamda-createpartner/update-sellout-data`, data);
     }
 
     getAll(user, year, role) {
