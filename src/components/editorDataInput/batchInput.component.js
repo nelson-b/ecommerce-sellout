@@ -245,15 +245,14 @@ function BatchInputComponent({ savedData, props }) {
                 };
         
                 console.log('formatPayload', formatPayload);
-                payload.push(formatPayload);
+                if(formatPayload.months>0)payload.push(formatPayload);
             });
         
             console.log('payload', payload);
             
-            payload.forEach((row, index) => {
-              console.log('createData', row);
+            // payload.forEach((row, index) => {
               console.log('createData row length', payload.length); 
-              props.createData(row)
+              props.createData(payload)
               .then((data) => {
                 console.log(data);
                 document.getElementById('sellout-editor-input').reset();
@@ -271,7 +270,7 @@ function BatchInputComponent({ savedData, props }) {
                 setShowShouldUpdModal(false);
                 return;
               });
-            });
+            // });
           }
 
           errorJson = [];

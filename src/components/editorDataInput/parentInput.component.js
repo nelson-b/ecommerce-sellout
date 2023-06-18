@@ -122,20 +122,20 @@ function DataInputComponent(props) {
           created_by: 'abc@gmail.com', //login user
           created_date: getUIDateFormat(new Date().toUTCString()),
           approval_status: "0",
-          editor_comment: rowNode.data.editor_comment,
+          editor_comment: rowNode.data.Comment,
           comments: 'waiting for approver',
           batch_upload_flag: "false"
         };
 
         console.log('formatPayload', formatPayload);
-        payload.push(formatPayload);
+        if(formatPayload.months.length> 0) payload.push(formatPayload);
     });
 
     console.log('payload', payload);
 
-    payload.forEach((row, index) => {
-      console.log('updateSellOutData', row);
-      props.updateSellOutData(row)
+    // payload.forEach((row, index) => {
+    //   console.log('updateSellOutData', row);
+      props.updateSellOutData(payload)
       .then((data) => {
         console.log(data);
         setFileError([]);
@@ -150,7 +150,7 @@ function DataInputComponent(props) {
         setShowSuccessModal(false);
         setShowShouldUpdModal(false);
       })
-    })
+    // })
 
     console.log('payload', payload);
     gridRef.current.api.refreshCells();

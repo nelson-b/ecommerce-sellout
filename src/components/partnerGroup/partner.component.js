@@ -351,9 +351,9 @@ function PartnerComponent(props) {
           created_date: new Date().toUTCString(),
           modified_by: "thomas.decamps@se.com",
           last_modified_date: new Date().toUTCString(),
-          "status": data.partner_status,
-          "batch_upload_flag": false,
-          "active_flag": "False"
+          status: data.partner_status,
+          batch_upload_flag: false,
+          active_flag: "False"
       };
               
       //update api
