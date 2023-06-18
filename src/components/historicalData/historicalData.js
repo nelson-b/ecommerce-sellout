@@ -36,10 +36,10 @@ import "./historicalData.css";
 function HistoricalData(props) {
   const gridRef = useRef();
   const navigate = useNavigate();
-  const [rowData, setRowData] = useState();
+  const [rowData, setRowData] = useState([]);
   const [radioValue, setRadioValue] = useState("1");
   const location = useLocation();
-  const screenRole = new URLSearchParams(location.search).get("role");
+  let screenRole = new URLSearchParams(location.search).get("role");
   const [selectedValue, setSelectedValue] = useState(new Date().getFullYear());
 
   const radios = [
@@ -64,11 +64,11 @@ function HistoricalData(props) {
     },
     {
       headerName: "Partner Account Name",
-      field: "partner_name",
+      field: "partner_account_name",
       filter: true,
       sortable: true,
       pinned: "left",
-      width: 170,
+      width: 220,
       suppressSizeToFit: true,
     },
     {
@@ -80,7 +80,7 @@ function HistoricalData(props) {
       headerName: "Country",
       field: "country_code",
       rowGroup: true,
-      width: 140,
+      width: 100,
       hide: true,
       filter: true,
       sortable: true,
@@ -90,8 +90,8 @@ function HistoricalData(props) {
     },
     {
       headerName: "Model",
-      field: "Model",
-      width: 140,
+      field: "model_type",
+      width: 100,
       rowGroup: true,
       hide: true,
       sortable: true,
@@ -113,7 +113,7 @@ function HistoricalData(props) {
     },
     {
       headerName: "Status",
-      field: "Status",
+      field: "status",
       pinned: "left",
       width: 110,
       suppressSizeToFit: true,
@@ -122,7 +122,7 @@ function HistoricalData(props) {
         const Status = params.value;
         return (
           <div>
-            {Status === "Active" && (
+            {Status === "ACTIVE" && (
               <img src={active} alt="active" style={{ width: "80px" }} />
             )}
             {Status === "Closed" && (
@@ -134,39 +134,22 @@ function HistoricalData(props) {
     },
   ];
 
-  const currentDate = new Date();
+  const getMonths = [];
 
-  for (
-    let i =
-      selectedValue == new Date().getFullYear()
-        ? currentDate.getMonth() + 1
-        : 12;
-    i > 0;
-    i--
-  ) {
-    let date = new Date(
-      selectedValue,
-      selectedValue == new Date().getFullYear()
-        ? currentDate.getMonth() - (i - 1)
-        : 1
-    );
-    const monthName = allCalMonths[date.getMonth()];
+  rowData[0]?.months?.forEach((e) => {
+    getMonths.push(e.month_val);
+  });
 
-    if (!(allCalMonths[currentDate.getMonth()] === monthName)) {
-      const year =
-        selectedValue == new Date().getFullYear()
-          ? String(date.getFullYear()).slice(-2)
-          : String(selectedValue).slice(-2);
+  const yearVlaue =
+    new Date().getFullYear() == selectedValue ? getMonths.length - 1 : 13;
 
-      const monthHeader =
-        selectedValue == new Date().getFullYear()
-          ? monthName + " " + year
-          : allCalMonths[12 - i] + " " + year;
+  for (let i = 0; i < yearVlaue; i++) {
+    const monthName = getMonths[i];
 
-      const monthField =
-        selectedValue == new Date().getFullYear()
-          ? monthName + year
-          : allCalMonths[12 - i] + year;
+    if (!(allCalMonths[new Date().getMonth()] === monthName)) {
+      const year = String(selectedValue).slice(-2);
+      const monthHeader = monthName + " " + year;
+      const monthField = monthName + year;
 
       columnDefs.push({
         headerName: monthHeader,
@@ -179,10 +162,16 @@ function HistoricalData(props) {
         suppressMenu: true,
         cellStyle: { "border-color": "#e2e2e2" },
         valueParser: (params) => Number(params.newValue),
+        valueGetter: (params) => {
+          const attribute = params.data.months.find(
+            (attr) => attr.month_val == monthName
+          );
+          return attribute ? attribute.sellout_local_currency : null;
+        },
       });
     }
   }
-
+  
   columnDefs.push({
     headerName: `${selectedValue} Total`,
     field: "total",
@@ -299,31 +288,29 @@ function HistoricalData(props) {
     ];
   }, []);
 
-  // const onGridReady = useCallback((params) => {
-  //   fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-  //     .then((resp) => rowData)
-  //     .then((rowData) => setRowData(rowData));
-  // }, []);
-
   let userMail = "";
 
   if (screenRole == "editor") {
     userMail = "nelson@se.com";
   }
   if (screenRole == "approver") {
+    screenRole = "approve_1";
+    // screenRole = "approver_2";
     userMail = "katie@se.com";
   }
   if (screenRole == "superApproverUser") {
-    userMail = "thomas@se.com";
+    screenRole = "supervisor_approv_1_2";
+    // userMail = "thomas@se.com";
+    userMail = "example@example.com";
   }
-  let year =  "2023";
 
   const onGridReady = useCallback((params) => {
+    const year = typeof params == "string" ? params : selectedValue;
     props
       .retrieveHistoricalData(userMail, year, screenRole)
       .then((data) => {
-        console.log('daata', data)
         setRowData(data);
+        // setRowData(historyData);
       })
       .catch((e) => {
         console.log(e);
@@ -342,40 +329,25 @@ function HistoricalData(props) {
   const handleChange = (event) => {
     const value = event.target.value;
     setSelectedValue(value);
+    onGridReady(value);
   };
 
   const getMonthFeildValues = (params) => {
     var filterTotalMonths = [];
-    for (
-      let i =
-        selectedValue == new Date().getFullYear()
-          ? new Date().getMonth() + 1
-          : 12;
-      i > 0;
-      i--
-    ) {
-      const currentDate = new Date();
 
-      let date = new Date(selectedValue, currentDate.getMonth() - (i - 1), 1);
-      const monthName = allCalMonths[date.getMonth()];
-      const year =
-        selectedValue == new Date().getFullYear()
-          ? String(date.getFullYear()).slice(-2)
-          : String(selectedValue).slice(-2);
+    for (let i = 0; i < yearVlaue; i++) {
+      let sum = 0;
 
-      const monthField =
-        selectedValue == new Date().getFullYear()
-          ? monthName + year
-          : allCalMonths[12 - i] + year;
+      params.data.months.forEach((month) => {
+        if (
+          month.sellout_local_currency !== null &&
+          month.month_val != getMonths[new Date().getMonth()]
+        ) {
+          sum += month.sellout_local_currency;
+        }
+      });
 
-      filterTotalMonths.push(
-        Object.keys(params.data)
-          .filter((key) => [monthField].includes(key))
-          .reduce((obj, key) => {
-            obj[key] = params.data[key];
-            return obj;
-          }, {})
-      );
+      filterTotalMonths.push(sum);
     }
     return filterTotalMonths.length ? filterTotalMonths : undefined;
   };
@@ -383,11 +355,7 @@ function HistoricalData(props) {
   const settotalVlaues = (params) => {
     let resp = getMonthFeildValues(params);
     if (resp != undefined) {
-      const sum = resp.reduce((acc, obj) => {
-        const value = Object.values(obj)[0];
-        return acc + value;
-      }, 0);
-      return sum;
+      return resp[0];
     }
     return "";
   };
@@ -413,7 +381,7 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "approver" ? (
+          ) : screenRole === "approver" || "approv_1" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/approver/home">
                 <img
@@ -427,7 +395,7 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "superApproverUser" ? (
+          ) : screenRole === "superApproverUser" || "supervisor_approv_1_2" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img
@@ -494,7 +462,7 @@ function HistoricalData(props) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={radioValue == 1 ? historyData : historyData}
+            rowData={radioValue == 1 ? rowData : rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}
