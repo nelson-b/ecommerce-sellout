@@ -9,6 +9,7 @@ import { allCalMonths } from "../constant";
 import { ckeckErrors } from "../utils/index.js";
 import { retrieveAllData, createData } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
+import { getUIDateFormat } from "../../helper/helper";
 
 function BatchInputComponent({ savedData, props }) {
   const navigate = useNavigate();
@@ -222,7 +223,7 @@ function BatchInputComponent({ savedData, props }) {
                   if(rowNode[`${element}_Amount`]>0){
                     monthArray.push({
                       month: element,
-                      sellout_local_currency: rowNode[`${element}_Amount`],
+                      sellout_local_currency: String(rowNode[`${element}_Amount`]),
                       trans_type: rowNode[`${element}_Estimated`] == true ? 'EST' : 'ACT'
                     });
                   }
@@ -231,16 +232,16 @@ function BatchInputComponent({ savedData, props }) {
                 let formatPayload = {
                   partner_id: rowNode.Partner_id,
                   partner_name: rowNode.Partner_Account_Name,
-                  country_code: rowNode.Country,
-                  year_val: rowNode.Year,
+                  country_code: rowNode.Country_code,
+                  year_val: String(rowNode.Year),
                   months: monthArray,
                   trans_currency_code: rowNode.Currency_Of_Reporting,
-                  created_by: '', //login user
-                  created_date: new Date(),
-                  approval_status: 0,
+                  created_by: 'abc@gmail.com', //login user
+                  created_date: getUIDateFormat(new Date().toUTCString()),
+                  approval_status: "0",
                   editor_comment: '',
                   comments: 'waiting for approver',
-                  batch_upload_flag: false
+                  batch_upload_flag: "false"
                 };
         
                 console.log('formatPayload', formatPayload);
@@ -321,6 +322,7 @@ function BatchInputComponent({ savedData, props }) {
     let indvRespPayload = {
       Zone: row.Zone,
       Country: row.Country,
+      Country_code: row.country_code,
       Partner_Account_Name: row.Partner_Account_Name,
       Partner_id: row.Partner_id,
       Model: row.Model,
@@ -475,7 +477,7 @@ function BatchInputComponent({ savedData, props }) {
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["U1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "e47f00" } },
+      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["V1"].s = {
@@ -523,6 +525,10 @@ function BatchInputComponent({ savedData, props }) {
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };
     workbook.Sheets["Sell out Data Input"]["AG1"].s = {
+      fill: { patternType: "solid", fgColor: { rgb: "e47f00" } },
+      font: { bold: true, color: { rgb: "FFFFFF" } },
+    };
+    workbook.Sheets["Sell out Data Input"]["AH1"].s = {
       fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
       font: { bold: true, color: { rgb: "FFFFFF" } },
     };

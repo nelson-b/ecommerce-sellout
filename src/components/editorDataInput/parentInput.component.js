@@ -18,6 +18,7 @@ import AlertModal from "../modal/alertModel";
 import { useLocation } from "react-router-dom";
 import { createData, retrieveAllData, updateSellOutData } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
+import { getUIDateFormat } from "../../helper/helper";
 
 function DataInputComponent(props) {
   const navigate = useNavigate();
@@ -114,16 +115,16 @@ function DataInputComponent(props) {
         let formatPayload = {
           partner_id: rowNode.data.id,
           partner_name: rowNode.data.Partner_Account_Name,
-          country_code: rowNode.data.Country,
+          country_code: rowNode.data.country_code,
           year_val: rowNode.data.Year,
           months: monthArray,
           trans_currency_code: rowNode.data.Currency_Of_Reporting,
           created_by: '', //login user
-          created_date: new Date(),
-          approval_status: 0,
+          created_date: new Date().toUTCString(),
+          approval_status: "0",
           editor_comment: rowNode.data.Comment,
           comments: 'waiting for approver',
-          batch_upload_flag: false
+          batch_upload_flag: "false"
         };
 
         console.log('formatPayload', formatPayload);
@@ -445,6 +446,9 @@ function DataInputComponent(props) {
       editable: false,
     },
     {
+      field: 'Country_code'
+    },
+    {
       headerName: "Partner Account Name",
       field: "Partner_Account_Name",
       sortable: true,
@@ -691,6 +695,7 @@ function DataInputComponent(props) {
       let indvRespPayload = {
         Zone: row.zone_val,
         Country: row.country_name,
+        Country_code: row.country_code,
         Partner_Account_Name: row.partner_account_name,
         id: row.partner_id,
         Partner_id: row.partner_id,
