@@ -218,7 +218,7 @@ function SaveUser(props) {
     .then((data) => {
       console.log('retrieveAllStaticData', data);
         let staticAllOptions = [];
-        data.forEach((row) => {
+        data.data.forEach((row) => {
           staticAllOptions = staticAllOptions.concat({
             value: row.attribute_value,
             label: row.attribute_value,

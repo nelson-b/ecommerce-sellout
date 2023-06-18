@@ -6,7 +6,7 @@ class StaticDataService {
     }
 
     getAllStaticDataList(){
-        return http.get(`/ecomm-sellout-dev-lamda-createpartner/getpartner-account-ref?ATTRIBUTE_NAME=all`);
+        return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-geography?country_code=refall`);
     }
 }
 
