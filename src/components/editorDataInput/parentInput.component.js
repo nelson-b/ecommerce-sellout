@@ -18,7 +18,7 @@ import AlertModal from "../modal/alertModel";
 import { useLocation } from "react-router-dom";
 import { createData, retrieveAllData, updateSellOutData } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
-import { getUIDateFormat, getUIDateFormatWithTime } from "../../helper/helper";
+import { getAPIDateFormatWithTime, getUIDateFormat, getUIDateFormatWithTime } from "../../helper/helper";
 
 function DataInputComponent(props) {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ function DataInputComponent(props) {
   const location = useLocation();
   const dataRole = new URLSearchParams(location.search).get("role");
   const filterGlobalData = {
-    loginUser: "example@example.com",
+    loginUser: "abc@example.com",
     currentYear: String(new Date().getFullYear()),
     dataRole: dataRole
   };
@@ -119,8 +119,8 @@ function DataInputComponent(props) {
           year_val: String(rowNode.data.Year),
           months: monthArray,
           trans_currency_code: rowNode.data.Currency_Of_Reporting,
-          created_by: rowNode.data.created_by, //login user
-          created_date: rowNode.data.created_date,
+          created_by: filterGlobalData.loginUser, //login user
+          created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
           approval_status: rowNode.data.approval_status,
           editor_comment: rowNode.data.Comment,
           comments: 'waiting for approver',
@@ -790,7 +790,7 @@ function DataInputComponent(props) {
               />
             </Breadcrumb.Item>
           </Breadcrumb>
-          <BatchInputComponent savedData={rowData} props={props} />
+          <BatchInputComponent savedData={rowData} props={props} userDetails = {filterGlobalData} />
         </Row>
         <Row className="justify-content-end">
           <Col md={2} className="estimate-container">

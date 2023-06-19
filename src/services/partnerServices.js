@@ -8,15 +8,17 @@ class PartnerService {
 
   getAll() {
     return http.get(
-      "/ecomm-sellout-dev-lamda-createpartner/get-partner-list" 
+      "/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=all" 
     );
   }
 
-  getByRole(id, user) {
+  getByRole(role, email) {
     return http.get(
-      `/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${user}&role_id=${id}`
+      `/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${email}&role_id=${role}`
     );
   }
+
+  
 
   getUserRoleConfigByPartnerId(id) {
     return http.get(

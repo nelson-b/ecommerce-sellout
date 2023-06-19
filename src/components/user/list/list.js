@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { retrieveAllNewListByRole } from "../../../actions/userAction.js";
 import userEditIcon from "../../../images/edit-icon.png";
+import { roles } from "../../constant.js";
 
 function UserList(props) {
   const navigate = useNavigate();
@@ -155,7 +156,7 @@ function UserList(props) {
 
   const onGridReady = useCallback((params) => {
     props
-      .retrieveAllNewListByRole(userRole)
+      .retrieveAllNewListByRole(userRole == roles.admin ? '' : userRole)// for admin all users should be visible
       .then((data) => {
         setRowData(data);
       })

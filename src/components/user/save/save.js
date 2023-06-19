@@ -32,9 +32,11 @@ import { connect } from "react-redux";
 import { 
   createUserPartnerRoleConfig, 
   createUserProfileConfig, 
-  retrieveAllNewListByRole 
+  retrieveByEmailId 
 } from "../../../actions/userAction.js";
 import AlertModal from "../../modal/alertModel.js";
+import { roles, status } from "../../constant.js";
+import { getAPIDateFormatWithTime } from "../../../helper/helper.js";
 
 function SaveUser(props) {
   const navigate = useNavigate();
@@ -42,9 +44,20 @@ function SaveUser(props) {
   const location = useLocation();
   const userRole = new URLSearchParams(location.search).get("role");
   const userEmailId = new URLSearchParams(location.search).get("id");
-
   const [partnerAccData, setPartnerAccData] = useState({});
   
+  let loginUserId = '';
+
+  if(userRole == 'superApproverUser') {
+    loginUserId = 'thomas@se.com'
+  }
+  if(userRole == 'admin') {
+    loginUserId = 'jean@se.com'
+  } 
+  if(userRole == 'superUser') {
+    loginUserId = 'marie@se.com'
+  }
+
   const initialForm = {
     firstname: null,
     lastname: null,
@@ -196,7 +209,7 @@ function SaveUser(props) {
   });
 
   //partner api
-  props.retrievePartnerByRole(userRole, "nelson@se.com")
+  props.retrieveAllPartnerData()
   .then((data) => {
     console.log('retrieveAllPartnerData', data);
     let partnerOptions = [];
@@ -233,9 +246,9 @@ function SaveUser(props) {
   
   if(props.module === 'Update'){
     //prefil the data
-    props.retrieveAllNewListByRole(userRole)
+    props.retrieveByEmailId(userEmailId)
       .then((data) => {
-        console.log('retrieveAllNewListByRole', data, userEmailId);
+        console.log('retrieveByEmailId', data, userEmailId);
         const respData = data.filter(data => data.email_id === userEmailId)[0];
         console.log('filter data', respData);
         //format to form
@@ -246,38 +259,67 @@ function SaveUser(props) {
           userrole: respData.role_id,
           userops: respData.ops_val,
           usrzone: respData.zone_val,
-          modelType: convertInputDataToMultiSelectDrp(respData.modelType),
-          usrcountry: convertInputDataToMultiSelectDrp(respData.usrcountry),
-          partnerAccNm: convertInputDataToMultiSelectDrp(respData.partnerAccNm)
+          modelType: convertInputDataToMultiSelectDrp(respData.model_val),
+          usrcountry: convertInputDataToMultiSelectDrp(respData.country_code)
         }
+
+        console.log('prefillForm', prefillForm);
         //set state of form
         setForm(prefillForm);
         console.log('convertInputDataToMultiSelectDrp', convertInputDataToMultiSelectDrp('model 1,model 2'));
-        setOptionModelSelected(convertInputDataToMultiSelectDrp(respData.modelType));
-        setOptionCountrySelected(convertInputDataToMultiSelectDrp(respData.usrcountry));
+        setOptionModelSelected(convertInputDataToMultiSelectDrp(respData.model_val));
+        setOptionCountrySelected(convertInputDataToMultiSelectDrp(respData.country_code));
+        //prefill partner drop down
+        props.retrieveUserRoleConfigByEmailIdRoleId(prefillForm.useremailid, prefillForm.userrole)
+        .then((data) => {
+          console.log('retrieveUserRoleConfigByEmailIdRoleId', data);
+          let filterData = data.filter(data => data.EMAIL_ID === prefillForm.useremailid && data.ROLE_ID === prefillForm.userrole)
+          let partnerData = [];
+          filterData.forEach((rows, index)=> {
+            console.log('partnerDrpData', partnerDrpData);
+            props
+            .retrievePartnerByRole(prefillForm.useremailid, prefillForm.userrole)
+            .then((data) => {
+              console.log('retrievePartnerByRole', data);
+              let filterData = data.data.filter(data => data.partner_id == rows.PARTNER_ID);
+              console.log('partnerData', filterData);
+              let partnerDataIndv = {
+                value: rows.PARTNER_ID,
+                label: filterData[0].partner_account_name//partner_account_name.label
+              }
+              console.log('partnerDataIndv', partnerDataIndv);
+              partnerData = partnerData.concat(partnerDataIndv);
+              console.log('partnerData', partnerData);    
+              let name = "partnerAccNm";
+              setOptionPartnerSelected(partnerData);
+              setForm((prev) => ({
+                ...prev,
+                [name]: partnerData,
+              }));          
+            })
+            .catch((e) => {
+              console.log('Partner list', e);
+            });
+          });
+        });
       })
       .catch((e) => {
         console.log(e);
-    });
-
-      props.retrieveUserRoleConfigByEmailIdRoleId(userEmailId, userRole)
-      .then((data) => {
-        console.log('retrieveUserRoleConfigByEmailIdRoleId', data);
-        let filterData = data.data.filter(data => data.EMAIL_ID === userEmailId && data.ROLE_ID === userRole)
-        let partnerData = [];
-        filterData.forEach((rows, index)=> {
-          let partner_account_name = partnerDrpData.filter(data.value == rows.PARTNER_ID);
-          let partnerDataIndv = {
-            value: rows.PARTNER_ID,
-            label: partner_account_name.label
-          }
-          partnerData = partnerData.concat(partnerDataIndv);
-        });
-
-        setOptionPartnerSelected(partnerData);
       });
     }
   }, []);
+
+  // const getPartnerListByEmailRole = ((role, useremail) => {
+  //   props
+  //     .retrievePartnerByRole(role, useremail)
+  //     .then((data) => {
+  //       console.log('retrievePartnerByRole', data);
+  //       return data.data;
+  //     })
+  //     .catch((e) => {
+  //       console.log('Partner list', e);
+  //     });
+  // });
 
   const handleCountryChange = (selected) => {
     let name = "usrcountry";
@@ -433,9 +475,10 @@ function SaveUser(props) {
       role_id: null,
       country_code: null,
       email_id: null,
-      created_by: "abc@example.com", //login user
-      updated_by: "abc@example.com", //login user
+      created_by: loginUserId, //login user
+      updated_by: loginUserId, //login user
       editor: null,
+      backup_editor: null,
       approve_1: null,
       approver_2: null,
       supervisor: null,
@@ -450,13 +493,14 @@ function SaveUser(props) {
         payload.country_code = 'CHN';
         payload.email_id = data.useremailid;
 
-        switch(data.userrole)
+        switch(data.userrole.toUpperCase())
         {
-          case 'Editor': payload.editor = data.useremailid; break;
-          case 'Approver 1': payload.editor = data.useremailid; break;
-          case 'Approver 2': payload.approve_1 = data.useremailid; break;
-          case 'SuperUser': payload.supervisor = data.useremailid; break;
-          case 'SuperApproverUser': payload.supervisor_approv_1_2 = data.useremailid; break;
+          case roles.editor.toUpperCase(): payload.editor = data.useremailid; break;
+          case roles.backup_editor.toUpperCase(): payload.backup_editor = data.useremailid; break;
+          case roles.approver1.toUpperCase(): payload.approve_1 = data.useremailid; break;
+          case roles.approver2.toUpperCase(): payload.approve_2 = data.useremailid; break;
+          case roles.superUser.toUpperCase(): payload.supervisor = data.useremailid; break;
+          case roles.superApproverUser.toUpperCase(): payload.supervisor_approv_1_2 = data.useremailid; break;
         }
 
         console.log('input createUserPartnerRoleConfig', payload);
@@ -475,8 +519,6 @@ function SaveUser(props) {
 
       setShowSuccessModal(true);
       setShowErrorModal(false);
-      //reset form
-      // setForm(initialForm);
     }
   }
 
@@ -497,19 +539,25 @@ function SaveUser(props) {
       role_id: form.userrole,
       first_name: form.firstname,
       last_name: form.lastname,
+      status: userRole == roles.admin ? status.active : status.pending,
+      modified_by: loginUserId, //login user email id
+      created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+      modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+      active_flag: "True",
+      record_start_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+      record_end_date: getAPIDateFormatWithTime(new Date().toUTCString()),
       ops_val: form.userops,
       zone_val: form.usrzone,
       model_val: convertMultiSelectDrpToInputData(form.modelType),
       country_code: convertMultiSelectDrpToInputData(form.usrcountry),
-      status: "active",
-      modified_by: "def@example.com" //login user email id
     };
+
     console.log('model type', convertMultiSelectDrpToInputData(form.modelType));
     console.log("Req Data:", userData);
 
     props.createUserProfileConfig(userData)
         .then((data) => {
-          console.log('createUserPartnerRoleConfig', data);
+          console.log('createUserProfileConfig input', data);
           upsertUserProfile(form);
         })
         .catch((e) => {
@@ -856,7 +904,7 @@ export default connect(null, {
   createUserPartnerRoleConfig,
   createUserProfileConfig,
   retrievePartnerByRole,
-  retrieveAllNewListByRole,
+  retrieveByEmailId,
   retrieveAllUserRoleConfig,
   retrieveUserRoleConfigByEmailIdRoleId
  })(SaveUser);
