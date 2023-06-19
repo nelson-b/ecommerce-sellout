@@ -274,6 +274,7 @@ function SaveUser(props) {
         .then((data) => {
           console.log('retrieveUserRoleConfigByEmailIdRoleId', data);
           let filterData = data.filter(data => data.EMAIL_ID === prefillForm.useremailid && data.ROLE_ID === prefillForm.userrole)
+          console.log('filterData', filterData);
           let partnerData = [];
           filterData.forEach((rows, index)=> {
             console.log('partnerDrpData', partnerDrpData);
@@ -295,7 +296,7 @@ function SaveUser(props) {
               setForm((prev) => ({
                 ...prev,
                 [name]: partnerData,
-              }));          
+              }));
             })
             .catch((e) => {
               console.log('Partner list', e);
@@ -308,18 +309,6 @@ function SaveUser(props) {
       });
     }
   }, []);
-
-  // const getPartnerListByEmailRole = ((role, useremail) => {
-  //   props
-  //     .retrievePartnerByRole(role, useremail)
-  //     .then((data) => {
-  //       console.log('retrievePartnerByRole', data);
-  //       return data.data;
-  //     })
-  //     .catch((e) => {
-  //       console.log('Partner list', e);
-  //     });
-  // });
 
   const handleCountryChange = (selected) => {
     let name = "usrcountry";
