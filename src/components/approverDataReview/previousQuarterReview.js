@@ -237,10 +237,15 @@ function PartnerQuarterApprover({ props }) {
   };
 
   const handleReviewNavigation = () => {
-    if (quarterRole === "superApproverUser") {
+    if (
+      quarterRole === "superApproverUser" ||
+      quarterRole === "supervisor_approv_1_2"
+    ) {
       navigate("/superApproverUser/home");
+    } else if (quarterRole === "approve_1") {
+      navigate("/approve_1/home");
     } else {
-      navigate("/approver/home");
+      navigate("/approver_2/home");
     }
   };
 
@@ -290,9 +295,19 @@ function PartnerQuarterApprover({ props }) {
           <MyMenu />
         </Row>
         <div>
-          {quarterRole === "approver" ? (
+          {quarterRole === "approve_1" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/approver/home">
+              <Breadcrumb.Item href="/approve_1/home">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : quarterRole === "approver" || quarterRole === "approver_2" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/approver_2/home">
                 <img
                   src={Home}
                   alt="home"
