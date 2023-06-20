@@ -30,6 +30,7 @@ import {
 } from "../../actions/buSplitAction.js";
 
 function BusinessUnitSplit(props) {
+  const location = useLocation();
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -50,37 +51,64 @@ function BusinessUnitSplit(props) {
     reValidateMode: "onChange",
   });
 
-  const location = useLocation();
+  const [rowData, setRowData] = useState([]);
   const buRole = new URLSearchParams(location.search).get("role");
-
-  const [rowData, setRowData] = useState(null);
 
   const handleClearClick = () => {
     window.location.reload();
   };
 
-  const handleSave = useCallback(() => {
-    let errorLog = [];
-    //iterate in the grid
-    gridRef.current.api.forEachNode((rowNode, index) => {
-      if (rowNode.data.Total != 100) {
-        errorLog = errorLog.concat(
-          "Total not 100% at partner id: " + rowNode.data.id
-        );
-      }
-    });
+  const handleSave = useCallback((data) => {
+    let reqData = {
+      country_code: data[0].country_code,
+      partner_id: data[0].partner_id,
+      model_type: data[0].model_type,
+      year_val: data[0].year_val,
+      quarter: data[0].quarter,
+      attributes: data[0].attributes,
+      created_by: data[0].created_by,
+      created_date: data[0].created_date,
+      modified_by: data[0].modified_by,
+      modified_date: data[0].modified_date,
+      active_flag: data[0].active_flag,
+    };
 
-    console.log("errorLog", errorLog);
+    props
+      .updateBuSplitData(reqData)
+      .then((data) => {
+        setRowData(data);        
+    
+        if (data && data?.length) {
+          setShowSuccessModal(true);
+        } else {
+          setShowSuccessModal(false);
+        }
+      })
+      .catch((e) => {
+        console.log("Error", e);
+      });
 
-    if (errorLog.length > 0) {
-      setErrorData(["Total should be 100% for all Bussiness units"]);
-      setShowErrorModal(true);
-      setShowSuccessModal(false);
-    } else {
-      setErrorData([]);
-      setShowErrorModal(false);
-      setShowSuccessModal(true);
-    }
+    // let errorLog = [];
+    // //iterate in the grid
+    // gridRef.current.api.forEachNode((rowNode, index) => {
+    //   if (rowNode.data.Total != 100) {
+    //     errorLog = errorLog.concat(
+    //       "Total not 100% at partner id: " + rowNode.data.id
+    //     );
+    //   }
+    // });
+
+    // console.log("errorLog", errorLog);
+
+    // if (errorLog.length > 0) {
+    //   setErrorData(["Total should be 100% for all Bussiness units"]);
+    //   setShowErrorModal(true);
+    //   setShowSuccessModal(false);
+    // } else {
+    //   setErrorData([]);
+    //   setShowErrorModal(false);
+    //   setShowSuccessModal(true);
+    // }
   }, []);
 
   const gridRef = useRef(null);
@@ -92,28 +120,6 @@ function BusinessUnitSplit(props) {
       Partner_Account_Name: "Adalbert Zajadacz (Part of DEHA) DEU",
       model_type: "E1 - Dist",
       quarter: "Q1 2023",
-      //ag grid format
-      // SP: 10,
-      // H_and_D: 20,
-      // PP: 30,
-      // DE: 20,
-      // IA: 20,
-      // wrong format
-      // attribute_name: "bopp_type",
-      // attribute_val: "SP",
-      // total: 400.89,
-      // attribute_name: "bopp_type",
-      // attribute_val: "H&D",
-      // total: 400.89,
-      // attribute_name: "bopp_type",
-      // attribute_val: "PP",
-      // total: 400.89,
-      // attribute_name: "bopp_type",
-      // attribute_val: "DE",
-      // total: 400.89,
-      // attribute_name: "bopp_type",
-      // attribute_val: "IA",
-      // total: 400.89,
       attributes: [
         {
           attribute_name: "bopp_type",
@@ -246,16 +252,20 @@ function BusinessUnitSplit(props) {
     },
   ];
 
-  const sumTotal = (params, index) => {
-    let totalBu =
-      Number(Math.round(params.data.attributes[0].total)) +
-      Number(Math.round(params.data.attributes[1].total)) +
-      Number(Math.round(params.data.attributes[2].total)) +
-      Number(Math.round(params.data.attributes[3].total)) +
-      Number(Math.round(params.data.attributes[4].total));
-
-    params.data["Total"] = Number(Math.round(totalBu));
-    return params.data.Total;
+  const sumTotal = (params) => {
+    let total = 0;
+    for (let i = 0; i < filteredSplitValue.length; i++) {
+      const splitHeader = filteredSplitValue[i].attribute_val;
+      const attribute = params.data.attributes.find(
+        (attr) => attr.attribute_val === splitHeader
+      );
+      if (attribute) {
+        console.log("att value", attribute.total);
+        total += attribute.total;
+      }
+    }
+    console.log("total", total);
+    return total;
   };
 
   const isTot100Per = (params) => {
@@ -263,22 +273,6 @@ function BusinessUnitSplit(props) {
       return { backgroundColor: "red" };
     }
     return { backgroundColor: "white", borderColor: "#e2e2e2" };
-  };
-
-  const checkNumericValue = (params, field) => {
-    console.log("checkNumericValue", params.newValue);
-    console.log("Is NAN", isNaN(params.newValue));
-    if (isNaN(params.newValue) === true) {
-      params.data[field] = Number(0);
-      return params.data[field];
-    }
-    console.log(
-      "Number(Math.round(params.newValue))",
-      Number(Math.round(params.newValue))
-    );
-    params.data[field] = Number(Math.round(params.newValue));
-    console.log("checkNumericValue", params.data[field]);
-    return params.data[field];
   };
 
   const columnDefs = [
@@ -328,125 +322,67 @@ function BusinessUnitSplit(props) {
       suppressSizeToFit: true,
       editable: false,
     },
-    {
-      headerName: "SP",
-      field: "attributes",
-      minWidth: 70,
-      editable: true,
-      suppressMenu: true,
-      cellStyle: { borderColor: "#e2e2e2" },
-      valueFormatter: (params) => {
-        return Math.round(params.value) + "%";
-      },
-      valueSetter: (params) => {
-        return checkNumericValue(params, "SP");
-      },
-      valueGetter: (params) => {
-        const attributeSP = params.data.attributes.find(
-          (attr) => attr.attribute_val === "SP"
-        );
-        return attributeSP ? attributeSP.total : null;
-      },
-    },
-    {
-      headerName: "H&D",
-      field: "attributes",
-      minWidth: 70,
-      editable: true,
-      suppressMenu: true,
-      cellStyle: { borderColor: "#e2e2e2" },
-      valueFormatter: (params) => {
-        return Math.round(params.value) + "%";
-      },
-      valueSetter: (params) => {
-        return checkNumericValue(params, "H&D");
-      },
-      valueGetter: (params) => {
-        const attributeSP = params.data.attributes.find(
-          (attr) => attr.attribute_val === "H&D"
-        );
-        return attributeSP ? attributeSP.total : null;
-      },
-    },
-    {
-      headerName: "PP",
-      field: "attributes",
-      minWidth: 70,
-      editable: true,
-      suppressMenu: true,
-      cellStyle: { borderColor: "#e2e2e2" },
-      valueFormatter: (params) => {
-        return Math.round(params.value) + "%";
-      },
-      valueSetter: (params) => {
-        return checkNumericValue(params, "PP");
-      },
-      valueGetter: (params) => {
-        const attributeSP = params.data.attributes.find(
-          (attr) => attr.attribute_val === "PP"
-        );
-        return attributeSP ? attributeSP.total : null;
-      },
-    },
-    {
-      headerName: "DE",
-      field: "attributes",
-      minWidth: 70,
-      editable: true,
-      suppressMenu: true,
-      cellStyle: { borderColor: "#e2e2e2" },
-      valueFormatter: (params) => {
-        return Math.round(params.value) + "%";
-      },
-      valueSetter: (params) => {
-        return checkNumericValue(params, "DE");
-      },
-      valueGetter: (params) => {
-        const attributeSP = params.data.attributes.find(
-          (attr) => attr.attribute_val === "DE"
-        );
-        return attributeSP ? attributeSP.total : null;
-      },
-    },
-    {
-      headerName: "IA",
-      field: "attributes",
-      minWidth: 70,
-      editable: true,
-      suppressMenu: true,
-      cellStyle: { borderColor: "#e2e2e2" },
-      valueFormatter: (params) => {
-        return Math.round(params.value) + "%";
-      },
-      valueSetter: (params) => {
-        return checkNumericValue(params, "IA");
-      },
-      valueGetter: (params) => {
-        const attributeSP = params.data.attributes.find(
-          (attr) => attr.attribute_val === "IA"
-        );
-        return attributeSP ? attributeSP.total : null;
-      },
-    },
-    {
-      headerName: "Total",
-      field: "Total",
-      minWidth: 80,
-      editable: false,
-      suppressMenu: true,
-      cellStyle: { borderColor: "#e2e2e2" },
-      valueFormatter: (params) => {
-        return Math.round(params.value) + "%";
-      },
-      valueGetter: (params) => {
-        console.log("xxx", params);
-        return sumTotal(params);
-      },
-      cellStyle: (params) => {
-        return isTot100Per(params);
-      },
-    },
   ];
+
+  let filteredSplitValue = [];
+
+  if (rowData?.length) {
+    filteredSplitValue = rowData[0]?.attributes?.filter(
+      (obj) => obj.attribute_val !== null
+    );
+    for (let i = 0; i < filteredSplitValue?.length; i++) {
+      const splitHeader = filteredSplitValue[i]?.attribute_val;
+      const splitField = "field_" + i;
+  
+      columnDefs.push({
+        headerName: splitHeader,
+        field: splitField,
+        minWidth: 70,
+        editable: true,
+        suppressMenu: true,
+        cellStyle: { borderColor: "#e2e2e2" },
+        valueFormatter: (params) => {
+          return Math.round(params.value) + "%";
+        },
+        valueParser: (params) => Number(params.newValue),
+        valueGetter: (params) => {
+          const attribute = params.data.attributes.find(
+            (attr) => attr.attribute_val == splitHeader
+          );
+          return attribute ? attribute.total : null;
+        },
+        valueSetter: function (params) {
+          const attribute = params.data.attributes.find(
+            (attr) => attr.attribute_val === splitHeader
+          );
+          if (attribute) {
+            attribute.total = Number(params.newValue);
+            return true; // Return true to indicate successful value setting
+          } else {
+            return false; // Return false or omit the return statement to indicate unsuccessful value setting
+          }
+        },
+      });
+    }
+  }
+
+  columnDefs.push({
+    headerName: "Total",
+    field: "Total",
+    minWidth: 80,
+    editable: false,
+    suppressMenu: true,
+    cellStyle: { borderColor: "#e2e2e2" },
+    valueFormatter: (params) => {
+      return Math.round(params.value) + "%";
+    },
+    valueGetter: (params) => {
+      return sumTotal(params);
+    },
+    cellStyle: (params) => {
+      return isTot100Per(params);
+    },
+  });
 
   const defaultColDef = useMemo(
     () => ({
@@ -462,9 +398,26 @@ function BusinessUnitSplit(props) {
     []
   );
 
+  let userMail = "";
+
+  if (buRole == "editor") {
+    userMail = "abc@example.com";
+  }
+  if (buRole == "approver") {
+    // buRole = "approve_1";
+    // buRole = "approver_2";
+    userMail = "abc@example.com";
+  }
+  if (buRole == "superApproverUser") {
+    // buRole = "supervisor_approv_1_2";
+    userMail = "abc@example.com";
+  }
+  let year = 2023;
+
   const onGridReady = useCallback((params) => {
+    console.log('approve', params);
     props
-      .retrieveBuSplitData()
+      .retrieveBuSplitData(userMail, buRole == "approver" ? "approve_1" : buRole == "superApproverUser" ? "supervisor_approv_1_2" : buRole, year)
       .then((data) => {
         setRowData(data.data);
       })
@@ -680,6 +633,13 @@ function BusinessUnitSplit(props) {
   };
 
   const buSplitExcel = async (exportedData) => {
+    console.log("exportedData", exportedData, rowData);
+    // const tempData = rowData.map((e) => {
+    //   const { created_by, ...rest } = e;
+    //   return rest;
+    // });
+    // console.log('tempData', tempData);
+
     const currentDate = new Date();
     const workbook = xlsx.utils.book_new();
     const sheet1 = xlsx.utils.json_to_sheet(exportedData);
@@ -763,7 +723,7 @@ function BusinessUnitSplit(props) {
                   />
                 </Breadcrumb.Item>
               </Breadcrumb>
-            ) : buRole === "superApproverUser" ? (
+            ) : buRole === "superApproverUser" || "supervisor_approv_1_2" ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/superApproverUser/home">
                   <img
@@ -842,7 +802,7 @@ function BusinessUnitSplit(props) {
               <Button
                 size="lg"
                 className="edit-header"
-                onClick={(e) => buSplitExcel(buSplitData)}
+                onClick={(e) => buSplitExcel(rowData)}
               >
                 Download Template
               </Button>
@@ -857,7 +817,7 @@ function BusinessUnitSplit(props) {
           >
             <AgGridReact
               ref={gridRef}
-              rowData={buSplitData}
+              rowData={rowData}
               columnDefs={columnDefs}
               defaultColDef={defaultColDef}
               animateRows={true}
@@ -886,7 +846,7 @@ function BusinessUnitSplit(props) {
                     disabled={errorBtnDisable}
                     className="btn-upload save-header"
                     onClick={() => {
-                      handleSave();
+                      handleSave(rowData);
                     }}
                   >
                     Save

@@ -41,6 +41,7 @@ function HistoricalData(props) {
   const location = useLocation();
   let screenRole = new URLSearchParams(location.search).get("role");
   const [selectedValue, setSelectedValue] = useState(new Date().getFullYear());
+  const [historicalData, setHistoricalData] = useState([]);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -134,26 +135,148 @@ function HistoricalData(props) {
     },
   ];
 
-  const getMonths = [];
+  let userMail = "";
 
-  rowData[0]?.months?.forEach((e) => {
-    getMonths.push(e.month_val);
-  });
+  if (screenRole == "editor") {
+    userMail = "abc@example.com";
+  }
+  if (screenRole == "approver") {
+    screenRole = "approve_1";
+    // screenRole = "approver_2";
+    userMail = "abc@example.com";
+  }
+  if (screenRole == "superApproverUser") {
+    screenRole = "supervisor_approv_1_2";
+    // userMail = "thomas@se.com";
+    userMail = "abc@example.com";
+  }
+
+  const getHistoricalData = (mail, year, role) => {
+    props
+      .retrieveHistoricalData(mail, year, role)
+      .then((data) => {
+        let final_arr = [];
+        data.map((item) => {
+          let obj = {};
+          obj.zone_val = item.zone_val;
+          obj.country_code = item.country_code;
+          obj.partner_account_name = item.partner_account_name;
+          obj.model_type = item.model_type;
+          obj.status = item.status;
+          obj.trans_currency_code = item.trans_currency_code;
+          obj.SelloutCQ = "";
+          obj.systemComments = item.comments;
+          obj.editorComments = item.editor_comment;
+          obj.YTD = "";
+          obj.YTD_Growth = "";
+          obj.ambition = "";
+          obj.approverComments = "";
+          item.months.map((each) => {
+            if (each.month_val === "jan") {
+              obj.Jan23 = each.sellout_local_currency;
+              obj.Jan23E = each.sellout;
+            }
+            if (each.month_val === "feb") {
+              obj.Feb23 = each.sellout_local_currency;
+              obj.Feb23E = each.sellout;
+            }
+            if (each.month_val === "mar") {
+              obj.Mar23 = each.sellout_local_currency;
+              obj.Mar23E = each.sellout;
+            }
+            if (each.month_val === "apr") {
+              obj.Apr23 = each.sellout_local_currency;
+              obj.Apr23E = each.sellout;
+            }
+            if (each.month_val === "may") {
+              obj.May23 = each.sellout_local_currency;
+              obj.May23E = each.sellout;
+            }
+            if (each.month_val === "jun") {
+              obj.Jun23 = each.sellout_local_currency;
+              obj.Jun23E = each.sellout;
+            }
+            if (each.month_val === "jul") {
+              obj.Jul23 = each.sellout_local_currency;
+              obj.Jul23E = each.sellout;
+            }
+            if (each.month_val === "aug") {
+              obj.Aug23 = each.sellout_local_currency;
+              obj.Aug23E = each.sellout;
+            }
+            if (each.month_val === "sep") {
+              obj.Sep23 = each.sellout_local_currency;
+              obj.Sep23E = each.sellout;
+            }
+            if (each.month_val === "oct") {
+              obj.Oct23 = each.sellout_local_currency;
+              obj.Oct23E = each.sellout;
+            }
+            if (each.month_val === "nov") {
+              obj.Nov23 = each.sellout_local_currency;
+              obj.Nov23E = each.sellout;
+            }
+            if (each.month_val === "dec") {
+              obj.Dec23 = each.sellout_local_currency;
+              obj.Dec23E = each.sellout;
+            }
+          });
+          final_arr.push(obj);
+        });
+        setHistoricalData(final_arr);
+        console.log("historicalData", historicalData);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    getHistoricalData(userMail, selectedValue, screenRole);
+  }, []);
+
+  const getMonths = [];
 
   const yearVlaue =
     new Date().getFullYear() == selectedValue ? getMonths.length - 1 : 13;
 
-  for (let i = 0; i < yearVlaue; i++) {
-    const monthName = getMonths[i];
+  const currentDate = new Date();
 
-    if (!(allCalMonths[new Date().getMonth()] === monthName)) {
-      const year = String(selectedValue).slice(-2);
-      const monthHeader = monthName + " " + year;
-      const monthField = monthName + year;
+  for (
+    let i =
+      selectedValue == new Date().getFullYear()
+        ? currentDate.getMonth() + 1
+        : 12;
+    i > 0;
+    i--
+  ) {
+    let date = new Date(
+      selectedValue,
+      selectedValue == new Date().getFullYear()
+        ? currentDate.getMonth() - (i - 1)
+        : 1
+    );
+    const monthName = allCalMonths[date.getMonth()];
+
+    if (!(allCalMonths[currentDate.getMonth()] === monthName)) {
+      const year =
+        selectedValue == new Date().getFullYear()
+          ? String(date.getFullYear()).slice(-2)
+          : String(selectedValue).slice(-2);
+
+      const monthHeader =
+        selectedValue == new Date().getFullYear()
+          ? monthName + " " + year
+          : allCalMonths[12 - i] + " " + year;
+
+      const monthField =
+        selectedValue == new Date().getFullYear()
+          ? monthName + year
+          : allCalMonths[12 - i] + year;
 
       columnDefs.push({
         headerName: monthHeader,
-        field: monthField,
+        field: radioValue == 1 ? monthField : monthField + "E",
         editable: false,
         singleClickEdit: true,
         minWidth: 100,
@@ -162,16 +285,10 @@ function HistoricalData(props) {
         suppressMenu: true,
         cellStyle: { "border-color": "#e2e2e2" },
         valueParser: (params) => Number(params.newValue),
-        valueGetter: (params) => {
-          const attribute = params.data.months.find(
-            (attr) => attr.month_val == monthName
-          );
-          return attribute ? attribute.sellout_local_currency : null;
-        },
       });
     }
   }
-  
+
   columnDefs.push({
     headerName: `${selectedValue} Total`,
     field: "total",
@@ -288,35 +405,6 @@ function HistoricalData(props) {
     ];
   }, []);
 
-  let userMail = "";
-
-  if (screenRole == "editor") {
-    userMail = "nelson@se.com";
-  }
-  if (screenRole == "approver") {
-    screenRole = "approve_1";
-    // screenRole = "approver_2";
-    userMail = "katie@se.com";
-  }
-  if (screenRole == "superApproverUser") {
-    screenRole = "supervisor_approv_1_2";
-    // userMail = "thomas@se.com";
-    userMail = "example@example.com";
-  }
-
-  const onGridReady = useCallback((params) => {
-    const year = typeof params == "string" ? params : selectedValue;
-    props
-      .retrieveHistoricalData(userMail, year, screenRole)
-      .then((data) => {
-        setRowData(data);
-        // setRowData(historyData);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
-
   const handleExport = useCallback(() => {
     const params = {
       fileName: "Sell out Historical Data.xlsx",
@@ -329,7 +417,7 @@ function HistoricalData(props) {
   const handleChange = (event) => {
     const value = event.target.value;
     setSelectedValue(value);
-    onGridReady(value);
+    getHistoricalData(userMail, value, screenRole);
   };
 
   const getMonthFeildValues = (params) => {
@@ -338,7 +426,7 @@ function HistoricalData(props) {
     for (let i = 0; i < yearVlaue; i++) {
       let sum = 0;
 
-      params.data.months.forEach((month) => {
+      params?.data?.months?.forEach((month) => {
         if (
           month.sellout_local_currency !== null &&
           month.month_val != getMonths[new Date().getMonth()]
@@ -381,7 +469,7 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "approver" || "approv_1" ? (
+          ) : screenRole === "approver" || "approve_1" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/approver/home">
                 <img
@@ -462,7 +550,7 @@ function HistoricalData(props) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={radioValue == 1 ? rowData : rowData}
+            rowData={radioValue == 1 ? historicalData : historicalData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}
@@ -472,7 +560,7 @@ function HistoricalData(props) {
             suppressAggFuncInHeader={true}
             groupIncludeTotalFooter={true}
             groupIncludeFooter={true}
-            onGridReady={onGridReady}
+            // onGridReady={onGridReady}
             getRowStyle={getRowStyle}
             excelStyles={excelStyles}
             suppressMenuHide={true}
