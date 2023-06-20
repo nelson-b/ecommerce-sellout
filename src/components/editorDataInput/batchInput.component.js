@@ -224,7 +224,7 @@ function BatchInputComponent({ savedData, props, userDetails}) {
                 allCalMonths.forEach(element => {          
                   if(rowNode[`${element}_Amount`]>0){
                     monthArray.push({
-                      month: element,
+                      month: element.toLowerCase(),
                       sellout_local_currency: String(rowNode[`${element}_Amount`]),
                       trans_type: rowNode[`${element}_Estimated`] == true ? 'EST' : 'ACT'
                     });

@@ -27,7 +27,7 @@ function DataInputComponent(props) {
   const location = useLocation();
   const dataRole = new URLSearchParams(location.search).get("role");
   const filterGlobalData = {
-    loginUser: "abc@example.com",
+    loginUser: "test@gmail.com",
     currentYear: String(new Date().getFullYear()),
     dataRole: dataRole
   };
@@ -105,7 +105,7 @@ function DataInputComponent(props) {
         allCalMonths.forEach(element => {          
           if(rowNode.data[`${element}_Amount`]>0){
             monthArray.push({
-              month: element,
+              month: element.toLowerCase(),
               sellout_local_currency: String(rowNode.data[`${element}_Amount`]),
               trans_type: rowNode.data[`${element}_Estimated`] == true ? 'EST' : 'ACT'
             });
@@ -702,10 +702,32 @@ function DataInputComponent(props) {
     toggleActualEstimate(param.target.checked);
   });
   
+  const getMonthVal = (monthArray, month) => {
+    let filterData = monthArray.filter(data => data.month_val.toLowerCase() == month.toLowerCase());
+    console.log('getMonthVal', filterData);
+    if(filterData.length > 0 && filterData!=undefined){
+      return (filterData[0].sellout_local_currency == 0 ? '': filterData[0].sellout_local_currency);
+    }
+    else{
+      return '';
+    }
+     
+  }
+
+  const getTransTypeVal = (monthArray, month) => {
+    let filterData = monthArray.filter(data => data.month_val.toLowerCase() == month.toLowerCase());
+    console.log('getTransTypeVal', filterData);
+    if(filterData.length > 0 && filterData!=undefined){
+       return filterData[0].trans_type == 'EST' ? true: false;
+     }
+     else{
+       return false;
+     }
+  }
+
   const formatGetPayload = useCallback((data, isManualInput) =>{
     let respPayload = [];
     data.forEach((row, index) => {
-      console.log('row.country_code', row.country_code);
       let indvRespPayload = {
         Zone: row.zone_val,
         Country: row.country_name,
@@ -717,30 +739,30 @@ function DataInputComponent(props) {
         Currency_Of_Reporting: row.trans_currency_code,
         Status: row.status,
         Year: row.year_val,
-        Jan_Amount: row.months[0].month_val == "jan" ? row.months[0].sellout_local_currency: '',
-        Feb_Amount: row.months[0].month_val == "feb" ? row.months[0].sellout_local_currency: '',
-        Mar_Amount: row.months[0].month_val == "march" ? row.months[0].sellout_local_currency: '',
-        Apr_Amount: row.months[0].month_val == "apr" ? row.months[0].sellout_local_currency: '',
-        May_Amount: row.months[0].month_val == "may" ? row.months[0].sellout_local_currency: '',
-        Jun_Amount: row.months[0].month_val == "jun" ? row.months[0].sellout_local_currency: '',
-        Jul_Amount: row.months[0].month_val == "jul" ? row.months[0].sellout_local_currency: '',
-        Aug_Amount: row.months[0].month_val == "aug" ? row.months[0].sellout_local_currency: '',
-        Sep_Amount: row.months[0].month_val == "sep" ? row.months[0].sellout_local_currency: '',
-        Oct_Amount: row.months[0].month_val == "oct" ? row.months[0].sellout_local_currency: '',
-        Nov_Amount: row.months[0].month_val == "nov" ? row.months[0].sellout_local_currency: '',
-        Dec_Amount: row.months[0].month_val == "dec" ? row.months[0].sellout_local_currency: '',
-        Jan_Estimated: row.months[0].month_val == "jan" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Feb_Estimated: row.months[0].month_val == "feb" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Mar_Estimated: row.months[0].month_val == "mar" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Apr_Estimated: row.months[0].month_val == "apr" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        May_Estimated: row.months[0].month_val == "may" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Jun_Estimated: row.months[0].month_val == "jun" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Jul_Estimated: row.months[0].month_val == "jul" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Aug_Estimated: row.months[0].month_val == "aug" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Sep_Estimated: row.months[0].month_val == "sep" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Oct_Estimated: row.months[0].month_val == "oct" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Nov_Estimated: row.months[0].month_val == "nov" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Dec_Estimated: row.months[0].month_val == "dec" ? (row.months[0].trans_type == "EST" ? true : false): '',
+        Jan_Amount: getMonthVal(row.months, allCalMonths[0]), // "jan"
+        Feb_Amount: getMonthVal(row.months, allCalMonths[1]), //"feb"
+        Mar_Amount: getMonthVal(row.months, allCalMonths[2]), //"march"
+        Apr_Amount: getMonthVal(row.months, allCalMonths[3]), //"apr"
+        May_Amount: getMonthVal(row.months, allCalMonths[4]), //may
+        Jun_Amount: getMonthVal(row.months, allCalMonths[5]), //jun
+        Jul_Amount: getMonthVal(row.months, allCalMonths[6]), //"jul"
+        Aug_Amount: getMonthVal(row.months, allCalMonths[7]), //aug
+        Sep_Amount: getMonthVal(row.months, allCalMonths[8]), //sep
+        Oct_Amount: getMonthVal(row.months, allCalMonths[9]), //oct
+        Nov_Amount: getMonthVal(row.months, allCalMonths[10]), //nov
+        Dec_Amount: getMonthVal(row.months, allCalMonths[11]), //dec
+        Jan_Estimated: getTransTypeVal(row.months, allCalMonths[0]), //jan
+        Feb_Estimated: getTransTypeVal(row.months, allCalMonths[1]), //feb
+        Mar_Estimated: getTransTypeVal(row.months, allCalMonths[2]), //"mar"
+        Apr_Estimated: getTransTypeVal(row.months, allCalMonths[3]), //"apr"
+        May_Estimated: getTransTypeVal(row.months, allCalMonths[4]), //may
+        Jun_Estimated: getTransTypeVal(row.months, allCalMonths[5]), //jun
+        Jul_Estimated: getTransTypeVal(row.months, allCalMonths[6]), //jul
+        Aug_Estimated: getTransTypeVal(row.months, allCalMonths[7]), //aug
+        Sep_Estimated: getTransTypeVal(row.months, allCalMonths[8]), //sep
+        Oct_Estimated: getTransTypeVal(row.months, allCalMonths[9]), //oct
+        Nov_Estimated: getTransTypeVal(row.months, allCalMonths[10]), //nov
+        Dec_Estimated: getTransTypeVal(row.months, allCalMonths[11]), //dec
         created_by: row.created_by,
         created_date: row.created_date,
         approved_by: row.approved_by,
