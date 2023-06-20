@@ -48,14 +48,20 @@ function SaveUser(props) {
   
   let loginUserId = '';
 
-  if(userRole == 'superApproverUser') {
+  if(userRole == roles.editor) {
+    loginUserId = 'nelson@se.com'
+  }
+  if(userRole == roles.approver) {
+    loginUserId = 'katie@se.com'
+  } 
+  if(userRole == roles.superUser) {
+    loginUserId = 'marie@se.com'
+  }
+  if(userRole == roles.superApproverUser) {
     loginUserId = 'thomas@se.com'
   }
-  if(userRole == 'admin') {
+  if(userRole == roles.admin) {
     loginUserId = 'jean@se.com'
-  } 
-  if(userRole == 'superUser') {
-    loginUserId = 'marie@se.com'
   }
 
   const initialForm = {
@@ -528,7 +534,7 @@ function SaveUser(props) {
       role_id: form.userrole,
       first_name: form.firstname,
       last_name: form.lastname,
-      status: userRole == roles.admin ? status.active : status.pending,
+      status: userRole == roles.admin ? status.active : status.pending, //only admin can directly create user
       modified_by: loginUserId, //login user email id
       created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
       modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
@@ -547,7 +553,7 @@ function SaveUser(props) {
     props.createUserProfileConfig(userData)
         .then((data) => {
           console.log('createUserProfileConfig input', data);
-          upsertUserProfile(form);
+          // upsertUserProfile(form);
         })
         .catch((e) => {
           setShowSuccessModal(false);

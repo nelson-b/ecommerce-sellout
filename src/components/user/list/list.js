@@ -152,7 +152,7 @@ function UserList(props) {
   } 
   if(userRole == 'superUser') {
     userMail = 'marie@se.com'
-  } 
+  }  
 
   const onGridReady = useCallback((params) => {
     props

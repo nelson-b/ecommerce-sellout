@@ -6,7 +6,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useState, useMemo, useCallback, useRef } from "react";
 import { Button, Row, Col, Container, Form, Breadcrumb } from "react-bootstrap";
-import { allCalMonths } from "../constant";
+import { allCalMonths, roles } from "../constant";
 import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
 import MyMenu from "../menu/menu.component.js";
@@ -25,12 +25,28 @@ function DataInputComponent(props) {
   const [showModal, setShowModal] = useState(false);
   const [rowData, setRowData] = useState(null);
   const location = useLocation();
-  const dataRole = new URLSearchParams(location.search).get("role");
+  const userRole = new URLSearchParams(location.search).get("role");
   const filterGlobalData = {
-    loginUser: "test@gmail.com",
+    loginUser: "",
     currentYear: String(new Date().getFullYear()),
-    dataRole: dataRole
+    userRole: userRole
   };
+
+  if(userRole == roles.editor) {
+    filterGlobalData.loginUser = 'nelson@se.com'
+  }
+  if(userRole == roles.approver) {
+    filterGlobalData.loginUser = 'katie@se.com'
+  } 
+  if(userRole == roles.superUser) {
+    filterGlobalData.loginUser = 'marie@se.com'
+  }
+  if(userRole == roles.superApproverUser) {
+    filterGlobalData.loginUser = 'thomas@se.com'
+  }
+  if(userRole == roles.admin) {
+    filterGlobalData.loginUser = 'jean@se.com'
+  }
 
   const handleClearClick = () => {
     window.location.reload();
@@ -780,7 +796,7 @@ function DataInputComponent(props) {
   });
 
   const onGridReady = useCallback((params) => {
-    props.retrieveAllData(filterGlobalData.loginUser, filterGlobalData.currentYear, filterGlobalData.dataRole)
+    props.retrieveAllData(filterGlobalData.loginUser, filterGlobalData.currentYear, filterGlobalData.userRole)
     .then((data) => {
       console.log('retrieveAllData', data);
       if(data){
@@ -793,7 +809,7 @@ function DataInputComponent(props) {
   }, []);
 
   const handleNavigation = () => {
-    navigate(`/dataReview?role=${dataRole}`);
+    navigate(`/dataReview?role=${userRole}`);
   };
   
   return (
@@ -881,7 +897,7 @@ function DataInputComponent(props) {
             <Button
               className="btn-upload save-header"
               onClick={() => {
-                handleNavigation(dataRole);
+                handleNavigation(userRole);
               }}
             >
               Next

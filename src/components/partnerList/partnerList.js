@@ -20,6 +20,7 @@ import {
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { getUIDateFormat } from "../../helper/helper.js";
+import { roles } from "../constant.js";
 
 function PartnerList(props) {
   const navigate = useNavigate();
@@ -345,8 +346,17 @@ function PartnerList(props) {
   }
 
   const onGridReady = useCallback((params) => {
+    let filterData = {
+      role: screenRole,
+      userMail: userMail
+    };
+
+    console.log('filterData', filterData);
+    
     props
-      .retrievePartnerByRole(screenRole, userMail)
+      .retrievePartnerByRole(
+        (screenRole == roles.admin || screenRole == roles.superUser || screenRole == roles.superApproverUser)? '' : filterData.role, 
+        (screenRole == roles.admin || screenRole == roles.superUser || screenRole == roles.superApproverUser)? '' : filterData.userMail)
       .then((data) => {
         setRowData(data.data.filter((e) => e.status == "ACTIVE"));
       })

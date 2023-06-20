@@ -13,12 +13,20 @@ class PartnerService {
   }
 
   getByRole(role, email) {
-    return http.get(
+    if(role != '' && email != ''){
+    console.log('by_user', role, email);
+    return http.get(      
       `/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${email}&role_id=${role}`
     );
-  }
+    }else
+    {
+      console.log('all', role, email);
+      return http.get(
+        "/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=all" 
+      );
+    }
 
-  
+  }
 
   getUserRoleConfigByPartnerId(id) {
     return http.get(
@@ -32,11 +40,11 @@ class PartnerService {
     );
   }
 
-  getUserRoleConfigByPartnerId(id) {
-    return http.get(
-      `/ecomm-sellout-dev-lamda-createpartner/get-user-role-partner-config?fetch=by_partner_id&partner_id=${id}`
-    );
-  }
+  // getUserRoleConfigByPartnerId(id) {
+  //   return http.get(
+  //     `/ecomm-sellout-dev-lamda-createpartner/get-user-role-partner-config?fetch=by_partner_id&partner_id=${id}`
+  //   );
+  // }
 
   getUserRoleConfigByEmailRole(id, role) {
     return http.get(

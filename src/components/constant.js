@@ -25,8 +25,8 @@ export const roles ={
 };
 
 export const status = {
-  "active": "active",
-  "pending": "pending"
+  "active": "ACTIVE",
+  "pending": "PENDING"
 }
 
 export const quarters = {
