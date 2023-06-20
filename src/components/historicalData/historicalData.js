@@ -138,17 +138,13 @@ function HistoricalData(props) {
   let userMail = "";
 
   if (screenRole == "editor") {
-    userMail = "abc@example.com";
+    userMail = "chncn00071@example.com";
   }
-  if (screenRole == "approver") {
-    screenRole = "approve_1";
-    // screenRole = "approver_2";
-    userMail = "abc@example.com";
+  if (screenRole == "approve_1" || screenRole == "approver_2") {
+    userMail = "chncn00071@example.com";
   }
-  if (screenRole == "superApproverUser") {
-    screenRole = "supervisor_approv_1_2";
-    // userMail = "thomas@se.com";
-    userMail = "abc@example.com";
+  if (screenRole == "supervisor_approv_1_2") {
+    userMail = "chncn00071@example.com";
   }
 
   const getHistoricalData = (mail, year, role) => {
@@ -469,9 +465,9 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "approver" || "approve_1" ? (
+          ) : screenRole === "approve_1" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
-              <Breadcrumb.Item href="/approver/home">
+              <Breadcrumb.Item href="/approve_1/home">
                 <img
                   src={Home}
                   alt="home"
@@ -483,7 +479,22 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "superApproverUser" || "supervisor_approv_1_2" ? (
+          ) : screenRole === "approver" || screenRole === "approver_2" ? (
+            <Breadcrumb style={{ marginBottom: "-30px" }}>
+              <Breadcrumb.Item href="/approver_2/home">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+              <span style={{ color: "grey" }}> &nbsp;{">"}</span>
+              <Breadcrumb.Item active style={{ color: "#000000" }}>
+                &nbsp;Data Review
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : screenRole === "superApproverUser" ||
+            screenRole === "supervisor_approv_1_2" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img

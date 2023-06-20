@@ -138,14 +138,11 @@ function DataReviewApprover(props) {
 
   let userMail = "";
 
-  if (historicalRole == "approver") {
-    historicalRole = "approve_1";
-    // screenRole = "approver_2";
+  if (historicalRole == "approve_1" || historicalRole == "approver_2") {
     userMail = "abc@example.com";
   }
   if (historicalRole == "superApproverUser") {
     historicalRole = "supervisor_approv_1_2";
-    // userMail = "thomas@se.com";
     userMail = "abc@example.com";
   }
 
@@ -947,10 +944,12 @@ function DataReviewApprover(props) {
   };
 
   const handleReviewNavigation = () => {
-    if (historicalRole === "superApproverUser") {
+    if (historicalRole === "superApproverUser" || historicalRole === "supervisor_approv_1_2") {
       navigate("/superApproverUser/home");
+    } else if (historicalRole === "approve_1") {
+      navigate("/approve_1/home");
     } else {
-      navigate("/approver/home");
+      navigate("/approver_2/home");
     }
   };
 
@@ -959,8 +958,8 @@ function DataReviewApprover(props) {
       message === 1
         ? `${message} Partner Account Sent For Investigation `
         : message > 1
-          ? `${message} Partners Account Sent For Investigation `
-          : ""
+        ? `${message} Partners Account Sent For Investigation `
+        : ""
     );
   };
 
@@ -1034,9 +1033,9 @@ function DataReviewApprover(props) {
         </Row>
 
         <div>
-          {historicalRole === "approver" || "approve_1" ? (
+          {historicalRole === "approve_1" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/approver/home">
+              <Breadcrumb.Item href="/approve_1/home">
                 <img
                   src={Home}
                   alt="home"
@@ -1044,7 +1043,19 @@ function DataReviewApprover(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : historicalRole === "superApproverUser" || "supervisor_approv_1_2" ? (
+          ) : historicalRole === "approver" ||
+            historicalRole === "approver_2" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/approver_2/home">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : historicalRole === "superApproverUser" ||
+            historicalRole === "supervisor_approv_1_2" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img
@@ -1066,8 +1077,9 @@ function DataReviewApprover(props) {
               <Row className="quarter-months">Quarter Months</Row>
               <Col className="">
                 <Button
-                  className={`show-data toggle-button ${isYearColumnVisible ? "active" : ""
-                    }`}
+                  className={`show-data toggle-button ${
+                    isYearColumnVisible ? "active" : ""
+                  }`}
                   onClick={() => {
                     onBtShowYearColumn(reviewData, radioValue);
                     setTimeout(() => {
@@ -1079,8 +1091,9 @@ function DataReviewApprover(props) {
                 </Button>
 
                 <Button
-                  className={`show-data toggle-button ${!isYearColumnVisible ? "active" : ""
-                    }`}
+                  className={`show-data toggle-button ${
+                    !isYearColumnVisible ? "active" : ""
+                  }`}
                   onClick={() => onBtHideYearColumn()}
                 >
                   Hide
@@ -1187,8 +1200,8 @@ function DataReviewApprover(props) {
             {message === 1
               ? `${message} Partner Selected `
               : message > 1
-                ? `${message} Partners Selected `
-                : ""}
+              ? `${message} Partners Selected `
+              : ""}
           </div>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>

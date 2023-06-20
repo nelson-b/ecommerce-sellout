@@ -78,37 +78,15 @@ function BusinessUnitSplit(props) {
       .then((data) => {
         setRowData(data);        
     
-        if (data && data?.length) {
-          setShowSuccessModal(true);
-        } else {
-          setShowSuccessModal(false);
-        }
+        // if (data && data?.length) {
+        //   setShowSuccessModal(true);
+        // } else {
+        //   setShowSuccessModal(false);
+        // }
       })
       .catch((e) => {
         console.log("Error", e);
       });
-
-    // let errorLog = [];
-    // //iterate in the grid
-    // gridRef.current.api.forEachNode((rowNode, index) => {
-    //   if (rowNode.data.Total != 100) {
-    //     errorLog = errorLog.concat(
-    //       "Total not 100% at partner id: " + rowNode.data.id
-    //     );
-    //   }
-    // });
-
-    // console.log("errorLog", errorLog);
-
-    // if (errorLog.length > 0) {
-    //   setErrorData(["Total should be 100% for all Bussiness units"]);
-    //   setShowErrorModal(true);
-    //   setShowSuccessModal(false);
-    // } else {
-    //   setErrorData([]);
-    //   setShowErrorModal(false);
-    //   setShowSuccessModal(true);
-    // }
   }, []);
 
   const gridRef = useRef(null);
@@ -260,11 +238,9 @@ function BusinessUnitSplit(props) {
         (attr) => attr.attribute_val === splitHeader
       );
       if (attribute) {
-        console.log("att value", attribute.total);
         total += attribute.total;
       }
     }
-    console.log("total", total);
     return total;
   };
 
@@ -401,23 +377,19 @@ function BusinessUnitSplit(props) {
   let userMail = "";
 
   if (buRole == "editor") {
-    userMail = "abc@example.com";
+    userMail = "chncn00072@example.com";
   }
-  if (buRole == "approver") {
-    // buRole = "approve_1";
-    // buRole = "approver_2";
+  if (buRole == "approve_1" || buRole == "approver_2") {
     userMail = "abc@example.com";
   }
   if (buRole == "superApproverUser") {
-    // buRole = "supervisor_approv_1_2";
-    userMail = "abc@example.com";
+    userMail = "chncn00071@example.com";
   }
   let year = 2023;
 
   const onGridReady = useCallback((params) => {
-    console.log('approve', params);
     props
-      .retrieveBuSplitData(userMail, buRole == "approver" ? "approve_1" : buRole == "superApproverUser" ? "supervisor_approv_1_2" : buRole, year)
+      .retrieveBuSplitData(userMail, buRole == "superApproverUser" ? "supervisor_approv_1_2" : buRole, year)
       .then((data) => {
         setRowData(data.data);
       })
@@ -632,68 +604,32 @@ function BusinessUnitSplit(props) {
     console.log("ERROR:::", error);
   };
 
-  const buSplitExcel = async (exportedData) => {
-    console.log("exportedData", exportedData, rowData);
-    // const tempData = rowData.map((e) => {
-    //   const { created_by, ...rest } = e;
-    //   return rest;
-    // });
-    // console.log('tempData', tempData);
+  const excelStyles = useMemo(() => {
+    return [
+      {
+        id: "header",
+        alignment: {
+          vertical: "Center",
+        },
+        font: {
+          bold: true,
+          color: "#ffffff",
+        },
+        interior: {
+          color: "#009530",
+          pattern: "Solid",
+        },
+      }
+    ];
+  }, []);
 
-    const currentDate = new Date();
-    const workbook = xlsx.utils.book_new();
-    const sheet1 = xlsx.utils.json_to_sheet(exportedData);
-    xlsx.utils.book_append_sheet(workbook, sheet1, "Sell out BuSplit Data");
-
-    workbook.Sheets["Sell out BuSplit Data"]["A1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
-      font: { bold: true, color: { rgb: "FFFFFF" } },
+  const buSplitExcel = useCallback(() => {
+    const params = {
+      fileName: "Sell out BuSplit Data.xlsx",
+      sheetName: "BuSplit Data",
     };
-    workbook.Sheets["Sell out BuSplit Data"]["B1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-    };
-    workbook.Sheets["Sell out BuSplit Data"]["C1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-    };
-    workbook.Sheets["Sell out BuSplit Data"]["D1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-    };
-    workbook.Sheets["Sell out BuSplit Data"]["E1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-    };
-    workbook.Sheets["Sell out BuSplit Data"]["F1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-    };
-    workbook.Sheets["Sell out BuSplit Data"]["G1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-    };
-    workbook.Sheets["Sell out BuSplit Data"]["H1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-    };
-    workbook.Sheets["Sell out BuSplit Data"]["I1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-    };
-    workbook.Sheets["Sell out BuSplit Data"]["J1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-    };
-    workbook.Sheets["Sell out BuSplit Data"]["K1"].s = {
-      fill: { patternType: "solid", fgColor: { rgb: "009E4D" } },
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-    };
-    xlsx.writeFile(
-      workbook,
-      "Sell out BuSplit Data " + currentDate.getFullYear() + ".xlsx"
-    );
-  };
+    gridRef.current.api.exportDataAsExcel(params);
+  }, []);
 
   return (
     <>
@@ -713,9 +649,9 @@ function BusinessUnitSplit(props) {
                   />
                 </Breadcrumb.Item>
               </Breadcrumb>
-            ) : buRole === "approver" ? (
+            ) : buRole === "approve_1" ? (
               <Breadcrumb>
-                <Breadcrumb.Item href="/approver/home">
+                <Breadcrumb.Item href="/approve_1/home">
                   <img
                     src={Home}
                     alt="home"
@@ -723,7 +659,17 @@ function BusinessUnitSplit(props) {
                   />
                 </Breadcrumb.Item>
               </Breadcrumb>
-            ) : buRole === "superApproverUser" || "supervisor_approv_1_2" ? (
+            ) : buRole === "approver" || buRole === "approver_2" ? (
+              <Breadcrumb>
+                <Breadcrumb.Item href="/approver_2/home">
+                  <img
+                    src={Home}
+                    alt="home"
+                    style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                  />
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            ) : buRole === "superApproverUser" || buRole === "supervisor_approv_1_2" ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/superApproverUser/home">
                   <img
@@ -802,7 +748,7 @@ function BusinessUnitSplit(props) {
               <Button
                 size="lg"
                 className="edit-header"
-                onClick={(e) => buSplitExcel(rowData)}
+                onClick={(e) => buSplitExcel()}
               >
                 Download Template
               </Button>
@@ -825,6 +771,7 @@ function BusinessUnitSplit(props) {
               suppressCopySingleCellRanges={true}
               onGridReady={onGridReady}
               suppressMenuHide={true}
+              excelStyles={excelStyles}
             ></AgGridReact>
             <div>
               <Row
