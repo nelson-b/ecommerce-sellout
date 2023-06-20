@@ -553,7 +553,7 @@ function SaveUser(props) {
     props.createUserProfileConfig(userData)
         .then((data) => {
           console.log('createUserProfileConfig input', data);
-          // upsertUserProfile(form);
+          upsertUserProfile(form);
         })
         .catch((e) => {
           setShowSuccessModal(false);
