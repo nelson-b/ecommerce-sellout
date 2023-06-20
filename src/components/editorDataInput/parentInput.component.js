@@ -18,7 +18,7 @@ import AlertModal from "../modal/alertModel";
 import { useLocation } from "react-router-dom";
 import { createData, retrieveAllData, updateSellOutData } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
-import { getUIDateFormat } from "../../helper/helper";
+import { getUIDateFormat, getUIDateFormatWithTime } from "../../helper/helper";
 
 function DataInputComponent(props) {
   const navigate = useNavigate();
@@ -119,16 +119,16 @@ function DataInputComponent(props) {
           year_val: String(rowNode.data.Year),
           months: monthArray,
           trans_currency_code: rowNode.data.Currency_Of_Reporting,
-          created_by: 'abc@gmail.com', //login user
-          created_date: getUIDateFormat(new Date().toUTCString()),
-          approval_status: "0",
+          created_by: rowNode.data.created_by, //login user
+          created_date: rowNode.data.created_date,
+          approval_status: rowNode.data.approval_status,
           editor_comment: rowNode.data.Comment,
           comments: 'waiting for approver',
-          batch_upload_flag: "false"
+          batch_upload_flag: rowNode.data.batch_upload_flag
         };
 
         console.log('formatPayload', formatPayload);
-        if(formatPayload.months.length> 0) payload.push(formatPayload);
+        if(formatPayload.months.length> 0) { payload.push(formatPayload); }
     });
 
     console.log('payload', payload);
@@ -464,6 +464,18 @@ function DataInputComponent(props) {
       hide: true,
     },
     {
+      field: "approval_status",
+      hide: true,
+    },
+    {
+      field: "approved_by",
+      hide: true,
+    },
+    {
+      field: "approved_date",
+      hide: true,
+    },
+    {
       headerName: "Model",
       field: "Model",
       sortable: true,
@@ -729,14 +741,14 @@ function DataInputComponent(props) {
         Oct_Estimated: row.months[0].month_val == "oct" ? (row.months[0].trans_type == "EST" ? true : false): '',
         Nov_Estimated: row.months[0].month_val == "nov" ? (row.months[0].trans_type == "EST" ? true : false): '',
         Dec_Estimated: row.months[0].month_val == "dec" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        // created_by: row.created_by,
-        // created_date: row.created_date,
-        // approved_by: row.approved_by,
-        // approved_date: row.approved_date,
-        // approval_status: row.approval_status,
-        // editor_comment: row.editor_comment,
+        created_by: row.created_by,
+        created_date: row.created_date,
+        approved_by: row.approved_by,
+        approved_date: row.approved_date,
+        approval_status: row.approval_status,
         Comment: row.editor_comment,
-        // batch_upload_flag: row.batch_upload_flag,
+        comments: row.comments,
+        batch_upload_flag: 'false',
       };
       
       respPayload = respPayload.concat(indvRespPayload);

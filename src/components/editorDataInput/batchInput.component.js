@@ -9,11 +9,13 @@ import { allCalMonths } from "../constant";
 import { ckeckErrors } from "../utils/index.js";
 import { retrieveAllData, createData } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
-import { getUIDateFormat } from "../../helper/helper";
+import { getUIDateFormat, getAPIDateFormatWithTime } from "../../helper/helper";
 
 function BatchInputComponent({ savedData, props }) {
-  const navigate = useNavigate();
+  console.log('getUIDateFormatWithTime', getAPIDateFormatWithTime(new Date().toUTCString()));
 
+  const navigate = useNavigate();
+  
   const {
     register,
     handleSubmit,
@@ -228,7 +230,7 @@ function BatchInputComponent({ savedData, props }) {
                     });
                   }
                 });
-              
+                
                 let formatPayload = {
                   partner_id: rowNode.Partner_id,
                   partner_name: rowNode.Partner_Account_Name,
@@ -237,15 +239,17 @@ function BatchInputComponent({ savedData, props }) {
                   months: monthArray,
                   trans_currency_code: rowNode.Currency_Of_Reporting,
                   created_by: 'abc@gmail.com', //login user
-                  created_date: getUIDateFormat(new Date().toUTCString()),
+                  created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
                   approval_status: "0",
                   editor_comment: '',
                   comments: 'waiting for approver',
-                  batch_upload_flag: "false"
+                  batch_upload_flag: "true"
                 };
         
                 console.log('formatPayload', formatPayload);
-                if(formatPayload.months>0)payload.push(formatPayload);
+                if(formatPayload.months.length>0){
+                  payload.push(formatPayload);
+                }
             });
         
             console.log('payload', payload);
