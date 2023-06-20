@@ -51,6 +51,12 @@ function Login() {
     if(data.username=="katie@se.com" && data.usrpassword=="test@123"){
       navigate("/approver/home");
     }
+    if(data.username=="approve_1@se.com" && data.usrpassword=="test@123"){
+      navigate("/approve_1/home");
+    }
+    if(data.username=="approver_2@se.com" && data.usrpassword=="test@123"){
+      navigate("/approver_2/home");
+    }
     if(data.username=="thomas@se.com" && data.usrpassword=="test@123"){
       navigate("/superApproverUser/home");
     }

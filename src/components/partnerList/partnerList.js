@@ -361,7 +361,7 @@ function PartnerList(props) {
         setRowData(data.data.filter((e) => e.status == "ACTIVE"));
       })
       .catch((e) => {
-        console.log('Partner list', e);
+        console.log("Partner list", e);
       });
   }, []);
 
@@ -392,9 +392,19 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "approver" ? (
+          ) : screenRole === "approve_1" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/approver/home">
+              <Breadcrumb.Item href="/approve_1/home">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : screenRole === "approver" || screenRole === "approver_2" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/approver_2/home">
                 <img
                   src={Home}
                   alt="home"

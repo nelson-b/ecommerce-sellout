@@ -447,6 +447,24 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
+           {userRole === "approve_1"&& (
+            <Breadcrumb.Item href="/approve_1/home">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
+          )}
+           {userRole === "approver_2"&& (
+            <Breadcrumb.Item href="/approver_2/home">
+              <img
+                src={Home}
+                alt="home"
+                style={{ height: "20px", width: "80px", cursor: "pointer" }}
+              />
+            </Breadcrumb.Item>
+          )}
           {userRole === "superApproverUser" && (
             <Breadcrumb.Item href="/superApproverUser/home">
               <img
