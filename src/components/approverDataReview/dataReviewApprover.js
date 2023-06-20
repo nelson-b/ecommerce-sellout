@@ -1,7 +1,15 @@
-import React, { useCallback, useMemo, useState, useRef } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
+
 import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import { AgGridColumn } from "ag-grid-react";
+
 import {
   Button,
   Row,
@@ -26,17 +34,19 @@ import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
 import "../approverDataReview/dataReviewApprover.css";
 import { useLocation } from "react-router-dom";
+import { retrieveHistoricalData } from "../../actions/selloutaction";
+import { connect } from "react-redux";
 
 function DataReviewApprover(props) {
   const gridRef = useRef();
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
+  const [reviewData, setReviewData] = useState([]);
   const [radioValue, setRadioValue] = useState("1");
   const [message, setMessage] = useState(0);
   const location = useLocation();
-  const historicalRole = new URLSearchParams(location.search).get("role");
+  let historicalRole = new URLSearchParams(location.search).get("role");
   const [isYearColumnVisible, setIsYearColumnVisible] = useState(false);
-
   const radios = [
     { name: "Reporting Currency", value: "1" },
     { name: "Euro", value: "2" },
@@ -44,13 +54,14 @@ function DataReviewApprover(props) {
 
   const columnDefs = [
     {
-      field: "Zone",
+      headerName: "Zone",
+      field: "zone_val",
       rowGroup: true,
       hide: true,
     },
     {
       headerName: "Country",
-      field: "Country",
+      field: "country_code",
       rowGroup: true,
       hide: true,
       filter: true,
@@ -60,7 +71,7 @@ function DataReviewApprover(props) {
     },
     {
       headerName: "Model",
-      field: "Model",
+      field: "model_type",
       rowGroup: true,
       hide: true,
       filter: true,
@@ -70,7 +81,7 @@ function DataReviewApprover(props) {
     },
     {
       headerName: "Partner Account Name",
-      field: "Partner",
+      field: "partner_account_name",
       rowGroup: true,
       hide: true,
       filter: true,
@@ -80,7 +91,7 @@ function DataReviewApprover(props) {
     },
     {
       headerName: "Currency of Reporting",
-      field: "currency",
+      field: "trans_currency_code",
       pinned: "left",
       width: 140,
       editable: false,
@@ -88,7 +99,7 @@ function DataReviewApprover(props) {
     },
     {
       headerName: "Status",
-      field: "Status",
+      field: "status",
       pinned: "left",
       width: 110,
       suppressMenu: true,
@@ -96,7 +107,7 @@ function DataReviewApprover(props) {
         const Status = params.value;
         return (
           <div>
-            {Status === "Active" && (
+            {Status === "ACTIVE" && (
               <img src={active} alt="active" style={{ width: "80px" }} />
             )}
             {Status === "Closed" && (
@@ -125,7 +136,108 @@ function DataReviewApprover(props) {
     return quarters[quarter] || [];
   };
 
-  const onBtShowYearColumn = useCallback(() => {
+  let userMail = "";
+
+  if (historicalRole == "approver") {
+    historicalRole = "approve_1";
+    // screenRole = "approver_2";
+    userMail = "abc@example.com";
+  }
+  if (historicalRole == "superApproverUser") {
+    historicalRole = "supervisor_approv_1_2";
+    // userMail = "thomas@se.com";
+    userMail = "abc@example.com";
+  }
+
+  const year = new Date().getFullYear();
+
+  const getQuarterReviewData = (userMail, year, historicalRole) => {
+    props
+      .retrieveHistoricalData(userMail, year, historicalRole)
+      .then((data) => {
+        let final_arr = [];
+        data.map((item) => {
+          let obj = {};
+          obj.zone_val = item.zone_val;
+          obj.country_code = item.country_code;
+          obj.partner_account_name = item.partner_account_name;
+          obj.model_type = item.model_type;
+          obj.status = item.status;
+          obj.trans_currency_code = item.trans_currency_code;
+          obj.SelloutCQ = "";
+          obj.systemComments = item.comments;
+          obj.editorComments = item.editor_comment;
+          obj.YTD = "";
+          obj.YTD_Growth = "";
+          obj.ambition = "";
+          obj.approverComments = "";
+          item.months.map((each) => {
+            if (each.month_val === "jan") {
+              obj.Jan23 = each.sellout_local_currency;
+              obj.Jan23E = each.sellout;
+            }
+            if (each.month_val === "feb") {
+              obj.Feb23 = each.sellout_local_currency;
+              obj.Feb23E = each.sellout;
+            }
+            if (each.month_val === "mar") {
+              obj.Mar23 = each.sellout_local_currency;
+              obj.Mar23E = each.sellout;
+            }
+            if (each.month_val === "apr") {
+              obj.Apr23 = each.sellout_local_currency;
+              obj.Apr23E = each.sellout;
+            }
+            if (each.month_val === "may") {
+              obj.May23 = each.sellout_local_currency;
+              obj.May23E = each.sellout;
+            }
+            if (each.month_val === "jun") {
+              obj.Jun23 = each.sellout_local_currency;
+              obj.Jun23E = each.sellout;
+            }
+            if (each.month_val === "jul") {
+              obj.Jul23 = each.sellout_local_currency;
+              obj.Jul23E = each.sellout;
+            }
+            if (each.month_val === "aug") {
+              obj.Aug23 = each.sellout_local_currency;
+              obj.Aug23E = each.sellout;
+            }
+            if (each.month_val === "sep") {
+              obj.Sep23 = each.sellout_local_currency;
+              obj.Sep23E = each.sellout;
+            }
+            if (each.month_val === "oct") {
+              obj.Oct23 = each.sellout_local_currency;
+              obj.Oct23E = each.sellout;
+            }
+            if (each.month_val === "nov") {
+              obj.Nov23 = each.sellout_local_currency;
+              obj.Nov23E = each.sellout;
+            }
+            if (each.month_val === "dec") {
+              obj.Dec23 = each.sellout_local_currency;
+              obj.Dec23E = each.sellout;
+            }
+          });
+          final_arr.push(obj);
+        });
+
+        console.log("final_arr::::", final_arr);
+        setReviewData(final_arr);
+      })
+
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    getQuarterReviewData(userMail, year, historicalRole);
+  }, []);
+
+  const onBtShowYearColumn = useCallback((hisData, radio) => {
     const currentDate = new Date();
     const currentYear = String(currentDate.getFullYear()).slice(-2);
     const currentMonth = allCalMonths[currentDate.getMonth()];
@@ -156,17 +268,17 @@ function DataReviewApprover(props) {
       resultQuarter = currentQuarter;
     }
     const q2Values = quarters[resultQuarter];
-
     setIsYearColumnVisible(true);
-    gridRef.current.api.setColumnDefs([
+    let gridArr = [
       {
-        field: "Zone",
+        headerName: "Zone",
+        field: "zone_val",
         rowGroup: true,
         hide: true,
       },
       {
         headerName: "Country",
-        field: "Country",
+        field: "country_code",
         rowGroup: true,
         hide: true,
         filter: true,
@@ -176,7 +288,7 @@ function DataReviewApprover(props) {
       },
       {
         headerName: "Model",
-        field: "Model",
+        field: "model_type",
         rowGroup: true,
         hide: true,
         filter: true,
@@ -186,7 +298,7 @@ function DataReviewApprover(props) {
       },
       {
         headerName: "Partner Account Name",
-        field: "Partner",
+        field: "partner_account_name",
         rowGroup: true,
         hide: true,
         filter: true,
@@ -196,7 +308,7 @@ function DataReviewApprover(props) {
       },
       {
         headerName: "Currency of Reporting",
-        field: "currency",
+        field: "trans_currency_code",
         pinned: "left",
         width: 140,
         editable: false,
@@ -204,7 +316,7 @@ function DataReviewApprover(props) {
       },
       {
         headerName: "Status",
-        field: "Status",
+        field: "status",
         pinned: "left",
         width: 110,
         suppressMenu: true,
@@ -212,7 +324,7 @@ function DataReviewApprover(props) {
           const Status = params.value;
           return (
             <div>
-              {Status === "Active" && (
+              {Status === "ACTIVE" && (
                 <img src={active} alt="active" style={{ width: "80px" }} />
               )}
               {Status === "Closed" && (
@@ -223,7 +335,11 @@ function DataReviewApprover(props) {
         },
       },
       {
-        field: `${q2Values[0]}${selectedYear}`,
+        headerName: `${q2Values[0]}${selectedYear}`,
+        field:
+          radio == 1
+            ? `${q2Values[0]}${selectedYear}`
+            : `${q2Values[0]}${selectedYear}E`,
         filter: true,
         sortable: true,
         minWidth: 100,
@@ -234,7 +350,11 @@ function DataReviewApprover(props) {
         cellStyle: { "border-color": "#e2e2e2" },
       },
       {
-        field: `${q2Values[1]}${selectedYear}`,
+        headerName: `${q2Values[1]}${selectedYear}`,
+        field:
+          radio == 1
+            ? `${q2Values[1]}${selectedYear}`
+            : `${q2Values[1]}${selectedYear}E`,
         filter: true,
         sortable: true,
         minWidth: 100,
@@ -245,7 +365,11 @@ function DataReviewApprover(props) {
         cellStyle: { "border-color": "#e2e2e2" },
       },
       {
-        field: `${q2Values[2]}${selectedYear}`,
+        headerName: `${q2Values[2]}${selectedYear}`,
+        field:
+          radio == 1
+            ? `${q2Values[2]}${selectedYear}`
+            : `${q2Values[2]}${selectedYear}E`,
         filter: true,
         sortable: true,
         minWidth: 100,
@@ -360,20 +484,25 @@ function DataReviewApprover(props) {
         cellStyle: { "border-color": "#e2e2e2" },
         cellClassRules: { "cursor-pointer": () => true },
       },
-    ]);
+    ];
+
+    //  gridArr.splice(6,0, ...testArr)
+
+    gridRef.current.api.setColumnDefs(gridArr);
   }, []);
 
   const onBtHideYearColumn = useCallback(() => {
     setIsYearColumnVisible(false);
     gridRef.current.api.setColumnDefs([
       {
-        field: "Zone",
+        headerName: "Zone",
+        field: "zone_val",
         rowGroup: true,
         hide: true,
       },
       {
         headerName: "Country",
-        field: "Country",
+        field: "country_code",
         rowGroup: true,
         hide: true,
         filter: true,
@@ -383,7 +512,7 @@ function DataReviewApprover(props) {
       },
       {
         headerName: "Model",
-        field: "Model",
+        field: "model_type",
         rowGroup: true,
         hide: true,
         filter: true,
@@ -393,7 +522,7 @@ function DataReviewApprover(props) {
       },
       {
         headerName: "Partner Account Name",
-        field: "Partner",
+        field: "partner_account_name",
         rowGroup: true,
         hide: true,
         filter: true,
@@ -403,7 +532,7 @@ function DataReviewApprover(props) {
       },
       {
         headerName: "Currency of Reporting",
-        field: "currency",
+        field: "trans_currency_code",
         pinned: "left",
         width: 140,
         editable: false,
@@ -411,7 +540,7 @@ function DataReviewApprover(props) {
       },
       {
         headerName: "Status",
-        field: "Status",
+        field: "status",
         pinned: "left",
         width: 110,
         suppressMenu: true,
@@ -419,7 +548,7 @@ function DataReviewApprover(props) {
           const Status = params.value;
           return (
             <div>
-              {Status === "Active" && (
+              {Status === "ACTIVE" && (
                 <img src={active} alt="active" style={{ width: "80px" }} />
               )}
               {Status === "Closed" && (
@@ -556,9 +685,8 @@ function DataReviewApprover(props) {
     const quatMonths = getQuarterMonths(quat);
     let sellOutValArr = [];
     quatMonths.forEach((month, index) => {
-      console.log("index", index);
       let fieldMonth = getMonthField(month);
-      console.log("fieldMonth", fieldMonth);
+
       if (params.data) {
         var filterMonthCQ = Object.keys(params.data)
           .filter((key) => [fieldMonth].includes(key))
@@ -575,10 +703,8 @@ function DataReviewApprover(props) {
     });
 
     let selloutCQ = sellOutValArr.reduce(function (prev, current) {
-      return prev + + current;
+      return prev + +current;
     }, 0);
-
-    console.log("selloutCQ", selloutCQ);
 
     if (params.data) {
       params.data.SelloutCQ = selloutCQ != undefined ? selloutCQ : 0;
@@ -592,9 +718,8 @@ function DataReviewApprover(props) {
 
     let YTDSellOutValArr = [];
     getYTDMonths.forEach((month, index) => {
-      console.log("index", index);
       let fieldMonth = getMonthField(month);
-      console.log("fieldMonth", fieldMonth);
+
       if (params.data) {
         var filterMonthsYTD = Object.keys(params.data)
           .filter((key) => [fieldMonth].includes(key))
@@ -622,19 +747,16 @@ function DataReviewApprover(props) {
   };
 
   const getYTDSelloutGrowthPercCalc = (params) => {
-    console.log("getYTDSelloutGrowthPercCalc", params.data);
     //YTD Sellout CY
     if (params.data) {
       let YTDSelloutCY = params.data.YTD;
 
       //YTD Sellout LY
       const getYTDMonthsLY = allCalMonths;
-
       let YTDSellOutValArrLY = [];
       getYTDMonthsLY.forEach((month, index) => {
-        console.log("index", index);
         let fieldMonth = getPrevMonthField(month);
-        console.log("fieldMonth", fieldMonth);
+
         if (params.data) {
           var filterMonthsYTDLY = Object.keys(params.data)
             .filter((key) => [fieldMonth].includes(key))
@@ -655,11 +777,10 @@ function DataReviewApprover(props) {
       }, 0);
 
       let YTD_Growth = ((YTDSelloutCY - YTDSelloutLY) / YTDSelloutLY) * 100;
-      //% difference of YTD Sellout CY vs YTD Sellout LY
       params.data.YTD_Growth = Math.round(YTD_Growth);
-
       return Math.round(YTD_Growth);
     }
+
     return 0;
   };
 
@@ -838,8 +959,8 @@ function DataReviewApprover(props) {
       message === 1
         ? `${message} Partner Account Sent For Investigation `
         : message > 1
-        ? `${message} Partners Account Sent For Investigation `
-        : ""
+          ? `${message} Partners Account Sent For Investigation `
+          : ""
     );
   };
 
@@ -858,10 +979,7 @@ function DataReviewApprover(props) {
   };
 
   const onExpandCol = useCallback((e) => {
-    console.log("onExpandCol", e.target.value);
-
     gridRef.current.api.collapseAll();
-
     if (e.target.value === "Zone") {
       gridRef.current.api.forEachNode((node) => {
         console.log("node.level", node.level);
@@ -908,20 +1026,15 @@ function DataReviewApprover(props) {
     gridRef.current.api.collapseAll();
   }, []);
 
-  const onGridReady = useCallback((params) => {
-    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => approverData)
-      .then((approverData) => setRowData(approverData));
-  }, []);
-
   return (
     <>
       <Container fluid>
         <Row>
           <MyMenu />
         </Row>
+
         <div>
-          {historicalRole === "approver" ? (
+          {historicalRole === "approver" || "approve_1" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/approver/home">
                 <img
@@ -931,7 +1044,7 @@ function DataReviewApprover(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : historicalRole === "superApproverUser" ? (
+          ) : historicalRole === "superApproverUser" || "supervisor_approv_1_2" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img
@@ -945,6 +1058,7 @@ function DataReviewApprover(props) {
             <div></div>
           )}
         </div>
+
         <div>
           <Stack direction="horizontal" gap={4}>
             <div className="sell-out-header">Sell Out Data Review</div>
@@ -952,22 +1066,21 @@ function DataReviewApprover(props) {
               <Row className="quarter-months">Quarter Months</Row>
               <Col className="">
                 <Button
-                  className={`show-data toggle-button ${
-                    isYearColumnVisible ? "active" : ""
-                  }`}
+                  className={`show-data toggle-button ${isYearColumnVisible ? "active" : ""
+                    }`}
                   onClick={() => {
-                    onBtShowYearColumn();
+                    onBtShowYearColumn(reviewData, radioValue);
                     setTimeout(() => {
-                      onBtShowYearColumn();
+                      onBtShowYearColumn(reviewData, radioValue);
                     }, 10);
                   }}
                 >
                   Show
                 </Button>
+
                 <Button
-                  className={`show-data toggle-button ${
-                    !isYearColumnVisible ? "active" : ""
-                  }`}
+                  className={`show-data toggle-button ${!isYearColumnVisible ? "active" : ""
+                    }`}
                   onClick={() => onBtHideYearColumn()}
                 >
                   Hide
@@ -1041,7 +1154,7 @@ function DataReviewApprover(props) {
           {/* <Col md={2}>
             <Button className="btn-collapseall edit-header"
             onClick={onCollapseAll}
-            >Collapse all</Button> 
+            >Collapse all</Button>
           </Col> */}
         </Row>
         <Row
@@ -1050,7 +1163,7 @@ function DataReviewApprover(props) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={radioValue == 1 ? approverData : approverDataEuro}
+            rowData={radioValue == 1 ? reviewData : reviewData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}
@@ -1060,7 +1173,6 @@ function DataReviewApprover(props) {
             suppressAggFuncInHeader={true}
             groupIncludeTotalFooter={true}
             groupIncludeFooter={true}
-            onGridReady={onGridReady}
             getRowStyle={getRowStyle}
             rowSelection={"multiple"}
             onSelectionChanged={handleCheckboxClick}
@@ -1070,12 +1182,13 @@ function DataReviewApprover(props) {
             suppressRowClickSelection={true}
             suppressCellSelection={true}
           ></AgGridReact>
+
           <div className="checkbox-message">
             {message === 1
               ? `${message} Partner Selected `
               : message > 1
-              ? `${message} Partners Selected `
-              : ""}
+                ? `${message} Partners Selected `
+                : ""}
           </div>
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
@@ -1123,4 +1236,4 @@ function DataReviewApprover(props) {
   );
 }
 
-export default DataReviewApprover;
+export default connect(null, { retrieveHistoricalData })(DataReviewApprover);
