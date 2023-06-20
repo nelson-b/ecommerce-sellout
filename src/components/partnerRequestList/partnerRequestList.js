@@ -11,7 +11,7 @@ import {
   Breadcrumb,
   Container,
 } from "react-bootstrap";
-import { month } from "../constant";
+import { month, roles } from "../constant";
 import MyMenu from "../menu/menu.component.js";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
@@ -73,7 +73,7 @@ function PartnerRequestList(props) {
         const Status = params.value;
         return (
           <div>
-            {Status === "Pending" && (
+            {Status.toUpperCase() === "PENDING" && (
               <img src={Pending} alt="Pending" style={{ width: "80px" }} />
             )}
           </div>
@@ -304,17 +304,36 @@ function PartnerRequestList(props) {
 
   let userMail = '';
 
-  if(screenRole == 'superApproverUser') {
-    userMail = 'thomas@se.com'
+  if (screenRole == "editor") {
+    userMail = "nelson@se.com";
   }
-  if(screenRole == 'admin') {
-    userMail = 'jean@se.com'
-  } 
+  if (screenRole == "approver") {
+    userMail = "katie@se.com";
+  }
+  if (screenRole == "superApproverUser") {
+    userMail = "thomas@se.com";
+  }
+  if (screenRole == "admin") {
+    userMail = "jean@se.com";
+  }
+  if (screenRole == "superUser") {
+    userMail = "marie@se.com";
+  }
 
   const onGridReady = useCallback((params) => {
-    props.retrievePartnerByRole(screenRole, userMail)
+    let filterData = {
+      role: screenRole,
+      userMail: userMail
+    };
+
+    console.log('filterData', filterData);
+
+    props
+      .retrievePartnerByRole(
+        (screenRole == roles.admin || screenRole == roles.superUser || screenRole == roles.superApproverUser)? '' : filterData.role, 
+        (screenRole == roles.admin || screenRole == roles.superUser || screenRole == roles.superApproverUser)? '' : filterData.userMail)
       .then((data) => {
-        setRowData(data.data.filter((e) => e.status == "Pending"));
+        setRowData(data.data.filter((e) => e.status.toUpperCase() == "PENDING"));
       })
       .catch((e) => {
         console.log(e);

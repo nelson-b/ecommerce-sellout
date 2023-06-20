@@ -11,7 +11,7 @@ import { retrieveAllData, createData } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
 import { getUIDateFormat, getAPIDateFormatWithTime } from "../../helper/helper";
 
-function BatchInputComponent({ savedData, props }) {
+function BatchInputComponent({ savedData, props, userDetails}) {
   console.log('getUIDateFormatWithTime', getAPIDateFormatWithTime(new Date().toUTCString()));
 
   const navigate = useNavigate();
@@ -224,7 +224,7 @@ function BatchInputComponent({ savedData, props }) {
                 allCalMonths.forEach(element => {          
                   if(rowNode[`${element}_Amount`]>0){
                     monthArray.push({
-                      month: element,
+                      month: element.toLowerCase(),
                       sellout_local_currency: String(rowNode[`${element}_Amount`]),
                       trans_type: rowNode[`${element}_Estimated`] == true ? 'EST' : 'ACT'
                     });
@@ -238,7 +238,7 @@ function BatchInputComponent({ savedData, props }) {
                   year_val: String(rowNode.Year),
                   months: monthArray,
                   trans_currency_code: rowNode.Currency_Of_Reporting,
-                  created_by: 'abc@gmail.com', //login user
+                  created_by: userDetails.loginUser, //login user
                   created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
                   approval_status: "0",
                   editor_comment: '',

@@ -21,10 +21,15 @@ export const roles ={
   "admin": "admin",
   "approve_1": "approve_1",
   "approver_2": "approver_2",
-  "approver1": "approver1",
-  "approver2": "approver2",
+  "approver1": "approver_1",
+  "approver2": "approver_2",
   "supervisor_approv_1_2": "supervisor_approv_1_2" // superApproverUser
 };
+
+export const status = {
+  "active": "ACTIVE",
+  "pending": "PENDING"
+}
 
 export const quarters = {
   Q1: ["Jan", "Feb", "Mar"],
