@@ -172,8 +172,7 @@ function DataReviewApprover(props) {
 
     {
       headerName: "Currency of Reporting",
-
-      field: "trans_currency_code",
+      field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
 
       pinned: "left",
 
@@ -276,6 +275,8 @@ function DataReviewApprover(props) {
           obj.status = item.status;
 
           obj.trans_currency_code = item.trans_currency_code;
+          obj["trans_currency_codeE"] = 'EUR';
+
 
           obj.SelloutCQ = "";
 
@@ -496,9 +497,7 @@ function DataReviewApprover(props) {
 
       {
         headerName: "Currency of Reporting",
-
-        field: "trans_currency_code",
-
+        field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
         pinned: "left",
 
         width: 140,
@@ -865,8 +864,7 @@ function DataReviewApprover(props) {
 
       {
         headerName: "Currency of Reporting",
-
-        field: "trans_currency_code",
+        field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
 
         pinned: "left",
 

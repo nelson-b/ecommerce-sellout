@@ -72,21 +72,26 @@ function BusinessUnitSplit(props) {
       modified_date: data[0].modified_date,
       active_flag: data[0].active_flag,
     };
+    let apiData = 0;
+   console.log('reqdata', reqData);
+    reqData.attributes.forEach((e)=> {
+       apiData = apiData + e.total;
+    });
 
-    props
+    if (apiData == 100) {
+      props
       .updateBuSplitData(reqData)
       .then((data) => {
-        setRowData(data);        
-    
-        // if (data && data?.length) {
-        //   setShowSuccessModal(true);
-        // } else {
-        //   setShowSuccessModal(false);
-        // }
+        if (data?.data?.attributes?.length) {
+          setShowSuccessModal(true);
+        }
       })
       .catch((e) => {
         console.log("Error", e);
       });
+    } else {
+      setShowErrorModal(true);
+    }
   }, []);
 
   const gridRef = useRef(null);
@@ -245,7 +250,8 @@ function BusinessUnitSplit(props) {
   };
 
   const isTot100Per = (params) => {
-    if (params.data.Total !== 100) {
+    console.log('para', params)
+    if (params.value !== 100) {
       return { backgroundColor: "red" };
     }
     return { backgroundColor: "white", borderColor: "#e2e2e2" };
@@ -389,7 +395,11 @@ function BusinessUnitSplit(props) {
 
   const onGridReady = useCallback((params) => {
     props
-      .retrieveBuSplitData(userMail, buRole == "superApproverUser" ? "supervisor_approv_1_2" : buRole, year)
+      .retrieveBuSplitData(
+        userMail,
+        buRole == "superApproverUser" ? "supervisor_approv_1_2" : buRole,
+        year
+      )
       .then((data) => {
         setRowData(data.data);
       })
@@ -469,6 +479,8 @@ function BusinessUnitSplit(props) {
           let errorJson = [];
 
           buSplitData.forEach((b) => {
+            console.log('sp', b)
+
             if (
               json.find(
                 (j) => j.Partner_Account_Name === b.Partner_Account_Name
@@ -483,10 +495,9 @@ function BusinessUnitSplit(props) {
               json.forEach((j) => {
                 if (b.Partner_Account_Name === j.Partner_Account_Name) {
                   if (
-                    b.Country === j.Country &&
-                    b.partner_id === j.partner_id &&
-                    b.Model === j.Model &&
-                    b.Quarter === j.Quarter
+                    b.country_code === j.country_code &&
+                    b.model_type === j.model_type &&
+                    b.quarter === j.quarter
                   ) {
                     errorJson = [];
                   } else {
@@ -619,7 +630,7 @@ function BusinessUnitSplit(props) {
           color: "#009530",
           pattern: "Solid",
         },
-      }
+      },
     ];
   }, []);
 
@@ -669,7 +680,8 @@ function BusinessUnitSplit(props) {
                   />
                 </Breadcrumb.Item>
               </Breadcrumb>
-            ) : buRole === "superApproverUser" || buRole === "supervisor_approv_1_2" ? (
+            ) : buRole === "superApproverUser" ||
+              buRole === "supervisor_approv_1_2" ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/superApproverUser/home">
                   <img
@@ -798,6 +810,16 @@ function BusinessUnitSplit(props) {
                   >
                     Save
                   </Button>
+                  <AlertModel
+                    show={showSuccessModal}
+                    handleClose={handleCloseSuccessModal}
+                    body={successmsg}
+                  />
+                  <AlertModel
+                    show={showErrorModal}
+                    handleClose={handleCloseErrorModal}
+                    body={errormsg}
+                  />
                 </Col>
               </Row>
             </div>
