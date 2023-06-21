@@ -213,7 +213,7 @@ function BatchInputComponent({ savedData, props, userDetails}) {
           } else {
             //call api
             let payload = [];
-
+            
             // //iterate in the grid
             json.forEach((rowNode, index) => {
               console.log('index', index);

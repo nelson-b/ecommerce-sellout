@@ -252,64 +252,71 @@ function SaveUser(props) {
   });
   
   if(props.module === 'Update'){
-    //prefil the data
-    props.retrieveByEmailId(userEmailId)
-      .then((data) => {
-        console.log('retrieveByEmailId', data, userEmailId);
-        const respData = data.filter(data => data.email_id === userEmailId)[0];
-        console.log('filter data', respData);
-        //format to form
-        let prefillForm = {
-          firstname: respData.first_name,
-          lastname: respData.last_name,
-          useremailid: respData.email_id,
-          userrole: respData.role_id,
-          userops: respData.ops_val,
-          usrzone: respData.zone_val,
-          modelType: convertInputDataToMultiSelectDrp(respData.model_val),
-          usrcountry: convertInputDataToMultiSelectDrp(respData.country_code)
-        }
-
-        console.log('prefillForm', prefillForm);
-        //set state of form
-        setForm(prefillForm);
-        console.log('convertInputDataToMultiSelectDrp', convertInputDataToMultiSelectDrp('model 1,model 2'));
-        setOptionModelSelected(convertInputDataToMultiSelectDrp(respData.model_val));
-        setOptionCountrySelected(convertInputDataToMultiSelectDrp(respData.country_code));
-        //prefill partner drop down
-        props.retrieveUserRoleConfigByEmailIdRoleId(prefillForm.useremailid, prefillForm.userrole)
+    //prefill the data
+    if(userEmailId){
+      props.retrieveByEmailId(userEmailId)
         .then((data) => {
-          console.log('retrieveUserRoleConfigByEmailIdRoleId', data);
-          let filterData = data.filter(data => data.EMAIL_ID === prefillForm.useremailid && data.ROLE_ID === prefillForm.userrole)
-          console.log('filterData', filterData);
-          let partnerData = [];
-          filterData.forEach((rows, index)=> {
-            console.log('partnerDrpData', partnerDrpData);
-            props
-            .retrievePartnerByRole(prefillForm.useremailid, prefillForm.userrole)
-            .then((data) => {
-              console.log('retrievePartnerByRole', data);
-              let filterData = data.data.filter(data => data.partner_id == rows.PARTNER_ID);
-              console.log('partnerData', filterData);
-              let partnerDataIndv = {
-                value: rows.PARTNER_ID,
-                label: filterData[0].partner_account_name//partner_account_name.label
-              }
-              console.log('partnerDataIndv', partnerDataIndv);
-              partnerData = partnerData.concat(partnerDataIndv);
-              console.log('partnerData', partnerData);    
-              let name = "partnerAccNm";
-              handlePartnerChange(partnerData);
-            })
-            .catch((e) => {
-              console.log('Partner list', e);
+          console.log('retrieveByEmailId', data, userEmailId);
+          const respData = data.filter(data => data.email_id === userEmailId)[0];
+          console.log('filter data', respData);
+          //format to form
+          let prefillForm = {
+            firstname: respData.first_name,
+            lastname: respData.last_name,
+            useremailid: respData.email_id,
+            userrole: respData.role_id,
+            userops: respData.ops_val,
+            usrzone: respData.zone_val,
+            modelType: convertInputDataToMultiSelectDrp(respData.model_val),
+            usrcountry: convertInputDataToMultiSelectDrp(respData.country_code)
+          }
+
+          console.log('prefillForm', prefillForm);
+          //set state of form
+          setForm(prefillForm);
+          console.log('convertInputDataToMultiSelectDrp', convertInputDataToMultiSelectDrp('model 1,model 2'));
+          setOptionModelSelected(convertInputDataToMultiSelectDrp(respData.model_val));
+          setOptionCountrySelected(convertInputDataToMultiSelectDrp(respData.country_code));
+          //prefill partner drop down
+          props.retrieveUserRoleConfigByEmailIdRoleId(prefillForm.useremailid, prefillForm.userrole)
+          .then((data) => {
+            console.log('retrieveUserRoleConfigByEmailIdRoleId', data);
+            let filterData = data.filter(data => data.EMAIL_ID === prefillForm.useremailid && data.ROLE_ID === prefillForm.userrole)
+            console.log('filterData', filterData);
+            let partnerData = [];
+            filterData.forEach((rows, index)=> {
+              console.log('partnerDrpData', partnerDrpData);
+              props
+              .retrievePartnerByRole(prefillForm.useremailid, prefillForm.userrole)
+              .then((data) => {
+                console.log('retrievePartnerByRole', data);
+                let filterData = data.data.filter(data => data.partner_id == rows.PARTNER_ID);
+                console.log('partnerData', filterData);
+                let partnerDataIndv = {
+                  value: rows.PARTNER_ID,
+                  label: filterData[0].partner_account_name//partner_account_name.label
+                }
+                console.log('partnerDataIndv', partnerDataIndv);
+                partnerData = partnerData.concat(partnerDataIndv);
+                console.log('partnerData', partnerData);    
+                let name = "partnerAccNm";
+                handlePartnerChange(partnerData);
+              })
+              .catch((e) => {
+                console.log('Partner list', e);
+              });
             });
           });
+        })
+        .catch((e) => {
+          console.log(e);
         });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    }
+    else {
+      setErrorRet(['Email id missing in url!!']);
+      setShowErrorModal(true);
+      setShowSuccessModal(false);
+    }
     }
   }, []);
 
@@ -493,11 +500,13 @@ function SaveUser(props) {
     setShowSuccessModal(false);
   };
 
+  const [successRet, setSuccessRet] = useState([]);
+
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
     header: "Data has been saved successfully!!",
-    content: [],
+    content: [successRet],
   };
 
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -521,6 +530,7 @@ function SaveUser(props) {
       country_code: null,
       email_id: null,
       created_by: loginUserId, //login user
+      created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
       updated_by: loginUserId, //login user
       editor: null,
       backup_editor: null,
@@ -529,6 +539,8 @@ function SaveUser(props) {
       supervisor: null,
       supervisor_approv_1_2: null
     }
+
+    let isError = false;
 
     if(data.partnerAccNm){
       console.log('data.partnerAccNm', data.partnerAccNm);
@@ -554,22 +566,25 @@ function SaveUser(props) {
             console.log('createUserPartnerRoleConfig o/p', data);
           })
           .catch((e) => {
+            isError = true;
             setShowSuccessModal(false);
             setErrorRet([]);
             setShowErrorModal(true);
             console.log('Error', e);
-            return;
+            return false;
           });
       });
+    }
 
+    if(!isError){
       setShowSuccessModal(true);
       setShowErrorModal(false);
+      resetForm();
     }
   }
 
   const handleSubmit = () => {
     const isValid = validateForm();
-    resetForm();
     console.log('isValid', isValid);
     if (!isValid) {
       return false;
@@ -578,8 +593,8 @@ function SaveUser(props) {
     console.log("Data:", form);
 
     //api call
-    if(!isValid){
-      // postForm();
+    if(isValid){
+      postForm();
     }
   };
 
@@ -605,18 +620,36 @@ function SaveUser(props) {
     console.log('model type', convertMultiSelectDrpToInputData(form.modelType));
     console.log("Req Data:", userData);
     
-    props.createUserProfileConfig(userData)
-        .then((data) => {
-          console.log('createUserProfileConfig input', data);
-          upsertUserProfile(form);
-        })
-        .catch((e) => {
+    props.retrieveByEmailId(userData.email_id)
+      .then((data) => {
+        console.log('retrieveByEmailId', data, userData.email_id);
+        const respData = data.filter(data => data.email_id === userData.email_id);
+        console.log('filter data', respData);
+        if(respData.length > 0){
           setShowSuccessModal(false);
-          setErrorRet([]);
+          setErrorRet(['User with this email id already exist']);
           setShowErrorModal(true);
-          console.log('Error', e);
-          return;
-    });
+          return false;
+        }
+
+        props.createUserProfileConfig(userData)
+          .then((data) => {
+            console.log('createUserProfileConfig input', data);
+            upsertUserProfile(form);
+          })
+          .catch((e) => {
+            setShowSuccessModal(false);
+            setErrorRet([]);
+            setShowErrorModal(true);
+            console.log('Error', e);
+        });
+      })
+      .catch((e)=>{
+        setShowSuccessModal(false);
+        setErrorRet([]);
+        setShowErrorModal(true);
+        console.log('Error', e);
+      })
   }
 
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
