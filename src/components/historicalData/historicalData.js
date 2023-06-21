@@ -704,7 +704,7 @@ function HistoricalData(props) {
             </Breadcrumb>
           ) : screenRole === "approve_1" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
-              <Breadcrumb.Item href="/approve_1/home">
+              <Breadcrumb.Item href="/approver_1/home">
                 <img
                   src={Home}
                   alt="home"
@@ -716,7 +716,7 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "approver" || screenRole === "approver_2" ? (
+          ) : screenRole === "approver_2" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/approver_2/home">
                 <img

@@ -51,6 +51,10 @@ import "../approverDataReview/dataReviewApprover.css";
 import { useLocation } from "react-router-dom";
 
 import { retrieveHistoricalData } from "../../actions/selloutaction";
+import {
+  createData,
+  updateSellOutReviewData,
+} from "../../actions/dataInputAction";
 
 import { connect } from "react-redux";
 
@@ -251,9 +255,7 @@ function DataReviewApprover(props) {
 
   const getQuarterReviewData = (userMail, year, historicalRole) => {
     props
-
       .retrieveHistoricalData(userMail, year, historicalRole)
-
       .then((data) => {
         let final_arr = [];
 
@@ -275,8 +277,7 @@ function DataReviewApprover(props) {
           obj.status = item.status;
 
           obj.trans_currency_code = item.trans_currency_code;
-          obj["trans_currency_codeE"] = 'EUR';
-
+          obj["trans_currency_codeE"] = "EUR";
 
           obj.SelloutCQ = "";
 
@@ -291,6 +292,12 @@ function DataReviewApprover(props) {
           obj.ambition = "";
 
           obj.approverComments = "";
+          obj.partner_id = item.partner_id;
+          obj.year_val = item.year_val;
+          obj.created_by = item.created_by;
+          obj.created_date = item.created_date;
+          obj.approval_status = item.approval_status;
+          obj.batch_upload_flag = item.batch_upload_flag;
 
           item.months.map((each) => {
             if (each.month_val === "jan") {
@@ -747,7 +754,7 @@ function DataReviewApprover(props) {
       {
         headerName: "Editor Comments",
 
-        field: "editorComments",
+        field: "editor_comment",
 
         editable: false,
 
@@ -767,7 +774,7 @@ function DataReviewApprover(props) {
       {
         headerName: "Approver Comments",
 
-        field: "approverComments",
+        field: "comments",
 
         editable: true,
 
@@ -1019,9 +1026,7 @@ function DataReviewApprover(props) {
 
       {
         headerName: "System Comments",
-
         field: "systemComments",
-
         editable: false,
 
         wrapHeaderText: true,
@@ -1039,13 +1044,9 @@ function DataReviewApprover(props) {
 
       {
         headerName: "Editor Comments",
-
-        field: "editorComments",
-
+        field: "editor_comment",
         editable: false,
-
         wrapHeaderText: true,
-
         minWidth: 140,
 
         aggFunc: "sum",
@@ -1059,15 +1060,10 @@ function DataReviewApprover(props) {
 
       {
         headerName: "Approver Comments",
-
-        field: "approverComments",
-
+        field: "comments",
         editable: true,
-
         wrapHeaderText: true,
-
         minWidth: 140,
-
         aggFunc: "sum",
 
         sortable: true,
@@ -1132,11 +1128,11 @@ function DataReviewApprover(props) {
       }
     });
 
-    if(isNaN(tempTotal)) {
-      tempTotal = '';
+    if (isNaN(tempTotal)) {
+      tempTotal = "";
     }
-    if(tempTotal == 0) {
-      tempTotal = '';
+    if (tempTotal == 0) {
+      tempTotal = "";
     }
 
     return tempTotal;
@@ -1167,13 +1163,11 @@ function DataReviewApprover(props) {
       }
     });
 
-    if(isNaN(tempTotal)) {
-
-      tempTotal = '';
-    
+    if (isNaN(tempTotal)) {
+      tempTotal = "";
     }
-    if(tempTotal == 0) {
-      tempTotal = '';
+    if (tempTotal == 0) {
+      tempTotal = "";
     }
 
     return tempTotal;
@@ -1365,7 +1359,7 @@ function DataReviewApprover(props) {
     {
       headerName: "Editor Comments",
 
-      field: "editorComments",
+      field: "editor_comment",
 
       editable: false,
 
@@ -1385,7 +1379,7 @@ function DataReviewApprover(props) {
     {
       headerName: "Approver Comments",
 
-      field: "approverComments",
+      field: "comments",
 
       editable: true,
 
@@ -1475,19 +1469,55 @@ function DataReviewApprover(props) {
     setMessage(selectedRows?.length);
   };
 
-  const handleSave = (params) => {
-    const gridApi = params.api;
+  // const handleSave = (params) => {
+  //   // const gridApi = params.api;
+  //   // const updatedRowData = gridApi.getData();
+  //   // setRowData(updatedRowData);
+  //   console.log('updatedadd', params);
+  // };
 
-    const updatedRowData = gridApi.getData();
+  const handleSave = useCallback((data) => {
+    console.log("data", data);
+ 
+    let reqData = {
+      partner_id: data[0].partner_id,
+      partner_name: data[0].partner_account_name,
+      country_code: data[0].country_code,
+      year_val: data[0].year_val.toString(),
+      months: [{
+        month: "",
+        sellout_local_currency: "",
+        trans_type: "",
+      }],
+      trans_currency_code: data[0].trans_currency_code,
+      created_by: data[0].created_by,
+      created_date: data[0].created_date,
+      approval_status: data[0].approval_status.toString(),
+      editor_comment: data[0].editorComments,
+      comments: data[0].comments,
+      batch_upload_flag: data[0].batch_upload_flag.toString(),
+    };
 
-    setRowData(updatedRowData);
-  };
+    console.log("reqData", JSON.stringify(reqData));
+
+    props
+      .updateSellOutReviewData(reqData)
+      .then((data) => {
+        setReviewData(data);
+      })
+      .catch((e) => {
+        console.log("Error", e);
+      });
+  }, []);
 
   const handleReviewNavigation = () => {
-    if (historicalRole === "superApproverUser" || historicalRole === "supervisor_approv_1_2") {
+    if (
+      historicalRole === "superApproverUser" ||
+      historicalRole === "supervisor_approv_1_2"
+    ) {
       navigate("/superApproverUser/home");
     } else if (historicalRole === "approve_1") {
-      navigate("/approve_1/home");
+      navigate("/approver_1/home");
     } else {
       navigate("/approver_2/home");
     }
@@ -1582,9 +1612,9 @@ function DataReviewApprover(props) {
         </Row>
 
         <div>
-        {historicalRole === "approve_1" ? (
+          {historicalRole === "approve_1" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/approve_1/home">
+              <Breadcrumb.Item href="/approver_1/home">
                 <img
                   src={Home}
                   alt="home"
@@ -1592,8 +1622,7 @@ function DataReviewApprover(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : historicalRole === "approver" ||
-            historicalRole === "approver_2" ? (
+          ) : historicalRole === "approver_2" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/approver_2/home">
                 <img
@@ -1797,7 +1826,7 @@ function DataReviewApprover(props) {
               <Col xs="auto">
                 <Button
                   className="btn-upload edit-header"
-                  onClick={(e) => handleSave()}
+                  onClick={(e) => handleSave(reviewData)}
                 >
                   Save
                 </Button>
@@ -1821,4 +1850,8 @@ function DataReviewApprover(props) {
   );
 }
 
-export default connect(null, { retrieveHistoricalData })(DataReviewApprover);
+export default connect(null, {
+  retrieveHistoricalData,
+  updateSellOutReviewData,
+  createData,
+})(DataReviewApprover);

@@ -662,7 +662,7 @@ function BusinessUnitSplit(props) {
               </Breadcrumb>
             ) : buRole === "approve_1" ? (
               <Breadcrumb>
-                <Breadcrumb.Item href="/approve_1/home">
+                <Breadcrumb.Item href="/approver_1/home">
                   <img
                     src={Home}
                     alt="home"
@@ -670,7 +670,7 @@ function BusinessUnitSplit(props) {
                   />
                 </Breadcrumb.Item>
               </Breadcrumb>
-            ) : buRole === "approver" || buRole === "approver_2" ? (
+            ) : buRole === "approver_2" ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/approver_2/home">
                   <img

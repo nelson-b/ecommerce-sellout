@@ -394,7 +394,7 @@ function PartnerList(props) {
             </Breadcrumb>
           ) : screenRole === "approve_1" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/approve_1/home">
+              <Breadcrumb.Item href="/approver_1/home">
                 <img
                   src={Home}
                   alt="home"
@@ -402,7 +402,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "approver" || screenRole === "approver_2" ? (
+          ) : screenRole === "approver_2" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/approver_2/home">
                 <img
