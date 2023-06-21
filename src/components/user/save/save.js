@@ -37,6 +37,7 @@ import {
 import AlertModal from "../../modal/alertModel.js";
 import { roles, status } from "../../constant.js";
 import { getAPIDateFormatWithTime } from "../../../helper/helper.js";
+import { userRoleOptions } from "../optionsData.js";
 
 function SaveUser(props) {
   const navigate = useNavigate();
@@ -298,11 +299,7 @@ function SaveUser(props) {
               partnerData = partnerData.concat(partnerDataIndv);
               console.log('partnerData', partnerData);    
               let name = "partnerAccNm";
-              setOptionPartnerSelected(partnerData);
-              setForm((prev) => ({
-                ...prev,
-                [name]: partnerData,
-              }));
+              handlePartnerChange(partnerData);
             })
             .catch((e) => {
               console.log('Partner list', e);
@@ -390,6 +387,34 @@ function SaveUser(props) {
       [name]: value,
     }));
   }, []);
+
+  const resetForm = () => {
+    //reset text fields
+    let textNames = ['firstname', 'lastname', 'useremailid'];
+
+    textNames.forEach((row, index) => {
+      console.log('resetForm name', row);
+      setForm((prev) => ({
+        ...prev,
+        [row]: '',
+      }));
+    });
+    
+    //reset single select fields
+    let singleSelectNames = ['userrole', 'userops', 'usrzone'];
+    singleSelectNames.forEach((row, index) => {
+      console.log('resetForm name', row);
+      onHandleSelectChange(null, row);
+      console.log('form', form);
+    });
+
+    //reset multiselect fields
+    handlePartnerChange([]);
+    handleModelChange([]);
+    handleCountryChange([]);
+
+    console.log('resetForm', form);
+  }
 
   const onHandleTextChange = useCallback((event) => {
     let value = event.target.value;
@@ -544,16 +569,21 @@ function SaveUser(props) {
 
   const handleSubmit = () => {
     const isValid = validateForm();
-
+    resetForm();
+    console.log('isValid', isValid);
     if (!isValid) {
-      console.error("Invalid Form!");
       return false;
     }
 
     console.log("Data:", form);
 
     //api call
+    if(!isValid){
+      // postForm();
+    }
+  };
 
+  const postForm = () => {
     let userData = {
       email_id: form.useremailid,
       role_id: form.userrole,
@@ -574,7 +604,7 @@ function SaveUser(props) {
 
     console.log('model type', convertMultiSelectDrpToInputData(form.modelType));
     console.log("Req Data:", userData);
-
+    
     props.createUserProfileConfig(userData)
         .then((data) => {
           console.log('createUserProfileConfig input', data);
@@ -587,7 +617,7 @@ function SaveUser(props) {
           console.log('Error', e);
           return;
     });
-  };
+  }
 
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
 
@@ -734,7 +764,7 @@ function SaveUser(props) {
                     value={form.userrole} // staticData
                     isDisabled={props.module === 'Update'}
                     options={ staticData.filter(data => data.category === "role_id") }
-                    onChangeFunc={onHandleSelectChange}
+                    onChangeFunc={ onHandleSelectChange }
                     {...error.userrole}
                   />
                 </Col>
