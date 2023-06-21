@@ -220,7 +220,13 @@ function PartnerComponent(props) {
       setValue('gtm_type', data.gtm_type);
     }
     if(data.status){
-      setValue('partner_status', data.status)
+      setValue('partner_status', data.status);
+    }
+    if(data.deactivation_date){
+      setValue('deactivation_date', getUIDateFormat(data.deactivation_date))
+    }
+    if(data.deactivation_reason){
+      setValue('deactivation_reason', data.deactivation_reason)
     }
   }
 
@@ -884,7 +890,7 @@ function PartnerComponent(props) {
                             message: "Value should be between  1% to 100%"
                           },
                           // pattern: {
-                          //   value: /^(\.\d+)$/i,
+                          //   value: /^(.)$/i,
                           //   message: "Decimal or Negative values are not allowed",
                           // },
                         })}

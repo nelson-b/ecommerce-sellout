@@ -435,6 +435,31 @@ function SaveUser(props) {
       }
     });
 
+    let otherErrors = [];
+    let regularExpName = new RegExp(/^[a-zA-Z ]*$/i);
+    let regularExpEmail = new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+    if(!regularExpName.test(form.firstname)){
+      otherErrors.push('Firstname can have only alphabets');
+    }
+
+    if(!regularExpName.test(form.lastname)){
+      otherErrors.push('Lastname can have only alphabets');
+    }
+    
+    if(!regularExpEmail.test(form.useremailid)){
+      otherErrors.push('Email is not in correct format. eg. jean@se.com');
+    }
+
+    console.log('errors', otherErrors);
+    if(otherErrors.length > 0){
+      isInvalid = true;
+    }
+    else{
+      isInvalid = false;
+    }
+    setErrorRet(otherErrors);
+    setShowErrorModal(true);
+
     return !isInvalid;
   };
 
@@ -492,8 +517,8 @@ function SaveUser(props) {
         {
           case roles.editor.toUpperCase(): payload.editor = data.useremailid; break;
           case roles.backup_editor.toUpperCase(): payload.backup_editor = data.useremailid; break;
-          case roles.approver1.toUpperCase(): payload.approve_1 = data.useremailid; break;
-          case roles.approver2.toUpperCase(): payload.approve_2 = data.useremailid; break;
+          case roles.approve_1.toUpperCase(): payload.approve_1 = data.useremailid; break;
+          case roles.approver_2.toUpperCase(): payload.approver_2 = data.useremailid; break;
           case roles.superUser.toUpperCase(): payload.supervisor = data.useremailid; break;
           case roles.superApproverUser.toUpperCase(): payload.supervisor_approv_1_2 = data.useremailid; break;
         }
