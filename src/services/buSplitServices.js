@@ -9,7 +9,6 @@ class BuSplitServices {
   }
 
   updateBuSplit(data) {
-    console.log('daat in service', data);
     return http.post(
       `/ecomm-sellout-dev-lamda-createpartner/upsert-sellout-bu-split`,data
     );
