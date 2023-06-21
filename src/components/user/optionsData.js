@@ -11,6 +11,7 @@ export const userEmailOptions = [
 ];
 
 export const userRoleOptions = [
+    { value: "", label: "", category: "Role" },
     { value: "Editor", label: "Editor", category: "Role" },
     { value: "Approver 1", label: "Approver 1", category: "Role" },
     { value: "Approver 2", label: "Approver 2", category: "Role"},

@@ -13,7 +13,7 @@ function partnerReducer(data = initialState, action) {
 
     switch (type) {
         case CREATE_PARTNERDATA:
-            return [...data, payload];
+            return payload;
         case RETRIEVE_PARTNERDATA:
             return payload;
         case RETRIEVE_USERROLE_CONFIG_BY_PARTNERID:

@@ -323,38 +323,58 @@ function PartnerComponent(props) {
           batch_upload_flag: false,
           active_flag: "false"
         };
-      
-        //create api
-        props.createPartnerData(reqData)
-          .then((data) => {
-            console.log('createPartnerData', data);
-            //create user partner role config for higher level user
-            if(userRole === roles.superUser || userRole === roles.superApproverUser || userRole === roles.admin){
-              //call get by id api
-              props
-              .retrieveAllPartnerData() //i/p for test purpose
-              .then((data) => {
-                console.log("retrieveAllPartnerData", data, reqData.partner_account_name);
-                const respData = data.data.filter(data => data.platform_name === reqData.platform_name)[0];
-                console.log("filter by id", respData);
-                saveUserPartnerConfigDetails(respData.partner_id, formData, true);
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-            }
-            else{
-              setShowSuccessModal(true);
-              setShowErrorModal(false);
-              document.getElementById("partner-form").reset();
-            }
-          })
-          .catch((e) => {
+        
+        //Create api
+        props
+        .retrieveAllPartnerData() //i/p for test purpose
+        .then((data) => {
+          console.log("retrieveAllPartnerData", data, reqData.partner_account_name);
+          const respData = data.data.filter(data => data.platform_name === reqData.platform_name);
+          console.log('is data already exist', respData);
+          let userAlreadyExist = false;
+          if(respData.length > 0){
+            userAlreadyExist = true;
             setShowSuccessModal(false);
-            setErrorRet([]);
             setShowErrorModal(true);
-            console.log('Error', e);
-        });
+            setErrorRet(['Partner name already exist, please create new one !!']);
+          }
+
+          if(!userAlreadyExist){
+            props.createPartnerData(reqData)
+            .then((data) => {
+              console.log('createPartnerData', data);
+              //create user partner role config for higher level user
+              if(userRole === roles.superUser || userRole === roles.superApproverUser || userRole === roles.admin){
+                //call get by id api
+                props
+                .retrieveAllPartnerData() //i/p for test purpose
+                .then((data) => {
+                  console.log("retrieveAllPartnerData", data, reqData.partner_account_name);
+                  const respData = data.data.filter(data => data.platform_name === reqData.platform_name)[0];
+                  console.log("filter by id", respData);
+                  saveUserPartnerConfigDetails(respData.partner_id, formData, true);
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+              }
+              else{
+                setShowSuccessModal(true);
+                setShowErrorModal(false);
+                document.getElementById("partner-form").reset();
+              }
+            })
+            .catch((e) => {
+              setShowSuccessModal(false);
+              setErrorRet([]);
+              setShowErrorModal(true);
+              console.log('Error', e);
+            });
+          }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     } else {
         console.log('Calling update api');
         
@@ -383,7 +403,7 @@ function PartnerComponent(props) {
           modified_by: userMail,
           last_modified_date: new Date().toUTCString(),
           status: data.partner_status,
-          batch_upload_flag: false,
+          batch_upload_flag: (false),
           active_flag: "False"
       };
               
