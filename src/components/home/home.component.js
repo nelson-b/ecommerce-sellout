@@ -375,7 +375,7 @@ function Home(props) {
                     Previous Data Approval
                   </Button>
                 </Col>
-              ) : (props.role === "approver" || props.role === "approve_1" || props.role === "approver_2") ? (
+              ) : (props.role === "approve_1" || props.role === "approver_2") ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"
@@ -412,7 +412,7 @@ function Home(props) {
                     BU Split
                   </Button>
                 </Col>
-              ) : (props.role === "approver" || props.role === "approve_1" || props.role === "approver_2") ? (
+              ) : ( props.role === "approve_1" || props.role === "approver_2") ? (
                 <Col xs="auto">
                   <Button
                     className="btn-approve save-header"
@@ -449,7 +449,7 @@ function Home(props) {
                     Partner Data
                   </Button>
                 </Col>
-              ) : (props.role === "approver" || props.role === "approve_1" || props.role === "approver_2") ? (
+              ) : (props.role === "approve_1" || props.role === "approver_2") ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"
@@ -486,7 +486,7 @@ function Home(props) {
                     User Data
                   </Button>
                 </Col>
-              ) : (props.role === "approver" || props.role === "approve_1" || props.role === "approver_2") ? (
+              ) : (props.role === "approve_1" || props.role === "approver_2") ? (
                 <Col>
                   <Button
                     className="btn-data save-header"
