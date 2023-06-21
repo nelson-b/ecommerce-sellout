@@ -1,4 +1,4 @@
-import { RETRIEVE_USERSDATA, CREATE_USR_PARTNER_ROLE_CONFIG, RETRIEVE_USER_PROFILE_BY_ID, CREATE_USER_PROFILE} from "./type";
+import { RETRIEVE_USERSDATA, CREATE_USR_PARTNER_ROLE_CONFIG, RETRIEVE_USER_PROFILE_BY_ID, CREATE_USER_PROFILE, RETRIEVE_USERDATA_BY_EMAIL} from "./type";
 
 import UserService from "../services/userServices";
 
@@ -21,6 +21,20 @@ export const retrieveAllNewListByRole = (id) => async (dispatch) => {
     const res = await UserService.getByUserRole(id);
     dispatch({
       type: RETRIEVE_USERSDATA,
+      payload: res.data,
+    });
+
+    return Promise.resolve(res.data);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+export const retrieveByEmailId = (id) => async (dispatch) => {
+  try {
+    const res = await UserService.getByUserEmailId(id);
+    dispatch({
+      type: RETRIEVE_USERDATA_BY_EMAIL,
       payload: res.data,
     });
 

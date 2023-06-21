@@ -5,8 +5,17 @@ class UserService {
     return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-userlist?fetch=all`);
   }
   
+  getByUserEmailId(id){
+    return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-userlist?fetch=by_user&EMAIL_ID=${id}`);
+  }
+  
   getByUserRole(id) {
-    return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-userlist?fetch=by_role&ROLE_ID=${id.toUpperCase()}`);
+    if(id){
+      return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-userlist?fetch=by_role&ROLE_ID=${id.toUpperCase()}`);
+    }
+    else {
+      return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-userlist?fetch=all`);
+    }
   }
 
   createPartnerUserRoleConfig(data) {
@@ -18,7 +27,7 @@ class UserService {
   }
   
   getByRole(id) {
-    return http.get(`/prod/ecomm-sellout-dev-lamda-createpartner/get-userlist?fetch=by_role&ROLE_ID=${id.toUpperCase()}`);
+    return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-userlist?fetch=by_role&ROLE_ID=${id.toUpperCase()}`);
   }
 }
 

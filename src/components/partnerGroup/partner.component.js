@@ -12,13 +12,14 @@ import {
   retrieveAllPartnerData, 
   retrievePartnerByRole,
   updatePartner,
-  retrieveUserRoleConfigByPartnerId } from "../../actions/partneraction.js";
+  retrieveUserRoleConfigByPartnerId,
+ } from "../../actions/partneraction.js";
 import { retrieveAllCountryData, retrieveAllStaticData } from "../../actions/staticDataAction.js";
 import { retrieveAllUserListData, createUserPartnerRoleConfig } from "../../actions/userAction.js";
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
-import { roles } from "../constant.js";
-import { getUIDateFormat } from "../../helper/helper.js";
+import { roles, status } from "../constant.js";
+import { getAPIDateFormatWithTime, getUIDateFormat } from "../../helper/helper.js";
 
 function PartnerComponent(props) {
   const navigate = useNavigate();
@@ -28,6 +29,24 @@ function PartnerComponent(props) {
   const isHigherLevelUser = (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser);
   console.log('isHigherLevelUser',isHigherLevelUser);
   
+  let userMail = '';
+
+  if(userRole == roles.editor) {
+    userMail = 'nelson@se.com'
+  }
+  if(userRole == roles.approver) {
+    userMail = 'katie@se.com'
+  } 
+  if(userRole == roles.superUser) {
+    userMail = 'marie@se.com'
+  }
+  if(userRole == roles.superApproverUser) {
+    userMail = 'thomas@se.com'
+  }
+  if(userRole == roles.admin) {
+    userMail = 'jean@se.com'
+  }
+
   const initialData = {
     partner_id: "",
     platform_name: "",
@@ -105,7 +124,7 @@ function PartnerComponent(props) {
       if(partnerId){        
         //call get by id api
         props
-        .retrievePartnerByRole(partnerId,"nelson@se.com") //i/p for test purpose
+        .retrievePartnerByRole(partnerId, userMail) //i/p for test purpose
         .then((data) => {
           console.log("retrieveAllPartnerData", data);
           const respData = data.data.filter(data => data.partner_id === partnerId)[0];
@@ -119,11 +138,13 @@ function PartnerComponent(props) {
           console.log(e);
         });
 
+        console.log("retrieveUserRoleConfigByPartnerId calling...", partnerId);
         //call get user role config
         props.retrieveUserRoleConfigByPartnerId(partnerId)
         .then((data) => {
-          const respData = data.data.filter(data => data.PARTNER_ID === partnerId)[0];
-          console.log("filter by id", respData);
+          console.log("retrieveUserRoleConfigByPartnerId response", data);
+          const respData = data.filter(data => data.PARTNER_ID === partnerId)[0];
+          console.log("retrieveUserRoleConfigByPartnerId", data);
           if(respData.EDITOR){
             setValue('editor', respData.EDITOR);
           }
@@ -133,8 +154,8 @@ function PartnerComponent(props) {
           if(respData.APPROVE_1){
             setValue('approver1', respData.APPROVE_1);
           }
-          if(respData.APPROVE_2){
-            setValue('approver2', respData.APPROVE_2);
+          if(respData.APPROVER_2){
+            setValue('approver2', respData.APPROVER_2);
           }
         });
       }
@@ -199,7 +220,13 @@ function PartnerComponent(props) {
       setValue('gtm_type', data.gtm_type);
     }
     if(data.status){
-      setValue('partner_status', data.status)
+      setValue('partner_status', data.status);
+    }
+    if(data.deactivation_date){
+      setValue('deactivation_date', getUIDateFormat(data.deactivation_date))
+    }
+    if(data.deactivation_reason){
+      setValue('deactivation_reason', data.deactivation_reason)
     }
   }
 
@@ -229,29 +256,32 @@ function PartnerComponent(props) {
     content: errorRet
   }
 
-  const saveUserPartnerConfigDetails = (partner_id, reqData) => {
+  const saveUserPartnerConfigDetails = (partner_id, reqData, isCreateScreen) => {
       let reqUserPartConfData = {
         partner_id: partner_id,
         role_id: userRole,
         country_code: reqData.country_code,
-        email_id: "abc@example.com", //login user email
-        created_by: "abc@example.com", //login user email
-        updated_by: "abc@example.com", //login user email
+        email_id: userMail, //login user email
+        created_by: userMail, //login user email
+        updated_by: userMail, //login user email
         editor: reqData.editor,
         backup_editor: reqData.backupEditor,
         approve_1: reqData.approver1,
         approver_2: reqData.approver2,
-        supervisor: "example@example.com", //super usr
-        supervisor_approv_1_2: "example@example.com" //super approver usr
+        supervisor: "", //super usr
+        supervisor_approv_1_2: "" //super approver usr
       };
-  
+      
+      console.log('createUserPartnerRoleConfig calling...', reqUserPartConfData);
       //create user role config
       props.createUserPartnerRoleConfig(reqUserPartConfData)
         .then((data) => {
           console.log('createUserPartnerRoleConfig', data);
           setShowSuccessModal(true);
           setShowErrorModal(false);
-          document.getElementById("partner-form").reset();
+          if(isCreateScreen) {
+            document.getElementById("partner-form").reset();
+          }
         })
         .catch((e) => {
           setShowSuccessModal(false);
@@ -284,11 +314,12 @@ function PartnerComponent(props) {
           partner_url: data.partner_url,
           e2_playbook_type: data.e2_playbook_type,
           gtm_type: data.gtm_type,
-          created_by: "thomas.decamps@se.com",
-          created_date: new Date().toUTCString(),
-          modified_by: "thomas.decamps@se.com",
+          created_by: userMail,
+          created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+          modified_by: userMail,
           last_modified_date: new Date().toUTCString(),
-          status: 'ACTIVE',
+          status: 
+          (userRole == roles.admin || userRole == roles.superUser || userRole == roles.supervisor_approv_1_2) ? status.active : status.pending,
           batch_upload_flag: false,
           active_flag: "false"
         };
@@ -301,12 +332,12 @@ function PartnerComponent(props) {
             if(userRole === roles.superUser || userRole === roles.superApproverUser || userRole === roles.admin){
               //call get by id api
               props
-              .retrievePartnerByRole(partnerId,"nelson@se.com") //i/p for test purpose
+              .retrieveAllPartnerData() //i/p for test purpose
               .then((data) => {
                 console.log("retrieveAllPartnerData", data, reqData.partner_account_name);
                 const respData = data.data.filter(data => data.platform_name === reqData.platform_name)[0];
                 console.log("filter by id", respData);
-                saveUserPartnerConfigDetails(respData.partner_id, formData);
+                saveUserPartnerConfigDetails(respData.partner_id, formData, true);
               })
               .catch((e) => {
                 console.log(e);
@@ -347,9 +378,9 @@ function PartnerComponent(props) {
           e2_playbook_type: data.e2_playbook_type,
           bopp_type: data.bopp_type,
           gtm_type: data.gtm_type,
-          created_by: "thomas.decamps@se.com",
+          created_by: userMail,
           created_date: new Date().toUTCString(),
-          modified_by: "thomas.decamps@se.com",
+          modified_by: userMail,
           last_modified_date: new Date().toUTCString(),
           status: data.partner_status,
           batch_upload_flag: false,
@@ -365,7 +396,7 @@ function PartnerComponent(props) {
             console.log(data);
             //update user partner role config for higher level user
             if(userRole === roles.superUser || userRole === roles.superApproverUser || userRole === roles.admin){
-              saveUserPartnerConfigDetails(data.partner_id, formData);
+              saveUserPartnerConfigDetails(partnerId, formData, false);
             }
             else{
               setShowSuccessModal(true);
@@ -530,7 +561,7 @@ function PartnerComponent(props) {
                         {...register("country_code", {
                           required: "Country is required",
                         })}>
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {/* <option value="USA">USA</option> */}
                         {countryData && (countryData.map((row) =>(
                           <option value={row.country_code}>{row.country_name}</option>
@@ -554,7 +585,7 @@ function PartnerComponent(props) {
                         {...register("partner_group", {
                           required: "Partner group is required",
                         })}>
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {/* <option value={'Partner 1'}>Partner 1</option>
                         <option value={"Amazon"}>Amazon</option>
                         <option value={'Lazada'}>Lazada</option> */}
@@ -581,7 +612,7 @@ function PartnerComponent(props) {
                           required: "Schneider Electric Entity is required",
                         })}
                       >
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {/* <option value={"APC"}>APC</option>
                         <option value={"TEST"}>TEST</option>
                         <option value={"Entity 3"}>Entity 3</option> */}
@@ -706,7 +737,7 @@ function PartnerComponent(props) {
                           required: "Business Type is required",
                         })}
                       >
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {/* <option value={"Electric"}>Electric</option>
                         <option value={"Solar"}>Solar</option>
                         <option value={"TEST"}>TEST</option> */}
@@ -733,7 +764,7 @@ function PartnerComponent(props) {
                           required: "Model Type is required",
                         })}
                       >
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {/* <option value={'E1-Dist'}>E1-Dist</option>
                         <option value={"TEST"}>TEST</option>
                         <option value={"E3"}>E3</option> */}
@@ -796,7 +827,7 @@ function PartnerComponent(props) {
                         {...register("trans_currency_code", {
                           required: "Currency of Sellout Reporting is required",
                         })}>
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {/* <option>AUD</option>
                         <option>INR</option>
                         <option>USD</option>
@@ -824,7 +855,7 @@ function PartnerComponent(props) {
                           required: "Data Collection Type is required",
                         })}
                       >
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {/* <option>Actual sellin + est. eCom penetration</option>
                         <option value={"DCTYPE"}>DCTYPE</option> */}
                         {staticData && (staticData.filter(data => data.attribute_name === 'data_collection_type').map((row) =>(
@@ -850,10 +881,18 @@ function PartnerComponent(props) {
                         defaultValue={ partnerData.partner_sellout_margin }
                         {...register("partner_sellout_margin", {
                           required: "Partner Sellout Margin is required",
-                          pattern: {
-                            value: /^([0-9]|[1-9][0-9]|100)$/i,
-                            message: "Decimal or Negative values are not allowed",
+                          min: {
+                            value: 1,
+                            message: "Value should be between  1% to 100%"
                           },
+                          max: {                            
+                            value: 100,
+                            message: "Value should be between  1% to 100%"
+                          },
+                          // pattern: {
+                          //   value: /^(.)$/i,
+                          //   message: "Decimal or Negative values are not allowed",
+                          // },
                         })}
                       />
                       {errors.partner_sellout_margin && (
@@ -875,7 +914,7 @@ function PartnerComponent(props) {
                           required: "E2 Playbook Type is required",
                         })}
                       >
-                        <option value="">Not applicable</option>
+                        <option value="Not applicable">Not applicable</option>
                         {/* <option value={"type1"}>Type 1</option>
                         <option value={"type2"}>Type 2</option>
                         <option value={"E2"}>E2</option> */}
@@ -911,7 +950,7 @@ function PartnerComponent(props) {
                           required: "Bopp Type is required",
                         })}
                       >
-                        <option value="">Not applicable</option>
+                        <option value="Not applicable">Not applicable</option>
                         {/* <option value={"Adopter"}>Adopter</option>
                         <option value={"Leader"}>Leader</option>
                         <option value={"Novice"}>Novice</option>
@@ -939,7 +978,7 @@ function PartnerComponent(props) {
                         {...register("gtm_type", {
                           required: "GTM Type is required",
                         })}>
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {/* <option>Direct</option>
                         <option value={"GTM"}>GTM</option> */}
                         {staticData && (staticData.filter(data => data.attribute_name === 'gtm_type').map((row) =>(
@@ -968,7 +1007,7 @@ function PartnerComponent(props) {
                           required: "Partner status is required",
                         })}
                       >
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {staticData && (staticData.filter(data => data.attribute_name === 'partner_status').map((row) =>(
                           <option value={row.attribute_value}>{row.attribute_value}</option>
                         )))}
@@ -1061,7 +1100,7 @@ function PartnerComponent(props) {
                           required: "Editor is required",
                         })}
                         )}>
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {usrRoleData && (usrRoleData.filter(role => role.role_id == 'EDITOR').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
@@ -1088,7 +1127,7 @@ function PartnerComponent(props) {
                             required: "Backup Editor is required",
                           })}
                         )}>
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {usrRoleData && (usrRoleData.filter(role => role.role_id == 'BACKUP_EDITOR').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
@@ -1115,7 +1154,7 @@ function PartnerComponent(props) {
                         })}
                         )}
                       >
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER_1').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
@@ -1142,7 +1181,7 @@ function PartnerComponent(props) {
                           })}
                         )}
                       >
-                        <option value="">Not applicable</option>
+                        <option value=""></option>
                         {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER_2').map((row) =>(
                           <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
                         )))}
@@ -1194,12 +1233,12 @@ function PartnerComponent(props) {
 
 export default connect(null, {
   createPartnerData,
-  retrieveAllPartnerData,
   updatePartner,
   retrieveAllCountryData,
   retrieveAllStaticData,
   retrieveAllUserListData,
   createUserPartnerRoleConfig,
   retrievePartnerByRole,
-  retrieveUserRoleConfigByPartnerId
+  retrieveUserRoleConfigByPartnerId,
+  retrieveAllPartnerData
 })(PartnerComponent);
