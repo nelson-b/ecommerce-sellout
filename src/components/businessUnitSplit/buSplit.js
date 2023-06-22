@@ -92,33 +92,23 @@ function BusinessUnitSplit(props) {
   };
 
   const handleSave = useCallback((data) => {
-    let reqData = {
-      country_code: data[0].country_code,
+    console.log("daaa", data);
 
-      partner_id: data[0].partner_id,
-
-      model_type: data[0].model_type,
-
-      year_val: data[0].year_val,
-
-      quarter: data[0].quarter,
-
-      attributes: data[0].attributes,
-
-      created_by: data[0].created_by,
-
-      created_date: data[0].created_date,
-
-      modified_by: data[0].modified_by,
-
-      modified_date: data[0].modified_date,
-
-      active_flag: data[0].active_flag,
-    };
-
+     let reqData = {
+        country_code: data[0].country_code,
+        partner_id: data[0].partner_id,
+        model_type: data[0].model_type,
+        year_val: data[0].year_val,
+        quarter: data[0].quarter,
+        attributes: data[0].attributes,
+        created_by: data[0].created_by,
+        created_date: data[0].created_date,
+        modified_by: data[0].modified_by,
+        modified_date: data[0].modified_date,
+        active_flag: data[0].active_flag,
+      };
+      
     let apiData = 0;
-
-    console.log("reqdata", reqData);
 
     reqData.attributes.forEach((e) => {
       apiData = apiData + e.total;
@@ -126,12 +116,53 @@ function BusinessUnitSplit(props) {
 
     if (apiData == 100) {
       props
-
         .updateBuSplitData(reqData)
-
         .then((data) => {
           if (data?.data?.attributes?.length) {
             setShowSuccessModal(true);
+          }
+        })
+
+        .catch((e) => {
+          console.log("Error", e);
+        });
+    } else {
+      setShowErrorModal(true);
+    }
+  }, []);
+
+  const handleUpload = useCallback((data) => {
+      let reqData = {
+        country_code: data[0].Country,
+        model_type: data[0].Model,
+        quarter: data[0].Quarter,
+        attributes: [
+          { attribute_name: "bopp_type", attribute_val: "SP", total: data[0].SP },
+          {
+            attribute_name: "bopp_type",
+            attribute_val: "H&D",
+            total: data[0]["H&D"],
+          },
+          { attribute_name: "bopp_type", attribute_val: "PP", total: data[0].PP },
+          { attribute_name: "bopp_type", attribute_val: "DE", total: data[0].DE },
+          { attribute_name: "bopp_type", attribute_val: "IA", total: data[0].IA },
+        ],
+        partner_id: "CHN-CN-00072",
+        year_val: new Date().getFullYear(),
+        created_by: userMail,
+        created_date: new Date().toUTCString(),
+        modified_by: userMail,
+        modified_date: new Date().toUTCString(),
+        active_flag: "false",
+      };
+
+    if (data[0].Total == 100) {
+      props
+        .updateBuSplitData(reqData)
+        .then((data) => {
+          if (data?.data?.attributes?.length) {
+            setShowSuccessModal(true);
+            onGridReady([]);
           }
         })
 
@@ -392,7 +423,6 @@ function BusinessUnitSplit(props) {
   const columnDefs = [
     {
       field: "partner_id",
-
       hide: true,
     },
 
@@ -595,35 +625,25 @@ function BusinessUnitSplit(props) {
 
   const onGridReady = useCallback((params) => {
     props
-
       .retrieveBuSplitData(
         userMail,
-
         buRole == "superApproverUser" ? "supervisor_approv_1_2" : buRole,
-
         year
       )
 
       .then((data) => {
         props
-
           .retrivePartnerAccountName(
             data.data[0].partner_id,
-
             data.data[0].country_code
           )
 
           .then((data1) => {
             let obj = {};
-
             obj = data.data[0];
-
             obj.partner_account_name = data1.partner_account_name;
-
             let sampleArray = [];
-
             sampleArray.push(obj);
-
             setRowData(sampleArray);
           })
 
@@ -673,7 +693,6 @@ function BusinessUnitSplit(props) {
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
-
     setSelectedFile(null);
   };
 
@@ -706,29 +725,52 @@ function BusinessUnitSplit(props) {
     ) {
       setError("fileData", {
         type: "filetype",
-
         message: "Only Excel files are valid for upload.",
       });
 
       return;
     } else {
       var res = ShouldUpdate();
-
       res ? setShowShouldUpdModal(true) : setShowShouldUpdModal(false);
 
       if (selectedFile.file) {
         let reader = new FileReader();
-
         reader.onload = (e) => {
           let result = e.target.result;
-
           let workbook = xlsx.read(result, { type: "array" });
-
           let sheetName = workbook.SheetNames[0];
-
           let worksheet = workbook.Sheets[sheetName];
-
           let json = xlsx.utils.sheet_to_json(worksheet);
+          console.log("json", JSON.stringify(json));
+
+          // [
+          //   {
+          //     country_code: "CHN",
+          //     partner_id: "CHN-CN-00072",
+          //     model_type: "E1",
+          //     year_val: 2023,
+          //     quarter: "Q2",
+          //     attributes: [
+          //       { attribute_name: "bopp_type", attribute_val: "SP", total: 40 },
+          //       {
+          //         attribute_name: "bopp_type",
+          //         attribute_val: "H&D",
+          //         total: 30,
+          //       },
+          //       { attribute_name: "bopp_type", attribute_val: "PP", total: 20 },
+          //       { attribute_name: "bopp_type", attribute_val: "DE", total: 5 },
+          //       { attribute_name: "bopp_type", attribute_val: "IA", total: 5 },
+          //     ],
+          //     created_by: "example@example.com",
+          //     created_date: "2023-06-06 11:49:00",
+          //     modified_by: "example@example.com",
+          //     modified_date: "2023-06-06 11:49:00",
+          //     active_flag: "True",
+          //     record_start_date: "None",
+          //     record_end_date: "None",
+          //     partner_account_name: "Techno Plaza1 reseller CHN",
+          //   },
+          // ];
 
           let errorJson = [];
 
@@ -829,17 +871,13 @@ function BusinessUnitSplit(props) {
 
           if (errorJson.length > 0) {
             setErrorData(errorJson);
-
             setShowErrorModal(true);
-
             setShowSuccessModal(false);
           } else {
             setErrorData([]);
-
+            handleUpload(json);
             setShowErrorModal(false);
-
             setShowSuccessModal(true);
-
             setSelectedFile(null);
           }
 
@@ -892,8 +930,8 @@ function BusinessUnitSplit(props) {
   };
 
   const onSubmit = (frmData) => {
+    console.log("frmData", frmData);
     setSelectedFile(frmData);
-
     ShouldUpdate();
   };
 
@@ -905,7 +943,6 @@ function BusinessUnitSplit(props) {
     return [
       {
         id: "header",
-
         alignment: {
           vertical: "Center",
         },
@@ -928,10 +965,8 @@ function BusinessUnitSplit(props) {
   const buSplitExcel = useCallback(() => {
     const params = {
       fileName: "Sell out BuSplit Data.xlsx",
-
       sheetName: "BuSplit Data",
     };
-
     gridRef.current.api.exportDataAsExcel(params);
   }, []);
 
