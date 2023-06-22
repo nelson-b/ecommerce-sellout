@@ -618,7 +618,6 @@ function DataReviewComponent({}) {
   }, []);
 
   const handleExport = useCallback(() => {
-    console.log('prasanna', params);
     const params = {
       fileName: "Sell out Data Review.xlsx",
       sheetName: "Data Review",
