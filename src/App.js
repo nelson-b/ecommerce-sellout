@@ -21,7 +21,7 @@ import HistoricalData from "./components/historicalData/historicalData.js";
 import BusinessUnitSplit from "./components/businessUnitSplit/buSplit.js";
 import UserRequestComponent from "./components/user/userRequest.js";
 import InputCalender from "./components/admin/inputCalender.js";
-import SaveUserTest from "./components/user/save/save.js";
+import Authenticate from "./components/login/authenticate.component.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -123,6 +123,7 @@ function App() {
           <Route path="/user/list" exact element={<UserList />} />
           <Route path="/user/Request" element={<UserRequestComponent />} />
           <Route path="/" element={<LoginComponent />} />
+          <Route path="/authenticate" element = {<Authenticate />} />
         </Routes>
       </Router>
     </div>
