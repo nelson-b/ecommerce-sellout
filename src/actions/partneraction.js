@@ -1,4 +1,4 @@
-import { CREATE_PARTNERDATA, RETRIEVE_PARTNERDATA,  RETRIEVE_PARTNERDATA_BY_ID,
+import { CREATE_PARTNERDATA, RETRIEVE_PARTNERDATA,  RETRIEVE_PARTNERDATA_BY_ID,UPDATE_PARTNER_REQUEST_DATA,
   UPDATE_PARTNERDATA, RETRIEVE_PARTNER_ROLE, RETRIEVE_USERROLE_CONFIG_BY_PARTNERID, RETRIEVE_USERROLE_CONFIG_BY_EMAILIDROLEID, RETRIEVE_ALL_USERROLE_CONFIG } from "./type";
 import PartnerService from "../services/partnerServices";
 
@@ -118,4 +118,19 @@ export const updatePartner = (data) => async (dispatch) => {
     } catch (err) {
       return Promise.reject(err);
     }
+};
+
+export const updatePendingRequestPartners = (data) => async (dispatch) => {
+  try {
+    const res = await PartnerService.updatePendingPartner(data);
+
+    dispatch({
+      type: UPDATE_PARTNER_REQUEST_DATA,
+      payload: data,
+    });
+
+    return Promise.resolve(res.data);
+  } catch (err) {
+    return Promise.reject(err);
+  }
 };
