@@ -54,8 +54,12 @@ function App() {
             element={<HomeComponent role={roles.editor} />}
           /> */}
           <Route
-            path="/approver/home"
-            element={<HomeComponent role={roles.approver} />}
+            path="/approver_1/home"
+            element={<HomeComponent role={roles.approve_1} />}
+          />
+          <Route
+            path="/approver_2/home"
+            element={<HomeComponent role={roles.approver_2} />}
           />
           <Route
             path="/superApproverUser/home"

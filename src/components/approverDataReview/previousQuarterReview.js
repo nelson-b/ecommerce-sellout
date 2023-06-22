@@ -20,6 +20,8 @@ import partnerPrevious from "../../data/partnerPreviousData.json";
 import partnerPreviousEuro from "../../data/partnerPreviousDataEuro.json";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
+import { connect } from "react-redux";
+import { retrievePreviousQuarterData } from "../../actions/dataReviewAction";
 
 function PartnerQuarterApprover({ props }) {
   const gridRef = useRef();
@@ -27,7 +29,7 @@ function PartnerQuarterApprover({ props }) {
   const location = useLocation();
   const quarterRole = new URLSearchParams(location.search).get("role");
 
-  const [rowData, setRowData] = useState();
+  const [rowData, setRowData] = useState("");
   const [radioValue, setRadioValue] = useState("1");
   const [message, setMessage] = useState(0);
 
@@ -89,7 +91,7 @@ function PartnerQuarterApprover({ props }) {
   };
 
   const CustomHeader = ({ displayName, radioValue }) => {
-    const unit = radioValue === "1" ? "K": "K\u20AC";
+    const unit = radioValue === "1" ? "K" : "K\u20AC";
     return (
       <div>
         <span style={{ fontSize: "13px" }}>
@@ -235,10 +237,15 @@ function PartnerQuarterApprover({ props }) {
   };
 
   const handleReviewNavigation = () => {
-    if (quarterRole === 'superApproverUser') {
+    if (
+      quarterRole === "superApproverUser" ||
+      quarterRole === "supervisor_approv_1_2"
+    ) {
       navigate("/superApproverUser/home");
+    } else if (quarterRole === "approve_1") {
+      navigate("/approver_1/home");
     } else {
-      navigate("/approver/home");
+      navigate("/approver_2/home");
     }
   };
 
@@ -246,10 +253,29 @@ function PartnerQuarterApprover({ props }) {
     setRowData(rowData);
   };
 
+  let userMail = "";
+
+  if (quarterRole == "approver") {
+    quarterRole = "approve_1";
+    // buRole = "approver_2";
+    userMail = "katie@se.com";
+  }
+  if (quarterRole == "superApproverUser") {
+    quarterRole = "supervisor_approv_1_2";
+    userMail = "abc@example.com";
+  }
+  let year = 2023;
+  let month = "june";
+
   const onGridReady = useCallback((params) => {
-    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => partnerPrevious)
-      .then((partnerPrevious) => setRowData(partnerPrevious));
+    props
+      .retrievePreviousQuarterData(userMail, quarterRole, year, month)
+      .then((data) => {
+        setRowData(data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, []);
 
   const handleInvestigation = (params) => {
@@ -269,9 +295,9 @@ function PartnerQuarterApprover({ props }) {
           <MyMenu />
         </Row>
         <div>
-          {quarterRole === "approver" ? (
+          {quarterRole === "approve_1" ? (
             <Breadcrumb>
-              <Breadcrumb.Item href="/approver/home">
+              <Breadcrumb.Item href="/approver_1/home">
                 <img
                   src={Home}
                   alt="home"
@@ -279,7 +305,17 @@ function PartnerQuarterApprover({ props }) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : quarterRole === "superApproverUser" ? (
+          ) : quarterRole === "approver_2" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/approver_2/home">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : quarterRole === "superApproverUser" || "supervisor_approv_1_2" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img
@@ -329,7 +365,7 @@ function PartnerQuarterApprover({ props }) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={radioValue == 1 ? partnerPrevious : partnerPreviousEuro}
+            rowData={radioValue == 1 ? rowData : rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             groupHideOpenParents={true}
@@ -389,4 +425,6 @@ function PartnerQuarterApprover({ props }) {
   );
 }
 
-export default PartnerQuarterApprover;
+export default connect(null, { retrievePreviousQuarterData })(
+  PartnerQuarterApprover
+);

@@ -6,7 +6,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useState, useMemo, useCallback, useRef } from "react";
 import { Button, Row, Col, Container, Form, Breadcrumb } from "react-bootstrap";
-import { allCalMonths } from "../constant";
+import { allCalMonths, roles } from "../constant";
 import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
 import MyMenu from "../menu/menu.component.js";
@@ -18,19 +18,35 @@ import AlertModal from "../modal/alertModel";
 import { useLocation } from "react-router-dom";
 import { createData, retrieveAllData, updateSellOutData } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
-import { getUIDateFormat } from "../../helper/helper";
+import { getAPIDateFormatWithTime, getUIDateFormat, getUIDateFormatWithTime } from "../../helper/helper";
 
 function DataInputComponent(props) {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [rowData, setRowData] = useState(null);
   const location = useLocation();
-  const dataRole = new URLSearchParams(location.search).get("role");
+  const userRole = new URLSearchParams(location.search).get("role");
   const filterGlobalData = {
-    loginUser: "example@example.com",
+    loginUser: "",
     currentYear: String(new Date().getFullYear()),
-    dataRole: dataRole
+    userRole: userRole
   };
+
+  if(userRole == roles.editor) {
+    filterGlobalData.loginUser = 'nelson@se.com'
+  }
+  if(userRole == roles.approver) {
+    filterGlobalData.loginUser = 'katie@se.com'
+  } 
+  if(userRole == roles.superUser) {
+    filterGlobalData.loginUser = 'marie@se.com'
+  }
+  if(userRole == roles.superApproverUser) {
+    filterGlobalData.loginUser = 'thomas@se.com'
+  }
+  if(userRole == roles.admin) {
+    filterGlobalData.loginUser = 'jean@se.com'
+  }
 
   const handleClearClick = () => {
     window.location.reload();
@@ -105,7 +121,7 @@ function DataInputComponent(props) {
         allCalMonths.forEach(element => {          
           if(rowNode.data[`${element}_Amount`]>0){
             monthArray.push({
-              month: element,
+              month: element.toLowerCase(),
               sellout_local_currency: String(rowNode.data[`${element}_Amount`]),
               trans_type: rowNode.data[`${element}_Estimated`] == true ? 'EST' : 'ACT'
             });
@@ -119,16 +135,16 @@ function DataInputComponent(props) {
           year_val: String(rowNode.data.Year),
           months: monthArray,
           trans_currency_code: rowNode.data.Currency_Of_Reporting,
-          created_by: 'abc@gmail.com', //login user
-          created_date: getUIDateFormat(new Date().toUTCString()),
-          approval_status: "0",
+          created_by: filterGlobalData.loginUser, //login user
+          created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+          approval_status: rowNode.data.approval_status,
           editor_comment: rowNode.data.Comment,
           comments: 'waiting for approver',
-          batch_upload_flag: "false"
+          batch_upload_flag: rowNode.data.batch_upload_flag
         };
 
         console.log('formatPayload', formatPayload);
-        if(formatPayload.months.length> 0) payload.push(formatPayload);
+        if(formatPayload.months.length> 0) { payload.push(formatPayload); }
     });
 
     console.log('payload', payload);
@@ -464,6 +480,18 @@ function DataInputComponent(props) {
       hide: true,
     },
     {
+      field: "approval_status",
+      hide: true,
+    },
+    {
+      field: "approved_by",
+      hide: true,
+    },
+    {
+      field: "approved_date",
+      hide: true,
+    },
+    {
       headerName: "Model",
       field: "Model",
       sortable: true,
@@ -690,10 +718,32 @@ function DataInputComponent(props) {
     toggleActualEstimate(param.target.checked);
   });
   
+  const getMonthVal = (monthArray, month) => {
+    let filterData = monthArray.filter(data => data.month_val.toLowerCase() == month.toLowerCase());
+    console.log('getMonthVal', filterData);
+    if(filterData.length > 0 && filterData!=undefined){
+      return (filterData[0].sellout_local_currency == 0 ? '': filterData[0].sellout_local_currency);
+    }
+    else{
+      return '';
+    }
+     
+  }
+
+  const getTransTypeVal = (monthArray, month) => {
+    let filterData = monthArray.filter(data => data.month_val.toLowerCase() == month.toLowerCase());
+    console.log('getTransTypeVal', filterData);
+    if(filterData.length > 0 && filterData!=undefined){
+       return filterData[0].trans_type == 'EST' ? true: false;
+     }
+     else{
+       return false;
+     }
+  }
+
   const formatGetPayload = useCallback((data, isManualInput) =>{
     let respPayload = [];
     data.forEach((row, index) => {
-      console.log('row.country_code', row.country_code);
       let indvRespPayload = {
         Zone: row.zone_val,
         Country: row.country_name,
@@ -705,38 +755,38 @@ function DataInputComponent(props) {
         Currency_Of_Reporting: row.trans_currency_code,
         Status: row.status,
         Year: row.year_val,
-        Jan_Amount: row.months[0].month_val == "jan" ? row.months[0].sellout_local_currency: '',
-        Feb_Amount: row.months[0].month_val == "feb" ? row.months[0].sellout_local_currency: '',
-        Mar_Amount: row.months[0].month_val == "march" ? row.months[0].sellout_local_currency: '',
-        Apr_Amount: row.months[0].month_val == "apr" ? row.months[0].sellout_local_currency: '',
-        May_Amount: row.months[0].month_val == "may" ? row.months[0].sellout_local_currency: '',
-        Jun_Amount: row.months[0].month_val == "jun" ? row.months[0].sellout_local_currency: '',
-        Jul_Amount: row.months[0].month_val == "jul" ? row.months[0].sellout_local_currency: '',
-        Aug_Amount: row.months[0].month_val == "aug" ? row.months[0].sellout_local_currency: '',
-        Sep_Amount: row.months[0].month_val == "sep" ? row.months[0].sellout_local_currency: '',
-        Oct_Amount: row.months[0].month_val == "oct" ? row.months[0].sellout_local_currency: '',
-        Nov_Amount: row.months[0].month_val == "nov" ? row.months[0].sellout_local_currency: '',
-        Dec_Amount: row.months[0].month_val == "dec" ? row.months[0].sellout_local_currency: '',
-        Jan_Estimated: row.months[0].month_val == "jan" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Feb_Estimated: row.months[0].month_val == "feb" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Mar_Estimated: row.months[0].month_val == "mar" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Apr_Estimated: row.months[0].month_val == "apr" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        May_Estimated: row.months[0].month_val == "may" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Jun_Estimated: row.months[0].month_val == "jun" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Jul_Estimated: row.months[0].month_val == "jul" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Aug_Estimated: row.months[0].month_val == "aug" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Sep_Estimated: row.months[0].month_val == "sep" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Oct_Estimated: row.months[0].month_val == "oct" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Nov_Estimated: row.months[0].month_val == "nov" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        Dec_Estimated: row.months[0].month_val == "dec" ? (row.months[0].trans_type == "EST" ? true : false): '',
-        // created_by: row.created_by,
-        // created_date: row.created_date,
-        // approved_by: row.approved_by,
-        // approved_date: row.approved_date,
-        // approval_status: row.approval_status,
-        // editor_comment: row.editor_comment,
+        Jan_Amount: getMonthVal(row.months, allCalMonths[0]), // "jan"
+        Feb_Amount: getMonthVal(row.months, allCalMonths[1]), //"feb"
+        Mar_Amount: getMonthVal(row.months, allCalMonths[2]), //"march"
+        Apr_Amount: getMonthVal(row.months, allCalMonths[3]), //"apr"
+        May_Amount: getMonthVal(row.months, allCalMonths[4]), //may
+        Jun_Amount: getMonthVal(row.months, allCalMonths[5]), //jun
+        Jul_Amount: getMonthVal(row.months, allCalMonths[6]), //"jul"
+        Aug_Amount: getMonthVal(row.months, allCalMonths[7]), //aug
+        Sep_Amount: getMonthVal(row.months, allCalMonths[8]), //sep
+        Oct_Amount: getMonthVal(row.months, allCalMonths[9]), //oct
+        Nov_Amount: getMonthVal(row.months, allCalMonths[10]), //nov
+        Dec_Amount: getMonthVal(row.months, allCalMonths[11]), //dec
+        Jan_Estimated: getTransTypeVal(row.months, allCalMonths[0]), //jan
+        Feb_Estimated: getTransTypeVal(row.months, allCalMonths[1]), //feb
+        Mar_Estimated: getTransTypeVal(row.months, allCalMonths[2]), //"mar"
+        Apr_Estimated: getTransTypeVal(row.months, allCalMonths[3]), //"apr"
+        May_Estimated: getTransTypeVal(row.months, allCalMonths[4]), //may
+        Jun_Estimated: getTransTypeVal(row.months, allCalMonths[5]), //jun
+        Jul_Estimated: getTransTypeVal(row.months, allCalMonths[6]), //jul
+        Aug_Estimated: getTransTypeVal(row.months, allCalMonths[7]), //aug
+        Sep_Estimated: getTransTypeVal(row.months, allCalMonths[8]), //sep
+        Oct_Estimated: getTransTypeVal(row.months, allCalMonths[9]), //oct
+        Nov_Estimated: getTransTypeVal(row.months, allCalMonths[10]), //nov
+        Dec_Estimated: getTransTypeVal(row.months, allCalMonths[11]), //dec
+        created_by: row.created_by,
+        created_date: row.created_date,
+        approved_by: row.approved_by,
+        approved_date: row.approved_date,
+        approval_status: row.approval_status,
         Comment: row.editor_comment,
-        // batch_upload_flag: row.batch_upload_flag,
+        comments: row.comments,
+        batch_upload_flag: 'false',
       };
       
       respPayload = respPayload.concat(indvRespPayload);
@@ -746,7 +796,7 @@ function DataInputComponent(props) {
   });
 
   const onGridReady = useCallback((params) => {
-    props.retrieveAllData(filterGlobalData.loginUser, filterGlobalData.currentYear, filterGlobalData.dataRole)
+    props.retrieveAllData(filterGlobalData.loginUser, filterGlobalData.currentYear, filterGlobalData.userRole)
     .then((data) => {
       console.log('retrieveAllData', data);
       if(data){
@@ -759,7 +809,7 @@ function DataInputComponent(props) {
   }, []);
 
   const handleNavigation = () => {
-    navigate(`/dataReview?role=${dataRole}`);
+    navigate(`/dataReview?role=${userRole}`);
   };
   
   return (
@@ -778,7 +828,7 @@ function DataInputComponent(props) {
               />
             </Breadcrumb.Item>
           </Breadcrumb>
-          <BatchInputComponent savedData={rowData} props={props} />
+          <BatchInputComponent savedData={rowData} props={props} userDetails = {filterGlobalData} />
         </Row>
         <Row className="justify-content-end">
           <Col md={2} className="estimate-container">
@@ -847,7 +897,7 @@ function DataInputComponent(props) {
             <Button
               className="btn-upload save-header"
               onClick={() => {
-                handleNavigation(dataRole);
+                handleNavigation(userRole);
               }}
             >
               Next

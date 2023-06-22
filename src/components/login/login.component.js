@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
-
+  
   const initialState = {
     username: "",
     usrpassword: "",
@@ -48,8 +48,11 @@ function Login() {
     if(data.username=="nelson@se.com" && data.usrpassword=="test@123"){
       navigate("/editor/home");
     }
-    if(data.username=="katie@se.com" && data.usrpassword=="test@123"){
-      navigate("/approver/home");
+    if(data.username=="approve_1@se.com" && data.usrpassword=="test@123"){
+      navigate("/approver_1/home");
+    }
+    if(data.username=="approver_2@se.com" && data.usrpassword=="test@123"){
+      navigate("/approver_2/home");
     }
     if(data.username=="thomas@se.com" && data.usrpassword=="test@123"){
       navigate("/superApproverUser/home");

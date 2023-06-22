@@ -31,9 +31,9 @@ export const retrieveAllPartnerData = () => async (dispatch) => {
   }
 }
 
-export const retrievePartnerByRole = (id, user) => async (dispatch) => {
+export const retrievePartnerByRole = (role, email) => async (dispatch) => {
   try {
-    const res = await PartnerService.getByRole(id, user);
+    const res = await PartnerService.getByRole(role, email);
 
     dispatch({
       type: RETRIEVE_PARTNER_ROLE,
@@ -71,6 +71,7 @@ export const retrieveUserRoleConfigByPartnerId = (id) => async (dispatch) => {
     });
 
     return Promise.resolve(res.data);
+    
   } catch (err) {
     return Promise.reject(err);
   }

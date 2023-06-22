@@ -2,15 +2,15 @@ import http from "../http-common";
 
 class BuSplitServices {
 
-  getAll() {
+  getBuSplit(user, id, year) {
     return http.get(
-      "/create-partner/ecomm-sellout-dev-lamda-createpartner/get_sellout_bu_split"
+      `/ecomm-sellout-dev-lamda-createpartner/get_sellout_bu_split?fetch=by_user&user=${user}&role_id=${id}&year_val=${year}`
     );
   }
 
-  update(data) {
-    return http.put(
-      `/create-partner/ecomm-sellout-dev-lamda-createpartner/upsert-sellout-bu-split`,data
+  updateBuSplit(data) {
+    return http.post(
+      `/ecomm-sellout-dev-lamda-createpartner/upsert-sellout-bu-split`,data
     );
   }
 }
