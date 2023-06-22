@@ -779,6 +779,22 @@ function PartnerRequestList(props) {
                 &nbsp;Partner List
               </Breadcrumb.Item>
             </Breadcrumb>
+          ) : screenRole === "superUser" ? (
+            <Breadcrumb>
+              <Breadcrumb.Item href="/superUser">
+                <img
+                  src={Home}
+                  alt="home"
+                  style={{ height: "20px", width: "80px", cursor: "pointer" }}
+                />
+              </Breadcrumb.Item>
+
+              <span style={{ color: "grey" }}> &nbsp;{">"}</span>
+
+              <Breadcrumb.Item active style={{ color: "#000000" }}>
+                &nbsp;Partner List
+              </Breadcrumb.Item>
+            </Breadcrumb>
           ) : (
             <Breadcrumb>
               <Breadcrumb.Item href="/superApproverUser/home">
