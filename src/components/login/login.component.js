@@ -52,16 +52,19 @@ function Login(props) {
     
     props.retrieveAuthendClientData()
     .then((data)=>{
-      axios
-        .get(api, {
-          headers: headers
-        })
-        .then((response) => {
-            console.log(response);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+      console.log(data)
+      if(data){
+        axios
+          .get(api, {
+            headers: headers
+          })
+          .then((response) => {
+              console.log(response);
+          })
+          .catch((error) => {
+              console.log(error);
+          });
+      }
     })
     .catch((data) => {
       console.log(e);
