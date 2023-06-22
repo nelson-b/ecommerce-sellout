@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { connect } from "react-redux";
 import { retrieveAuthendClientData } from "../../actions/userAction";
+import { redirectUrl, signInLink } from "../../config";
 
 function Login(props) {
   const navigate = useNavigate();
@@ -46,9 +47,7 @@ function Login(props) {
       //'Accept': 'application/json'
     }
 
-    let api = "https://ping-sso-uat.schneider-electric.com/as/authorization.oauth2?"
-              +"client_id=SelloutReporting_DEV_55895&response_type=code&scope=edit&"
-              +"redirect_uri=http://localhost:3000/authenticate";
+    let api = signInLink.concat(redirectUrl);
     
     props.retrieveAuthendClientData()
     .then((data)=>{
@@ -66,7 +65,7 @@ function Login(props) {
           });
       }
     })
-    .catch((data) => {
+    .catch((e) => {
       console.log(e);
     });
 

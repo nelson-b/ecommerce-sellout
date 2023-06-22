@@ -4,6 +4,8 @@ import { Row, Container } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { authorizationRequestUrl, getAccessTokenUrl } from "../../config";
+import Cookies from "js-cookie";
 
 function Authenticate(props) {
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ function Authenticate(props) {
         Authorization: authorizationHeaderInput
       };
       
-      let redirect_uri_input = ("https://master.dje3o66qxkyld.amplifyapp.com/authendicateUser?code=").concat(authCode); 
+      let redirect_uri_input = authorizationRequestUrl.concat(authCode); 
       
       let body= {
         grant_type: "authorization_code",
@@ -29,19 +31,44 @@ function Authenticate(props) {
         redirect_uri: redirect_uri_input 
       };
 
-      let api = "https://ping-sso-uat.schneider-electric.com/as/token.oauth2";
+      let api = getAccessTokenUrl;
 
       axios
         .post(api, body, {
           headers: headers
         })
         .then((response) => {
+          //token
           console.log(response);
+          Cookies.set('token', response, { expires: 7 })
+          //call api to get email id
+          getLoginUserEmailId(response)
         })
         .catch((error) => {
           console.log(error);
         });
   });
+
+  const getLoginUserEmailId = (data) => {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer '.concat(data)
+    };
+
+    let api = 'https://ping-sso-uat.schneider-electric.com/idp/userinfo.openid';
+    let retEmailId = '';
+    axios
+    .get(api, {
+      headers: headers
+    })
+    .then((response) => {
+        console.log(response);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+    return retEmailId;
+  }
 
   return (
     <Container fluid>

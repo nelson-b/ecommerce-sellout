@@ -18,6 +18,7 @@ import loginUserPic from "./../../images/loginUser.jpg";
 import { AiFillBell } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
 import "./menu.component.css";
+import Cookies from "js-cookie";
 
 function MyMenu(props) {
   const [username, setLoggedInUsrName] = useState("Jean-Pascal");
@@ -219,6 +220,7 @@ function MyMenu(props) {
 
   const location = useLocation();
 
+
   //set current notification count
   const setNotification = (value) => setnotificationCount(value);
   //set username
@@ -227,6 +229,11 @@ function MyMenu(props) {
   const toggleShowNotification = () => {
     setshowNotification(!showNotifiation);
     setnotificationCount(0);
+  };
+
+  // Method to remove data from cookies
+  const RemoveCookie = () => {
+      Cookies.remove("token");
   };
 
   return (
@@ -300,7 +307,7 @@ function MyMenu(props) {
                 className="pull-right"
                 id="navbarScrollingDropdown"
               >
-                <NavDropdown.Item href="/">logout</NavDropdown.Item>
+                <NavDropdown.Item onClick={RemoveCookie} href="/">logout</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>
