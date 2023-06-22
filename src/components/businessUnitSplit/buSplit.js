@@ -1,13 +1,9 @@
 "use strict";
 
 import { AgGridReact } from "ag-grid-react";
-
 import { useNavigate } from "react-router-dom";
-
 import "ag-grid-community/styles/ag-grid.css";
-
 import "ag-grid-community/styles/ag-theme-alpine.css";
-
 import { useState, useMemo, useCallback, useRef } from "react";
 
 import {
@@ -19,27 +15,16 @@ import {
   Breadcrumb,
   Stack,
 } from "react-bootstrap";
-
 import { useForm } from "react-hook-form";
-
 import MyMenu from "../menu/menu.component.js";
-
 import "ag-grid-enterprise";
-
 import Home from "../../images/home-icon.png";
-
 import { useLocation } from "react-router-dom";
-
 import AlertModel from "../modal/alertModel";
-
 import { allCalMonths } from "../constant.js";
-
 import * as xlsx from "xlsx-js-style";
-
 import { ckeckErrors } from "../utils/index.js";
-
 import { connect } from "react-redux";
-
 import {
   updateBuSplitData,
   retrieveBuSplitData,
@@ -48,52 +33,35 @@ import {
 
 function BusinessUnitSplit(props) {
   const location = useLocation();
-
   const navigate = useNavigate();
-
   const [selectedFile, setSelectedFile] = useState(null);
-
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
   const [showErrorModal, setShowErrorModal] = useState(false);
-
   const [fileData, setFileData] = useState([]);
-
   const [showShouldUpdModal, setShowShouldUpdModal] = useState(false);
-
   const [errorBtnDisable, setErrorBtnDisable] = useState(false);
-
   const [errorData, setErrorData] = useState([]);
-
   const [fileInput_ref, setFileInputRef] = useState("1");
 
   const {
     register,
-
     handleSubmit,
-
     setError,
 
     formState: { errors },
   } = useForm({
     mode: "onTouched",
-
     reValidateMode: "onSubmit",
-
     reValidateMode: "onChange",
   });
 
   const [rowData, setRowData] = useState([]);
-
   const buRole = new URLSearchParams(location.search).get("role");
-
   const handleClearClick = () => {
     window.location.reload();
   };
 
   const handleSave = useCallback((data) => {
-    console.log("daaa", data);
-
      let reqData = {
         country_code: data[0].country_code,
         partner_id: data[0].partner_id,
@@ -416,7 +384,6 @@ function BusinessUnitSplit(props) {
     if (params.value !== 100) {
       return { backgroundColor: "red" };
     }
-
     return { backgroundColor: "white", borderColor: "#e2e2e2" };
   };
 
@@ -512,44 +479,31 @@ function BusinessUnitSplit(props) {
 
     for (let i = 0; i < filteredSplitValue?.length; i++) {
       const splitHeader = filteredSplitValue[i]?.attribute_val;
-
       const splitField = "field_" + i;
 
       columnDefs.push({
         headerName: splitHeader,
-
         field: splitField,
-
         minWidth: 70,
-
         editable: true,
-
         suppressMenu: true,
-
         cellStyle: { borderColor: "#e2e2e2" },
-
         valueFormatter: (params) => {
           return Math.round(params.value) + "%";
         },
-
         valueParser: (params) => Number(params.newValue),
-
         valueGetter: (params) => {
           const attribute = params.data.attributes.find(
             (attr) => attr.attribute_val == splitHeader
           );
-
           return attribute ? attribute.total : null;
         },
-
         valueSetter: function (params) {
           const attribute = params.data.attributes.find(
             (attr) => attr.attribute_val === splitHeader
           );
-
           if (attribute) {
             attribute.total = Number(params.newValue);
-
             return true; // Return true to indicate successful value setting
           } else {
             return false; // Return false or omit the return statement to indicate unsuccessful value setting
@@ -612,15 +566,12 @@ function BusinessUnitSplit(props) {
   if (buRole == "editor") {
     userMail = "chncn00072@example.com";
   }
-
   if (buRole == "approve_1" || buRole == "approver_2") {
     userMail = "abc@example.com";
   }
-
   if (buRole == "superApproverUser") {
     userMail = "chncn00071@example.com";
   }
-
   let year = new Date().getFullYear();
 
   const onGridReady = useCallback((params) => {
@@ -661,31 +612,22 @@ function BusinessUnitSplit(props) {
 
   const successmsg = {
     headerLabel: "Success....",
-
     variant: "success",
-
     header: "Data has been saved successfully!!",
-
     content: [],
   };
 
   const errormsg = {
     headerLabel: "Error....",
-
     variant: "danger",
-
     header: "Please recitify and retry",
-
     content: errorData,
   };
 
   const shouldUpdateMsg = {
     headerLabel: "Warning....",
-
     variant: "warning",
-
     header: "Do you wish to update the existing data!!",
-
     content: [
       "Your previous data would be lost if you update it with new data",
     ],
@@ -706,7 +648,6 @@ function BusinessUnitSplit(props) {
 
   const handleChange = ({ target }) => {
     console.log("handle change::. ", target);
-
     setSelectedFile(target);
   };
 
@@ -741,49 +682,8 @@ function BusinessUnitSplit(props) {
           let sheetName = workbook.SheetNames[0];
           let worksheet = workbook.Sheets[sheetName];
           let json = xlsx.utils.sheet_to_json(worksheet);
-          console.log("json", JSON.stringify(json));
-
-          // [
-          //   {
-          //     country_code: "CHN",
-          //     partner_id: "CHN-CN-00072",
-          //     model_type: "E1",
-          //     year_val: 2023,
-          //     quarter: "Q2",
-          //     attributes: [
-          //       { attribute_name: "bopp_type", attribute_val: "SP", total: 40 },
-          //       {
-          //         attribute_name: "bopp_type",
-          //         attribute_val: "H&D",
-          //         total: 30,
-          //       },
-          //       { attribute_name: "bopp_type", attribute_val: "PP", total: 20 },
-          //       { attribute_name: "bopp_type", attribute_val: "DE", total: 5 },
-          //       { attribute_name: "bopp_type", attribute_val: "IA", total: 5 },
-          //     ],
-          //     created_by: "example@example.com",
-          //     created_date: "2023-06-06 11:49:00",
-          //     modified_by: "example@example.com",
-          //     modified_date: "2023-06-06 11:49:00",
-          //     active_flag: "True",
-          //     record_start_date: "None",
-          //     record_end_date: "None",
-          //     partner_account_name: "Techno Plaza1 reseller CHN",
-          //   },
-          // ];
-
           let errorJson = [];
-
           rowData.forEach((b) => {
-            console.log(
-              "b",
-              b,
-              json.find(
-                (j) => j["Partner Account Name"] == b.partner_account_name
-              ),
-              json
-            );
-
             if (
               json.find(
                 (j) => j["Partner Account Name"] == b.partner_account_name
@@ -893,11 +793,8 @@ function BusinessUnitSplit(props) {
 
   const ShouldUpdate = () => {
     const currentDate = new Date();
-
     const currentMonth = currentDate.getMonth();
-
     const currentYear = String(currentDate.getFullYear()).slice(-2);
-
     for (let i = 7; i > 0; i--) {
       let date = new Date(
         currentDate.getFullYear(),
@@ -925,7 +822,6 @@ function BusinessUnitSplit(props) {
         return;
       }
     }
-
     postBatchData();
   };
 
@@ -949,13 +845,11 @@ function BusinessUnitSplit(props) {
 
         font: {
           bold: true,
-
           color: "#ffffff",
         },
 
         interior: {
           color: "#009530",
-
           pattern: "Solid",
         },
       },

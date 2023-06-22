@@ -483,19 +483,12 @@ function PartnerRequestList(props) {
 
   const handleCheckboxClick = (params) => {
     setRowsSelectedForUpdation(params.api.getSelectedRows());
-
     const selectedRows = params.api.getSelectedRows();
-
-    console.log("selectedRows:::", selectedRows);
-
     setMessage(selectedRows?.length);
   };
 
   const handleReject = () => {
-    console.log("RowsSelectedForUpdation", rowsSelectedForUpdation);
-
     const selectedRows = rowsSelectedForUpdation;
-
     if (selectedRows.length) {
       selectedRows.forEach((data) => {
         let reqData = {
@@ -556,8 +549,6 @@ function PartnerRequestList(props) {
           .updatePendingRequestPartners(reqData)
 
           .then((data) => {
-            console.log("data of postapi", data);
-
             let filterData = {
               role: screenRole,
 
@@ -595,14 +586,11 @@ function PartnerRequestList(props) {
             console.log("Error", e);
           });
       });
+      setMessage(0);
     }
-
-    // console.log('selectedRows:::', selectedRows);
   };
 
   const handleApprove = () => {
-    console.log("RowsSelectedForUpdation", rowsSelectedForUpdation);
-
     const selectedRows = rowsSelectedForUpdation;
 
     if (selectedRows.length) {
@@ -665,11 +653,8 @@ function PartnerRequestList(props) {
           .updatePendingRequestPartners(reqData)
 
           .then((data) => {
-            console.log("data of postapi", data);
-
             let filterData = {
               role: screenRole,
-
               userMail: userMail,
             };
 
@@ -713,6 +698,7 @@ function PartnerRequestList(props) {
             console.log("Error", e);
           });
       });
+      setMessage(0);
     }
   };
 
