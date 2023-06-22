@@ -15,7 +15,7 @@ import {
   Container,
 } from "react-bootstrap";
 
-import { month, roles } from "../constant";
+import { month, roles, status } from "../constant";
 
 import MyMenu from "../menu/menu.component.js";
 
@@ -41,7 +41,7 @@ import { connect } from "react-redux";
 
 import {
   retrievePartnerByRole,
-  updatePendingRequestPartners,
+  updatePartner
 } from "../../actions/partneraction";
 
 function PartnerRequestList(props) {
@@ -487,96 +487,71 @@ function PartnerRequestList(props) {
     setMessage(selectedRows?.length);
   };
 
+  const retReqData = (data, status) => {
+    let formatData = {
+      partner_id: data.partner_id,
+      platform_name: data.platform_name,
+      country_code: data.country_code,
+      partner_group: data.partner_group,
+      se_entity: data.se_entity,
+      reseller_name: data.reseller_name,
+      partner_account_name: data.partner_account_name,
+      activation_date: data.activation_date,
+      deactivation_date: data.deactivation_date,
+      deactivation_reason: data.deactivation_reason,
+      business_type: data.business_type,
+      model_type: data.model_type,
+      trans_currency_code: data.trans_currency_code,
+      data_collection_type: data.data_collection_type,
+      partner_sellout_margin: data.partner_sellout_margin,
+      partner_url: data.partner_url,
+      e2_playbook_type: data.e2_playbook_type,
+      bopp_type: data.bopp_type,
+      gtm_type: data.gtm_type,
+      created_by: userMail,
+      created_date: new Date().toUTCString(),
+      modified_by: userMail,
+      last_modified_date: new Date().toUTCString(),
+      status: status,
+      batch_upload_flag: false,
+      active_flag: "False",
+    };
+    return formatData;
+  }
+
   const handleReject = () => {
     const selectedRows = rowsSelectedForUpdation;
     if (selectedRows.length) {
       selectedRows.forEach((data) => {
-        let reqData = {
-          partner_id: data.partner_id,
-
-          platform_name: data.platform_name, //
-
-          country_code: data.country_code,
-
-          partner_group: data.partner_group,
-
-          se_entity: data.se_entity,
-
-          reseller_name: data.reseller_name,
-
-          partner_account_name: data.partner_account_name, //
-
-          activation_date: data.activation_date,
-
-          deactivation_date: data.deactivation_date,
-
-          deactivation_reason: data.deactivation_reason,
-
-          business_type: data.business_type,
-
-          model_type: data.model_type,
-
-          trans_currency_code: data.trans_currency_code,
-
-          data_collection_type: data.data_collection_type,
-
-          partner_sellout_margin: data.partner_sellout_margin,
-
-          partner_url: data.partner_url,
-
-          e2_playbook_type: data.e2_playbook_type,
-
-          bopp_type: data.bopp_type,
-
-          gtm_type: data.gtm_type,
-
-          created_by: userMail,
-
-          created_date: new Date().toUTCString(),
-
-          modified_by: userMail,
-
-          last_modified_date: new Date().toUTCString(),
-
-          status: "REJECT",
-
-          batch_upload_flag: false,
-
-          active_flag: "False",
-        };
+        let reqData = retReqData(data, status.reject);
 
         props
-          .updatePendingRequestPartners(reqData)
-
+          .updatePartner(reqData)
           .then((data) => {
             let filterData = {
               role: screenRole,
-
               userMail: userMail,
             };
 
             props
-
               .retrievePartnerByRole(
                 screenRole == roles.admin ||
-                  screenRole == roles.superUser ||
-                  screenRole == roles.superApproverUser
-                  ? ""
-                  : filterData.role,
+                screenRole == roles.superUser ||
+                screenRole == roles.superApproverUser
+                ? ""
+                : filterData.role,
 
                 screenRole == roles.admin ||
-                  screenRole == roles.superUser ||
-                  screenRole == roles.superApproverUser
-                  ? ""
-                  : filterData.userMail
+                screenRole == roles.superUser ||
+                screenRole == roles.superApproverUser
+                ? ""
+                : filterData.userMail
               )
-
               .then((data) => {
                 setRowData(
-                  data.data.filter((e) => e.status.toUpperCase() == "PENDING")
+                  data.data.filter((e) => e.status.toUpperCase() == status.pending)
                 );
               })
-
               .catch((e) => {
                 console.log(e);
               });
@@ -595,63 +570,9 @@ function PartnerRequestList(props) {
 
     if (selectedRows.length) {
       selectedRows.forEach((data) => {
-        let reqData = {
-          partner_id: data.partner_id,
-
-          platform_name: data.platform_name, //
-
-          country_code: data.country_code,
-
-          partner_group: data.partner_group,
-
-          se_entity: data.se_entity,
-
-          reseller_name: data.reseller_name,
-
-          partner_account_name: data.partner_account_name, //
-
-          activation_date: data.activation_date,
-
-          deactivation_date: data.deactivation_date,
-
-          deactivation_reason: data.deactivation_reason,
-
-          business_type: data.business_type,
-
-          model_type: data.model_type,
-
-          trans_currency_code: data.trans_currency_code,
-
-          data_collection_type: data.data_collection_type,
-
-          partner_sellout_margin: data.partner_sellout_margin,
-
-          partner_url: data.partner_url,
-
-          e2_playbook_type: data.e2_playbook_type,
-
-          bopp_type: data.bopp_type,
-
-          gtm_type: data.gtm_type,
-
-          created_by: userMail,
-
-          created_date: new Date().toUTCString(),
-
-          modified_by: userMail,
-
-          last_modified_date: new Date().toUTCString(),
-
-          status: "ACTIVE",
-
-          batch_upload_flag: false,
-
-          active_flag: "False",
-        };
-
+        let reqData = retReqData(data, status.active);
         props
-          .updatePendingRequestPartners(reqData)
-
+          .updatePartner(reqData)
           .then((data) => {
             let filterData = {
               role: screenRole,
@@ -659,7 +580,6 @@ function PartnerRequestList(props) {
             };
 
             props
-
               .retrievePartnerByRole(
                 screenRole == roles.admin ||
                   screenRole == roles.superUser ||
@@ -676,24 +596,13 @@ function PartnerRequestList(props) {
 
               .then((data) => {
                 setRowData(
-                  data.data.filter((e) => e.status.toUpperCase() == "PENDING")
+                  data.data.filter((e) => e.status.toUpperCase() == status.pending)
                 );
               })
-
               .catch((e) => {
                 console.log(e);
               });
-
-            //update user partner role config for higher level user
-            // if(userRole === roles.superUser || userRole === roles.superApproverUser || userRole === roles.admin){
-            //   saveUserPartnerConfigDetails(partnerId, formData, false);
-            // }
-            // else{
-            // setShowSuccessModal(true);
-            // setShowErrorModal(false);
-            // }
           })
-
           .catch((e) => {
             console.log("Error", e);
           });
@@ -879,5 +788,5 @@ function PartnerRequestList(props) {
 
 export default connect(null, {
   retrievePartnerByRole,
-  updatePendingRequestPartners,
+  updatePartner
 })(PartnerRequestList);
