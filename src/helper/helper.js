@@ -15,3 +15,12 @@ export const getAPIDateFormatWithTime = (inputDate) => {
     var year = date.getFullYear().toString();
     return (year + "-" + month + "-" + day).concat(" ",time);
 }
+
+export const getUIDateFormatToCompare = (apiDateFormat) => {
+    var date = new Date(apiDateFormat);
+    var time = (date.toISOString().split('T')[1]).substring(0, 8);
+    var day = date.getDate().toString().padStart(2, "0");
+    var month = (date.getMonth() + 1).toString().padStart(2, "0");
+    var year = date.getFullYear().toString();
+    return (month + "/" + day + "/" + year);
+}

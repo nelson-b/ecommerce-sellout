@@ -19,7 +19,7 @@ import { retrieveAllUserListData, createUserPartnerRoleConfig } from "../../acti
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
 import { roles, status } from "../constant.js";
-import { getAPIDateFormatWithTime, getUIDateFormat } from "../../helper/helper.js";
+import { getAPIDateFormatWithTime, getUIDateFormat, getUIDateFormatToCompare } from "../../helper/helper.js";
 
 function PartnerComponent(props) {
   const navigate = useNavigate();
@@ -162,6 +162,7 @@ function PartnerComponent(props) {
       else{
         setErrorRet(['Partner id missing in url!!']);
         setShowErrorModal(true);
+        setShowSuccessModal(false);
       }
     }
   }, []);
@@ -263,6 +264,7 @@ function PartnerComponent(props) {
         country_code: reqData.country_code,
         email_id: userMail, //login user email
         created_by: userMail, //login user email
+        created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
         updated_by: userMail, //login user email
         editor: reqData.editor,
         backup_editor: reqData.backupEditor,
@@ -406,7 +408,17 @@ function PartnerComponent(props) {
           batch_upload_flag: (false),
           active_flag: "False"
       };
-              
+      
+      let activationDate = getUIDateFormatToCompare(reqData.activation_date);
+      let deactivationDate = getUIDateFormatToCompare(reqData.deactivation_date);
+
+      if(new Date(activationDate).getTime() > new Date(deactivationDate).getTime()){
+        setErrorRet(['Deactivation date could not be lesser then activation date']);
+        setShowSuccessModal(false);
+        setShowErrorModal(true);
+        return false;
+      }
+
       //update api
       
       console.log('update', reqData);
