@@ -243,7 +243,7 @@ function DataReviewApprover(props) {
   let userMail = "";
 
   if (historicalRole == "approve_1" || historicalRole == "approver_2") {
-    userMail = "chncn00071@example.com";
+    userMail = "nelson@se.com";
   }
 
   if (historicalRole == "superApproverUser") {
@@ -375,7 +375,6 @@ function DataReviewApprover(props) {
 
           final_arr.push(obj);
         });
-
         setReviewData(final_arr);
       })
 
@@ -390,30 +389,20 @@ function DataReviewApprover(props) {
 
   const onBtShowYearColumn = useCallback((hisData, radio) => {
     const currentDate = new Date();
-
     const currentYear = String(currentDate.getFullYear()).slice(-2);
-
     const currentMonth = allCalMonths[currentDate.getMonth()];
-
     // const currentMonth = 'Jul'; // To test quarter basis
-
     let currentQuarter = 0;
-
     let currentQuarterIndex = 0;
-
     let index = 1;
-
     let selectedYear = currentYear;
 
     for (const quarter in quarters) {
       if (quarters[quarter].includes(currentMonth)) {
         currentQuarter = quarter;
-
         currentQuarterIndex = quarters[quarter].indexOf(currentMonth);
-
         break;
       }
-
       index++;
     }
 
@@ -421,20 +410,15 @@ function DataReviewApprover(props) {
 
     if (currentQuarterIndex === 0) {
       const previousIndex = index - 1 ? index - 1 : 4;
-
       if (index - 1 == 0) {
         selectedYear = currentYear - 1;
       }
-
       const previousQuarter = Object.keys(quarters)[previousIndex - 1];
-
       resultQuarter = previousQuarter;
     } else {
       resultQuarter = currentQuarter;
     }
-
     const q2Values = quarters[resultQuarter];
-
     setIsYearColumnVisible(true);
 
     let gridArr = [
@@ -796,8 +780,6 @@ function DataReviewApprover(props) {
       },
     ];
 
-    //  gridArr.splice(6,0, ...testArr)
-
     gridRef.current.api.setColumnDefs(gridArr);
   }, []);
 
@@ -1101,27 +1083,20 @@ function DataReviewApprover(props) {
 
   const getTotSellOutCurrQuatrCalc = (params) => {
     const quat = getCurrentQuarter();
-
     const quatMonths = getQuarterMonths(quat);
-
     let year = new Date().getFullYear();
-
     let selectedValueString = year.toString();
-
     let choppedOffYear = selectedValueString.slice(
       2,
-
       selectedValueString.length
     );
 
     let customizedQuarterMonths = [];
-
     quatMonths.forEach((element) => {
       customizedQuarterMonths.push(element + choppedOffYear);
     });
 
     let tempTotal = 0;
-
     customizedQuarterMonths.map((item) => {
       if (item in params?.data) {
         tempTotal += params?.data[item];
@@ -1469,13 +1444,6 @@ function DataReviewApprover(props) {
     setMessage(selectedRows?.length);
   };
 
-  // const handleSave = (params) => {
-  //   // const gridApi = params.api;
-  //   // const updatedRowData = gridApi.getData();
-  //   // setRowData(updatedRowData);
-  //   console.log('updatedadd', params);
-  // };
-
   const handleSave = useCallback((data) => {
     console.log("data", data);
  
@@ -1498,11 +1466,10 @@ function DataReviewApprover(props) {
       batch_upload_flag: data[0].batch_upload_flag.toString(),
     };
 
-    console.log("reqData", JSON.stringify(reqData));
-
     props
       .updateSellOutReviewData(reqData)
       .then((data) => {
+        console.log('data in review data', data)
         setReviewData(data);
       })
       .catch((e) => {
@@ -1662,7 +1629,6 @@ function DataReviewApprover(props) {
                   }`}
                   onClick={() => {
                     onBtShowYearColumn(reviewData, radioValue);
-
                     setTimeout(() => {
                       onBtShowYearColumn(reviewData, radioValue);
                     }, 10);

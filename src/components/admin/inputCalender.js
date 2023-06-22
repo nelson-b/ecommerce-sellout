@@ -15,8 +15,13 @@ import Home from "../../images/home-icon.png";
 import { useForm } from "react-hook-form";
 import "../admin/inputCalendar.css";
 import { quarters } from "../constant.js";
+import {
+  createInputCalenderData,
+  retrieveInputCalenderData,
+} from "../../actions/inputCalenderAction";
+import { getUIDateFormat } from "../../../src/helper/helper";
 
-function InputCalendar() {
+function InputCalendar(props) {
   const {
     register,
     handleSubmit,
@@ -27,8 +32,71 @@ function InputCalendar() {
     reValidateMode: "onChange",
   });
 
+  const monthsOfTheYear = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
   const onSubmit = (data) => {
-    console.log("form data", data);
+    let today = new Date();
+    let year = today.getFullYear();
+    let getKeys = Object.keys(data);
+    let newArr = [];
+
+    getKeys.forEach((element) => {
+      let getIndex = element.lastIndexOf("_");
+      newArr.push(element.slice(getIndex + 1));
+    });
+    let uniqueArray = [...new Set(newArr)];
+    let finalArray = [];
+
+    uniqueArray.forEach((uElement) => {
+      if (
+        (data["currmonth_closedt_" + uElement] &&
+          data["currmonth_opndt_" + uElement]) !== ""
+      ) {
+        let quarterNme = uElement;
+
+        if (
+          quarterNme == "1" ||
+          quarterNme == "2" ||
+          quarterNme == "3" ||
+          quarterNme == "4"
+        ) {
+          quarterNme = "Q" + uElement;
+        }
+
+        let finalObj = {
+          year_val: year.toString(),
+          month_quarter_val: quarterNme,
+          role_id: "approver",
+          opening_date: data["currmonth_opndt_" + uElement],
+          closing_date: data["currmonth_closedt_" + uElement],
+          created_date: today,
+          created_by: "john@example.com",
+          modified_date: today,
+          modified_by: "jane@example.com",
+        };
+
+        finalArray.push(finalObj);
+      }
+    });
+
+    finalArray.forEach((dataToPost) => {
+      props.createInputCalenderData(dataToPost).then((data) => {
+        console.log("data is saved::", data);
+      });
+    });
   };
 
   const onError = (error) => {
@@ -42,48 +110,120 @@ function InputCalendar() {
     return `Q${quarter}`;
   };
 
+  const getPrevQuarter = () => {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const quarter = Math.ceil(month / 3);
+    if (quarter == 1) {
+      return `Q${quarter}`;
+    } else {
+      return `Q${quarter - 1}`;
+    }
+  };
+
   const currentQuater = getCurrentQuarter();
+  const prevQuater = getPrevQuarter();
 
   const getQuarterMonths = useCallback((quarter) => {
     return quarters[quarter] || [];
   }, []);
 
-  const [quaterMonths, setQuaterMonths] = useState(
-    getQuarterMonths(currentQuater)
+  const getPrevQuarterMonths = useCallback((quarter) => {
+    return quarters[quarter] || [];
+  }, []);
+
+  const [quaterMonths, setQuaterMonths] = useState();
+  const [prevQuarterMonths, setPrevQuarterMonths] = useState(
+    getPrevQuarterMonths(prevQuater)
   );
 
   const [nextQuarter, setNextQuarter] = useState([]);
-
-  const [prevQuarter, setPrevQuarter] = useState([
-    { quarter: 1, openingDate: "11/01/2023", closingDate: "20/01/2023" },
-  ]); //fetched form API
+  const [prevQuarter, setPrevQuarter] = useState([]); //fetched form API
 
   useEffect(() => {
+    const d = new Date();
+    let months = d.getMonth();
+    let monthsArray = [];
+
+    for (let i = months; i < 12; i++) {
+      if (monthsArray.length < 3) {
+        monthsArray.push(monthsOfTheYear[i]);
+      }
+    }
+
+    setQuaterMonths(monthsArray);
+    let monthsArrayReverse = [];
+    let minusMonth = months - 1;
+
+    for (let i = minusMonth; i >= 0; i--) {
+      if (monthsArrayReverse.length < 6) {
+        monthsArrayReverse.push(monthsOfTheYear[i]);
+      }
+    }
+    getPreviousQuarterData(prevQuater);
     getNextQuarter();
+    getPreviousQuarterMonthViseData(monthsArrayReverse.reverse());
   }, []);
 
-  //retr prev quarter
+  const getPreviousQuarterData = (quarter) => {
+    let today = new Date();
+
+    let year = today.getFullYear();
+    props
+      .retrieveInputCalenderData(year, quarter, "approver")
+      .then((data) => {
+        let obj = {
+          quarter: data.MONTH_QUARTER_VAL,
+          openingDate: getUIDateFormat(data.OPENING_DATE, true),
+          closingDate: getUIDateFormat(data.CLOSING_DATE, true),
+        };
+
+        setPrevQuarter((prevArray) => [...prevArray, obj]);
+      })
+
+      .catch((e) => {
+        console.log("Partner list", e);
+      });
+  };
+
+  const [prevQuaterMonthsData, setPrevQuaterMonthsData] = useState([]);
+
+  const getPreviousQuarterMonthViseData = (prevQuarterMonths) => {
+    let today = new Date();
+    let year = today.getFullYear();
+    let prevQuarterMonthViseData = [];
+    for (let i = 0; i < prevQuarterMonths.length; i++) {
+      props
+        .retrieveInputCalenderData(year, prevQuarterMonths[i], "approver")
+
+        .then((data) => {
+          let obj = {
+            month: data.MONTH_QUARTER_VAL,
+            openingDate: getUIDateFormat(data.OPENING_DATE, true),
+            closingDate: getUIDateFormat(data.CLOSING_DATE, true),
+            srNo: i + 1,
+          };
+
+          setPrevQuaterMonthsData((prevArray) => [...prevArray, obj]);
+        })
+
+        .catch((e) => {
+          console.log("QURTER list", e);
+        });
+    }
+  };
+
   const getNextQuarter = useCallback(() => {
     let currQuatNum = currentQuater.slice(1, 2);
-    console.log("currQuatNum", currQuatNum);
     let nextQuatrs = [];
-    //logic
     for (let i = currQuatNum; i <= 4; i++) {
       nextQuatrs = nextQuatrs.concat(i);
     }
-    console.log("nextQuatrs", nextQuatrs);
     setNextQuarter(nextQuatrs || []);
   }, []);
 
-  //fetched form API
-  const [prevQuaterMonthsData, setPrevQuaterMonthsData] = useState([
-    { month: "January", openingDate: "11/01/2023", closingDate: "20/01/2023" },
-    { month: "February", openingDate: "11/02/2023", closingDate: "20/02/2023" },
-    { month: "March", openingDate: "11/03/2023", closingDate: "20/03/2023" },
-  ]);
-
   //post api
-  
+
   //get api
 
   return (
@@ -91,6 +231,7 @@ function InputCalendar() {
       <Row>
         <MyMenu />
       </Row>
+
       <Row>
         <Breadcrumb>
           <Breadcrumb.Item href="/admin/home">
@@ -102,8 +243,10 @@ function InputCalendar() {
           </Breadcrumb.Item>
         </Breadcrumb>
       </Row>
+
       <Row>
         <h5 className="form-sellout-header">INPUT CALENDER</h5>
+
         <Container fluid>
           <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
             <Card className="card-Panel form-calendar-card">
@@ -114,6 +257,7 @@ function InputCalendar() {
                       Sell Out Data Input Window
                     </h5>
                   </Row>
+
                   <Row>
                     <Col md="5">
                       {quaterMonths &&
@@ -124,25 +268,26 @@ function InputCalendar() {
                                 {`Month of ${month}`}
                               </h6>
                             </Row>
+
                             <Row>
                               <Col>
                                 <Form.Label
                                   size="sm"
                                   className="calendar-label"
-                                  htmlFor={"currmonth_opndt_"+month}
+                                  htmlFor={"currmonth_opndt_" + month}
                                 >
                                   Opening Date
                                 </Form.Label>
                                 &nbsp;
                                 <Form.Control
                                   size="sm"
-                                  id={"currmonth_opndt_"+month}
-                                  name={"currmonth_opndt_"+month}
-                                  min={new Date().toISOString().split('T')[0]}
+                                  id={"currmonth_opndt_" + month}
+                                  name={"currmonth_opndt_" + month}
+                                  min={new Date().toISOString().split("T")[0]}
                                   type="date"
-                                  {...register(`currmonth_opndt_${month}`, {
-                                    required: "Opening date is required",
-                                  })}
+                                  {...register(
+                                    `currmonth_opndt_${month}`
+                                  )}
                                 />
                                 {errors[`currmonth_opndt_${month}`] && (
                                   <Form.Text className="text-danger">
@@ -150,27 +295,31 @@ function InputCalendar() {
                                   </Form.Text>
                                 )}
                               </Col>
+
                               <Col>
                                 <Form.Label
                                   size="sm"
                                   className="calendar-label"
-                                  htmlFor={"currmonth_closedt_"+month}
+                                  htmlFor={"currmonth_closedt_" + month}
                                 >
                                   Closing Date
                                 </Form.Label>
                                 &nbsp;
                                 <Form.Control
                                   size="sm"
-                                  id={"currmonth_closedt_"+month}
-                                  name={"currmonth_closedt_"+month}
+                                  id={"currmonth_closedt_" + month}
+                                  name={"currmonth_closedt_" + month}
                                   type="date"
-                                  {...register(`currmonth_closedt_${month}`, {
-                                    required: "Close date is required",
-                                  })}
+                                  {...register(
+                                    `currmonth_closedt_${month}`
+                                  )}
                                 />
                                 {errors[`currmonth_closedt_${month}`] && (
                                   <Form.Text className="text-danger">
-                                    {errors[`currmonth_closedt_${month}`].message}
+                                    {
+                                      errors[`currmonth_closedt_${month}`]
+                                        .message
+                                    }
                                   </Form.Text>
                                 )}
                               </Col>
@@ -178,6 +327,7 @@ function InputCalendar() {
                           </>
                         ))}
                     </Col>
+
                     <Col className="prev-window-panel">
                       <Card className="card-Panel prev-window-table">
                         <Row>
@@ -185,6 +335,7 @@ function InputCalendar() {
                             Previous Months Input Window
                           </h5>
                         </Row>
+
                         <Row>
                           <Table striped bordered hover>
                             <thead>
@@ -194,15 +345,18 @@ function InputCalendar() {
                                 <th>Closing Date</th>
                               </tr>
                             </thead>
+
                             <tbody>
                               {prevQuaterMonthsData &&
-                                prevQuaterMonthsData.map((data, index) => (
-                                  <tr>
-                                    <td>{data.month}</td>
-                                    <td>{data.openingDate}</td>
-                                    <td>{data.closingDate}</td>
-                                  </tr>
-                                ))}
+                                prevQuaterMonthsData
+                                  .sort((a, b) => (a.srNo > b.srNo ? 1 : -1))
+                                  .map((data, index) => (
+                                    <tr>
+                                      <td>{data.month}</td>
+                                      <td>{data.openingDate}</td>
+                                      <td>{data.closingDate}</td>
+                                    </tr>
+                                  ))}
                             </tbody>
                           </Table>
                         </Row>
@@ -214,6 +368,7 @@ function InputCalendar() {
             </Card>
 
             <br />
+
             <Card className="card-Panel form-calendar-card">
               <Row>
                 <Form.Group className="mb-4">
@@ -222,6 +377,7 @@ function InputCalendar() {
                       Sell Out Data Approver Window
                     </h5>
                   </Row>
+
                   <Row>
                     <Col md="5">
                       {nextQuarter &&
@@ -230,53 +386,61 @@ function InputCalendar() {
                             <Row>
                               <h6 className="form-sellout-header">{`Quarter ${quarter}`}</h6>
                             </Row>
+
                             <Row>
                               <Col>
                                 <Form.Label
                                   size="sm"
                                   className="calendar-label"
-                                  htmlFor={"currmonth_opndt_"+quarter}
+                                  htmlFor={"currmonth_opndt_" + quarter}
                                 >
                                   Opening Date
                                 </Form.Label>
                                 &nbsp;
                                 <Form.Control
                                   size="sm"
-                                  id={"currmonth_opndt_"+quarter}
-                                  name={"currmonth_opndt_"+quarter}
-                                  min={new Date().toISOString().split('T')[0]}
+                                  id={"currmonth_opndt_" + quarter}
+                                  name={"currmonth_opndt_" + quarter}
+                                  min={new Date().toISOString().split("T")[0]}
                                   type="date"
-                                  {...register(`currmonth_opndt_${quarter}`, {
-                                    required: "Opening date is required",
-                                  })}
+                                  {...register(
+                                    `currmonth_opndt_${quarter}`
+                                  )}
                                 />
                                 {errors[`currmonth_opndt_${quarter}`] && (
                                   <Form.Text className="text-danger">
-                                    {errors[`currmonth_opndt_${quarter}`].message}
+                                    {
+                                      errors[`currmonth_opndt_${quarter}`]
+                                        .message
+                                    }
                                   </Form.Text>
                                 )}
                               </Col>
+
                               <Col>
                                 <Form.Label
                                   size="sm"
                                   className="calendar-label"
-                                  htmlFor={"currmonth_closedt_"+quarter}
+                                  htmlFor={"currmonth_closedt_" + quarter}
                                 >
                                   Closing Date
                                 </Form.Label>
                                 &nbsp;
                                 <Form.Control
                                   size="sm"
-                                  id={"currmonth_closedt_"+quarter}
-                                  name={"currmonth_closedt_"+quarter}
+                                  id={"currmonth_closedt_" + quarter}
+                                  name={"currmonth_closedt_" + quarter}
                                   type="date"
-                                  {...register(`currmonth_closedt_${quarter}`, {
-                                    required: "Close date is required",
-                                  })}
+                                  {...register(
+                                    `currmonth_closedt_${quarter}`
+                                  )}
                                 />
                                 {errors[`currmonth_closedt_${quarter}`] && (
                                   <Form.Text className="text-danger">
-                                    {errors[`currmonth_closedt_${quarter}`].message}
+                                    {
+                                      errors[`currmonth_closedt_${quarter}`]
+                                        .message
+                                    }
                                   </Form.Text>
                                 )}
                               </Col>
@@ -284,6 +448,7 @@ function InputCalendar() {
                           </>
                         ))}
                     </Col>
+
                     <Col className="prev-window-panel">
                       <Card className="card-Panel prev-window-table">
                         <Row>
@@ -291,6 +456,7 @@ function InputCalendar() {
                             Previous Quarter Approval Window
                           </h5>
                         </Row>
+
                         <Row>
                           <Table striped bordered hover>
                             <thead>
@@ -300,6 +466,7 @@ function InputCalendar() {
                                 <th>Closing Date</th>
                               </tr>
                             </thead>
+
                             <tbody>
                               {prevQuarter &&
                                 prevQuarter.map((data, index) => (
@@ -332,4 +499,9 @@ function InputCalendar() {
     </Container>
   );
 }
-export default connect(null, null)(InputCalendar);
+
+export default connect(null, {
+  createInputCalenderData,
+
+  retrieveInputCalenderData,
+})(InputCalendar);
