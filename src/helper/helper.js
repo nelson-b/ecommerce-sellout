@@ -17,6 +17,7 @@ export const getAPIDateFormatWithTime = (inputDate) => {
 }
 
 export const getUIDateFormatToCompare = (apiDateFormat) => {
+    console.log('apiDateFormat', apiDateFormat);
     var date = new Date(apiDateFormat);
     var time = (date.toISOString().split('T')[1]).substring(0, 8);
     var day = date.getDate().toString().padStart(2, "0");

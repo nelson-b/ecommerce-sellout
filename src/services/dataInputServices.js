@@ -1,5 +1,4 @@
 import http from "../http-common";
-import baseurl from "../http-baseUrl";
 
 class DataInputService {
     create(data) {
@@ -16,8 +15,7 @@ class DataInputService {
 
     updateReviewData(data) {
         console.log('data in service', data);
-        return baseurl.post(`/create-partner/ecomm-sellout-dev-lamda-createpartner/create-update-input-calander/create-sellout-transactions`, data);
-        // https://8ghiehyd0f.execute-api.eu-west-1.amazonaws.com/create-partner/ecomm-sellout-dev-lamda-createpartner/create-update-input-calander/create-sellout-transactions
+        return http.post(`/ecomm-sellout-dev-lamda-createpartner/create-update-input-calander/create-sellout-transactions`, data);
     }
 }
 
