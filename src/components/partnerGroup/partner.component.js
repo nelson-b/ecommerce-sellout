@@ -468,11 +468,6 @@ function PartnerComponent(props) {
         active_flag: "False",
       };
 
-      console.log("before update", reqData);
-      console.log("reqData.activation_date", reqData.activation_date);
-
-      console.log(" reqData.deactivation_date", typeof(reqData.deactivation_date));
-
       let activationDate = getUIDateFormatToCompare(reqData.activation_date);
       let deactivationDate = "";
       if (reqData?.deactivation_date?.length) {

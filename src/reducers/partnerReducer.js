@@ -3,7 +3,8 @@ import {
     RETRIEVE_ALL_USERROLE_CONFIG, 
     RETRIEVE_PARTNERDATA,
     RETRIEVE_USERROLE_CONFIG_BY_EMAILIDROLEID,
-    RETRIEVE_USERROLE_CONFIG_BY_PARTNERID
+    RETRIEVE_USERROLE_CONFIG_BY_PARTNERID,
+    UPDATE_PARTNERDATA
 } from "../actions/type";
 
 const initialState = [];
@@ -14,6 +15,8 @@ function partnerReducer(data = initialState, action) {
     switch (type) {
         case CREATE_PARTNERDATA:
             return payload;
+        case UPDATE_PARTNERDATA:
+            return [...data, payload];
         case RETRIEVE_PARTNERDATA:
             return payload;
         case RETRIEVE_USERROLE_CONFIG_BY_PARTNERID:
