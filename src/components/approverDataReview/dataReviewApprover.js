@@ -254,6 +254,7 @@ function DataReviewApprover(props) {
   const year = new Date().getFullYear();
 
   const getQuarterReviewData = (userMail, year, historicalRole) => {
+    let yearCurrent = new Date().getFullYear();
     props
       .retrieveHistoricalData(userMail, year, historicalRole)
       .then((data) => {
@@ -261,23 +262,37 @@ function DataReviewApprover(props) {
 
         data.map((item) => {
           let string_year_val = item.year_val.toString();
+
           let itemYear = string_year_val.slice(2, string_year_val.length);
+
           let obj = {};
+
           obj.zone_val = item.zone_val;
+
           obj.country_code = item.country_code;
+
           obj.partner_account_name = item.partner_account_name;
+
           obj.model_type = item.model_type;
+
           obj.status = item.status;
+
           obj.trans_currency_code = item.trans_currency_code;
+
           obj["trans_currency_codeE"] = "EUR";
+
           obj.SelloutCQ = "";
           obj.systemComments = "";
           obj.editorComments = item.editor_comment;
+
           obj.YTD = "";
+
           obj.YTD_Growth = "";
+
           obj.ambition = "";
           obj.approverComments = item.comments;
           obj.partner_id = item.partner_id;
+
           obj.year_val = item.year_val;
           obj.created_by = item.created_by;
           obj.created_date = item.created_date;
@@ -359,10 +374,157 @@ function DataReviewApprover(props) {
           });
 
           final_arr.push(obj);
+
+          let preYear = yearCurrent - 1;
+          getQuarterReviewDataPrevious(final_arr, preYear);
         });
-        setReviewData(final_arr);
       })
 
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const getQuarterReviewDataPrevious = (currentYearArray, preYear) => {
+    let final_arr_previous = [];
+    let combinedArray = [];
+
+    props
+      .retrieveHistoricalData(userMail, preYear, historicalRole)
+      .then((data) => {
+        data.map((item) => {
+          let string_year_val = item.year_val.toString();
+
+          let itemYear = string_year_val.slice(2, string_year_val.length);
+
+          let obj = {};
+
+          obj.zone_val = item.zone_val;
+
+          obj.country_code = item.country_code;
+
+          obj.partner_account_name = item.partner_account_name;
+
+          obj.model_type = item.model_type;
+
+          obj.status = item.status;
+
+          obj.trans_currency_code = item.trans_currency_code;
+
+          obj["trans_currency_codeE"] = "EUR";
+
+          obj.SelloutCQ = "";
+
+          obj.systemComments = "";
+
+          obj.editorComments = item.editor_comment;
+
+          obj.YTD = "";
+
+          obj.YTD_Growth = "";
+
+          obj.ambition = "";
+
+          obj.approverComments = item.comments;
+
+          obj.partner_id = item.partner_id;
+
+          obj.year_val = item.year_val;
+          obj.created_by = item.created_by;
+          obj.created_date = item.created_date;
+          obj.approval_status = item.approval_status;
+          obj.batch_upload_flag = item.batch_upload_flag;
+
+          item.months.map((each) => {
+            if (each.month_val === "jan") {
+              obj["Jan" + itemYear] = each.sellout_local_currency;
+              obj["Jan" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "feb") {
+              obj["Feb" + itemYear] = each.sellout_local_currency;
+              obj["Feb" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "mar") {
+              obj["Mar" + itemYear] = each.sellout_local_currency;
+              obj["Mar" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "apr") {
+              obj["Apr" + itemYear] = each.sellout_local_currency;
+              obj["Apr" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "may") {
+              obj["May" + itemYear] = each.sellout_local_currency;
+
+              obj["May" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "jun") {
+              obj["Jun" + itemYear] = each.sellout_local_currency;
+
+              obj["Jun" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "jul") {
+              obj["Jul" + itemYear] = each.sellout_local_currency;
+
+              obj["Jul" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "aug") {
+              obj["Aug" + itemYear] = each.sellout_local_currency;
+
+              obj["Aug" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "sep") {
+              obj["Sep" + itemYear] = each.sellout_local_currency;
+
+              obj["Sep" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "oct") {
+              obj["Oct" + itemYear] = each.sellout_local_currency;
+
+              obj["Oct" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "nov") {
+              obj["Nov" + itemYear] = each.sellout_local_currency;
+
+              obj["Nov" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "dec") {
+              obj["Dec" + itemYear] = each.sellout_local_currency;
+
+              obj["Jan" + itemYear + "E"] = each.sellout;
+            }
+          });
+
+          final_arr_previous.push(obj);
+        });
+
+        if (final_arr_previous.length) {
+          currentYearArray.forEach((elementCurrent) => {
+            final_arr_previous.forEach((elementPrevious) => {
+              if (elementCurrent.partner_id == elementPrevious.partner_id) {
+                let uniObj = {};
+                uniObj = elementCurrent;
+                uniObj.PreviousYearData = elementPrevious;
+                combinedArray.push(uniObj);
+              }
+            });
+          });
+
+          setReviewData(combinedArray);
+        } else {
+          setReviewData(final_arr_previous);
+        }
+      })
       .catch((e) => {
         console.log(e);
       });
@@ -652,8 +814,8 @@ function DataReviewApprover(props) {
         suppressMenu: true,
 
         valueFormatter: (params) => {
-          return params.value + "%";
-        },
+          return callThisFunction(params);
+         },
 
         valueGetter: (params) => {
           return getYTDSelloutGrowthPercCalc(params);
@@ -943,8 +1105,8 @@ function DataReviewApprover(props) {
         suppressMenu: true,
 
         valueFormatter: (params) => {
-          return params.value + "%";
-        },
+          return callThisFunction(params);
+         },
 
         valueGetter: (params) => {
           return getYTDSelloutGrowthPercCalc(params);
@@ -1133,52 +1295,57 @@ function DataReviewApprover(props) {
     return tempTotal;
   };
 
+  const callThisFunction = (params) => {
+    return params.value.toFixed(2) + "%";
+  };
+
   const getYTDSelloutGrowthPercCalc = (params) => {
-    //YTD Sellout CY
+    let previousYearData = params.data.PreviousYearData;
 
-    if (params.data) {
-      let YTDSelloutCY = params.data.YTD;
+    let currentYearData = params.data;
 
-      //YTD Sellout LY
+    if (previousYearData) {
+      let percentageOfGrowth = 0;
 
-      const getYTDMonthsLY = allCalMonths;
+      let totalOfCurrentYearGrowth = getTotalYTDSellOutGrowthCalc(params);
 
-      let YTDSellOutValArrLY = [];
+      let yearCustom = previousYearData.year_val;
 
-      getYTDMonthsLY.forEach((month, index) => {
-        let fieldMonth = getPrevMonthField(month);
+      let selectedValueString = yearCustom.toString();
 
-        if (params.data) {
-          var filterMonthsYTDLY = Object.keys(params.data)
+      let choppedOffYear = selectedValueString.slice(
+        2,
+        selectedValueString.length
+      );
 
-            .filter((key) => [fieldMonth].includes(key))
+      let customizedYearMonths = [];
 
-            .reduce((obj, key) => {
-              obj[key] = params.data[key];
+      monthsOfTheYear.forEach((element) => {
+        customizedYearMonths.push(element + choppedOffYear);
+      });
 
-              return obj;
-            }, {});
-        }
+      let tempTotalPreviousYear = 0;
 
-        if (filterMonthsYTDLY) {
-          let fieldMonthData = filterMonthsYTDLY[fieldMonth];
-
-          YTDSellOutValArrLY = YTDSellOutValArrLY.concat(fieldMonthData);
+      customizedYearMonths.map((item) => {
+        if (item in previousYearData) {
+          tempTotalPreviousYear += previousYearData[item];
         }
       });
 
-      let YTDSelloutLY = YTDSellOutValArrLY.reduce(function (prev, current) {
-        return prev + +current;
-      }, 0);
+      if (tempTotalPreviousYear > 0 && totalOfCurrentYearGrowth > 0) {
+        let tempTotalDiff = totalOfCurrentYearGrowth - tempTotalPreviousYear;
 
-      let YTD_Growth = ((YTDSelloutCY - YTDSelloutLY) / YTDSelloutLY) * 100;
+        let tempDivision = tempTotalDiff / tempTotalPreviousYear;
 
-      params.data.YTD_Growth = Math.round(YTD_Growth);
+        percentageOfGrowth = tempDivision * 100;
 
-      return Math.round(YTD_Growth);
+        return percentageOfGrowth;
+      } else {
+        return percentageOfGrowth;
+      }
+    } else {
+      return 0;
     }
-
-    return 0;
   };
 
   columnDefs.push(
@@ -1248,8 +1415,8 @@ function DataReviewApprover(props) {
       suppressMenu: true,
 
       valueFormatter: (params) => {
-        return params.value + "%";
-      },
+        return callThisFunction(params);
+       },
 
       valueGetter: (params) => {
         return getYTDSelloutGrowthPercCalc(params);
@@ -1488,10 +1655,6 @@ function DataReviewApprover(props) {
     );
   };
 
-  // const handleConfirm = () => {
-  //   setRowData(rowData);
-  // };
-
   const historicalDataNavigation = () => {
     navigate(`/historicalData?role=${historicalRole}`);
   };
@@ -1562,9 +1725,9 @@ function DataReviewApprover(props) {
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
-    header: 'Data has been saved successfully!!',
-    content: []
-  }
+    header: "Data has been saved successfully!!",
+    content: [],
+  };
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
