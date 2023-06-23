@@ -52,9 +52,12 @@ function SaveUser(props) {
   if(userRole == roles.editor) {
     loginUserId = 'nelson@se.com'
   }
-  if(userRole == roles.approver) {
-    loginUserId = 'katie@se.com'
-  } 
+  if (userRole == roles.approve_1) {
+    loginUserId = "katie@se.com";
+  }
+  if (userRole == roles.approver_2) {
+    loginUserId = "katie@se.com";
+  }
   if(userRole == roles.superUser) {
     loginUserId = 'marie@se.com'
   }
