@@ -46,8 +46,9 @@ import closed from "../../images/closed.png";
 import Home from "../../images/home-icon.png";
 
 import { useLocation } from "react-router-dom";
-
+import AlertModal from "../modal/alertModel";
 import { retrieveHistoricalData } from "../../actions/selloutaction";
+import { updateSellOutData } from "../../actions/dataInputAction";
 
 import { connect } from "react-redux";
 
@@ -60,6 +61,7 @@ function DataReviewComponent(props) {
   const location = useLocation();
   const historicalRole = new URLSearchParams(location.search).get("role");
   const [reviewData, setReviewData] = useState([]);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -198,11 +200,13 @@ function DataReviewComponent(props) {
     };
   }, []);
 
+  let userMail = "nelson@se.com";
+
   const year = new Date().getFullYear();
 
   const getQuarterReviewData = () => {
     props
-      .retrieveHistoricalData("nelson@se.com", year, historicalRole)
+      .retrieveHistoricalData(userMail, year, historicalRole)
       .then((data) => {
         let final_arr = [];
 
@@ -218,7 +222,7 @@ function DataReviewComponent(props) {
           obj.trans_currency_code = item.trans_currency_code;
           obj["trans_currency_codeE"] = "EUR";
           obj.SelloutCQ = "";
-          obj.systemComments = item.comments;
+          obj.systemComments = "";
           obj.editorComments = item.editor_comment;
           obj.YTD = "";
           obj.YTD_Growth = "";
@@ -226,6 +230,7 @@ function DataReviewComponent(props) {
           obj.approverComments = "";
           obj.partner_id = item.partner_id;
           obj.year_val = item.year_val;
+          obj.batch_upload_flag = item.batch_upload_flag
 
           item.months.map((each) => {
             if (each.month_val === "jan") {
@@ -344,7 +349,7 @@ function DataReviewComponent(props) {
     const lastmonthField = lastMonthName + year;
 
     if (params.data) {
-      console.log('data in cal', data);
+      console.log("data in cal", data);
       var filterCurrMonths = Object.keys(params.data)
         .filter((key) => [currmonthField].includes(key))
         .reduce((obj, key) => {
@@ -692,7 +697,10 @@ function DataReviewComponent(props) {
         {
           headerName: prevYearwithMonthLabel,
           // field: prevYearwithMonthValue,
-          field: radioValue == 1 ? prevYearwithMonthValue : prevYearwithMonthValue + "E",
+          field:
+            radioValue == 1
+              ? prevYearwithMonthValue
+              : prevYearwithMonthValue + "E",
           editable: false,
           singleClickEdit: true,
           minWidth: 100,
@@ -775,7 +783,10 @@ function DataReviewComponent(props) {
     : columnDefs.push({
         headerName: prevYearwithMonthLabel,
         // field: prevYearwithMonthValue,
-        field: radioValue == 1 ? prevYearwithMonthValue : prevYearwithMonthValue + "E",
+        field:
+          radioValue == 1
+            ? prevYearwithMonthValue
+            : prevYearwithMonthValue + "E",
         editable: false,
         sortable: true,
         filter: "agNumberColumnFilter",
@@ -885,9 +896,59 @@ function DataReviewComponent(props) {
     navigate(`/historicalData?role=${historicalRole}`);
   };
 
-  const handleSave = () => {
-    setRowData(rowData);
-  };
+  // const handleSave = () => {
+  //   setRowData(rowData);
+  // };
+
+  const handleSave = useCallback((data) => {
+    console.log("data", data);
+    let monthArray = [];
+    let itemYear = String(data[0].year_val).slice(-2);
+
+    allCalMonths.forEach((element) => {
+      const saveArray =
+        radioValue == 1
+          ? data[0][`${element + itemYear}`]
+          : data[0][`${element + itemYear}E`];
+      if (saveArray > 0) {
+        monthArray.push({
+          month: element.toLowerCase(),
+          sellout_local_currency: saveArray,
+          trans_type: "",
+        });
+      }
+    });
+
+    let reqData = [{
+      partner_id: data[0].partner_id,
+      partner_name: data[0].partner_account_name,
+      country_code: data[0].country_code,
+      year_val: data[0].year_val,
+      months: monthArray,
+      trans_currency_code: data[0].trans_currency_code,
+      created_by: data[0].created_by,
+      created_date: data[0].created_date,
+      created_by: userMail,
+      created_date: new Date().toUTCString(),
+      approval_status: "1",
+      editor_comment: data[0].editorComments,
+      comments: data[0].approverComments,
+      // batch_upload_flag: data[0].batch_upload_flag,
+      batch_upload_flag: data[0].batch_upload_flag
+    }];
+
+    console.log('reqData', JSON.stringify(reqData));
+
+    props
+      .updateSellOutData(reqData)
+      .then((data) => {
+        // setReviewData(data);
+        setShowSuccessModal(true);
+      })
+      .catch((e) => {
+        console.log("Error", e);
+      });
+  }, []);
 
   const excelStyles = useMemo(() => {
     return [
@@ -923,6 +984,17 @@ function DataReviewComponent(props) {
 
     gridRef.current.api.exportDataAsExcel(params);
   }, []);
+
+  const successmsg = {
+    headerLabel: "Success....",
+    variant: "success",
+    header: "Data has been saved successfully!!",
+    content: [],
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+  };
 
   // const onGridReady = useCallback(() => {
   //   fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
@@ -1047,12 +1119,15 @@ function DataReviewComponent(props) {
               <Col>
                 <Button
                   className="btn-upload save-header"
-                  onClick={() => {
-                    handleSave();
-                  }}
+                  onClick={(e) => handleSave(reviewData)}
                 >
                   Save
                 </Button>
+                <AlertModal
+                  show={showSuccessModal}
+                  handleClose={handleCloseSuccessModal}
+                  body={successmsg}
+                />
               </Col>
             </Row>
           </div>
@@ -1062,4 +1137,6 @@ function DataReviewComponent(props) {
   );
 }
 
-export default connect(null, { retrieveHistoricalData })(DataReviewComponent);
+export default connect(null, { retrieveHistoricalData, updateSellOutData })(
+  DataReviewComponent
+);

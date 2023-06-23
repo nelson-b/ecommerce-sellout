@@ -39,7 +39,7 @@ import approverData from "../../data/reviewApprover.json";
 import approverDataEuro from "../../data/reviewApproverEuro.json";
 
 import footerTotalReview from "./../editorDataReview/footerTotalReview";
-
+import AlertModal from "../modal/alertModel";
 import active from "../../images/active.png";
 
 import closed from "../../images/closed.png";
@@ -54,6 +54,7 @@ import { retrieveHistoricalData } from "../../actions/selloutaction";
 import {
   createData,
   updateSellOutReviewData,
+  updateSellOutData,
 } from "../../actions/dataInputAction";
 
 import { connect } from "react-redux";
@@ -74,12 +75,11 @@ function DataReviewApprover(props) {
   const location = useLocation();
 
   let historicalRole = new URLSearchParams(location.search).get("role");
-
   const [isYearColumnVisible, setIsYearColumnVisible] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
-
     { name: "Euro", value: "2" },
   ];
 
@@ -243,7 +243,7 @@ function DataReviewApprover(props) {
   let userMail = "";
 
   if (historicalRole == "approve_1" || historicalRole == "approver_2") {
-    userMail = "nelson@se.com";
+    userMail = "cnchn00073@example.com";
   }
 
   if (historicalRole == "superApproverUser") {
@@ -261,37 +261,22 @@ function DataReviewApprover(props) {
 
         data.map((item) => {
           let string_year_val = item.year_val.toString();
-
           let itemYear = string_year_val.slice(2, string_year_val.length);
-
           let obj = {};
-
           obj.zone_val = item.zone_val;
-
           obj.country_code = item.country_code;
-
           obj.partner_account_name = item.partner_account_name;
-
           obj.model_type = item.model_type;
-
           obj.status = item.status;
-
           obj.trans_currency_code = item.trans_currency_code;
           obj["trans_currency_codeE"] = "EUR";
-
           obj.SelloutCQ = "";
-
-          obj.systemComments = item.comments;
-
+          obj.systemComments = "";
           obj.editorComments = item.editor_comment;
-
           obj.YTD = "";
-
           obj.YTD_Growth = "";
-
           obj.ambition = "";
-
-          obj.approverComments = "";
+          obj.approverComments = item.comments;
           obj.partner_id = item.partner_id;
           obj.year_val = item.year_val;
           obj.created_by = item.created_by;
@@ -1334,7 +1319,7 @@ function DataReviewApprover(props) {
     {
       headerName: "Editor Comments",
 
-      field: "editor_comment",
+      field: "editorComments",
 
       editable: false,
 
@@ -1353,25 +1338,15 @@ function DataReviewApprover(props) {
 
     {
       headerName: "Approver Comments",
-
-      field: "comments",
-
+      field: "approverComments",
       editable: true,
-
       wrapHeaderText: true,
-
       minWidth: 140,
-
       aggFunc: "sum",
-
       sortable: true,
-
       suppressMenu: true,
-
       singleClickEdit: true,
-
       cellStyle: { "border-color": "#e2e2e2" },
-
       cellClassRules: { "cursor-pointer": () => true },
     }
   );
@@ -1444,33 +1419,46 @@ function DataReviewApprover(props) {
     setMessage(selectedRows?.length);
   };
 
-  const handleSave = useCallback((data) => {
-    console.log("data", data);
- 
-    let reqData = {
-      partner_id: data[0].partner_id,
-      partner_name: data[0].partner_account_name,
-      country_code: data[0].country_code,
-      year_val: data[0].year_val.toString(),
-      months: [{
-        month: "",
-        sellout_local_currency: "",
-        trans_type: "",
-      }],
-      trans_currency_code: data[0].trans_currency_code,
-      created_by: data[0].created_by,
-      created_date: data[0].created_date,
-      approval_status: data[0].approval_status.toString(),
-      editor_comment: data[0].editorComments,
-      comments: data[0].comments,
-      batch_upload_flag: data[0].batch_upload_flag.toString(),
-    };
+  const handleSave = useCallback((data, validateKey) => {
+    let monthArray = [];
+    let itemYear = String(data[0].year_val).slice(-2);
+
+    allCalMonths.forEach((element) => {
+      const saveArray =
+        radioValue == 1
+          ? data[0][`${element + itemYear}`]
+          : data[0][`${element + itemYear}E`];
+      if (saveArray > 0) {
+        monthArray.push({
+          month: element.toLowerCase(),
+          sellout_local_currency: saveArray,
+          trans_type: "",
+        });
+      }
+    });
+
+    let reqData = [
+      {
+        partner_id: data[0].partner_id,
+        partner_name: data[0].partner_account_name,
+        country_code: data[0].country_code,
+        year_val: data[0].year_val.toString(),
+        months: monthArray,
+        trans_currency_code: data[0].trans_currency_code,
+        created_by: data[0].created_by,
+        created_date: data[0].created_date,
+        approval_status: validateKey ? "2" : data[0].approval_status.toString(),
+        editor_comment: data[0].editorComments,
+        comments: data[0].approverComments,
+        batch_upload_flag: data[0].batch_upload_flag.toString(),
+      },
+    ];
 
     props
-      .updateSellOutReviewData(reqData)
+      .updateSellOutData(reqData)
       .then((data) => {
-        console.log('data in review data', data)
-        setReviewData(data);
+        // setReviewData(data);
+        setShowSuccessModal(true);
       })
       .catch((e) => {
         console.log("Error", e);
@@ -1500,9 +1488,9 @@ function DataReviewApprover(props) {
     );
   };
 
-  const handleConfirm = () => {
-    setRowData(rowData);
-  };
+  // const handleConfirm = () => {
+  //   setRowData(rowData);
+  // };
 
   const historicalDataNavigation = () => {
     navigate(`/historicalData?role=${historicalRole}`);
@@ -1570,6 +1558,17 @@ function DataReviewApprover(props) {
   const onCollapseAll = useCallback(() => {
     gridRef.current.api.collapseAll();
   }, []);
+
+  const successmsg = {
+    headerLabel: "Success....",
+    variant: "success",
+    header: 'Data has been saved successfully!!',
+    content: []
+  }
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+  };
 
   return (
     <>
@@ -1792,17 +1791,22 @@ function DataReviewApprover(props) {
               <Col xs="auto">
                 <Button
                   className="btn-upload edit-header"
-                  onClick={(e) => handleSave(reviewData)}
+                  onClick={(e) => handleSave(reviewData, 0)}
                 >
                   Save
                 </Button>
+                <AlertModal
+                  show={showSuccessModal}
+                  handleClose={handleCloseSuccessModal}
+                  body={successmsg}
+                />
               </Col>
 
               <Col>
                 <Button
                   className="btn-upload save-header"
                   onClick={() => {
-                    handleConfirm();
+                    handleSave(reviewData, 1);
                   }}
                 >
                   Validate
@@ -1820,4 +1824,5 @@ export default connect(null, {
   retrieveHistoricalData,
   updateSellOutReviewData,
   createData,
+  updateSellOutData,
 })(DataReviewApprover);
