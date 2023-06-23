@@ -261,12 +261,12 @@ function HistoricalData(props) {
           obj["trans_currency_codeE"] = 'EUR';
 
           obj.SelloutCQ = "";
-          obj.systemComments = item.comments;
+          obj.systemComments = "";
           obj.editorComments = item.editor_comment;
           obj.YTD = "";
           obj.YTD_Growth = "";
           obj.ambition = "";
-          obj.approverComments = "";
+          obj.approverComments = item.comments;
 
           item.months.map((each) => {
             if (each.month_val === "jan") {
