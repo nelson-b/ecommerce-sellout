@@ -502,6 +502,5 @@ function InputCalendar(props) {
 
 export default connect(null, {
   createInputCalenderData,
-
   retrieveInputCalenderData,
 })(InputCalendar);
