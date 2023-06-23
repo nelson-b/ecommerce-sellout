@@ -29,7 +29,7 @@ function Authenticate(props) {
       let body= {
         grant_type: "authorization_code",
         code: authCode,
-        redirect_uri: redirect_uri_input 
+        redirect_uri: redirect_uri_input
       };
 
       let api = getAccessTokenUrl;
