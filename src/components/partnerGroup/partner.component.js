@@ -409,14 +409,16 @@ function PartnerComponent(props) {
           active_flag: "False"
       };
       
-      let activationDate = getUIDateFormatToCompare(reqData.activation_date);
-      let deactivationDate = getUIDateFormatToCompare(reqData.deactivation_date);
+      if(reqData.deactivation_date){
+        let activationDate = getUIDateFormat(reqData.activation_date);
+        let deactivationDate = getUIDateFormat(reqData.deactivation_date);
 
-      if(new Date(activationDate).getTime() > new Date(deactivationDate).getTime()){
-        setErrorRet(['Deactivation date could not be lesser then activation date']);
-        setShowSuccessModal(false);
-        setShowErrorModal(true);
-        return false;
+        if(new Date(activationDate).getTime() > new Date(deactivationDate).getTime()){
+          setErrorRet(['Deactivation date could not be lesser then activation date']);
+          setShowSuccessModal(false);
+          setShowErrorModal(true);
+          return false;
+        }
       }
 
       //update api
