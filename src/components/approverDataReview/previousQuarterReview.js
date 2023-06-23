@@ -27,7 +27,7 @@ function PartnerQuarterApprover({ props }) {
   const gridRef = useRef();
   const navigate = useNavigate();
   const location = useLocation();
-  const quarterRole = new URLSearchParams(location.search).get("role");
+  let quarterRole = new URLSearchParams(location.search).get("role");
 
   const [rowData, setRowData] = useState("");
   const [radioValue, setRadioValue] = useState("1");
@@ -255,9 +255,7 @@ function PartnerQuarterApprover({ props }) {
 
   let userMail = "";
 
-  if (quarterRole == "approver") {
-    quarterRole = "approve_1";
-    // buRole = "approver_2";
+  if (quarterRole == "approve_1" || quarterRole == "approver_2") {
     userMail = "katie@se.com";
   }
   if (quarterRole == "superApproverUser") {
@@ -265,7 +263,7 @@ function PartnerQuarterApprover({ props }) {
     userMail = "abc@example.com";
   }
   let year = 2023;
-  let month = "june";
+  let month = "may";
 
   const onGridReady = useCallback((params) => {
     props

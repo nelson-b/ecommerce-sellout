@@ -443,7 +443,7 @@ function PartnerList(props) {
                 Sell Out Partner List
               </div>
             </Col>
-            {screenRole === "admin" || screenRole === "superApproverUser" ? (
+            {screenRole === "admin" ||screenRole === "superUser" || screenRole === "superApproverUser" ? (
               <Col xs="auto" className="partner-container">
                 <Button
                   size="md"

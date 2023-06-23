@@ -8,6 +8,12 @@ class BuSplitServices {
     );
   }
 
+  getPartnerName(partnerId, countyCode) {
+    return http.get(
+      `/ecomm-sellout-dev-lamda-createpartner/get-partner-by-partnerid-countrycode?partner_id=${partnerId}&country_code=${countyCode}`
+    );
+  }
+
   updateBuSplit(data) {
     return http.post(
       `/ecomm-sellout-dev-lamda-createpartner/upsert-sellout-bu-split`,data
