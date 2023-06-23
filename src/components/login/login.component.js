@@ -14,8 +14,12 @@ import { BiHome } from "react-icons/bi";
 import MyMenu from "../menu/menu.component";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { connect } from "react-redux";
+import { retrieveAuthendClientData } from "../../actions/userAction";
+import { redirectUrl, signInLink } from "../../config";
 
-function Login() {
+function Login(props) {
   const navigate = useNavigate();
   
   const initialState = {
@@ -37,7 +41,35 @@ function Login() {
   const [formData, setFormData] = useState(initialState);
 
   const onSubmit = (data) => {
-    loginNavigation(data);
+    //redirected to below Ping login URL
+    const headers = {
+      'Content-Type': 'application/json',
+      //'Accept': 'application/json'
+    }
+
+    let api = signInLink.concat(redirectUrl);
+    console.log('signInLink', api);
+    props.retrieveAuthendClientData()
+    .then((data)=>{
+      console.log(data)
+      if(data){
+        axios
+          .get(api, {
+            headers: headers
+          })
+          .then((response) => {
+              console.log(response);
+          })
+          .catch((error) => {
+              console.log(error);
+          });
+      }
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+
+    //loginNavigation(data);
   };
 
   const onError = (error) => {
@@ -77,7 +109,7 @@ function Login() {
                 <Card.Img className="logo" variant="top" src={logo} />
               </center>
               <Row>
-                <Form.Group className="mb-4">
+                {/* <Form.Group className="mb-4">
                   <Row className="justify-content-center">
                     <Form.Control
                       size="sm"
@@ -120,14 +152,20 @@ function Login() {
                       </center>
                     )}
                   </Row>
-                </Form.Group>
+                </Form.Group> */}
                 <Form.Group className="mb-4">
                   <Row className="justify-content-center mb-4">
-                    <Button
+                    {/* <Button
                       className="btn-login save-header btn-create"
                       type="submit"
                       >
                       Login
+                    </Button> */}
+                    <Button
+                      className="btn-login save-header btn-create"
+                      type="submit"
+                      >
+                      SSO Login
                     </Button>
                   </Row>
                 </Form.Group>
@@ -137,37 +175,7 @@ function Login() {
         </Form>
       </Row>
     </Container>
-
-    //   <div className="LoginApp">
-    //     <img width="50%" height="50%"
-    // alt="Schneider Electric"
-    // src={logo}
-    // />
-    // <Card>
-    //     <Form className="Loginform" onSubmit={handleSubmit}>
-    //     <h1>Sign in</h1>
-    //     <FormGroup>
-    //         <Input
-    //           type="email"
-    //           name="email"
-    //           id="exampleEmail"
-    //           placeholder="Username"
-    //         />
-    //     </FormGroup>
-    //     <FormGroup>
-    //         <Input
-    //           type="password"
-    //           name="password"
-    //           id="examplePassword"
-    //           placeholder="Password"
-    //         />
-    //     </FormGroup>
-
-    //     <input type="submit" value="Login" />
-    //   </Form>
-    //   </Card>
-    // </div>
   );
 }
 
-export default Login;
+export default connect(null, { retrieveAuthendClientData })(Login);

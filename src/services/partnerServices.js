@@ -1,4 +1,5 @@
 import http from "../http-common";
+import baseurl from "../http-baseUrl";
 
 class PartnerService {
   create(data) {
@@ -62,6 +63,13 @@ class PartnerService {
   update(data) {
     return http.put(
       `/ecomm-sellout-dev-lamda-createpartner/update-partner`,
+      data
+    );
+  }
+
+  updatePendingPartner(data) {
+    return baseurl.put(
+      `/create-partner/ecomm-sellout-dev-lamda-createpartner/update-partner`,
       data
     );
   }

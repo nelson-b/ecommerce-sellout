@@ -52,20 +52,20 @@ import {
     }
   }
 
-  export const updateSellOutData = (id, data) => async (dispatch) => {
-    try {
-      const res = await SellOutDataService.update(id, data);
+  // export const updateSellOutData = (id, data) => async (dispatch) => {
+  //   try {
+  //     const res = await SellOutDataService.update(id, data);
   
-      dispatch({
-        type: UPDATE_SELLOUTDATA,
-        payload: data,
-      });
+  //     dispatch({
+  //       type: UPDATE_SELLOUTDATA,
+  //       payload: data,
+  //     });
   
-      return Promise.resolve(res.data);
-    } catch (err) {
-      return Promise.reject(err);
-    }
-  };
+  //     return Promise.resolve(res.data);
+  //   } catch (err) {
+  //     return Promise.reject(err);
+  //   }
+  // };
 
   export const deleteSellOutData = (id) => async (dispatch) => {
     try {

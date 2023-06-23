@@ -24,6 +24,7 @@ import InputCalender from "./components/admin/inputCalender.js";
 //history
 import { history } from "./helper/history.js";
 import RouteGuard from "./RouteGuard.js"; 
+import Authenticate from "./components/login/authenticate.component.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -134,6 +135,7 @@ function App() {
           <Route path="/user/list" exact element={<UserList />} />
           <Route path="/user/Request" element={<UserRequestComponent />} />
           <Route path="/" element={<LoginComponent />} />
+          <Route path="/authenticate" element = {<Authenticate />} />
         </Routes>
       </Router>
     </div>
