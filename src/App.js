@@ -23,8 +23,9 @@ import UserRequestComponent from "./components/user/userRequest.js";
 import InputCalender from "./components/admin/inputCalender.js";
 //history
 import { history } from "./helper/history.js";
-import RouteGuard from "./RouteGuard.js"; 
+import RouteGuard from "./RouteGuard.js";
 import Authenticate from "./components/login/authenticate.component.js";
+import AuthLayout from "./AuthLayout.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,20 +41,21 @@ function App() {
     <div className="App">
       <Router history={history}>
         <Routes>
+        <Route element={<AuthLayout />}>
           <Route path="/dataInput" element={<DataInputComponent />} />
           <Route path="/dataReview" element={<DataReview />} />
           <Route path="/partner/list" element={<PartnerList />} />
           <Route path="/partner/requestList" element={<PartnerRequestList />} />
 
-          <RouteGuard
-                   exact
-                   path="/editor/home"
-                   element={<HomeComponent role={roles.editor} />}
-          />
-          {/* <Route
+          {/* <RouteGuard
+            exact
+            path="/editor/home"
+            component={<HomeComponent role={roles.editor} />}
+          /> */}
+          <Route
             path="/editor/home"
             element={<HomeComponent role={roles.editor} />}
-          /> */}
+          />
           <Route
             path="/approver_1/home"
             element={<HomeComponent role={roles.approve_1} />}
@@ -136,6 +138,7 @@ function App() {
           <Route path="/user/Request" element={<UserRequestComponent />} />
           <Route path="/" element={<LoginComponent />} />
           <Route path="/authenticate" element = {<Authenticate />} />
+          </Route>
         </Routes>
       </Router>
     </div>

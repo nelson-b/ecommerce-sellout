@@ -3,10 +3,11 @@ import React from 'react';
 import { Route, Navigate } from 'react-router-dom';
 
 const RouteGuard = ({ component: Component, ...rest }) => {
+    // const navigate = useNavigate();
     function hasJWT() {
         let flag = false;
         //check user has JWT token
-        Cookies.get('token') ? flag=true : flag=false
+        Cookies.get('token') ? flag = true : flag = false
         return flag
     }
     return (
