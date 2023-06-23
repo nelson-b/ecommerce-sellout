@@ -228,7 +228,7 @@ function HistoricalData(props) {
   let userMail = "chncn00071@example.com";
 
   if (screenRole == "editor") {
-    userMail = "chncn00071@example.com";
+    userMail = "nelson@se.com";
   }
 
   if (screenRole == "approve_1" || screenRole == "approver_2") {
@@ -400,23 +400,14 @@ function HistoricalData(props) {
 
       let total = columnDefs.push({
         headerName: monthHeader,
-
         field: radioValue == 1 ? monthField : monthField + "E",
-
         editable: false,
-
         singleClickEdit: true,
-
         minWidth: 100,
-
         aggFunc: "sum",
-
         sortable: true,
-
         suppressMenu: true,
-
         cellStyle: { "border-color": "#e2e2e2" },
-
         valueParser: (params) => Number(params.newValue),
       });
     }
@@ -817,12 +808,10 @@ function HistoricalData(props) {
             groupIncludeTotalFooter={true}
             groupIncludeFooter={true}
             // onGridReady={onGridReady}
-
             getRowStyle={getRowStyle}
             excelStyles={excelStyles}
             suppressMenuHide={true}
             groupDefaultExpanded={-1}
-
             // suppressExcelExport={true}
           ></AgGridReact>
 

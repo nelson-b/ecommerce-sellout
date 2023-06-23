@@ -27,7 +27,7 @@ function DataInputComponent(props) {
   const location = useLocation();
   const userRole = new URLSearchParams(location.search).get("role");
   const filterGlobalData = {
-    loginUser: "",
+    loginUser: "nelson@se.com",
     currentYear: String(new Date().getFullYear()),
     userRole: userRole
   };
@@ -137,7 +137,7 @@ function DataInputComponent(props) {
           trans_currency_code: rowNode.data.Currency_Of_Reporting,
           created_by: filterGlobalData.loginUser, //login user
           created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
-          approval_status: rowNode.data.approval_status,
+          approval_status: "1",
           editor_comment: rowNode.data.Comment,
           comments: 'waiting for approver',
           batch_upload_flag: rowNode.data.batch_upload_flag
