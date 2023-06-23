@@ -57,9 +57,6 @@ function PartnerComponent(props) {
   if (userRole == roles.editor) {
     userMail = "nelson@se.com";
   }
-  if (userRole == roles.approver) {
-    userMail = "katie@se.com";
-  }
   if (userRole == roles.superUser) {
     userMail = "marie@se.com";
   }
@@ -68,6 +65,12 @@ function PartnerComponent(props) {
   }
   if (userRole == roles.admin) {
     userMail = "jean@se.com";
+  }
+  if (userRole == roles.approve_1) {
+    userMail = "katie@se.com";
+  }
+  if (userRole == roles.approver_2) {
+    userMail = "katie@se.com";
   }
 
   const initialData = {
@@ -356,7 +359,7 @@ function PartnerComponent(props) {
         status:
           userRole == roles.admin ||
           userRole == roles.superUser ||
-          userRole == roles.supervisor_approv_1_2
+          userRole == roles.superApproverUser
             ? status.active
             : status.pending,
         batch_upload_flag: false,
@@ -1044,6 +1047,7 @@ function PartnerComponent(props) {
                             value: 100,
                             message: "Value should be between  1% to 100%",
                           },
+                          // while update this gives error pease chcek once will uncommit
                           // pattern: {
                           //   value: /^(.)$/i,
                           //   message: "Decimal or Negative values are not allowed",
