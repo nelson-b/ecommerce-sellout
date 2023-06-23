@@ -16,23 +16,24 @@ function Authenticate(props) {
   
   useEffect(()=>{
       //redirected to below Ping token URL
-      let authorizationHeaderInput = ('Basic ').concat(authCode);
+      let authorizationHeaderInput = ('Basic ').concat('ZUNvbW1lcmNlU2VsbG91dF81NTg5NV9VQVQ6S3BFMEhweUNycFBMM0pPN3dLOUtpV04yNmVCUlJDaFEzM2RPdkg3d2t2T01Jdm55VTBPRkVHWVN5ZTRLSER3WQ==');
       
       const headers = {
         'Content-Type': 'application/json',
         Authorization: authorizationHeaderInput
       };
       
-      let redirect_uri_input = authorizationRequestUrl.concat(authCode); 
+      let redirect_uri_input = authorizationRequestUrl.concat(authCode);
+      console.log('redirect_uri_input', redirect_uri_input);
       
       let body= {
         grant_type: "authorization_code",
         code: authCode,
-        redirect_uri: redirect_uri_input 
+        redirect_uri: redirect_uri_input
       };
 
       let api = getAccessTokenUrl;
-
+      console.log('getAccessTokenUrl', api);
       axios
         .post(api, body, {
           headers: headers
@@ -42,7 +43,7 @@ function Authenticate(props) {
           console.log(response);
           Cookies.set('token', response, { expires: 7 })
           //call api to get email id
-          getLoginUserEmailId(response)
+          // getLoginUserEmailId(response)
         })
         .catch((error) => {
           console.log(error);

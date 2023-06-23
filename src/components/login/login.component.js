@@ -49,10 +49,10 @@ function Login(props) {
 
     let api = signInLink.concat(redirectUrl);
     console.log('signInLink', api);
-    props.retrieveAuthendClientData()
-    .then((data)=>{
-      console.log(data)
-      if(data){
+    // props.retrieveAuthendClientData()
+    // .then((data)=>{
+    //   console.log(data)
+    //   if(data){
         axios
           .get(api, {
             headers: headers
@@ -63,11 +63,11 @@ function Login(props) {
           .catch((error) => {
               console.log(error);
           });
-      }
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+    //   }
+    // })
+    // .catch((e) => {
+    //   console.log(e);
+    // });
 
     //loginNavigation(data);
   };
