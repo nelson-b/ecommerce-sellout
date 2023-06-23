@@ -48,7 +48,7 @@ function Login(props) {
     }
 
     let api = signInLink.concat(redirectUrl);
-    
+    console.log('signInLink', api);
     props.retrieveAuthendClientData()
     .then((data)=>{
       console.log(data)
