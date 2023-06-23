@@ -46,7 +46,6 @@ function App() {
           <Route path="/dataReview" element={<DataReview />} />
           <Route path="/partner/list" element={<PartnerList />} />
           <Route path="/partner/requestList" element={<PartnerRequestList />} />
-
           {/* <RouteGuard
             exact
             path="/editor/home"
