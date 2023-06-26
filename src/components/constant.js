@@ -21,7 +21,8 @@ export const roles ={
   "admin": "admin",
   "approve_1": "approve_1",
   "approver_2": "approver_2",
-  "supervisor_approv_1_2": "supervisor_approv_1_2" // superApproverUser
+  "supervisor_approv_1_2": "supervisor_approv_1_2", // superApproverUser
+  "backup_editor": "backup_editor",
 };
 
 export const status = {

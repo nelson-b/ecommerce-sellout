@@ -7,7 +7,7 @@ import React, {
 } from "react";
 
 import { useNavigate } from "react-router-dom";
-
+import AlertModal from "../modal/alertModel";
 import { AgGridReact } from "ag-grid-react";
 
 import {
@@ -48,6 +48,7 @@ import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
 
 import { retrieveHistoricalData } from "../../actions/selloutaction";
+import { updateSellOutData } from "../../actions/dataInputAction";
 
 import { connect } from "react-redux";
 
@@ -55,15 +56,48 @@ function DataReviewComponent(props) {
   const gridRef = useRef();
 
   const navigate = useNavigate();
+
   const [rowData, setRowData] = useState();
+
   const [radioValue, setRadioValue] = useState("1");
+
   const location = useLocation();
+
   const historicalRole = new URLSearchParams(location.search).get("role");
+
   const [reviewData, setReviewData] = useState([]);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
+
     { name: "Euro", value: "2" },
+  ];
+
+  const monthsOfTheYear = [
+    "Jan",
+
+    "Feb",
+
+    "Mar",
+
+    "Apr",
+
+    "May",
+
+    "Jun",
+
+    "Jul",
+
+    "Aug",
+
+    "Sep",
+
+    "Oct",
+
+    "Nov",
+
+    "Dec",
   ];
 
   const columnDefs = [
@@ -198,101 +232,290 @@ function DataReviewComponent(props) {
     };
   }, []);
 
+  let userMail = "nelson@se.com";
+
   const year = new Date().getFullYear();
 
   const getQuarterReviewData = () => {
+    let yearCurrent = new Date().getFullYear();
+
     props
-      .retrieveHistoricalData("nelson@se.com", year, historicalRole)
+      .retrieveHistoricalData(userMail, year, historicalRole)
       .then((data) => {
         let final_arr = [];
 
         data.map((item) => {
           let string_year_val = item.year_val.toString();
+
           let itemYear = string_year_val.slice(2, string_year_val.length);
+
           let obj = {};
+
           obj.zone_val = item.zone_val;
+
           obj.country_code = item.country_code;
+
           obj.partner_account_name = item.partner_account_name;
+
           obj.model_type = item.model_type;
+
           obj.status = item.status;
+
           obj.trans_currency_code = item.trans_currency_code;
+
           obj["trans_currency_codeE"] = "EUR";
+
           obj.SelloutCQ = "";
-          obj.systemComments = item.comments;
+          obj.systemComments = "";
           obj.editorComments = item.editor_comment;
+
           obj.YTD = "";
+
           obj.YTD_Growth = "";
+
           obj.ambition = "";
+
           obj.approverComments = "";
+
           obj.partner_id = item.partner_id;
+
           obj.year_val = item.year_val;
+          obj.batch_upload_flag = item.batch_upload_flag
 
           item.months.map((each) => {
             if (each.month_val === "jan") {
               obj["Jan" + itemYear] = each.sellout_local_currency;
+
               obj["Jan" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "feb") {
               obj["Feb" + itemYear] = each.sellout_local_currency;
+
               obj["Feb" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "mar") {
               obj["Mar" + itemYear] = each.sellout_local_currency;
+
               obj["Mar" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "apr") {
               obj["Apr" + itemYear] = each.sellout_local_currency;
+
               obj["Apr" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "may") {
               obj["May" + itemYear] = each.sellout_local_currency;
+
               obj["May" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "jun") {
               obj["Jun" + itemYear] = each.sellout_local_currency;
+
               obj["Jun" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "jul") {
               obj["Jul" + itemYear] = each.sellout_local_currency;
+
               obj["Jul" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "aug") {
               obj["Aug" + itemYear] = each.sellout_local_currency;
+
               obj["Aug" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "sep") {
               obj["Sep" + itemYear] = each.sellout_local_currency;
+
               obj["Sep" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "oct") {
               obj["Oct" + itemYear] = each.sellout_local_currency;
+
               obj["Oct" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "nov") {
               obj["Nov" + itemYear] = each.sellout_local_currency;
+
               obj["Nov" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "dec") {
               obj["Dec" + itemYear] = each.sellout_local_currency;
+
               obj["Jan" + itemYear + "E"] = each.sellout;
             }
           });
 
           final_arr.push(obj);
-          setReviewData(final_arr);
+
+          let preYear = yearCurrent - 1;
+
+          getQuarterReviewDataPrevious(final_arr, preYear);
         });
       })
+
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const getQuarterReviewDataPrevious = (currentYearArray, preYear) => {
+    let final_arr_previous = [];
+
+    let combinedArray = [];
+
+    props
+
+      .retrieveHistoricalData("nelson@se.com", preYear, "editor")
+
+      .then((data) => {
+        data.map((item) => {
+          let string_year_val = item.year_val.toString();
+
+          let itemYear = string_year_val.slice(2, string_year_val.length);
+
+          let obj = {};
+
+          obj.zone_val = item.zone_val;
+
+          obj.country_code = item.country_code;
+
+          obj.partner_account_name = item.partner_account_name;
+
+          obj.model_type = item.model_type;
+
+          obj.status = item.status;
+
+          obj.trans_currency_code = item.trans_currency_code;
+
+          obj["trans_currency_codeE"] = "EUR";
+
+          obj.SelloutCQ = "";
+          obj.systemComments = "";
+          obj.editorComments = item.editor_comment;
+
+          obj.YTD = "";
+
+          obj.YTD_Growth = "";
+
+          obj.ambition = "";
+
+          obj.approverComments = "";
+
+          obj.partner_id = item.partner_id;
+
+          obj.year_val = item.year_val;
+          obj.batch_upload_flag = item.batch_upload_flag
+
+
+          item.months.map((each) => {
+            if (each.month_val === "jan") {
+              obj["Jan" + itemYear] = each.sellout_local_currency;
+
+              obj["Jan" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "feb") {
+              obj["Feb" + itemYear] = each.sellout_local_currency;
+
+              obj["Feb" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "mar") {
+              obj["Mar" + itemYear] = each.sellout_local_currency;
+
+              obj["Mar" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "apr") {
+              obj["Apr" + itemYear] = each.sellout_local_currency;
+
+              obj["Apr" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "may") {
+              obj["May" + itemYear] = each.sellout_local_currency;
+
+              obj["May" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "jun") {
+              obj["Jun" + itemYear] = each.sellout_local_currency;
+
+              obj["Jun" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "jul") {
+              obj["Jul" + itemYear] = each.sellout_local_currency;
+
+              obj["Jul" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "aug") {
+              obj["Aug" + itemYear] = each.sellout_local_currency;
+
+              obj["Aug" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "sep") {
+              obj["Sep" + itemYear] = each.sellout_local_currency;
+
+              obj["Sep" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "oct") {
+              obj["Oct" + itemYear] = each.sellout_local_currency;
+
+              obj["Oct" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "nov") {
+              obj["Nov" + itemYear] = each.sellout_local_currency;
+
+              obj["Nov" + itemYear + "E"] = each.sellout;
+            }
+
+            if (each.month_val === "dec") {
+              obj["Dec" + itemYear] = each.sellout_local_currency;
+
+              obj["Jan" + itemYear + "E"] = each.sellout;
+            }
+          });
+
+          final_arr_previous.push(obj);
+        });
+
+        if (final_arr_previous.length) {
+          currentYearArray.forEach((elementCurrent) => {
+            final_arr_previous.forEach((elementPrevious) => {
+              if (elementCurrent.partner_id == elementPrevious.partner_id) {
+                let uniObj = {};
+
+                uniObj = elementCurrent;
+
+                uniObj.PreviousYearData = elementPrevious;
+
+                combinedArray.push(uniObj);
+              }
+            });
+          });
+
+          setReviewData(combinedArray);
+        } else {
+          setReviewData(final_arr_previous);
+        }
+      })
+
       .catch((e) => {
         console.log(e);
       });
@@ -328,43 +551,57 @@ function DataReviewComponent(props) {
 
   const getCMLMValues = (params) => {
     const currentDate = new Date();
+
     const currentMonth = currentDate.getMonth();
 
     let date = new Date(
       currentDate.getFullYear(),
+
       currentDate.getMonth(),
 
       1
     );
 
     const currMonthName = allCalMonths[date.getMonth() - 1];
+
     const lastMonthName = allCalMonths[date.getMonth() - 2];
+
     const year = String(date.getFullYear()).slice(-2);
+
     const currmonthField = currMonthName + year;
+
     const lastmonthField = lastMonthName + year;
 
     if (params.data) {
-      console.log('data in cal', data);
       var filterCurrMonths = Object.keys(params.data)
+
         .filter((key) => [currmonthField].includes(key))
+
         .reduce((obj, key) => {
           obj[key] = params.data[key];
+
           return obj;
         }, {});
 
       var filterLastMonths = Object.keys(params.data)
+
         .filter((key) => [lastmonthField].includes(key))
+
         .reduce((obj, key) => {
           obj[key] = params.data[key];
+
           return obj;
         }, {});
 
       let ret = {
         CurrentMonth: filterCurrMonths[currmonthField],
+
         LastMonth: filterLastMonths[lastmonthField],
       };
+
       return ret;
     }
+
     return undefined;
   };
 
@@ -440,8 +677,56 @@ function DataReviewComponent(props) {
     return 0;
   };
 
+  const getCMLYValuesWithYear = (params) => {
+    const currentDate = new Date();
+
+    const currentMonth = currentDate.getMonth();
+
+    let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+    const currMonthName = allCalMonths[date.getMonth() - 1];
+
+    const curryear = String(date.getFullYear()).slice(-2);
+
+    const currmonthCYField = currMonthName + curryear;
+
+    const currmonthLYField = currMonthName + (curryear - 1);
+
+    if (params.data) {
+      var filterCurrMonthCY = Object.keys(params.data)
+
+        .filter((key) => [currmonthCYField].includes(key))
+
+        .reduce((obj, key) => {
+          obj[key] = params.data[key];
+
+          return obj;
+        }, {});
+
+      var filterCurrMonthLY = Object.keys(params.data.PreviousYearData)
+
+        .filter((key) => [currmonthLYField].includes(key))
+
+        .reduce((obj, key) => {
+          obj[key] = params.data.PreviousYearData[key];
+
+          return obj;
+        }, {});
+
+      let ret = {
+        CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
+
+        CurrentMonthLY: filterCurrMonthLY[currmonthLYField],
+      };
+
+      return ret;
+    }
+
+    return undefined;
+  };
+
   const setVarCMvsLYCalc = (params) => {
-    let resp = getCMLYValues(params);
+    let resp = getCMLYValuesWithYear(params);
 
     if (resp != undefined) {
       return resp.CurrentMonthCY - resp.CurrentMonthLY;
@@ -451,9 +736,7 @@ function DataReviewComponent(props) {
   };
 
   const setVarCMvsLYCalcPerc = (params) => {
-    let resp = getCMLYValues(params);
-
-    console.log("setVarCMvsLYCalcPerc", resp);
+    let resp = getCMLYValuesWithYear(params);
 
     if (resp != undefined) {
       if (resp.CurrentMonthLY != 0) {
@@ -470,6 +753,105 @@ function DataReviewComponent(props) {
   const getRowStyle = (params) => {
     if (params.node.aggData) {
       return { fontWeight: "bold" };
+    }
+  };
+
+  const getTotalYTDSellOutGrowthCalc = (params) => {
+    let year = new Date().getFullYear();
+
+    let selectedValueString = year.toString();
+
+    let choppedOffYear = selectedValueString.slice(
+      2,
+
+      selectedValueString.length
+    );
+
+    let customizedYearMonths = [];
+
+    monthsOfTheYear.forEach((element) => {
+      customizedYearMonths.push(element + choppedOffYear);
+    });
+
+    let tempTotal = 0;
+
+    customizedYearMonths.map((item) => {
+      if (item in params?.data) {
+        tempTotal += params?.data[item];
+      }
+    });
+
+    if (isNaN(tempTotal)) {
+      tempTotal = "";
+    }
+
+    if (tempTotal == 0) {
+      tempTotal = "";
+    }
+
+    return tempTotal;
+  };
+
+  const getValueFormatter = (params) => {
+    return params.value.toFixed(2) + "%";
+  };
+
+  const getYTDSelloutGrowthPercCalc = (params) => {
+    let previousYearData = params.data.PreviousYearData;
+
+    let currentYearData = params.data;
+
+    if (previousYearData) {
+      let percentageOfGrowth = 0;
+
+      let totalOfCurrentYearGrowth = getTotalYTDSellOutGrowthCalc(params);
+
+      let yearCustom = previousYearData.year_val;
+
+      let selectedValueString = yearCustom.toString();
+
+      let choppedOffYear = selectedValueString.slice(
+        2,
+        selectedValueString.length
+      );
+
+      let customizedYearMonths = [];
+
+      monthsOfTheYear.forEach((element) => {
+        customizedYearMonths.push(element + choppedOffYear);
+      });
+
+      let tempTotalPreviousYear = 0;
+
+      customizedYearMonths.map((item) => {
+        if (item in previousYearData) {
+          tempTotalPreviousYear += previousYearData[item];
+        }
+      });
+
+      if (tempTotalPreviousYear > 0 && totalOfCurrentYearGrowth > 0) {
+        let tempTotalDiff = totalOfCurrentYearGrowth - tempTotalPreviousYear;
+
+        let tempDivision = tempTotalDiff / tempTotalPreviousYear;
+
+        percentageOfGrowth = tempDivision * 100;
+
+        return percentageOfGrowth;
+      } else {
+        return percentageOfGrowth;
+      }
+    } else {
+      return 0;
+    }
+  };
+
+  const getPreviousYearMonthVal = (params, monthsYearPrev) => {
+    if (params.data.PreviousYearData) {
+      if (monthsYearPrev in params.data.PreviousYearData) {
+        return params.data.PreviousYearData[monthsYearPrev];
+      }
+    } else {
+      return "";
     }
   };
 
@@ -496,34 +878,50 @@ function DataReviewComponent(props) {
   };
 
   const currentDate = new Date();
+
   const currentMonth = currentDate.getMonth();
+
   const currentYear = String(currentDate.getFullYear()).slice(-2);
 
   for (let i = 5; i > 0; i--) {
     let date = new Date(
       currentDate.getFullYear(),
+
       currentDate.getMonth() - i,
+
       1
     );
 
     const monthName = allCalMonths[date.getMonth()];
+
     const year = String(date.getFullYear()).slice(-2);
+
     const monthHeader = monthName + " " + year;
+
     const monthField = monthName + year;
+
     const monthAEFlagField = monthName + " _E";
+
     if (currentYear !== year && currentMonth !== 0) continue;
+
     i == 1
       ? columnDefs.push(
           {
             headerName: monthHeader,
+
             field: radioValue == 1 ? monthField : monthField + "E",
-            // field: monthField,
             editable: false,
+
             singleClickEdit: true,
+
             minWidth: 100,
+
             aggFunc: "sum",
+
             sortable: true,
+
             suppressMenu: true,
+
             valueParser: (params) => Number(params.newValue),
 
             cellStyle: (params) => {
@@ -533,6 +931,7 @@ function DataReviewComponent(props) {
 
           {
             field: monthAEFlagField,
+
             hide: true,
           },
 
@@ -554,12 +953,12 @@ function DataReviewComponent(props) {
             suppressMenu: true,
 
             valueFormatter: (params) => {
-              return params.value + "%";
+              return getValueFormatter(params);
             },
 
-            // valueGetter: (params) => {
-            //   return getYTDSelloutGrowthPercCalc(params);
-            // },
+            valueGetter: (params) => {
+              return getYTDSelloutGrowthPercCalc(params);
+            },
 
             cellStyle: function (params) {
               if (params.value < "0") {
@@ -584,18 +983,29 @@ function DataReviewComponent(props) {
 
           {
             headerName: "var. CM vs LM (value)",
+
             field: "varVMvsLvalue",
+
             minWidth: 120,
+
             editable: false,
+
             singleClickEdit: true,
+
             filter: "agNumberColumnFilter",
+
             sortable: true,
+
             valueGetter: (param) => {
               return setVarCMvsLMCalc(param);
             },
+
             valueParser: (params) => Number(params.newValue),
+
             aggFunc: "sum",
+
             suppressMenu: true,
+
             cellStyle: function (params) {
               if (params.value >= 0) {
                 return {
@@ -659,16 +1069,24 @@ function DataReviewComponent(props) {
         )
       : columnDefs.push({
           headerName: monthHeader,
-          // field: monthField,
           field: radioValue == 1 ? monthField : monthField + "E",
+
           editable: false,
+
           sortable: true,
+
           filter: "agNumberColumnFilter",
+
           aggFunc: "sum",
+
           singleClickEdit: true,
+
           minWidth: 100,
+
           suppressMenu: true,
+
           valueParser: (params) => Number(params.newValue),
+
           cellStyle: (params) => {
             return setIsEstimated(params, monthField);
           },
@@ -677,29 +1095,50 @@ function DataReviewComponent(props) {
 
   const previousYear = new Date(
     currentDate.getFullYear(),
+
     currentDate.getMonth() - 12,
+
     1
   );
 
   const prevMonth = allCalMonths[previousYear.getMonth() - 1];
+
   const prevYear = String(previousYear.getFullYear()).slice(-2);
+
   const prevYearwithMonthValue = prevMonth + prevYear;
+
   const prevYearwithMonthLabel = prevMonth + " " + prevYear;
+
   const euroMonthAndYearAEFlagField = prevMonth + prevYear + "_E";
+
   if (previousYear !== prevYear && prevMonth !== 0);
+
   " "
     ? columnDefs.push(
         {
           headerName: prevYearwithMonthLabel,
-          // field: prevYearwithMonthValue,
-          field: radioValue == 1 ? prevYearwithMonthValue : prevYearwithMonthValue + "E",
+          field:
+            radioValue == 1
+              ? prevYearwithMonthValue
+              : prevYearwithMonthValue + "E",
           editable: false,
+
           singleClickEdit: true,
+
           minWidth: 100,
+
           aggFunc: "sum",
+
           sortable: true,
+
           suppressMenu: true,
+
           valueParser: (params) => Number(params.newValue),
+
+          valueGetter: (params) => {
+            return getPreviousYearMonthVal(params, prevYearwithMonthValue);
+          },
+
           cellStyle: (params) => {
             return setIsEstimated(params, prevYearwithMonthValue);
           },
@@ -707,22 +1146,33 @@ function DataReviewComponent(props) {
 
         {
           field: euroMonthAndYearAEFlagField,
+
           hide: true,
         },
 
         {
           headerName: "var. CM vs LY (value)",
+
           field: "PreVMValue",
+
           minWidth: 120,
+
           editable: false,
+
           singleClickEdit: true,
+
           aggFunc: "sum",
+
           filter: "agNumberColumnFilter",
+
           sortable: true,
+
           suppressMenu: true,
+
           valueGetter: (params) => {
             return setVarCMvsLYCalc(params);
           },
+
           cellStyle: function (params) {
             if (params.value >= 0) {
               return {
@@ -739,22 +1189,34 @@ function DataReviewComponent(props) {
             }
           },
         },
+
         {
           headerName: "var. CM vs LY (%)",
+
           field: "PreVMvsLM",
+
           minWidth: 120,
+
           editable: false,
+
           singleClickEdit: true,
+
           aggFunc: "sum",
+
           filter: "agNumberColumnFilter",
+
           sortable: true,
+
           suppressMenu: true,
+
           valueGetter: (params) => {
             return setVarCMvsLYCalcPerc(params);
           },
+
           valueFormatter: (params) => {
             return params.value + "%";
           },
+
           cellStyle: function (params) {
             if (params.value >= 0) {
               return {
@@ -774,16 +1236,28 @@ function DataReviewComponent(props) {
       )
     : columnDefs.push({
         headerName: prevYearwithMonthLabel,
-        // field: prevYearwithMonthValue,
-        field: radioValue == 1 ? prevYearwithMonthValue : prevYearwithMonthValue + "E",
+        field:
+          radioValue == 1
+            ? prevYearwithMonthValue
+            : prevYearwithMonthValue + "E",
         editable: false,
+
         sortable: true,
+
         filter: "agNumberColumnFilter",
+
         aggFunc: "sum",
+
         suppressMenu: true,
+
         singleClickEdit: true,
+
         minWidth: 100,
+
         valueParser: (params) => Number(params.newValue),
+        valueGetter: (params) => {
+          return getPreviousYearMonthVal(params, prevYearwithMonthValue);
+        },
         cellStyle: (params) => {
           return setIsEstimated(params, prevYearwithMonthValue);
         },
@@ -885,30 +1359,83 @@ function DataReviewComponent(props) {
     navigate(`/historicalData?role=${historicalRole}`);
   };
 
-  const handleSave = () => {
-    setRowData(rowData);
-  };
+  const handleSave = useCallback((data) => {
+    console.log("data", data);
+    let monthArray = [];
+    let itemYear = String(data[0].year_val).slice(-2);
+
+    allCalMonths.forEach((element) => {
+      const saveArray =
+        radioValue == 1
+          ? data[0][`${element + itemYear}`]
+          : data[0][`${element + itemYear}E`];
+      if (saveArray > 0) {
+        monthArray.push({
+          month: element.toLowerCase(),
+          sellout_local_currency: saveArray,
+          trans_type: "",
+        });
+      }
+    });
+
+    let reqData = [{
+      partner_id: data[0].partner_id,
+      partner_name: data[0].partner_account_name,
+      country_code: data[0].country_code,
+      year_val: data[0].year_val,
+      months: monthArray,
+      trans_currency_code: data[0].trans_currency_code,
+      created_by: data[0].created_by,
+      created_date: data[0].created_date,
+      created_by: userMail,
+      created_date: new Date().toUTCString(),
+      approval_status: "1",
+      editor_comment: data[0].editorComments,
+      comments: data[0].approverComments,
+      batch_upload_flag: data[0].batch_upload_flag
+    }];
+
+    console.log('reqData', JSON.stringify(reqData));
+
+    props
+      .updateSellOutData(reqData)
+      .then((data) => {
+        // setReviewData(data);
+        setShowSuccessModal(true);
+      })
+      .catch((e) => {
+        console.log("Error", e);
+      });
+  }, []);
 
   const excelStyles = useMemo(() => {
     return [
       {
         id: "header",
+
         alignment: {
           vertical: "Center",
         },
+
         font: {
           bold: true,
+
           color: "#ffffff",
         },
+
         interior: {
           color: "#009530",
+
           pattern: "Solid",
         },
       },
+
       {
         id: "greenBackground",
+
         interior: {
           color: "#b5e6b5",
+
           pattern: "Solid",
         },
       },
@@ -923,6 +1450,17 @@ function DataReviewComponent(props) {
 
     gridRef.current.api.exportDataAsExcel(params);
   }, []);
+
+  const successmsg = {
+    headerLabel: "Success....",
+    variant: "success",
+    header: "Data has been saved successfully!!",
+    content: [],
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+  };
 
   // const onGridReady = useCallback(() => {
   //   fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
@@ -1047,12 +1585,15 @@ function DataReviewComponent(props) {
               <Col>
                 <Button
                   className="btn-upload save-header"
-                  onClick={() => {
-                    handleSave();
-                  }}
+                  onClick={(e) => handleSave(reviewData)}
                 >
                   Save
                 </Button>
+                <AlertModal
+                  show={showSuccessModal}
+                  handleClose={handleCloseSuccessModal}
+                  body={successmsg}
+                />
               </Col>
             </Row>
           </div>
@@ -1062,4 +1603,6 @@ function DataReviewComponent(props) {
   );
 }
 
-export default connect(null, { retrieveHistoricalData })(DataReviewComponent);
+export default connect(null, { retrieveHistoricalData, updateSellOutData })(
+  DataReviewComponent
+);

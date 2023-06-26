@@ -1,50 +1,76 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Button, Col, Form, Row, Container, Breadcrumb, Card, Tooltip, OverlayTrigger } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Form,
+  Row,
+  Container,
+  Breadcrumb,
+  Card,
+  Tooltip,
+  OverlayTrigger,
+} from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import MyMenu from "../menu/menu.component.js";
 import { BiHelpCircle } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import Home from "../../images/home-icon.png";
 import "./partner.component.css";
-import { 
-  createPartnerData, 
-  retrieveAllPartnerData, 
+import {
+  createPartnerData,
+  retrieveAllPartnerData,
   retrievePartnerByRole,
   updatePartner,
   retrieveUserRoleConfigByPartnerId,
- } from "../../actions/partneraction.js";
-import { retrieveAllCountryData, retrieveAllStaticData } from "../../actions/staticDataAction.js";
-import { retrieveAllUserListData, createUserPartnerRoleConfig } from "../../actions/userAction.js";
+} from "../../actions/partneraction.js";
+import {
+  retrieveAllCountryData,
+  retrieveAllStaticData,
+} from "../../actions/staticDataAction.js";
+import {
+  retrieveAllUserListData,
+  createUserPartnerRoleConfig,
+} from "../../actions/userAction.js";
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
 import { roles, status } from "../constant.js";
-import { getAPIDateFormatWithTime, getUIDateFormat, getUIDateFormatToCompare } from "../../helper/helper.js";
+import {
+  getAPIDateFormatWithTime,
+  getUIDateFormat,
+  getUIDateFormatToCompare,
+} from "../../helper/helper.js";
 
 function PartnerComponent(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const partnerId = new URLSearchParams(location.search).get("id");
   const userRole = new URLSearchParams(location.search).get("role");
-  const isHigherLevelUser = (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser);
-  console.log('isHigherLevelUser',isHigherLevelUser);
-  
-  let userMail = '';
+  const isHigherLevelUser =
+    userRole === roles.admin ||
+    userRole === roles.superUser ||
+    userRole === roles.superApproverUser;
+  console.log("isHigherLevelUser", isHigherLevelUser);
 
-  if(userRole == roles.editor) {
-    userMail = 'nelson@se.com'
+  let userMail = "";
+
+  if (userRole == roles.editor) {
+    userMail = "nelson@se.com";
   }
-  if(userRole == roles.approver) {
-    userMail = 'katie@se.com'
-  } 
-  if(userRole == roles.superUser) {
-    userMail = 'marie@se.com'
+  if (userRole == roles.superUser) {
+    userMail = "marie@se.com";
   }
-  if(userRole == roles.superApproverUser) {
-    userMail = 'thomas@se.com'
+  if (userRole == roles.superApproverUser) {
+    userMail = "thomas@se.com";
   }
-  if(userRole == roles.admin) {
-    userMail = 'jean@se.com'
+  if (userRole == roles.admin) {
+    userMail = "jean@se.com";
+  }
+  if (userRole == roles.approve_1) {
+    userMail = "katie@se.com";
+  }
+  if (userRole == roles.approver_2) {
+    userMail = "katie@se.com";
   }
 
   const initialData = {
@@ -66,8 +92,8 @@ function PartnerComponent(props) {
     partner_url: "",
     e2_playbook_type: "",
     bopp_type: "",
-    gtm_type: ""
-  }
+    gtm_type: "",
+  };
 
   const [partnerData, setPartnerData] = useState(initialData);
   const [countryData, setCountryData] = useState([]);
@@ -85,82 +111,87 @@ function PartnerComponent(props) {
     reValidateMode: "onSubmit",
     reValidateMode: "onChange",
   });
-  
+
   useEffect(() => {
-    console.log('partnerId', partnerId);
-    console.log('props.module', props.module);
-    
+    console.log("partnerId", partnerId);
+    console.log("props.module", props.module);
+
     //country api
-    props.retrieveAllCountryData() //i/p for test purpose
-    .then((data) => {
-      console.log('retrieveAllCountryData', data);
-      setCountryData(data.data);
-    })
-    .catch((e) => {
-      console.log('retrieveAllCountryData', e);
-    });
-
-    //all static data
-    props.retrieveAllStaticData()
-    .then((data) => {
-      console.log('retrieveAllStaticData', data);
-      setStaticData(data.data);
-    })
-    .catch((e) => {
-      console.log('retrieveAllStaticData', e);
-    });
-
-    //all static data
-    props.retrieveAllUserListData()
-    .then((data) => {
-      console.log('retrieveAllUserListData', data);
-          setUsrRoleData(data);
+    props
+      .retrieveAllCountryData() //i/p for test purpose
+      .then((data) => {
+        console.log("retrieveAllCountryData", data);
+        setCountryData(data.data);
       })
       .catch((e) => {
-        console.log('retrieveAllUserListData', e);
-    });
+        console.log("retrieveAllCountryData", e);
+      });
 
-    if(props.module === 'Update'){
-      if(partnerId){        
+    //all static data
+    props
+      .retrieveAllStaticData()
+      .then((data) => {
+        console.log("retrieveAllStaticData", data);
+        setStaticData(data.data);
+      })
+      .catch((e) => {
+        console.log("retrieveAllStaticData", e);
+      });
+
+    //all static data
+    props
+      .retrieveAllUserListData()
+      .then((data) => {
+        console.log("retrieveAllUserListData", data);
+        setUsrRoleData(data);
+      })
+      .catch((e) => {
+        console.log("retrieveAllUserListData", e);
+      });
+
+    if (props.module === "Update") {
+      if (partnerId) {
         //call get by id api
         props
-        .retrievePartnerByRole(partnerId, userMail) //i/p for test purpose
-        .then((data) => {
-          console.log("retrieveAllPartnerData", data);
-          const respData = data.data.filter(data => data.partner_id === partnerId)[0];
-          console.log("filter by id", respData);
-          setPartnerData(respData);
-          //prefill form
-          setFormData(respData);
-          console.log('partnerData', partnerData);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+          .retrievePartnerByRole(partnerId, userMail) //i/p for test purpose
+          .then((data) => {
+            console.log("retrieveAllPartnerData", data);
+            const respData = data.data.filter(
+              (data) => data.partner_id === partnerId
+            )[0];
+            console.log("filter by id", respData);
+            setPartnerData(respData);
+            //prefill form
+            setFormData(respData);
+            console.log("partnerData", partnerData);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
 
         console.log("retrieveUserRoleConfigByPartnerId calling...", partnerId);
         //call get user role config
-        props.retrieveUserRoleConfigByPartnerId(partnerId)
-        .then((data) => {
+        props.retrieveUserRoleConfigByPartnerId(partnerId).then((data) => {
           console.log("retrieveUserRoleConfigByPartnerId response", data);
-          const respData = data.filter(data => data.PARTNER_ID === partnerId)[0];
+          const respData = data.filter(
+            (data) => data.PARTNER_ID === partnerId
+          )[0];
           console.log("retrieveUserRoleConfigByPartnerId", data);
-          if(respData.EDITOR){
-            setValue('editor', respData.EDITOR);
+          if (respData?.EDITOR) {
+            setValue("editor", respData.EDITOR);
           }
-          if(respData.BACKUP_EDITOR){
-            setValue('backupEditor', respData.BACKUP_EDITOR);
+          if (respData?.BACKUP_EDITOR) {
+            setValue("backupEditor", respData.BACKUP_EDITOR);
           }
-          if(respData.APPROVE_1){
-            setValue('approver1', respData.APPROVE_1);
+          if (respData?.APPROVE_1) {
+            setValue("approver1", respData.APPROVE_1);
           }
-          if(respData.APPROVER_2){
-            setValue('approver2', respData.APPROVER_2);
+          if (respData?.APPROVER_2) {
+            setValue("approver2", respData.APPROVER_2);
           }
         });
-      }
-      else{
-        setErrorRet(['Partner id missing in url!!']);
+      } else {
+        setErrorRet(["Partner id missing in url!!"]);
         setShowErrorModal(true);
         setShowSuccessModal(false);
       }
@@ -169,67 +200,67 @@ function PartnerComponent(props) {
 
   const setFormData = (data) => {
     // trigger();
-    if(data.partner_id){
-      setValue('partner_id', data.partner_id);
+    if (data.partner_id) {
+      setValue("partner_id", data.partner_id);
     }
-    if(data.partner_account_name){
-      setValue('partner_account_name', data.partner_account_name);
+    if (data.partner_account_name) {
+      setValue("partner_account_name", data.partner_account_name);
     }
-    if(data.platform_name){
-      setValue('platform_name', data.platform_name);
+    if (data.platform_name) {
+      setValue("platform_name", data.platform_name);
     }
-    if(data.reseller_name){
-      setValue('reseller_name', data.reseller_name);
+    if (data.reseller_name) {
+      setValue("reseller_name", data.reseller_name);
     }
-    if(data.partner_sellout_margin){
-      setValue('partner_sellout_margin', data.partner_sellout_margin);
+    if (data.partner_sellout_margin) {
+      setValue("partner_sellout_margin", data.partner_sellout_margin);
     }
-    if(data.activation_date){
-      setValue('activation_date', getUIDateFormat(data.activation_date));
+    if (data.activation_date) {
+      setValue("activation_date", getUIDateFormat(data.activation_date));
     }
-    if(data.country_code){
-      setValue('country_code', data.country_code);
+    if (data.country_code) {
+      setValue("country_code", data.country_code);
     }
-    if(data.partner_group){
-      setValue('partner_group', data.partner_group);
+    if (data.partner_group) {
+      setValue("partner_group", data.partner_group);
     }
-    if(data.se_entity){
-      setValue('se_entity', data.se_entity);
+    if (data.se_entity) {
+      setValue("se_entity", data.se_entity);
     }
-    if(data.business_type){
-      setValue('business_type', data.business_type);
+    if (data.business_type) {
+      setValue("business_type", data.business_type);
     }
-    if(data.model_type){
-      setValue('model_type', data.model_type);
+    if (data.model_type) {
+      setValue("model_type", data.model_type);
     }
-    if(data.partner_url){
-      setValue('partner_url', data.partner_url);
+    if (data.partner_url) {
+      setValue("partner_url", data.partner_url);
     }
-    if(data.trans_currency_code){
-      setValue('trans_currency_code', data.trans_currency_code);
+    if (data.trans_currency_code) {
+      setValue("trans_currency_code", data.trans_currency_code);
     }
-    if(data.data_collection_type){
-      setValue('data_collection_type', data.data_collection_type);
+    if (data.data_collection_type) {
+      setValue("data_collection_type", data.data_collection_type);
     }
-    if(data.e2_playbook_type){
-      setValue('e2_playbook_type', data.e2_playbook_type);
+    if (data.e2_playbook_type) {
+      setValue("e2_playbook_type", data.e2_playbook_type);
     }
-    if(data.bopp_type){
-      setValue('bopp_type', data.bopp_type);
+    if (data.bopp_type) {
+      setValue("bopp_type", data.bopp_type);
     }
-    if(data.gtm_type){
-      setValue('gtm_type', data.gtm_type);
+    if (data.gtm_type) {
+      setValue("gtm_type", data.gtm_type);
     }
-    if(data.status){
-      setValue('partner_status', data.status);
+    if (data.status) {
+      setValue("partner_status", data.status);
     }
-    if(data.deactivation_date){
-      setValue('deactivation_date', getUIDateFormat(data.deactivation_date))
+    if (data.deactivation_date) {
+      setValue("deactivation_date", getUIDateFormat(data.deactivation_date));
     }
-    if(data.deactivation_reason){
-      setValue('deactivation_reason', data.deactivation_reason)
+    if (data.deactivation_reason) {
+      setValue("deactivation_reason", data.deactivation_reason);
     }
-  }
+  };
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const handleCloseSuccessModal = () => {
@@ -239,7 +270,7 @@ function PartnerComponent(props) {
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
-    header: "Data has been saved successfully!!",
+    header: "Partner has been upadted successfully!",
     content: [],
   };
 
@@ -254,197 +285,241 @@ function PartnerComponent(props) {
     headerLabel: "Error....",
     variant: "danger",
     header: "There are errors while processing.",
-    content: errorRet
-  }
+    content: errorRet,
+  };
 
-  const saveUserPartnerConfigDetails = (partner_id, reqData, isCreateScreen) => {
-      let reqUserPartConfData = {
-        partner_id: partner_id,
-        role_id: userRole,
-        country_code: reqData.country_code,
-        email_id: userMail, //login user email
-        created_by: userMail, //login user email
+  const saveUserPartnerConfigDetails = (
+    partner_id,
+    reqData,
+    isCreateScreen
+  ) => {
+    let reqUserPartConfData = {
+      partner_id: partner_id,
+      role_id: userRole,
+      country_code: reqData.country_code,
+      email_id: userMail, //login user email
+      created_by: userMail, //login user email
+      created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+      updated_by: userMail, //login user email
+      editor: reqData.editor,
+      backup_editor: reqData.backupEditor,
+      approve_1: reqData.approver1,
+      approver_2: reqData.approver2,
+      supervisor: "", //super usr
+      supervisor_approv_1_2: "", //super approver usr
+    };
+
+    console.log(
+      "createUserPartnerRoleConfig calling...",
+      JSON.stringify(reqUserPartConfData)
+    );
+    //create user role config
+    props
+      .createUserPartnerRoleConfig(reqUserPartConfData)
+      .then((data) => {
+        console.log("createUserPartnerRoleConfig", data);
+        setShowSuccessModal(true);
+        setShowErrorModal(false);
+        if (isCreateScreen) {
+          document.getElementById("partner-form").reset();
+        }
+      })
+      .catch((e) => {
+        setShowSuccessModal(false);
+        setErrorRet([]);
+        setShowErrorModal(true);
+        console.log("Error", e);
+        return;
+      });
+  };
+
+  const onSubmit = (data) => {
+    let formData = data;
+    console.log("form data", data);
+
+    if (data.partner_id === "" || data.partner_id == undefined) {
+      console.log("Calling create api");
+      let reqData = {
+        platform_name: data.platform_name,
+        country_code: data.country_code,
+        partner_group: data.partner_group,
+        se_entity: data.se_entity,
+        reseller_name: data.reseller_name,
+        bopp_type: data.bopp_type,
+        activation_date: data.activation_date,
+        business_type: data.business_type,
+        model_type: data.model_type,
+        trans_currency_code: data.trans_currency_code,
+        data_collection_type: data.data_collection_type,
+        partner_sellout_margin: data.partner_sellout_margin,
+        partner_url: data.partner_url,
+        e2_playbook_type: data.e2_playbook_type,
+        gtm_type: data.gtm_type,
+        created_by: userMail,
         created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
-        updated_by: userMail, //login user email
-        editor: reqData.editor,
-        backup_editor: reqData.backupEditor,
-        approve_1: reqData.approver1,
-        approver_2: reqData.approver2,
-        supervisor: "", //super usr
-        supervisor_approv_1_2: "" //super approver usr
+        modified_by: userMail,
+        last_modified_date: new Date().toUTCString(),
+        status:
+          userRole == roles.admin ||
+          userRole == roles.superUser ||
+          userRole == roles.superApproverUser
+            ? status.active
+            : status.pending,
+        batch_upload_flag: false,
+        active_flag: "false",
       };
-      
-      console.log('createUserPartnerRoleConfig calling...', reqUserPartConfData);
-      //create user role config
-      props.createUserPartnerRoleConfig(reqUserPartConfData)
+
+      //Create api
+      props
+        .retrieveAllPartnerData() //i/p for test purpose
         .then((data) => {
-          console.log('createUserPartnerRoleConfig', data);
-          setShowSuccessModal(true);
-          setShowErrorModal(false);
-          if(isCreateScreen) {
-            document.getElementById("partner-form").reset();
+          console.log(
+            "retrieveAllPartnerData",
+            data,
+            reqData.partner_account_name
+          );
+          const respData = data.data.filter(
+            (data) => data.platform_name === reqData.platform_name
+          );
+          console.log("is data already exist", respData);
+          let userAlreadyExist = false;
+          if (respData.length > 0) {
+            userAlreadyExist = true;
+            setShowSuccessModal(false);
+            setShowErrorModal(true);
+            setErrorRet([
+              "Partner name already exist, please create new one !!",
+            ]);
+          }
+
+          if (!userAlreadyExist) {
+            props
+              .createPartnerData(reqData)
+              .then((data) => {
+                console.log("createPartnerData", data);
+                //create user partner role config for higher level user
+                if (
+                  userRole === roles.superUser ||
+                  userRole === roles.superApproverUser ||
+                  userRole === roles.admin
+                ) {
+                  //call get by id api
+                  props
+                    .retrieveAllPartnerData() //i/p for test purpose
+                    .then((data) => {
+                      console.log(
+                        "retrieveAllPartnerData",
+                        data,
+                        reqData.partner_account_name
+                      );
+                      const respData = data.data.filter(
+                        (data) => data.platform_name === reqData.platform_name
+                      )[0];
+                      console.log("filter by id", respData);
+                      saveUserPartnerConfigDetails(
+                        respData.partner_id,
+                        formData,
+                        true
+                      );
+                    })
+                    .catch((e) => {
+                      console.log(e);
+                    });
+                } else {
+                  setShowSuccessModal(true);
+                  setShowErrorModal(false);
+                  document.getElementById("partner-form").reset();
+                }
+              })
+              .catch((e) => {
+                setShowSuccessModal(false);
+                setErrorRet([]);
+                setShowErrorModal(true);
+                console.log("Error", e);
+              });
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    } else {
+      console.log("Calling update api");
+
+      let reqData = {
+        partner_id: data.partner_id,
+        platform_name: data.platform_name, //
+        country_code: data.country_code,
+        partner_group: data.partner_group,
+        se_entity: data.se_entity,
+        reseller_name: data.reseller_name,
+        partner_account_name: data.partner_account_name, //
+        activation_date: data.activation_date,
+        deactivation_date: data.deactivation_date,
+        deactivation_reason: data.deactivation_reason,
+        business_type: data.business_type,
+        model_type: data.model_type,
+        trans_currency_code: data.trans_currency_code,
+        data_collection_type: data.data_collection_type,
+        partner_sellout_margin: data.partner_sellout_margin,
+        partner_url: data.partner_url,
+        e2_playbook_type: data.e2_playbook_type,
+        bopp_type: data.bopp_type,
+        gtm_type: data.gtm_type,
+        created_by: userMail,
+        created_date: new Date().toUTCString(),
+        modified_by: userMail,
+        last_modified_date: new Date().toUTCString(),
+        status: data.partner_status,
+        batch_upload_flag: false,
+        active_flag: "False",
+      };
+
+      let activationDate = getUIDateFormatToCompare(reqData.activation_date);
+      let deactivationDate = "";
+      if (reqData?.deactivation_date?.length) {
+        deactivationDate = getUIDateFormatToCompare(reqData.deactivation_date);
+      }
+
+      if (
+        new Date(activationDate).getTime() >
+        new Date(deactivationDate).getTime()
+      ) {
+        setErrorRet([
+          "Deactivation date could not be lesser then activation date",
+        ]);
+        setShowSuccessModal(false);
+        setShowErrorModal(true);
+        return false;
+      }
+
+      //update api
+
+      console.log("update", reqData);
+
+      props
+        .updatePartner(reqData)
+        .then((data) => {
+          console.log("data", data);
+          //update user partner role config for higher level user
+          if (
+            userRole === roles.superUser ||
+            userRole === roles.superApproverUser ||
+            userRole === roles.admin
+          ) {
+            saveUserPartnerConfigDetails(partnerId, formData, false);
+          } else {
+            setShowSuccessModal(true);
+            setShowErrorModal(false);
           }
         })
         .catch((e) => {
           setShowSuccessModal(false);
           setErrorRet([]);
           setShowErrorModal(true);
-          console.log('Error', e);
-          return;
-      });
-  }
-
-  const onSubmit = (data) => {
-    let formData = data;
-    console.log("form data", data);
-    
-    if(data.partner_id==='' || data.partner_id==undefined){
-      console.log('Calling create api');
-        let reqData = {
-          platform_name: data.platform_name,
-          country_code: data.country_code,
-          partner_group: data.partner_group,
-          se_entity: data.se_entity,
-          reseller_name: data.reseller_name,
-          bopp_type: data.bopp_type,
-          activation_date: data.activation_date,
-          business_type: data.business_type,
-          model_type: data.model_type,
-          trans_currency_code: data.trans_currency_code,
-          data_collection_type: data.data_collection_type,
-          partner_sellout_margin: data.partner_sellout_margin,
-          partner_url: data.partner_url,
-          e2_playbook_type: data.e2_playbook_type,
-          gtm_type: data.gtm_type,
-          created_by: userMail,
-          created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
-          modified_by: userMail,
-          last_modified_date: new Date().toUTCString(),
-          status: 
-          (userRole == roles.admin || userRole == roles.superUser || userRole == roles.supervisor_approv_1_2) ? status.active : status.pending,
-          batch_upload_flag: false,
-          active_flag: "false"
-        };
-        
-        //Create api
-        props
-        .retrieveAllPartnerData() //i/p for test purpose
-        .then((data) => {
-          console.log("retrieveAllPartnerData", data, reqData.partner_account_name);
-          const respData = data.data.filter(data => data.platform_name === reqData.platform_name);
-          console.log('is data already exist', respData);
-          let userAlreadyExist = false;
-          if(respData.length > 0){
-            userAlreadyExist = true;
-            setShowSuccessModal(false);
-            setShowErrorModal(true);
-            setErrorRet(['Partner name already exist, please create new one !!']);
-          }
-
-          if(!userAlreadyExist){
-            props.createPartnerData(reqData)
-            .then((data) => {
-              console.log('createPartnerData', data);
-              //create user partner role config for higher level user
-              if(userRole === roles.superUser || userRole === roles.superApproverUser || userRole === roles.admin){
-                //call get by id api
-                props
-                .retrieveAllPartnerData() //i/p for test purpose
-                .then((data) => {
-                  console.log("retrieveAllPartnerData", data, reqData.partner_account_name);
-                  const respData = data.data.filter(data => data.platform_name === reqData.platform_name)[0];
-                  console.log("filter by id", respData);
-                  saveUserPartnerConfigDetails(respData.partner_id, formData, true);
-                })
-                .catch((e) => {
-                  console.log(e);
-                });
-              }
-              else{
-                setShowSuccessModal(true);
-                setShowErrorModal(false);
-                document.getElementById("partner-form").reset();
-              }
-            })
-            .catch((e) => {
-              setShowSuccessModal(false);
-              setErrorRet([]);
-              setShowErrorModal(true);
-              console.log('Error', e);
-            });
-          }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-    } else {
-        console.log('Calling update api');
-        
-        let reqData = {
-          partner_id: data.partner_id,
-          platform_name: data.platform_name,//
-          country_code: data.country_code,
-          partner_group: data.partner_group,
-          se_entity: data.se_entity,
-          reseller_name: data.reseller_name,
-          partner_account_name: data.partner_account_name,//
-          activation_date: data.activation_date,
-          deactivation_date: data.deactivation_date,
-          deactivation_reason: data.deactivation_reason,
-          business_type: data.business_type,
-          model_type: data.model_type,
-          trans_currency_code: data.trans_currency_code,
-          data_collection_type: data.data_collection_type,
-          partner_sellout_margin: data.partner_sellout_margin,
-          partner_url: data.partner_url,
-          e2_playbook_type: data.e2_playbook_type,
-          bopp_type: data.bopp_type,
-          gtm_type: data.gtm_type,
-          created_by: userMail,
-          created_date: new Date().toUTCString(),
-          modified_by: userMail,
-          last_modified_date: new Date().toUTCString(),
-          status: data.partner_status,
-          batch_upload_flag: (false),
-          active_flag: "False"
-      };
-      
-      if(reqData.deactivation_date){
-        let activationDate = getUIDateFormat(reqData.activation_date);
-        let deactivationDate = getUIDateFormat(reqData.deactivation_date);
-
-        if(new Date(activationDate).getTime() > new Date(deactivationDate).getTime()){
-          setErrorRet(['Deactivation date could not be lesser then activation date']);
-          setShowSuccessModal(false);
-          setShowErrorModal(true);
-          return false;
-        }
-      }
-
-      //update api
-      
-      console.log('update', reqData);
-
-      props.updatePartner(reqData)
-          .then((data) => {
-            console.log(data);
-            //update user partner role config for higher level user
-            if(userRole === roles.superUser || userRole === roles.superApproverUser || userRole === roles.admin){
-              saveUserPartnerConfigDetails(partnerId, formData, false);
-            }
-            else{
-              setShowSuccessModal(true);
-              setShowErrorModal(false);
-            }
-          })
-          .catch((e) => {
-            setShowSuccessModal(false);
-            setErrorRet([]);
-            setShowErrorModal(true);
-            console.log('Error', e);
+          console.log("Error", e);
         });
     }
-  } 
+  };
 
   const onError = (error) => {
     console.log("date with timezone", new Date());
@@ -458,8 +533,8 @@ function PartnerComponent(props) {
   };
 
   const updateForm = useCallback((e) => {
-    console.log('updateForm', e);
-    console.log('updateForm', partnerData);
+    console.log("updateForm", e);
+    console.log("updateForm", partnerData);
   }, []);
 
   return (
@@ -478,7 +553,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-           {userRole === "approve_1"&& (
+          {userRole === "approve_1" && (
             <Breadcrumb.Item href="/approver_1/home">
               <img
                 src={Home}
@@ -487,7 +562,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-           {userRole === "approver_2"&& (
+          {userRole === "approver_2" && (
             <Breadcrumb.Item href="/approver_2/home">
               <img
                 src={Home}
@@ -532,7 +607,11 @@ function PartnerComponent(props) {
       <Row>
         <h5 className="form-sellout-header">{props.module} New Partner</h5>
         <Container fluid>
-          <Form id="partner-form" noValidate onSubmit={handleSubmit(onSubmit, onError)}>
+          <Form
+            id="partner-form"
+            noValidate
+            onSubmit={handleSubmit(onSubmit, onError)}
+          >
             <Row>
               <Card className="card-Panel form-partner-card">
                 <Form.Group className="mb-4">
@@ -559,17 +638,17 @@ function PartnerComponent(props) {
                         disabled={props.module === "Update"}
                         type="text"
                         defaultValue={partnerData.platform_name}
-                        {...props.module === 'Create' && (
-                        {...register("platform_name", {
-                          required: "Platform name is required",
-                          pattern: {
-                            value: /^[a-zA-Z ]*$/i,
-                            message: "Platform name can have only alphabets",
-                          },
+                        {...(props.module === "Create" && {
+                          ...register("platform_name", {
+                            required: "Platform name is required",
+                            pattern: {
+                              value: /^[a-zA-Z ]*$/i,
+                              message: "Platform name can have only alphabets",
+                            },
+                          }),
                         })}
-                        )}
                       />
-                      {errors.platform_name && props.module === 'Create' && (
+                      {errors.platform_name && props.module === "Create" && (
                         <Form.Text className="text-danger">
                           {errors.platform_name.message}
                         </Form.Text>
@@ -585,16 +664,20 @@ function PartnerComponent(props) {
                         name="country_code"
                         {...register("country_code", {
                           required: "Country is required",
-                        })}>
+                        })}
+                      >
                         <option value=""></option>
                         {/* <option value="USA">USA</option> */}
-                        {countryData && (countryData.map((row) =>(
-                          <option value={row.country_code}>{row.country_name}</option>
-                        )))}
+                        {countryData &&
+                          countryData.map((row) => (
+                            <option value={row.country_code}>
+                              {row.country_name}
+                            </option>
+                          ))}
                       </Form.Select>
                       {errors?.country_code && (
                         <Form.Text className="text-danger">
-                          {errors?.country_code?.message} 
+                          {errors?.country_code?.message}
                         </Form.Text>
                       )}
                     </Col>
@@ -609,14 +692,22 @@ function PartnerComponent(props) {
                         defaultValue={partnerData.partner_group}
                         {...register("partner_group", {
                           required: "Partner group is required",
-                        })}>
+                        })}
+                      >
                         <option value=""></option>
                         {/* <option value={'Partner 1'}>Partner 1</option>
                         <option value={"Amazon"}>Amazon</option>
                         <option value={'Lazada'}>Lazada</option> */}
-                        {staticData && (staticData.filter(data => data.attribute_name === 'partner_group').map((row) =>(
-                          <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))}
+                        {staticData &&
+                          staticData
+                            .filter(
+                              (data) => data.attribute_name === "partner_group"
+                            )
+                            .map((row) => (
+                              <option value={row.attribute_value}>
+                                {row.attribute_value}
+                              </option>
+                            ))}
                       </Form.Select>
                       {errors.partner_group && (
                         <Form.Text className="text-danger">
@@ -641,9 +732,16 @@ function PartnerComponent(props) {
                         {/* <option value={"APC"}>APC</option>
                         <option value={"TEST"}>TEST</option>
                         <option value={"Entity 3"}>Entity 3</option> */}
-                        {staticData && (staticData.filter(data => data.attribute_name === 'se_entity').map((row) =>(
-                          <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))}
+                        {staticData &&
+                          staticData
+                            .filter(
+                              (data) => data.attribute_name === "se_entity"
+                            )
+                            .map((row) => (
+                              <option value={row.attribute_value}>
+                                {row.attribute_value}
+                              </option>
+                            ))}
                       </Form.Select>
                       {errors.se_entity && (
                         <Form.Text className="text-danger">
@@ -666,7 +764,7 @@ function PartnerComponent(props) {
                           pattern: {
                             value: /^[a-zA-Z ]*$/i,
                             message: "Reseller name can have only alphabets",
-                          }
+                          },
                         })}
                       />
                       {errors.reseller_name && (
@@ -689,9 +787,13 @@ function PartnerComponent(props) {
                         disabled
                         {...register("partner_id")}
                         type="text"
-                        value={ partnerData.partner_id }
+                        value={partnerData.partner_id}
                       />
-                      <input type="hidden" name="partner_id" value={ partnerData.partner_id } />
+                      <input
+                        type="hidden"
+                        name="partner_id"
+                        value={partnerData.partner_id}
+                      />
                     </Col>
                     <Col>
                       <Form.Label size="sm" htmlFor="partner_account_name">
@@ -714,7 +816,7 @@ function PartnerComponent(props) {
                         name="partner_account_name"
                         type="text"
                         disabled
-                        value={ partnerData.partner_account_name }
+                        value={partnerData.partner_account_name}
                       ></Form.Control>
                     </Col>
                     <Col>
@@ -734,16 +836,17 @@ function PartnerComponent(props) {
                         size="sm"
                         id="activation_date"
                         name="activation_date"
-                        disabled={props.module === 'Update'} 
-                        max={new Date().toISOString().split('T')[0]}
-                        defaultValue={getUIDateFormat(partnerData.activation_date)}
+                        disabled={props.module === "Update"}
+                        max={new Date().toISOString().split("T")[0]}
+                        defaultValue={getUIDateFormat(
+                          partnerData.activation_date
+                        )}
                         type="date"
                         {...register("activation_date", {
                           required: "Activation Date is required",
                         })}
                       />
-                      {errors.activation_date 
-                      && (
+                      {errors.activation_date && (
                         <Form.Text className="text-danger">
                           {errors.activation_date.message}
                         </Form.Text>
@@ -766,9 +869,16 @@ function PartnerComponent(props) {
                         {/* <option value={"Electric"}>Electric</option>
                         <option value={"Solar"}>Solar</option>
                         <option value={"TEST"}>TEST</option> */}
-                        {staticData && (staticData.filter(data => data.attribute_name === 'business_type').map((row) =>(
-                          <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))}
+                        {staticData &&
+                          staticData
+                            .filter(
+                              (data) => data.attribute_name === "business_type"
+                            )
+                            .map((row) => (
+                              <option value={row.attribute_value}>
+                                {row.attribute_value}
+                              </option>
+                            ))}
                       </Form.Select>
                       {errors.business_type && (
                         <Form.Text className="text-danger">
@@ -793,9 +903,16 @@ function PartnerComponent(props) {
                         {/* <option value={'E1-Dist'}>E1-Dist</option>
                         <option value={"TEST"}>TEST</option>
                         <option value={"E3"}>E3</option> */}
-                        {staticData && (staticData.filter(data => data.attribute_name === 'model_type').map((row) =>(
-                          <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))}
+                        {staticData &&
+                          staticData
+                            .filter(
+                              (data) => data.attribute_name === "model_type"
+                            )
+                            .map((row) => (
+                              <option value={row.attribute_value}>
+                                {row.attribute_value}
+                              </option>
+                            ))}
                       </Form.Select>
                       {errors.model_type && (
                         <Form.Text className="text-danger">
@@ -825,7 +942,7 @@ function PartnerComponent(props) {
                         id="partner_url"
                         name="partner_url"
                         type="url"
-                        defaultValue={ partnerData.partner_url }
+                        defaultValue={partnerData.partner_url}
                         {...register("partner_url", {
                           required: "URL Address of Partner is required",
                           pattern: {
@@ -851,15 +968,24 @@ function PartnerComponent(props) {
                         name="trans_currency_code"
                         {...register("trans_currency_code", {
                           required: "Currency of Sellout Reporting is required",
-                        })}>
+                        })}
+                      >
                         <option value=""></option>
                         {/* <option>AUD</option>
                         <option>INR</option>
                         <option>USD</option>
                         <option value={'MYR'}>MYR</option> */}
-                        {staticData && (staticData.filter(data => data.attribute_name === 'trans_currency_code').map((row) =>(
-                          <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))}
+                        {staticData &&
+                          staticData
+                            .filter(
+                              (data) =>
+                                data.attribute_name === "trans_currency_code"
+                            )
+                            .map((row) => (
+                              <option value={row.attribute_value}>
+                                {row.attribute_value}
+                              </option>
+                            ))}
                       </Form.Select>
                       {errors.trans_currency_code && (
                         <Form.Text className="text-danger">
@@ -883,9 +1009,17 @@ function PartnerComponent(props) {
                         <option value=""></option>
                         {/* <option>Actual sellin + est. eCom penetration</option>
                         <option value={"DCTYPE"}>DCTYPE</option> */}
-                        {staticData && (staticData.filter(data => data.attribute_name === 'data_collection_type').map((row) =>(
-                          <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))}
+                        {staticData &&
+                          staticData
+                            .filter(
+                              (data) =>
+                                data.attribute_name === "data_collection_type"
+                            )
+                            .map((row) => (
+                              <option value={row.attribute_value}>
+                                {row.attribute_value}
+                              </option>
+                            ))}
                       </Form.Select>
                       {errors.data_collection_type && (
                         <Form.Text className="text-danger">
@@ -903,17 +1037,18 @@ function PartnerComponent(props) {
                         id="partner_sellout_margin"
                         name="partner_sellout_margin"
                         type="number"
-                        defaultValue={ partnerData.partner_sellout_margin }
+                        defaultValue={partnerData.partner_sellout_margin}
                         {...register("partner_sellout_margin", {
                           required: "Partner Sellout Margin is required",
                           min: {
                             value: 1,
-                            message: "Value should be between  1% to 100%"
+                            message: "Value should be between  1% to 100%",
                           },
-                          max: {                            
+                          max: {
                             value: 100,
-                            message: "Value should be between  1% to 100%"
+                            message: "Value should be between  1% to 100%",
                           },
+                          // while update this gives error pease chcek once will uncommit
                           // pattern: {
                           //   value: /^(.)$/i,
                           //   message: "Decimal or Negative values are not allowed",
@@ -943,9 +1078,17 @@ function PartnerComponent(props) {
                         {/* <option value={"type1"}>Type 1</option>
                         <option value={"type2"}>Type 2</option>
                         <option value={"E2"}>E2</option> */}
-                        {staticData && (staticData.filter(data => data.attribute_name === 'e2_playbook_type').map((row) =>(
-                          <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))}
+                        {staticData &&
+                          staticData
+                            .filter(
+                              (data) =>
+                                data.attribute_name === "e2_playbook_type"
+                            )
+                            .map((row) => (
+                              <option value={row.attribute_value}>
+                                {row.attribute_value}
+                              </option>
+                            ))}
                       </Form.Select>
                       {errors.e2_playbook_type && (
                         <Form.Text className="text-danger">
@@ -980,9 +1123,16 @@ function PartnerComponent(props) {
                         <option value={"Leader"}>Leader</option>
                         <option value={"Novice"}>Novice</option>
                         <option value={"BOPP"}>BOPP</option> */}
-                        {staticData && (staticData.filter(data => data.attribute_name === 'bopp_type').map((row) =>(
-                          <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))}
+                        {staticData &&
+                          staticData
+                            .filter(
+                              (data) => data.attribute_name === "bopp_type"
+                            )
+                            .map((row) => (
+                              <option value={row.attribute_value}>
+                                {row.attribute_value}
+                              </option>
+                            ))}
                       </Form.Select>
                       {errors.bopp_type && (
                         <Form.Text className="text-danger">
@@ -1002,13 +1152,21 @@ function PartnerComponent(props) {
                         defaultValue={partnerData.gtm_type}
                         {...register("gtm_type", {
                           required: "GTM Type is required",
-                        })}>
+                        })}
+                      >
                         <option value=""></option>
                         {/* <option>Direct</option>
                         <option value={"GTM"}>GTM</option> */}
-                        {staticData && (staticData.filter(data => data.attribute_name === 'gtm_type').map((row) =>(
-                          <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))}
+                        {staticData &&
+                          staticData
+                            .filter(
+                              (data) => data.attribute_name === "gtm_type"
+                            )
+                            .map((row) => (
+                              <option value={row.attribute_value}>
+                                {row.attribute_value}
+                              </option>
+                            ))}
                       </Form.Select>
                       {errors.gtm_type && (
                         <Form.Text className="text-danger">
@@ -1018,60 +1176,67 @@ function PartnerComponent(props) {
                     </Col>
                     {props.module === "Update" && (
                       <>
-                      <Col>
-                      <Form.Label size="sm" htmlFor="partner_status">
-                        Partner Status
-                      </Form.Label>
-                      <Form.Select
-                        size="sm"
-                        className="field-Prop"
-                        id="partner_status"
-                        name="partner_status"
-                        defaultValue={partnerData.partner_status}
-                        {...register("partner_status", {
-                          required: "Partner status is required",
-                        })}
-                      >
-                        <option value=""></option>
-                        {staticData && (staticData.filter(data => data.attribute_name === 'partner_status').map((row) =>(
-                          <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))}
-                      </Form.Select>
-                      {errors.partner_status && (
-                        <Form.Text className="text-danger">
-                          {errors.partner_status.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                      <Col>
-                        <Form.Label size="sm" htmlFor="deactivation_date">
-                          Deactivation Date
-                        </Form.Label>
-                        &nbsp;
-                        <OverlayTrigger
-                          placement="right"
-                          overlay={tooltip("dd-mm-yyyy")}
-                        >
-                          <span>
-                            <BiHelpCircle />
-                          </span>
-                        </OverlayTrigger>
-                        <Form.Control
-                          size="sm"
-                          id="deactivation_date"
-                          name="deactivation_date"
-                          className="field-Prop"
-                          defaultValue={ partnerData.deactivation_date }
-                          type="date"
-                          {...register("deactivation_date", {
-                          })}
-                        />
-                        {errors.deactivation_date && (
-                          <Form.Text className="text-danger">
-                            {errors.deactivation_date.message}
-                          </Form.Text>
-                        )}
-                      </Col>
+                        <Col>
+                          <Form.Label size="sm" htmlFor="partner_status">
+                            Partner Status
+                          </Form.Label>
+                          <Form.Select
+                            size="sm"
+                            className="field-Prop"
+                            id="partner_status"
+                            name="partner_status"
+                            defaultValue={partnerData.partner_status}
+                            {...register("partner_status", {
+                              required: "Partner status is required",
+                            })}
+                          >
+                            <option value=""></option>
+                            {staticData &&
+                              staticData
+                                .filter(
+                                  (data) =>
+                                    data.attribute_name === "partner_status"
+                                )
+                                .map((row) => (
+                                  <option value={row.attribute_value}>
+                                    {row.attribute_value}
+                                  </option>
+                                ))}
+                          </Form.Select>
+                          {errors.partner_status && (
+                            <Form.Text className="text-danger">
+                              {errors.partner_status.message}
+                            </Form.Text>
+                          )}
+                        </Col>
+                        <Col>
+                          <Form.Label size="sm" htmlFor="deactivation_date">
+                            Deactivation Date
+                          </Form.Label>
+                          &nbsp;
+                          <OverlayTrigger
+                            placement="right"
+                            overlay={tooltip("dd-mm-yyyy")}
+                          >
+                            <span>
+                              <BiHelpCircle />
+                            </span>
+                          </OverlayTrigger>
+                          <Form.Control
+                            size="sm"
+                            id="deactivation_date"
+                            name="deactivation_date"
+                            className="field-Prop"
+                            defaultValue={partnerData.deactivation_date}
+                            type="date"
+                            {...register("deactivation_date", {})}
+                          />
+                          {errors.deactivation_date && (
+                            <Form.Text className="text-danger">
+                              {errors.deactivation_date.message}
+                            </Form.Text>
+                          )}
+                        </Col>
                       </>
                     )}
                     {props.module === "Update" && (
@@ -1085,13 +1250,20 @@ function PartnerComponent(props) {
                           id="deactivation_reason"
                           name="deactivation_reason"
                           defaultValue={partnerData.deactivation_reason}
-                          {...register("deactivation_reason", {
-                          })}
+                          {...register("deactivation_reason", {})}
                         >
                           <option value="">Not applicable</option>
-                          {staticData && (staticData.filter(data => data.attribute_name === 'deactivation_reason').map((row) =>(
-                            <option value={row.attribute_value}>{row.attribute_value}</option>
-                        )))}
+                          {staticData &&
+                            staticData
+                              .filter(
+                                (data) =>
+                                  data.attribute_name === "deactivation_reason"
+                              )
+                              .map((row) => (
+                                <option value={row.attribute_value}>
+                                  {row.attribute_value}
+                                </option>
+                              ))}
                         </Form.Select>
                         {errors.deactivation_reason && (
                           <Form.Text className="text-danger">
@@ -1107,118 +1279,166 @@ function PartnerComponent(props) {
             {props.showHigherLevelModule && (
               <Row>
                 <Card className="card-Panel form-partner-card">
-                <Form.Group className="mb-4">
-                  <Row>
-                    <Col>
-                      <Form.Label size="sm" htmlFor="editor">
-                        Editor
-                      </Form.Label>
-                      &nbsp;
-                      <Form.Select
-                        disabled={ (userRole===roles.editor || userRole===roles.approver) ? true : false }
-                        size="sm"
-                        className="field-Prop"
-                        id="editor"
-                        name="editor"
-                        {...isHigherLevelUser && (
-                        {...register("editor", {
-                          required: "Editor is required",
-                        })}
-                        )}>
-                        <option value=""></option>
-                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'EDITOR').map((row) =>(
-                          <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
-                        )))}
-                      </Form.Select>
-                      {errors.editor && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
-                        <Form.Text className="text-danger">
-                          {errors.editor.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                    <Col>
-                      <Form.Label size="sm" htmlFor="backupEditor">
-                        Backup Editor
-                      </Form.Label>
-                      &nbsp;
-                      <Form.Select
-                        disabled={ (userRole===roles.editor || userRole===roles.approver)}
-                        size="sm"
-                        className="field-Prop"
-                        id="backupEditor"
-                        name="backupEditor"
-                        {...isHigherLevelUser && (
-                          {...register("backupEditor", {
-                            required: "Backup Editor is required",
+                  <Form.Group className="mb-4">
+                    <Row>
+                      <Col>
+                        <Form.Label size="sm" htmlFor="editor">
+                          Editor
+                        </Form.Label>
+                        &nbsp;
+                        <Form.Select
+                          disabled={
+                            userRole === roles.editor ||
+                            userRole === roles.approver
+                              ? true
+                              : false
+                          }
+                          size="sm"
+                          className="field-Prop"
+                          id="editor"
+                          name="editor"
+                          {...(isHigherLevelUser && {
+                            ...register("editor", {
+                              required: "Editor is required",
+                            }),
                           })}
-                        )}>
-                        <option value=""></option>
-                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'BACKUP_EDITOR').map((row) =>(
-                          <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
-                        )))}
-                      </Form.Select>
-                      {errors.backupEditor && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
-                        <Form.Text className="text-danger">
-                          {errors.backupEditor.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                    <Col>
-                      <Form.Label size="sm" htmlFor="approver1">
-                        Approver 1
-                      </Form.Label>
-                      <Form.Select
-                        disabled={ (userRole===roles.editor || userRole===roles.approver)}
-                        size="sm"
-                        className="field-Prop"
-                        id="approver1"
-                        name="approver1"
-                        {...isHigherLevelUser && (
-                        {...register("approver1", {
-                          required: "Approver 1 is required",
-                        })}
-                        )}
-                      >
-                        <option value=""></option>
-                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER_1').map((row) =>(
-                          <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
-                        )))}
-                      </Form.Select>
-                      {errors.approver1 && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
-                        <Form.Text className="text-danger">
-                          {errors.approver1.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                    <Col>
-                      <Form.Label size="sm" htmlFor="approver2">
-                        Approver 2
-                      </Form.Label>
-                      <Form.Select
-                        disabled={ (userRole===roles.editor || userRole===roles.approver)}
-                        size="sm"
-                        className="field-Prop"
-                        id="approver2"
-                        name="approver2"
-                        {...isHigherLevelUser && (
-                          {...register("approver2", {
-                            required: "Approver 2 is required",
+                        >
+                          <option value=""></option>
+                          {usrRoleData &&
+                            usrRoleData
+                              .filter((role) => role.role_id == "EDITOR")
+                              .map((row) => (
+                                <option value={row.email_id}>{`${
+                                  row.first_name + " " + row.last_name
+                                }`}</option>
+                              ))}
+                        </Form.Select>
+                        {errors.editor &&
+                          (userRole === roles.admin ||
+                            userRole === roles.superUser ||
+                            userRole === roles.superApproverUser) && (
+                            <Form.Text className="text-danger">
+                              {errors.editor.message}
+                            </Form.Text>
+                          )}
+                      </Col>
+                      <Col>
+                        <Form.Label size="sm" htmlFor="backupEditor">
+                          Backup Editor
+                        </Form.Label>
+                        &nbsp;
+                        <Form.Select
+                          disabled={
+                            userRole === roles.editor ||
+                            userRole === roles.approver
+                          }
+                          size="sm"
+                          className="field-Prop"
+                          id="backupEditor"
+                          name="backupEditor"
+                          {...(isHigherLevelUser && {
+                            ...register("backupEditor", {
+                              required: "Backup Editor is required",
+                            }),
                           })}
-                        )}
-                      >
-                        <option value=""></option>
-                        {usrRoleData && (usrRoleData.filter(role => role.role_id == 'APPROVER_2').map((row) =>(
-                          <option value={row.email_id}>{`${row.first_name+' '+row.last_name}`}</option>
-                        )))}
-                      </Form.Select>
-                      {errors.approver2 && (userRole===roles.admin || userRole===roles.superUser || userRole===roles.superApproverUser) && (
-                        <Form.Text className="text-danger">
-                          {errors.approver2.message}
-                        </Form.Text>
-                      )}
-                    </Col>
-                  </Row>
-                </Form.Group>
+                        >
+                          <option value=""></option>
+                          {usrRoleData &&
+                            usrRoleData
+                              .filter((role) => role.role_id == "BACKUP_EDITOR")
+                              .map((row) => (
+                                <option value={row.email_id}>{`${
+                                  row.first_name + " " + row.last_name
+                                }`}</option>
+                              ))}
+                        </Form.Select>
+                        {errors.backupEditor &&
+                          (userRole === roles.admin ||
+                            userRole === roles.superUser ||
+                            userRole === roles.superApproverUser) && (
+                            <Form.Text className="text-danger">
+                              {errors.backupEditor.message}
+                            </Form.Text>
+                          )}
+                      </Col>
+                      <Col>
+                        <Form.Label size="sm" htmlFor="approver1">
+                          Approver 1
+                        </Form.Label>
+                        <Form.Select
+                          disabled={
+                            userRole === roles.editor ||
+                            userRole === roles.approver
+                          }
+                          size="sm"
+                          className="field-Prop"
+                          id="approver1"
+                          name="approver1"
+                          {...(isHigherLevelUser && {
+                            ...register("approver1", {
+                              required: "Approver 1 is required",
+                            }),
+                          })}
+                        >
+                          <option value=""></option>
+                          {usrRoleData &&
+                            usrRoleData
+                              .filter((role) => role.role_id == "APPROVER_1")
+                              .map((row) => (
+                                <option value={row.email_id}>{`${
+                                  row.first_name + " " + row.last_name
+                                }`}</option>
+                              ))}
+                        </Form.Select>
+                        {errors.approver1 &&
+                          (userRole === roles.admin ||
+                            userRole === roles.superUser ||
+                            userRole === roles.superApproverUser) && (
+                            <Form.Text className="text-danger">
+                              {errors.approver1.message}
+                            </Form.Text>
+                          )}
+                      </Col>
+                      <Col>
+                        <Form.Label size="sm" htmlFor="approver2">
+                          Approver 2
+                        </Form.Label>
+                        <Form.Select
+                          disabled={
+                            userRole === roles.editor ||
+                            userRole === roles.approver
+                          }
+                          size="sm"
+                          className="field-Prop"
+                          id="approver2"
+                          name="approver2"
+                          {...(isHigherLevelUser && {
+                            ...register("approver2", {
+                              required: "Approver 2 is required",
+                            }),
+                          })}
+                        >
+                          <option value=""></option>
+                          {usrRoleData &&
+                            usrRoleData
+                              .filter((role) => role.role_id == "APPROVER_2")
+                              .map((row) => (
+                                <option value={row.email_id}>{`${
+                                  row.first_name + " " + row.last_name
+                                }`}</option>
+                              ))}
+                        </Form.Select>
+                        {errors.approver2 &&
+                          (userRole === roles.admin ||
+                            userRole === roles.superUser ||
+                            userRole === roles.superApproverUser) && (
+                            <Form.Text className="text-danger">
+                              {errors.approver2.message}
+                            </Form.Text>
+                          )}
+                      </Col>
+                    </Row>
+                  </Form.Group>
                 </Card>
               </Row>
             )}
@@ -1265,5 +1485,5 @@ export default connect(null, {
   createUserPartnerRoleConfig,
   retrievePartnerByRole,
   retrieveUserRoleConfigByPartnerId,
-  retrieveAllPartnerData
+  retrieveAllPartnerData,
 })(PartnerComponent);
