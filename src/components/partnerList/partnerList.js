@@ -16,6 +16,8 @@ import "../partnerList/partnerList.css";
 import {
   retrieveAllPartnerData,
   retrievePartnerByRole,
+  retrieveUserRoleConfigByPartnerId,
+  retrieveUserRoleConfigByEmailIdRoleId,
 } from "../../actions/partneraction";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -152,9 +154,9 @@ function PartnerList(props) {
             {Status === "ACTIVE" && (
               <img src={active} alt="active" style={{ width: "80px" }} />
             )}
-            {/* {Status === "Closed" && (
+            {Status === "CLOSED" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
-            )} */}
+            )}
             {/* {Status === "Pending" && (
               <img src={Pending} alt="Pending" style={{ width: "80px" }} />
             )} */}
@@ -276,7 +278,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Editor",
-      field: "created_by",
+      field: "EDITOR",
       width: 120,
       sortable: true,
       filter: true,
@@ -286,7 +288,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Backup Editor",
-      field: "modified_by",
+      field: "BACKUP_EDITOR",
       width: 140,
       sortable: true,
       filter: true,
@@ -348,18 +350,66 @@ function PartnerList(props) {
   const onGridReady = useCallback((params) => {
     let filterData = {
       role: screenRole,
-      userMail: userMail
+      userMail: userMail,
     };
 
-    console.log('filterData', filterData);
-    
+    let previousAPIData = [];
     props
       .retrievePartnerByRole(
-        (screenRole == roles.admin || screenRole == roles.superUser || screenRole == roles.superApproverUser)? '' : filterData.role, 
-        (screenRole == roles.admin || screenRole == roles.superUser || screenRole == roles.superApproverUser)? '' : filterData.userMail)
+        screenRole == roles.admin ||
+          screenRole == roles.superUser ||
+          screenRole == roles.superApproverUser
+          ? ""
+          : filterData.role,
+
+        screenRole == roles.admin ||
+          screenRole == roles.superUser ||
+          screenRole == roles.superApproverUser
+          ? ""
+          : filterData.userMail
+      )
+
       .then((data) => {
-        setRowData(data.data.filter((e) => e.status == "ACTIVE"));
+        previousAPIData = data?.data;
+        props
+          .retrieveUserRoleConfigByEmailIdRoleId("nelson@se.com", "editor")
+          .then((data2) => {
+            if (data2.length) {
+              for (let i = 0; i < previousAPIData.length; i++) {
+                data2.map((secondArray) => {
+                  if (previousAPIData[i].partner_id == secondArray.PARTNER_ID) {
+                    previousAPIData[i].Approver1 = secondArray.APPROVE_1;
+
+                    previousAPIData[i].Approver2 = secondArray.APPROVER_2;
+
+                    previousAPIData[i].BACKUP_EDITOR =
+                      secondArray.BACKUP_EDITOR;
+
+                    previousAPIData[i].EDITOR = secondArray.EDITOR;
+                  } else {
+                    previousAPIData[i].Approver1 = "";
+
+                    previousAPIData[i].Approver2 = "";
+
+                    previousAPIData[i].BACKUP_EDITOR = "";
+
+                    previousAPIData[i].EDITOR = "";
+                  }
+                });
+              }
+
+              setRowData(previousAPIData.filter((e) => e.status == "ACTIVE"));
+            } else {
+              setRowData(data.data.filter((e) => e.status == "ACTIVE"));
+            }
+          })
+
+          .catch((e) => {
+            console.log("Partner list", e);
+          });
+        // setRowData(data.data.filter((e) => e.status == "ACTIVE"));
       })
+
       .catch((e) => {
         console.log("Partner list", e);
       });
@@ -443,7 +493,9 @@ function PartnerList(props) {
                 Sell Out Partner List
               </div>
             </Col>
-            {screenRole === "admin" ||screenRole === "superUser" || screenRole === "superApproverUser" ? (
+            {screenRole === "admin" ||
+            screenRole === "superUser" ||
+            screenRole === "superApproverUser" ? (
               <Col xs="auto" className="partner-container">
                 <Button
                   size="md"
@@ -495,6 +547,9 @@ function PartnerList(props) {
   );
 }
 
-export default connect(null, { retrieveAllPartnerData, retrievePartnerByRole })(
-  PartnerList
-);
+export default connect(null, {
+  retrieveAllPartnerData,
+  retrievePartnerByRole,
+  retrieveUserRoleConfigByPartnerId,
+  retrieveUserRoleConfigByEmailIdRoleId,
+})(PartnerList);

@@ -177,16 +177,16 @@ function PartnerComponent(props) {
             (data) => data.PARTNER_ID === partnerId
           )[0];
           console.log("retrieveUserRoleConfigByPartnerId", data);
-          if (respData.EDITOR) {
+          if (respData?.EDITOR) {
             setValue("editor", respData.EDITOR);
           }
-          if (respData.BACKUP_EDITOR) {
+          if (respData?.BACKUP_EDITOR) {
             setValue("backupEditor", respData.BACKUP_EDITOR);
           }
-          if (respData.APPROVE_1) {
+          if (respData?.APPROVE_1) {
             setValue("approver1", respData.APPROVE_1);
           }
-          if (respData.APPROVER_2) {
+          if (respData?.APPROVER_2) {
             setValue("approver2", respData.APPROVER_2);
           }
         });
@@ -270,7 +270,7 @@ function PartnerComponent(props) {
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
-    header: "Data has been saved successfully!!",
+    header: "Partner has been upadted successfully!",
     content: [],
   };
 
@@ -309,7 +309,10 @@ function PartnerComponent(props) {
       supervisor_approv_1_2: "", //super approver usr
     };
 
-    console.log("createUserPartnerRoleConfig calling...", reqUserPartConfData);
+    console.log(
+      "createUserPartnerRoleConfig calling...",
+      JSON.stringify(reqUserPartConfData)
+    );
     //create user role config
     props
       .createUserPartnerRoleConfig(reqUserPartConfData)
@@ -474,11 +477,9 @@ function PartnerComponent(props) {
       let activationDate = getUIDateFormatToCompare(reqData.activation_date);
       let deactivationDate = "";
       if (reqData?.deactivation_date?.length) {
-        deactivationDate = getUIDateFormatToCompare(
-          reqData.deactivation_date
-        );
+        deactivationDate = getUIDateFormatToCompare(reqData.deactivation_date);
       }
-     
+
       if (
         new Date(activationDate).getTime() >
         new Date(deactivationDate).getTime()

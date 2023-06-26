@@ -19,9 +19,13 @@ import {
   createInputCalenderData,
   retrieveInputCalenderData,
 } from "../../actions/inputCalenderAction";
+import AlertModel from "../modal/alertModel.js";
 import { getUIDateFormat } from "../../../src/helper/helper";
 
 function InputCalendar(props) {
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -97,6 +101,10 @@ function InputCalendar(props) {
         console.log("data is saved::", data);
       });
     });
+    setTimeout(() => {
+      setShowSuccessModal(true);
+      document.getElementById("input-calender-form").reset();
+    }, 2000);
   };
 
   const onError = (error) => {
@@ -222,6 +230,36 @@ function InputCalendar(props) {
     setNextQuarter(nextQuatrs || []);
   }, []);
 
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+  };
+
+  const successmsg = {
+    headerLabel: "Success....",
+
+    variant: "success",
+
+    header: "Data has been saved successfully!!",
+
+    content: [],
+  };
+
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
+  };
+
+  const [errorRet, setErrorRet] = useState([]);
+
+  const errormsg = {
+    headerLabel: "Error....",
+
+    variant: "danger",
+
+    header: "There are errors while processing.",
+
+    content: errorRet,
+  };
+
   //post api
 
   //get api
@@ -248,7 +286,11 @@ function InputCalendar(props) {
         <h5 className="form-sellout-header">INPUT CALENDER</h5>
 
         <Container fluid>
-          <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
+          <Form
+            id="input-calender-form"
+            noValidate
+            onSubmit={handleSubmit(onSubmit, onError)}
+          >
             <Card className="card-Panel form-calendar-card">
               <Row>
                 <Form.Group className="mb-4">
@@ -285,9 +327,7 @@ function InputCalendar(props) {
                                   name={"currmonth_opndt_" + month}
                                   min={new Date().toISOString().split("T")[0]}
                                   type="date"
-                                  {...register(
-                                    `currmonth_opndt_${month}`
-                                  )}
+                                  {...register(`currmonth_opndt_${month}`)}
                                 />
                                 {errors[`currmonth_opndt_${month}`] && (
                                   <Form.Text className="text-danger">
@@ -310,9 +350,7 @@ function InputCalendar(props) {
                                   id={"currmonth_closedt_" + month}
                                   name={"currmonth_closedt_" + month}
                                   type="date"
-                                  {...register(
-                                    `currmonth_closedt_${month}`
-                                  )}
+                                  {...register(`currmonth_closedt_${month}`)}
                                 />
                                 {errors[`currmonth_closedt_${month}`] && (
                                   <Form.Text className="text-danger">
@@ -403,9 +441,7 @@ function InputCalendar(props) {
                                   name={"currmonth_opndt_" + quarter}
                                   min={new Date().toISOString().split("T")[0]}
                                   type="date"
-                                  {...register(
-                                    `currmonth_opndt_${quarter}`
-                                  )}
+                                  {...register(`currmonth_opndt_${quarter}`)}
                                 />
                                 {errors[`currmonth_opndt_${quarter}`] && (
                                   <Form.Text className="text-danger">
@@ -431,9 +467,7 @@ function InputCalendar(props) {
                                   id={"currmonth_closedt_" + quarter}
                                   name={"currmonth_closedt_" + quarter}
                                   type="date"
-                                  {...register(
-                                    `currmonth_closedt_${quarter}`
-                                  )}
+                                  {...register(`currmonth_closedt_${quarter}`)}
                                 />
                                 {errors[`currmonth_closedt_${quarter}`] && (
                                   <Form.Text className="text-danger">
@@ -494,6 +528,17 @@ function InputCalendar(props) {
               </Col>
             </Row>
           </Form>
+          <AlertModel
+            show={showSuccessModal}
+            handleClose={handleCloseSuccessModal}
+            body={successmsg}
+          />
+
+          <AlertModel
+            show={showErrorModal}
+            handleClose={handleCloseErrorModal}
+            body={errormsg}
+          />
         </Container>
       </Row>
     </Container>

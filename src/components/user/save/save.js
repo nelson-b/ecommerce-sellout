@@ -493,8 +493,6 @@ function SaveUser(props) {
       isInvalid = false;
     }
     setErrorRet(otherErrors);
-    setShowErrorModal(true);
-
     return !isInvalid;
   };
 
