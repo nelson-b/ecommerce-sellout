@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { authorizationRequestUrl, getAccessTokenUrl } from "../../config";
+import { retrieveUserRoleConfigByAuthCode } from "../../actions/partneraction";
 import Cookies from "js-cookie";
 
 function Authenticate(props) {
@@ -16,60 +17,71 @@ function Authenticate(props) {
   
   useEffect(()=>{
       //redirected to below Ping token URL
-      let authorizationHeaderInput = ('Basic ').concat('ZUNvbW1lcmNlU2VsbG91dF81NTg5NV9VQVQ6S3BFMEhweUNycFBMM0pPN3dLOUtpV04yNmVCUlJDaFEzM2RPdkg3d2t2T01Jdm55VTBPRkVHWVN5ZTRLSER3WQ==');
+      //let authorizationHeaderInput = ('Basic ').concat('ZUNvbW1lcmNlU2VsbG91dF81NTg5NV9VQVQ6S3BFMEhweUNycFBMM0pPN3dLOUtpV04yNmVCUlJDaFEzM2RPdkg3d2t2T01Jdm55VTBPRkVHWVN5ZTRLSER3WQ==');
       
-      const headers = {
-        'Content-Type': 'application/json',
-        Authorization: authorizationHeaderInput
-      };
+      // const headers = {
+      //   'Content-Type': 'application/json',
+      //   //Authorization: authorizationHeaderInput
+      // };
       
-      let redirect_uri_input = authorizationRequestUrl.concat(authCode);
-      console.log('redirect_uri_input', redirect_uri_input);
+      //let redirect_uri_input = authorizationRequestUrl.concat(authCode);
+      // console.log('redirect_uri_input', redirect_uri_input);
       
-      let body= {
-        grant_type: "authorization_code",
-        code: authCode,
-        redirect_uri: redirect_uri_input
-      };
+      // let body= {
+      //   grant_type: "authorization_code",
+      //   code: authCode,
+      //   redirect_uri: redirect_uri_input
+      // };
 
-      let api = getAccessTokenUrl;
-      console.log('getAccessTokenUrl', api);
-      axios
-        .post(api, body, {
-          headers: headers
+      // let api = getAccessTokenUrl;
+      // console.log('getAccessTokenUrl', api);
+      console.log('authCode', authCode);
+      
+      props
+        .retrieveUserRoleConfigByAuthCode(authCode, 'sdk@example.com')
+        .then((data) => {
+          console.log(data);
         })
-        .then((response) => {
-          //token
-          console.log(response);
-          Cookies.set('token', response, { expires: 7 })
-          //call api to get email id
-          // getLoginUserEmailId(response)
+        .catch((e) => {
+          console.log('Error', e);
         })
-        .catch((error) => {
-          console.log(error);
-        });
-  });
 
-  const getLoginUserEmailId = (data) => {
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer '.concat(data)
-    };
+      // axios
+      //   .post(api, body, {
+      //     headers: headers
+      //   })
+      //   .then((response) => {
+      //     //token
+      //     console.log(response);
+      //     //Cookies.set('token', response, { expires: 1 }) //token expires in a day
+      //     //call api to get email id
+      //     // getLoginUserEmailId(response)
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
+  },[]);
 
-    let api = 'https://ping-sso-uat.schneider-electric.com/idp/userinfo.openid';
-    let retEmailId = '';
-    axios
-    .get(api, {
-      headers: headers
-    })
-    .then((response) => {
-        console.log(response);
-    })
-    .catch((error) => {
-        console.log(error);
-    });
-    return retEmailId;
-  }
+  // const getLoginUserEmailId = (data) => {
+  //   const headers = {
+  //     'Content-Type': 'application/json',
+  //     Authorization: 'Bearer '.concat(data)
+  //   };
+
+  //   let api = 'https://ping-sso-uat.schneider-electric.com/idp/userinfo.openid';
+  //   let retEmailId = '';
+  //   axios
+  //   .get(api, {
+  //     headers: headers
+  //   })
+  //   .then((response) => {
+  //       console.log(response);
+  //   })
+  //   .catch((error) => {
+  //       console.log(error);
+  //   });
+  //   return retEmailId;
+  // }
 
   return (
     <Container fluid>
@@ -82,4 +94,4 @@ function Authenticate(props) {
   ); 
 }
 
-export default connect(null, {})(Authenticate);
+export default connect(null, { retrieveUserRoleConfigByAuthCode })(Authenticate);

@@ -29,11 +29,6 @@ class UserService {
   getByRole(id) {
     return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-userlist?fetch=by_role&ROLE_ID=${id.toUpperCase()}`);
   }
-
-  //sso login
-  getClientId(){
-    return http.get(`/`);
-  }
 }
 
 export default new UserService();

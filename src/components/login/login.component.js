@@ -16,8 +16,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { connect } from "react-redux";
-import { retrieveAuthendClientData } from "../../actions/userAction";
+import { retrieveStaticDataByAttrName } from "../../actions/staticDataAction";
+
 import { redirectUrl, signInLink } from "../../config";
+import { api_ret_client_id, client_id } from "../constant";
 
 function Login(props) {
   const navigate = useNavigate();
@@ -49,12 +51,15 @@ function Login(props) {
 
     let api = signInLink.concat(redirectUrl);
     console.log('signInLink', api);
-    // props.retrieveAuthendClientData()
-    // .then((data)=>{
-    //   console.log(data)
-    //   if(data){
+    props.retrieveStaticDataByAttrName(client_id)
+      .then((data)=>{
+      console.log('data[0].attribute_value', data[0].attribute_value);
+      let apiWithClientId = api.replace(`[${api_ret_client_id}]`,data[0].attribute_value);
+      console.log('apiWithClientId', apiWithClientId);
+
+      if(data){
         axios
-          .get(api, {
+          .get(apiWithClientId, {
             headers: headers
           })
           .then((response) => {
@@ -63,11 +68,11 @@ function Login(props) {
           .catch((error) => {
               console.log(error);
           });
-    //   }
-    // })
-    // .catch((e) => {
-    //   console.log(e);
-    // });
+      }
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 
     //loginNavigation(data);
   };
@@ -178,4 +183,4 @@ function Login(props) {
   );
 }
 
-export default connect(null, { retrieveAuthendClientData })(Login);
+export default connect(null, { retrieveStaticDataByAttrName })(Login);
