@@ -45,8 +45,13 @@ function Login(props) {
   const onSubmit = (data) => {
     //redirected to below Ping login URL
     const headers = {
-      'Content-Type': 'application/json',
-      //'Accept': 'application/json'
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Access-Control-Allow-Origin,Accept",
+      "Access-Control-Allow-Methods" : "OPTIONS,POST,GET,PUT",
+      "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Origin": "*",
+      "X-Requested-With" : "*"
     }
 
     let api = signInLink.concat(redirectUrl);
