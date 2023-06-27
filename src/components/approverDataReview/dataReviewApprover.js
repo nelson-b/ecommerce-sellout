@@ -458,49 +458,41 @@ function DataReviewApprover(props) {
 
             if (each.month_val === "may") {
               obj["May" + itemYear] = each.sellout_local_currency;
-
               obj["May" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "jun") {
               obj["Jun" + itemYear] = each.sellout_local_currency;
-
               obj["Jun" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "jul") {
               obj["Jul" + itemYear] = each.sellout_local_currency;
-
               obj["Jul" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "aug") {
               obj["Aug" + itemYear] = each.sellout_local_currency;
-
               obj["Aug" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "sep") {
               obj["Sep" + itemYear] = each.sellout_local_currency;
-
               obj["Sep" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "oct") {
               obj["Oct" + itemYear] = each.sellout_local_currency;
-
               obj["Oct" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "nov") {
               obj["Nov" + itemYear] = each.sellout_local_currency;
-
               obj["Nov" + itemYear + "E"] = each.sellout;
             }
 
             if (each.month_val === "dec") {
               obj["Dec" + itemYear] = each.sellout_local_currency;
-
               obj["Jan" + itemYear + "E"] = each.sellout;
             }
           });
