@@ -84,32 +84,24 @@ function Login(props) {
           "X-Requested-With" : "*"
         }
     
-        let api = signInLink.concat(redirectUrl);
-        console.log('signInLink', api);
+        let link = signInLink.concat(redirectUrl);
+        console.log('signInLink', link);
         props.retrieveStaticDataByAttrName(client_id)
           .then((data)=>{
-          console.log('data[0].attribute_value', data[0].attribute_value);
-          let apiWithClientId = api.replace(`[${api_ret_client_id}]`,data[0].attribute_value);
-          console.log('apiWithClientId', apiWithClientId);
-    
           if(data){
-            axios
-              .get(apiWithClientId, {
-                headers: headers
-              })
-              .then((response) => {
-                  console.log(response);
-              })
-              .catch((error) => {
-                  console.log(error);
-              });
+            console.log('data[0].attribute_value', data[0].attribute_value);
+            if(data[0].attribute_value){
+              let signInLinkWithClientId = link.replace(`[${api_ret_client_id}]`,data[0].attribute_value);
+              console.log('apiWithClientId', signInLinkWithClientId);
+              //open the ping url in browser, it will redirect to authenticate url with auth code to validate authendication
+              window.open(signInLinkWithClientId, "_self");
+            }
           }
         })
         .catch((e) => {
           console.log(e);
         });
   }
-
 
   return (
     <Container fluid>

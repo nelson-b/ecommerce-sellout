@@ -3,10 +3,7 @@ import { connect } from "react-redux";
 import { Row, Container } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { authorizationRequestUrl, getAccessTokenUrl } from "../../config";
 import { retrieveUserRoleConfigByAuthCode } from "../../actions/partneraction";
-import Cookies from "js-cookie";
 
 function Authenticate(props) {
   const navigate = useNavigate();
