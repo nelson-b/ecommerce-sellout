@@ -336,7 +336,14 @@ function PartnerComponent(props) {
   const onSubmit = (data) => {
     let formData = data;
     console.log("form data", data);
-
+    let indexOf = formData.partner_sellout_margin.indexOf(".");
+    if (indexOf == -1) {
+      setErrorRet([]);
+    } else {
+      setErrorRet(["Decimal values not allowed in Sellout Margin "]);
+      setShowErrorModal(true);
+      return;
+    }
     if (data.partner_id === "" || data.partner_id == undefined) {
       console.log("Calling create api");
       let reqData = {
@@ -1289,7 +1296,7 @@ function PartnerComponent(props) {
                         <Form.Select
                           disabled={
                             userRole === roles.editor ||
-                            userRole === roles.approver
+                            userRole === roles.approver_2||userRole === roles.approve_1
                               ? true
                               : false
                           }
@@ -1330,7 +1337,7 @@ function PartnerComponent(props) {
                         <Form.Select
                           disabled={
                             userRole === roles.editor ||
-                            userRole === roles.approver
+                            userRole === roles.approver_2||userRole === roles.approve_1
                           }
                           size="sm"
                           className="field-Prop"
@@ -1368,7 +1375,7 @@ function PartnerComponent(props) {
                         <Form.Select
                           disabled={
                             userRole === roles.editor ||
-                            userRole === roles.approver
+                            userRole === roles.approver_2||userRole === roles.approve_1
                           }
                           size="sm"
                           className="field-Prop"
@@ -1406,7 +1413,7 @@ function PartnerComponent(props) {
                         <Form.Select
                           disabled={
                             userRole === roles.editor ||
-                            userRole === roles.approver
+                            userRole === roles.approver_2||userRole === roles.approve_1
                           }
                           size="sm"
                           className="field-Prop"

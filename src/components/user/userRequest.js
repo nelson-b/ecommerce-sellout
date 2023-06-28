@@ -7,7 +7,11 @@ import { AgGridReact } from "ag-grid-react";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
 import userRequestData from "../../data/userRequestData.json";
-import { retrieveAllNewListByRole } from "../../actions/userAction";
+import {
+  retrieveAllNewListByRole,
+  createUserProfileConfig,
+} from "../../actions/userAction";
+import { getAPIDateFormatWithTime } from "../../helper/helper";
 import "../home/home.component.css";
 
 function UserRequestComponent(props) {
@@ -18,20 +22,59 @@ function UserRequestComponent(props) {
   const location = useLocation();
   const screenRole = new URLSearchParams(location.search).get("role");
 
+  const handleApprove = (activeData) => {
+    props
+      .createUserProfileConfig(activeData)
+      .then((data) => {
+        props
+          .retrieveAllNewListByRole(screenRole == "admin" ? "" : screenRole)
+          .then((data) => {
+            setRowData(data.filter((e) => e.status == "PENDING"));
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      })
+      .catch((e) => {
+        console.log("Error", e);
+      });
+  };
+
+  const retReqData = (data, status) => {
+    let userData = {
+      email_id: data.email_id,
+      role_id: data.role_id,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      status: status, 
+      modified_by: data.modified_by,
+      created_date: data.created_date,
+      modified_date: data.modified_date,
+      active_flag: "True",
+      record_start_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+      record_end_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+      ops_val: data.ops_val,
+      zone_val: data.zone_val,
+      model_val: data.model_val,
+      country_code: data.country_code,
+    };
+    return userData;
+  };
+
   const ChildMessageRenderer = (props) => {
     const invokeReject = () => {
-      alert(
-        props.data.first_name?.length
-          ? `${props.data.first_name} has been rejected `
-          : ""
+      let reqData = retReqData(
+        rowData.find((e) => e.first_name == props.data.first_name),
+        "REJECT"
       );
+      handleApprove(reqData);
     };
     const invokeApprove = () => {
-      alert(
-        props.data.first_name?.length
-          ? `${props.data.first_name} has been approved`
-          : ""
+      let reqData = retReqData(
+        rowData.find((e) => e.first_name == props.data.first_name),
+        "ACTIVE"
       );
+      handleApprove(reqData);
     };
 
     return (
@@ -188,9 +231,9 @@ function UserRequestComponent(props) {
 
   const onGridReady = useCallback((params) => {
     props
-      .retrieveAllNewListByRole(screenRole)
+      .retrieveAllNewListByRole(screenRole == "admin" ? "" : screenRole)
       .then((data) => {
-        setRowData(data);
+        setRowData(data.filter((e) => e.status == "PENDING"));
       })
       .catch((e) => {
         console.log(e);
@@ -284,5 +327,7 @@ function UserRequestComponent(props) {
   );
 }
 
-export default connect(null, { retrieveAllNewListByRole })(UserRequestComponent);
-
+export default connect(null, {
+  retrieveAllNewListByRole,
+  createUserProfileConfig,
+})(UserRequestComponent);

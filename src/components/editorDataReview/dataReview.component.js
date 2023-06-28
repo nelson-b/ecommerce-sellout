@@ -49,7 +49,9 @@ import { useLocation } from "react-router-dom";
 
 import { retrieveHistoricalData } from "../../actions/selloutaction";
 import { updateSellOutData } from "../../actions/dataInputAction";
-
+import {
+  retrieveInputCalenderData,
+} from "../../actions/inputCalenderAction";
 import { connect } from "react-redux";
 
 function DataReviewComponent(props) {
@@ -67,6 +69,7 @@ function DataReviewComponent(props) {
 
   const [reviewData, setReviewData] = useState([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [shouldDisableSaveButton, setShouldDisableSaveButton] = useState(false);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -369,6 +372,41 @@ function DataReviewComponent(props) {
       });
   };
 
+  const getPreviousQuarterData = (quarter) => {
+    let today = new Date();
+    let year = today.getFullYear();
+    props
+      .retrieveInputCalenderData(year, quarter, "approver")
+      .then((data) => {
+        let closingData = data.CLOSING_DATE;
+        let dateCus = new Date(closingData);
+        var day = dateCus.getDate().toString().padStart(2, "0");
+        var month = (dateCus.getMonth() + 1).toString().padStart(2, "0");
+        var year = dateCus.getFullYear().toString();
+        let complete = day + "-" + month + "-" + year;
+        let today = new Date();
+        let datessss =
+          today.getDate() +
+          "-" +
+          parseInt(today.getMonth() + 1) +
+          "-" +
+          today.getFullYear();
+
+        let tempToday = new Date(datessss);
+        let tempClosing = new Date(complete);
+        let tempToDayTime = tempToday.getTime();
+        let tempClosingTime = tempClosing.getTime();
+        if (tempToDayTime > tempClosingTime) {
+          setShouldDisableSaveButton(true);
+        } else {
+          setShouldDisableSaveButton(false);
+        }
+      })
+      .catch((e) => {
+        console.log("Partner list", e);
+      });
+  };
+
   const getQuarterReviewDataPrevious = (currentYearArray, preYear) => {
     let final_arr_previous = [];
 
@@ -523,6 +561,9 @@ function DataReviewComponent(props) {
 
   useEffect(() => {
     getQuarterReviewData();
+    let todays = new Date();
+    let cMonth = todays.getMonth();
+    getPreviousQuarterData(monthsOfTheYear[cMonth]);
   }, []);
 
   const autoGroupColumnDef = useMemo(() => {
@@ -1585,6 +1626,7 @@ function DataReviewComponent(props) {
               <Col>
                 <Button
                   className="btn-upload save-header"
+                  disabled={shouldDisableSaveButton}
                   onClick={(e) => handleSave(reviewData)}
                 >
                   Save
@@ -1603,6 +1645,7 @@ function DataReviewComponent(props) {
   );
 }
 
-export default connect(null, { retrieveHistoricalData, updateSellOutData })(
+export default connect(null, { retrieveHistoricalData, updateSellOutData, retrieveInputCalenderData
+})(
   DataReviewComponent
 );
