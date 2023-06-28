@@ -232,11 +232,11 @@ function HistoricalData(props) {
   }
 
   if (screenRole == "approve_1" || screenRole == "approver_2") {
-    userMail = "chncn00071@example.com";
+    userMail = "cnchn00073@example.com";
   }
 
   if (screenRole == "supervisor_approv_1_2") {
-    userMail = "chncn00071@example.com";
+    userMail = "cnchn00073@example.com";
   }
 
   const getHistoricalData = (mail, year, role) => {

@@ -158,7 +158,7 @@ function UserList(props) {
     props
       .retrieveAllNewListByRole(userRole == roles.admin ? '' : userRole)// for admin all users should be visible
       .then((data) => {
-        setRowData(data);
+        setRowData(data.filter((e) => e.status == "ACTIVE"));
       })
       .catch((e) => {
         console.log(e);

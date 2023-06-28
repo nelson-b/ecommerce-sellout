@@ -58,6 +58,10 @@ import {
 } from "../../actions/dataInputAction";
 
 import { connect } from "react-redux";
+import {
+  retrieveInputCalenderData,
+} from "../../actions/inputCalenderAction";
+
 
 function DataReviewApprover(props) {
   const gridRef = useRef();
@@ -77,6 +81,7 @@ function DataReviewApprover(props) {
   let historicalRole = new URLSearchParams(location.search).get("role");
   const [isYearColumnVisible, setIsYearColumnVisible] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [shouldDisableSaveButton, setShouldDisableSaveButton] = useState(false);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -218,22 +223,16 @@ function DataReviewApprover(props) {
 
   const getCurrentQuarter = () => {
     const today = new Date();
-
     const month = today.getMonth() + 1;
-
     const quarter = Math.ceil(month / 3);
-
     return `Q${quarter}`;
   };
 
   const getQuarterMonths = (quarter) => {
     const quarters = {
       Q1: ["Jan", "Feb", "Mar"],
-
       Q2: ["Apr", "May", "Jun"],
-
       Q3: ["Jul", "Aug", "Sep"],
-
       Q4: ["Oct", "Nov", "Dec"],
     };
 
@@ -248,7 +247,7 @@ function DataReviewApprover(props) {
 
   if (historicalRole == "superApproverUser") {
     historicalRole = "supervisor_approv_1_2";
-    userMail = "chncn00071@example.com";
+    userMail = "cnchn00073@example.com";
   }
 
   const year = new Date().getFullYear();
@@ -382,6 +381,41 @@ function DataReviewApprover(props) {
 
       .catch((e) => {
         console.log(e);
+      });
+  };
+
+  const getPreviousQuarterData = (quarter) => {
+    let today = new Date();
+    let year = today.getFullYear();
+    props
+      .retrieveInputCalenderData(year, quarter, "approver")
+      .then((data) => {
+        let closingData = data.CLOSING_DATE;
+        let dateCus = new Date(closingData);
+        var day = dateCus.getDate().toString().padStart(2, "0");
+        var month = (dateCus.getMonth() + 1).toString().padStart(2, "0");
+        var year = dateCus.getFullYear().toString();
+        let complete = day + "-" + month + "-" + year;
+        let today = new Date();
+        let datessss =
+          today.getDate() +
+          "-" +
+          parseInt(today.getMonth() + 1) +
+          "-" +
+          today.getFullYear();
+
+        let tempToday = new Date(datessss);
+        let tempClosing = new Date(complete);
+        let tempToDayTime = tempToday.getTime();
+        let tempClosingTime = tempClosing.getTime();
+        if (tempToDayTime > tempClosingTime) {
+          setShouldDisableSaveButton(true);
+        } else {
+          setShouldDisableSaveButton(false);
+        }
+      })
+      .catch((e) => {
+        console.log("Partner list", e);
       });
   };
 
@@ -524,6 +558,7 @@ function DataReviewApprover(props) {
 
   useEffect(() => {
     getQuarterReviewData(userMail, year, historicalRole);
+    getPreviousQuarterData(getCurrentQuarter());
   }, []);
 
   const onBtShowYearColumn = useCallback((hisData, radio) => {
@@ -1937,6 +1972,7 @@ function DataReviewApprover(props) {
               <Col xs="auto">
                 <Button
                   className="btn-invest edit-header"
+                  disabled={shouldDisableSaveButton}
                   onClick={(e) => handleInvestigation(message)}
                 >
                   Send For Investigation
@@ -1946,6 +1982,7 @@ function DataReviewApprover(props) {
               <Col xs="auto">
                 <Button
                   className="btn-upload edit-header"
+                  disabled={shouldDisableSaveButton}
                   onClick={(e) => handleSave(reviewData, 0)}
                 >
                   Save
@@ -1960,6 +1997,7 @@ function DataReviewApprover(props) {
               <Col>
                 <Button
                   className="btn-upload save-header"
+                  disabled={shouldDisableSaveButton}
                   onClick={() => {
                     handleSave(reviewData, 1);
                   }}
@@ -1980,4 +2018,5 @@ export default connect(null, {
   updateSellOutReviewData,
   createData,
   updateSellOutData,
+  retrieveInputCalenderData
 })(DataReviewApprover);
