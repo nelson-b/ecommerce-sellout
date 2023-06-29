@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { connect } from "react-redux";
 import { retrieveStaticDataByAttrName } from "../../actions/staticDataAction";
+import { retrieveByEmailId } from "../../actions/userAction";
 import { redirectUrl, signInLink } from "../../config";
 import { api_ret_client_id, client_id } from "../constant";
 
@@ -50,6 +51,7 @@ function Login(props) {
   };
 
   const loginNavigation = (data) => {
+    
     if(data.username=="nelson@se.com" && data.usrpassword=="test@123"){
       navigate("/editor/home");
     }
@@ -182,4 +184,4 @@ function Login(props) {
   );
 }
 
-export default connect(null, { retrieveStaticDataByAttrName })(Login);
+export default connect(null, { retrieveStaticDataByAttrName, retrieveByEmailId })(Login);
