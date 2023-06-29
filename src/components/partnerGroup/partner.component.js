@@ -23,6 +23,7 @@ import {
   retrievePartnerByRole,
   updatePartner,
   retrieveUserRoleConfigByPartnerId,
+  retrievePartnerByPartnerID,
 } from "../../actions/partneraction.js";
 import {
   retrieveAllCountryData,
@@ -153,52 +154,61 @@ function PartnerComponent(props) {
       if (partnerId) {
         //call get by id api
         props
-          .retrievePartnerByRole(partnerId, userMail) //i/p for test purpose
+          .retrievePartnerByPartnerID(partnerId) //i/p for test purpose
           .then((data) => {
-            console.log("retrieveAllPartnerData", data);
-            const respData = data.data.filter(
-              (data) => data.partner_id === partnerId
-            )[0];
-            console.log("filter by id", respData);
-            setPartnerData(respData);
+            setTimeout(() => {
+              setPartnerData(data?.data[0]);
+
+              setFormData(data);
+            }, 3000);
             //prefill form
-            setFormData(respData);
-            console.log("partnerData", partnerData);
           })
           .catch((e) => {
             console.log(e);
           });
 
-        console.log("retrieveUserRoleConfigByPartnerId calling...", partnerId);
         //call get user role config
         props.retrieveUserRoleConfigByPartnerId(partnerId).then((data) => {
           console.log("retrieveUserRoleConfigByPartnerId response", data);
           const respData = data.filter(
             (data) => data.PARTNER_ID === partnerId
           )[0];
-          console.log("retrieveUserRoleConfigByPartnerId", data);
+          console.log("retrieveUserRoleConfigByPartnerId", respData);
           if (respData?.EDITOR) {
-            setValue("editor", respData.EDITOR);
+            setTimeout(() => {
+              setValue("editor", respData.EDITOR);
+            }, 2000);
           }
           if (respData?.BACKUP_EDITOR) {
-            setValue("backupEditor", respData.BACKUP_EDITOR);
+            setTimeout(() => {
+              setValue("backupEditor", respData.BACKUP_EDITOR);
+            }, 2000);
           }
+
           if (respData?.APPROVE_1) {
-            setValue("approver1", respData.APPROVE_1);
+            setTimeout(() => {
+              setValue("approver1", respData.APPROVE_1);
+            }, 2000);
           }
+
           if (respData?.APPROVER_2) {
-            setValue("approver2", respData.APPROVER_2);
+            setTimeout(() => {
+              setValue("approver2", respData.APPROVER_2);
+            }, 2000);
           }
         });
       } else {
         setErrorRet(["Partner id missing in url!!"]);
+
         setShowErrorModal(true);
+
         setShowSuccessModal(false);
       }
     }
   }, []);
 
-  const setFormData = (data) => {
+  const setFormData = (datass) => {
+    let data = datass?.data[0];
     // trigger();
     if (data.partner_id) {
       setValue("partner_id", data.partner_id);
@@ -209,54 +219,73 @@ function PartnerComponent(props) {
     if (data.platform_name) {
       setValue("platform_name", data.platform_name);
     }
+
     if (data.reseller_name) {
       setValue("reseller_name", data.reseller_name);
     }
+
     if (data.partner_sellout_margin) {
       setValue("partner_sellout_margin", data.partner_sellout_margin);
     }
+
     if (data.activation_date) {
       setValue("activation_date", getUIDateFormat(data.activation_date));
     }
+
     if (data.country_code) {
+      console.log("coming inside country code condition", data.country_code);
+
       setValue("country_code", data.country_code);
     }
+
     if (data.partner_group) {
       setValue("partner_group", data.partner_group);
     }
+
     if (data.se_entity) {
       setValue("se_entity", data.se_entity);
     }
+
     if (data.business_type) {
       setValue("business_type", data.business_type);
     }
+
     if (data.model_type) {
       setValue("model_type", data.model_type);
     }
+
     if (data.partner_url) {
       setValue("partner_url", data.partner_url);
     }
+
     if (data.trans_currency_code) {
       setValue("trans_currency_code", data.trans_currency_code);
     }
+
     if (data.data_collection_type) {
       setValue("data_collection_type", data.data_collection_type);
     }
+
     if (data.e2_playbook_type) {
       setValue("e2_playbook_type", data.e2_playbook_type);
     }
+
     if (data.bopp_type) {
       setValue("bopp_type", data.bopp_type);
     }
+
     if (data.gtm_type) {
       setValue("gtm_type", data.gtm_type);
     }
+
     if (data.status) {
       setValue("partner_status", data.status);
     }
+
     if (data.deactivation_date) {
       setValue("deactivation_date", getUIDateFormat(data.deactivation_date));
     }
+
     if (data.deactivation_reason) {
       setValue("deactivation_reason", data.deactivation_reason);
     }
@@ -266,11 +295,12 @@ function PartnerComponent(props) {
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
   };
+  const [successRet, setSuccessRet] = useState([]);
 
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
-    header: "Partner has been upadted successfully!",
+    header: successRet,
     content: [],
   };
 
@@ -433,6 +463,7 @@ function PartnerComponent(props) {
                       console.log(e);
                     });
                 } else {
+                  setSuccessRet(['Partner has been created successfully'])
                   setShowSuccessModal(true);
                   setShowErrorModal(false);
                   document.getElementById("partner-form").reset();
@@ -515,6 +546,7 @@ function PartnerComponent(props) {
           ) {
             saveUserPartnerConfigDetails(partnerId, formData, false);
           } else {
+            setSuccessRet(['Partner has been updated successfully'])
             setShowSuccessModal(true);
             setShowErrorModal(false);
           }
@@ -669,6 +701,7 @@ function PartnerComponent(props) {
                         size="sm"
                         id="country_code"
                         name="country_code"
+                        defaultValue={partnerData.country_code}
                         {...register("country_code", {
                           required: "Country is required",
                         })}
@@ -1296,7 +1329,8 @@ function PartnerComponent(props) {
                         <Form.Select
                           disabled={
                             userRole === roles.editor ||
-                            userRole === roles.approver_2||userRole === roles.approve_1
+                            userRole === roles.approver_2 ||
+                            userRole === roles.approve_1
                               ? true
                               : false
                           }
@@ -1337,7 +1371,8 @@ function PartnerComponent(props) {
                         <Form.Select
                           disabled={
                             userRole === roles.editor ||
-                            userRole === roles.approver_2||userRole === roles.approve_1
+                            userRole === roles.approver_2 ||
+                            userRole === roles.approve_1
                           }
                           size="sm"
                           className="field-Prop"
@@ -1375,7 +1410,8 @@ function PartnerComponent(props) {
                         <Form.Select
                           disabled={
                             userRole === roles.editor ||
-                            userRole === roles.approver_2||userRole === roles.approve_1
+                            userRole === roles.approver_2 ||
+                            userRole === roles.approve_1
                           }
                           size="sm"
                           className="field-Prop"
@@ -1413,7 +1449,8 @@ function PartnerComponent(props) {
                         <Form.Select
                           disabled={
                             userRole === roles.editor ||
-                            userRole === roles.approver_2||userRole === roles.approve_1
+                            userRole === roles.approver_2 ||
+                            userRole === roles.approve_1
                           }
                           size="sm"
                           className="field-Prop"
@@ -1493,4 +1530,5 @@ export default connect(null, {
   retrievePartnerByRole,
   retrieveUserRoleConfigByPartnerId,
   retrieveAllPartnerData,
+  retrievePartnerByPartnerID,
 })(PartnerComponent);

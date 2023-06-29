@@ -239,9 +239,9 @@ function HistoricalData(props) {
     userMail = "cnchn00073@example.com";
   }
 
-  const getHistoricalData = (mail, year, role) => {
+  const getHistoricalData = (mail, year, screenRole) => {
     props
-      .retrieveHistoricalData(mail, year, role)
+      .retrieveHistoricalData(mail, year, screenRole)
 
       .then((data) => {
         let final_arr = [];

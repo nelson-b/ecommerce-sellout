@@ -13,7 +13,7 @@ class PartnerService {
     );
   }
 
-  getByRole(role, email) {
+  getByRole(email, role) {
     if(role != '' && email != ''){
     console.log('by_user', role, email);
     return http.get(      
@@ -67,12 +67,12 @@ class PartnerService {
     );
   }
 
-  // updatePendingPartner(data) {
-  //   return baseurl.put(
-  //     `/create-partner/ecomm-sellout-dev-lamda-createpartner/update-partner`,
-  //     data
-  //   );
-  // }
+  getPartnerByPartnerID(parterID) {
+    return http.get(
+      `/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_partner_id&partner_id=${parterID}`
+    );
+
+  }
 }
 
 export default new PartnerService();

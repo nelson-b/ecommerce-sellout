@@ -62,20 +62,20 @@ function BusinessUnitSplit(props) {
   };
 
   const handleSave = useCallback((data) => {
-     let reqData = {
-        country_code: data[0].country_code,
-        partner_id: data[0].partner_id,
-        model_type: data[0].model_type,
-        year_val: data[0].year_val,
-        quarter: data[0].quarter,
-        attributes: data[0].attributes,
-        created_by: data[0].created_by,
-        created_date: data[0].created_date,
-        modified_by: data[0].modified_by,
-        modified_date: data[0].modified_date,
-        active_flag: data[0].active_flag,
-      };
-      
+    let reqData = {
+      country_code: data[0].country_code,
+      partner_id: data[0].partner_id,
+      model_type: data[0].model_type,
+      year_val: data[0].year_val,
+      quarter: data[0].quarter,
+      attributes: data[0].attributes,
+      created_by: data[0].created_by,
+      created_date: data[0].created_date,
+      modified_by: data[0].modified_by,
+      modified_date: data[0].modified_date,
+      active_flag: data[0].active_flag,
+    };
+
     let apiData = 0;
 
     reqData.attributes.forEach((e) => {
@@ -100,29 +100,29 @@ function BusinessUnitSplit(props) {
   }, []);
 
   const handleUpload = useCallback((data) => {
-      let reqData = {
-        country_code: data[0].Country,
-        model_type: data[0].Model,
-        quarter: data[0].Quarter,
-        attributes: [
-          { attribute_name: "bopp_type", attribute_val: "SP", total: data[0].SP },
-          {
-            attribute_name: "bopp_type",
-            attribute_val: "H&D",
-            total: data[0]["H&D"],
-          },
-          { attribute_name: "bopp_type", attribute_val: "PP", total: data[0].PP },
-          { attribute_name: "bopp_type", attribute_val: "DE", total: data[0].DE },
-          { attribute_name: "bopp_type", attribute_val: "IA", total: data[0].IA },
-        ],
-        partner_id: "CHN-CN-00072",
-        year_val: new Date().getFullYear(),
-        created_by: userMail,
-        created_date: new Date().toUTCString(),
-        modified_by: userMail,
-        modified_date: new Date().toUTCString(),
-        active_flag: "false",
-      };
+    let reqData = {
+      country_code: data[0].Country,
+      model_type: data[0].Model,
+      quarter: data[0].Quarter,
+      attributes: [
+        { attribute_name: "bopp_type", attribute_val: "SP", total: data[0].SP },
+        {
+          attribute_name: "bopp_type",
+          attribute_val: "H&D",
+          total: data[0]["H&D"],
+        },
+        { attribute_name: "bopp_type", attribute_val: "PP", total: data[0].PP },
+        { attribute_name: "bopp_type", attribute_val: "DE", total: data[0].DE },
+        { attribute_name: "bopp_type", attribute_val: "IA", total: data[0].IA },
+      ],
+      partner_id: "CHN-CN-00072",
+      year_val: new Date().getFullYear(),
+      created_by: userMail,
+      created_date: new Date().toUTCString(),
+      modified_by: userMail,
+      modified_date: new Date().toUTCString(),
+      active_flag: "false",
+    };
 
     if (data[0].Total == 100) {
       props
@@ -146,216 +146,35 @@ function BusinessUnitSplit(props) {
 
   const buSplitData = [
     {
-      partner_id: "Adalbert",
-
-      country_code: "France",
-
-      Partner_Account_Name: "Adalbert Zajadacz (Part of DEHA) DEU",
-
-      model_type: "E1 - Dist",
-
-      quarter: "Q1 2023",
-
-      attributes: [
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "SP",
-
-          total: 25,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "H&D",
-
-          total: 25,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "PP",
-
-          total: 20,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "DE",
-
-          total: 15,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "IA",
-
-          total: 5,
-        },
-      ],
-    },
-
-    {
-      partner_id: "AFB",
-
-      country_code: "Canada",
-
-      Partner_Account_Name: "AFB eSolutions DEU",
-
-      model_type: "E1 - Dist",
-
-      quarter: "Q1 2023",
-
-      attributes: [
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "SP",
-
-          total: 25,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "H&D",
-
-          total: 25,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "PP",
-
-          total: 20,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "DE",
-
-          total: 15,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "IA",
-
-          total: 15,
-        },
-      ],
-    },
-
-    {
       partner_id: "Ahlsell",
-
-      country_code: "Norway",
-
-      Partner_Account_Name: "Ahlsell ELKO NOR",
-
-      model_type: "E1 - Dist",
-
-      quarter: "Q1 2023",
-
-      attributes: [
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "SP",
-
-          total: 25,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "H&D",
-
-          total: 25,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "PP",
-
-          total: 20,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "DE",
-
-          total: 15,
-        },
-
-        {
-          attribute_name: "bopp_type",
-
-          attribute_val: "IA",
-
-          total: 15,
-        },
-      ],
-    },
-
-    {
-      partner_id: "Ahlsell",
-
       country_code: "Finland",
-
       Partner_Account_Name: "Ahlsell ELKO SWE",
-
-      model_type: "E2 - Dist",
-
-      quarter: "Q2 2023",
-
+      model_type: "E1",
+      quarter: "Q2",
       attributes: [
         {
           attribute_name: "bopp_type",
-
           attribute_val: "SP",
-
           total: 25,
         },
-
         {
           attribute_name: "bopp_type",
-
           attribute_val: "H&D",
-
           total: 25,
         },
-
         {
           attribute_name: "bopp_type",
-
           attribute_val: "PP",
-
           total: 20,
         },
-
         {
           attribute_name: "bopp_type",
-
           attribute_val: "DE",
-
           total: 15,
         },
-
         {
           attribute_name: "bopp_type",
-
           attribute_val: "IA",
-
           total: 15,
         },
       ],
@@ -567,10 +386,10 @@ function BusinessUnitSplit(props) {
     userMail = "chncn00072@example.com";
   }
   if (buRole == "approve_1" || buRole == "approver_2") {
-    userMail = "abc@example.com";
+    userMail = "chncn00072@example.com";
   }
   if (buRole == "superApproverUser") {
-    userMail = "chncn00071@example.com";
+    userMail = "chncn00072@example.com";
   }
   let year = new Date().getFullYear();
 
@@ -581,14 +400,12 @@ function BusinessUnitSplit(props) {
         buRole == "superApproverUser" ? "supervisor_approv_1_2" : buRole,
         year
       )
-
       .then((data) => {
         props
           .retrivePartnerAccountName(
             data.data[0].partner_id,
             data.data[0].country_code
           )
-
           .then((data1) => {
             let obj = {};
             obj = data.data[0];
@@ -798,27 +615,18 @@ function BusinessUnitSplit(props) {
     for (let i = 7; i > 0; i--) {
       let date = new Date(
         currentDate.getFullYear(),
-
         currentDate.getMonth() - (i - 1),
-
         1
       );
 
       const monthName = allCalMonths[date.getMonth()];
-
       const year = String(date.getFullYear()).slice(-2);
-
       const monthField = monthName + "_Amount";
-
       if (currentYear !== year && currentMonth !== 0) continue;
-
       let data = rowData.filter((item) => item[monthField] != "");
-
       if (data.length > 0) {
         console.log("show data already exist popup");
-
         setShowShouldUpdModal(true);
-
         return;
       }
     }
@@ -842,12 +650,10 @@ function BusinessUnitSplit(props) {
         alignment: {
           vertical: "Center",
         },
-
         font: {
           bold: true,
           color: "#ffffff",
         },
-
         interior: {
           color: "#009530",
           pattern: "Solid",

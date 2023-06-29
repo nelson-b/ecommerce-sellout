@@ -19,7 +19,7 @@ function UserList(props) {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const location = useLocation();
-  const userRole = new URLSearchParams(location.search).get("role");
+  let userRole = new URLSearchParams(location.search).get("role");
 
   const handleUserEdit = (params) => {
     navigate(`/user/update?id=${params.data.email_id}&role=${userRole}`);
@@ -145,6 +145,7 @@ function UserList(props) {
   let userMail = '';
 
   if(userRole == 'superApproverUser') {
+    userRole = "SUPERVISOR_APPROVER_1_2"
     userMail = 'thomas@se.com'
   }
   if(userRole == 'admin') {

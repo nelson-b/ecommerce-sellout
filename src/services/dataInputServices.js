@@ -10,11 +10,10 @@ class DataInputService {
     }
 
     getAll(user, year, role) {
-        return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?USER=${user}&YEAR_VAL=${year}&ROLE_ID=${role}`);
+        return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?USER=${user}&YEAR_VAL=${year}&ROLE_ID=${role}&fetch=by_user_role`);
     }
 
     updateReviewData(data) {
-        console.log('data in service', data);
         return http.post(`/ecomm-sellout-dev-lamda-createpartner/create-update-input-calander/create-sellout-transactions`, data);
     }
 }

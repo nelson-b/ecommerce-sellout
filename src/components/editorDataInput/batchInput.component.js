@@ -9,6 +9,7 @@ import { allCalMonths } from "../constant";
 import { ckeckErrors } from "../utils/index.js";
 import { retrieveAllData, createData } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { getUIDateFormat, getAPIDateFormatWithTime } from "../../helper/helper";
 
 function BatchInputComponent({ savedData, props, userDetails }) {
@@ -16,6 +17,8 @@ function BatchInputComponent({ savedData, props, userDetails }) {
     "getUIDateFormatWithTime",
     getAPIDateFormatWithTime(new Date().toUTCString())
   );
+  const location = useLocation();
+  const historicalRole = new URLSearchParams(location.search).get("role");
 
   const navigate = useNavigate();
 
@@ -272,7 +275,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
                 setShowErrorModal(false);
                 setShowSuccessModal(true);
                 setShowShouldUpdModal(false);
-                setTimeout(() => navigate("/dataReview"), 3000);
+                setTimeout(() => navigate(`/dataReview?role=${historicalRole}`), 3000);
               })
               .catch((e) => {
                 document.getElementById("sellout-editor-input").reset();
