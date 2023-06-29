@@ -2,9 +2,14 @@ import http from "../http-common";
 
 class SellOutDataService {
   getHistoricalData(user, year, id) {
-    return http.get(
-      `/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?USER=${user}&YEAR_VAL=${year}&ROLE_ID=${id}`
-    );
+    debugger;
+    let isSuperApproverUser = " ";
+    if (id == "supervisor_approv_1_2") {
+      isSuperApproverUser = `/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?fetch=all`;
+    } else {
+      isSuperApproverUser = `/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?USER=${user}&YEAR_VAL=${year}&ROLE_ID=${id}&fetch=by_user_role`;
+    }
+    return http.get(isSuperApproverUser);
   }
 
   getAll() {

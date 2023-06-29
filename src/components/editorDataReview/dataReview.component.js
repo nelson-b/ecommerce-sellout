@@ -73,7 +73,7 @@ function DataReviewComponent(props) {
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
-
+    
     { name: "Euro", value: "2" },
   ];
 
@@ -414,7 +414,7 @@ function DataReviewComponent(props) {
 
     props
 
-      .retrieveHistoricalData("nelson@se.com", preYear, "editor")
+      .retrieveHistoricalData(userMail, preYear, historicalRole)
 
       .then((data) => {
         data.map((item) => {

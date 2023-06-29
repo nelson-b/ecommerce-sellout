@@ -16,7 +16,6 @@ import "../partnerList/partnerList.css";
 import {
   retrieveAllPartnerData,
   retrievePartnerByRole,
-  retrieveUserRoleConfigByPartnerId,
   retrieveUserRoleConfigByEmailIdRoleId,
 } from "../../actions/partneraction";
 import { connect } from "react-redux";
@@ -278,7 +277,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Editor",
-      field: "EDITOR",
+      field: "created_by",
       width: 120,
       sortable: true,
       filter: true,
@@ -334,9 +333,6 @@ function PartnerList(props) {
   if (screenRole == "editor") {
     userMail = "nelson@se.com";
   }
-  if (screenRole == "approver") {
-    userMail = "katie@se.com";
-  }
   if (screenRole == "superApproverUser") {
     userMail = "thomas@se.com";
   }
@@ -345,6 +341,12 @@ function PartnerList(props) {
   }
   if (screenRole == "superUser") {
     userMail = "marie@se.com";
+  }
+  if (screenRole == "approve_1") {
+    userMail = "cnchn00073@example.com";
+  }
+  if (screenRole == "approver_2") {
+    userMail = "cnchn00073@example.com";
   }
 
   const onGridReady = useCallback((params) => {
@@ -371,8 +373,18 @@ function PartnerList(props) {
 
       .then((data) => {
         previousAPIData = data?.data;
+        let tempRole = screenRole;
+        if(screenRole == roles.superUser) {
+          tempRole = 'SUPERVISOR'
+        }
+        if(screenRole == roles.admin) {
+          tempRole = 'SUPERVISOR'
+        }
+        if(screenRole == roles.superApproverUser) {
+          tempRole = 'SUPERVISOR'
+        }
         props
-          .retrieveUserRoleConfigByEmailIdRoleId("nelson@se.com", "editor")
+          .retrieveUserRoleConfigByEmailIdRoleId(userMail, tempRole)
           .then((data2) => {
             if (data2.length) {
               for (let i = 0; i < previousAPIData.length; i++) {
@@ -550,6 +562,5 @@ function PartnerList(props) {
 export default connect(null, {
   retrieveAllPartnerData,
   retrievePartnerByRole,
-  retrieveUserRoleConfigByPartnerId,
   retrieveUserRoleConfigByEmailIdRoleId,
 })(PartnerList);

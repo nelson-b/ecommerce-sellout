@@ -403,7 +403,7 @@ function PartnerRequestList(props) {
     {
       headerName: "Backup Editor",
 
-      field: "modified_by",
+      field: "",
 
       minWidth: 140,
 
@@ -508,7 +508,7 @@ function PartnerRequestList(props) {
       e2_playbook_type: data.e2_playbook_type,
       bopp_type: data.bopp_type,
       gtm_type: data.gtm_type,
-      created_by: userMail,
+      created_by: data.created_by,
       created_date: new Date().toUTCString(),
       modified_by: userMail,
       last_modified_date: new Date().toUTCString(),

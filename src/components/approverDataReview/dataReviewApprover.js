@@ -258,12 +258,9 @@ function DataReviewApprover(props) {
       .retrieveHistoricalData(userMail, year, historicalRole)
       .then((data) => {
         let final_arr = [];
-
         data.map((item) => {
           let string_year_val = item.year_val.toString();
-
           let itemYear = string_year_val.slice(2, string_year_val.length);
-
           let obj = {};
 
           obj.zone_val = item.zone_val;
@@ -283,21 +280,16 @@ function DataReviewApprover(props) {
           obj.SelloutCQ = "";
           obj.systemComments = "";
           obj.editorComments = item.editor_comment;
-
           obj.YTD = "";
-
           obj.YTD_Growth = "";
-
           obj.ambition = "";
           obj.approverComments = item.comments;
           obj.partner_id = item.partner_id;
-
           obj.year_val = item.year_val;
           obj.created_by = item.created_by;
           obj.created_date = item.created_date;
           obj.approval_status = item.approval_status;
           obj.batch_upload_flag = item.batch_upload_flag;
-
           item.months.map((each) => {
             if (each.month_val === "jan") {
               obj["Jan" + itemYear] = each.sellout_local_currency;
@@ -371,14 +363,11 @@ function DataReviewApprover(props) {
               obj["Jan" + itemYear + "E"] = each.sellout;
             }
           });
-
           final_arr.push(obj);
-
-          let preYear = yearCurrent - 1;
-          getQuarterReviewDataPrevious(final_arr, preYear);
         });
+        let preYear = yearCurrent - 1;
+        getQuarterReviewDataPrevious(final_arr, preYear);
       })
-
       .catch((e) => {
         console.log(e);
       });
