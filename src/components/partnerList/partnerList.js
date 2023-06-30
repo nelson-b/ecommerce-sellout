@@ -387,7 +387,6 @@ function PartnerList(props) {
         if(screenRole == roles.superApproverUser) {
           tempRole = 'SUPERVISOR_APPROV_1_2'
         }
-        debugger;
         if (screenRole != 'admin') {
         props.retrieveUserRoleConfigByEmailIdRoleId(userMail, tempRole)
           .then((data2) => {
@@ -397,7 +396,6 @@ function PartnerList(props) {
                   if (previousAPIData[i].partner_id == secondArray.PARTNER_ID) {
                     previousAPIData[i].Approver1 = secondArray.APPROVE_1;
                     previousAPIData[i].Approver2 = secondArray.APPROVER_2;
-                   debugger;
                     previousAPIData[i].BACKUP_EDITOR =
                       secondArray.BACKUP_EDITOR;
 

@@ -226,7 +226,6 @@ function PartnerQuarterApprover( props ) {
   let month = "dec";
 
   const getPreviousData = (userMail, quarterRole, year, month) => {
-    debugger;
     props
       .getQuarterData(userMail, quarterRole, year, month)
       .then((data) => {
@@ -239,7 +238,6 @@ function PartnerQuarterApprover( props ) {
   };
 
   useEffect(() => {
-    debugger;
     console.log("before daat");
     getPreviousData(userMail, quarterRole,year, month);
     console.log("after daat");

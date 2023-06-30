@@ -396,7 +396,6 @@ function DataReviewApprover(props) {
         let tempClosing = new Date(complete);
         let tempToDayTime = tempToday.getTime();
         let tempClosingTime = tempClosing.getTime();
-        debugger;
         if (tempToDayTime > tempClosingTime) {
           setShouldDisableSaveButton(true);
         } else {
