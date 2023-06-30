@@ -5,9 +5,9 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { retrieveUserRoleConfigByAuthCode } from "../../actions/partneraction";
 import Cookies from "js-cookie";
-import { roles } from "../constant";
+import { roles, user_login_info } from "../constant";
 import AlertModal from "../modal/alertModel";
-import { tokenExpiryTime } from "../../config";
+import { tokenExpiryMinusAttr } from "../../config";
 
 function Authenticate(props) {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ function Authenticate(props) {
 
   useEffect(()=>{
       console.log('authCode', authCode);
-      
+
       props
         .retrieveUserRoleConfigByAuthCode(authCode)
         .then((data) => {
@@ -53,14 +53,18 @@ function Authenticate(props) {
   },[]);
 
   const setTokenUserInfo = (data) => {
-    localStorage.setItem('user_login_info', JSON.stringify(data.principalId));
-    let inMinutes = new Date(new Date().getTime() + Number(tokenExpiryTime) * 1000); //data.expires_in 2 hr
+    let userDetails = JSON.parse(data.principalId.replace(/'/g, '"'));
+    console.log('setTokenUserInfo', userDetails);
+    localStorage.setItem(user_login_info, JSON.stringify(userDetails));
+    //expiring token half hour before ping to avoid conflicts
+    let inMinutes = new Date(new Date().getTime() + Number(data.expires_in - tokenExpiryMinusAttr) * 1000); //data.expires_in 2 hr
     Cookies.set('access_token', data.access_token, { expires: inMinutes }) //token expires in a day
     //navigate to home screen based on the role
-    handleNavigation(data.principalId.role_id);
+    handleNavigation(userDetails.role_id);
   }
 
   const handleNavigation = (usrRole) => {
+    console.log('handleNavigation', usrRole);
     if(usrRole === roles.editor.toUpperCase()){
       navigate("/editor/home");
     }
@@ -111,7 +115,7 @@ function Authenticate(props) {
   return (
     <Container fluid>
       <Row>
-        <span>Processing authendication.....</span>
+        <span>Processing authentication.....</span>
         <AlertModal
           show={showErrorModal}
           handleClose={handleCloseErrorModal}

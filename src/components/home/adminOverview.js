@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useRef } from "react";
+import React, { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import { sellOutData } from "../../actions/selloutaction";
 import MyMenu from "../menu/menu.component.js";
@@ -9,10 +9,30 @@ import adminOverview from "../../data/adminOverview.json";
 import approvalOneOverview from "../../data/approverOneOverview.json";
 import approvalTwoOverview from "../../data/approverTwoOverview.json";
 import "../home/home.component.css";
+import { roles, user_login_info } from "../constant";
 
 function AdminOverview(props) {
   const gridRef = useRef();
   const navigate = useNavigate();
+
+    //sso login func
+    const [userEmail, setUserEmail] = useState('');
+    const [userRole, setuserRole] = useState('');
+            
+    useEffect(() => {
+      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+      //if user not login then redirect to login page
+      if(usrDetails){
+        setUserEmail(usrDetails.email_id);
+        setuserRole(usrDetails.role_id);
+              
+        if(usrDetails.role_id !== roles.admin.toUpperCase()) {
+          navigate("/");
+        }
+      }
+    }, []);
+    //------------------//
+
   const [rowData, setRowData] = useState();
 
   const ChildMessageRenderer = (props) => {

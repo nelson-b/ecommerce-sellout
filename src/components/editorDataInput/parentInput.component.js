@@ -8,11 +8,11 @@ import "ag-grid-community/styles/ag-grid.css";
 
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 
 import { Button, Row, Col, Container, Form, Breadcrumb } from "react-bootstrap";
 
-import { allCalMonths, roles } from "../constant";
+import { allCalMonths, roles, user_login_info } from "../constant";
 
 import "./parentInput.component.css";
 
@@ -52,6 +52,23 @@ import {
 
 function DataInputComponent(props) {
   const navigate = useNavigate();
+  //sso login func
+  const [userEmail, setUserEmail] = useState('');
+  const [userRole, setuserRole] = useState('');
+        
+  useEffect(() => {
+      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+        //if user not login then redirect to login page
+        if(usrDetails){
+          setUserEmail(usrDetails.email_id);
+          setuserRole(usrDetails.role_id);
+          
+          if(usrDetails.role_id !== roles.editor.toUpperCase()) {
+            navigate("/");
+          }
+        }
+  }, []);
+  //------------------//
 
   const [showModal, setShowModal] = useState(false);
 
@@ -61,7 +78,7 @@ function DataInputComponent(props) {
 
   const location = useLocation();
 
-  const userRole = new URLSearchParams(location.search).get("role");
+  // const userRole = new URLSearchParams(location.search).get("role");
 
   const monthsOfTheYear = [
     "Jan",

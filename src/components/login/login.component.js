@@ -43,9 +43,9 @@ function Login(props) {
 
   const [formData, setFormData] = useState(initialState);
 
-  const onSubmit = (data) => {
-    loginNavigation(data);
-  };
+  // const onSubmit = (data) => {
+  //   loginNavigation(data);
+  // };
 
   const onError = (error) => {
     console.log("ERROR:::", error);
@@ -78,37 +78,37 @@ function Login(props) {
     content: errorRet,
   };
 
-  const loginNavigation = (data) => {
-    props.retrieveByEmailId(data.username)
-      .then((data) => {
-        console.log('retrieveByEmailId', data);
-        if(data.length > 0){
-        setShowErrorModal(false);
+  // const loginNavigation = (data) => {
+  //   props.retrieveByEmailId(data.username)
+  //     .then((data) => {
+  //       console.log('retrieveByEmailId', data);
+  //       if(data.length > 0){
+  //       setShowErrorModal(false);
         
-        let respData = {
-          email: data[0].email_id,
-          role_id: data[0].role_id,
-          first_name: data[0].first_name,
-          last_name: data[0].last_name
-        }
+  //       let respData = {
+  //         email: data[0].email_id,
+  //         role_id: data[0].role_id,
+  //         first_name: data[0].first_name,
+  //         last_name: data[0].last_name
+  //       }
 
-        console.log('respData', respData);
-        //save in local storage
-          localStorage.setItem('user_login_info', JSON.stringify(respData))
-          //redirect to home page
-          handleNavigation(respData.role_id);
-        }
-        else {
-          //user does not exist
-          console.error('user does not exist!!');
-          setErrorRet(["User does not exist!!"]);
-          setShowErrorModal(true);
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      })
-  };
+  //       console.log('respData', respData);
+  //       //save in local storage
+  //         localStorage.setItem('user_login_info', JSON.stringify(respData))
+  //         //redirect to home page
+  //         handleNavigation(respData.role_id);
+  //       }
+  //       else {
+  //         //user does not exist
+  //         console.error('user does not exist!!');
+  //         setErrorRet(["User does not exist!!"]);
+  //         setShowErrorModal(true);
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //     })
+  // };
 
   const handleNavigation = (usrRole) => {
     if(usrRole === roles.EDITOR){
@@ -170,14 +170,14 @@ function Login(props) {
   return (
     <Container fluid>
       <Row>
-        <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
+        {/* <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}> */}
           <Row className="justify-content-center">
             <Card className="cardPanel">
               <center>
                 <Card.Img className="logo" variant="top" src={logo} />
               </center>
               <Row>
-                <Form.Group className="mb-4">
+                {/* <Form.Group className="mb-4">
                   <Row className="justify-content-center">
                     <Form.Control
                       size="sm"
@@ -220,20 +220,20 @@ function Login(props) {
                       </center>
                     )}
                   </Row>
-                </Form.Group>
+                </Form.Group> */}
                 <Form.Group className="mb-4">
                   <Row className="justify-content-center mb-4">
-                    <Button
+                    {/* <Button
                       className="btn-login save-header btn-create"
                       type="submit"
                       >
                       Login
-                    </Button>
+                    </Button> */}
                     <Button
                       className="btn-login save-header btn-create"
                       onClick={handleSSOLogin}
                       >
-                      SSO Login (WIP)
+                      SSO Login
                     </Button>
                     <AlertModal
                       show={showSuccessModal}
@@ -250,7 +250,7 @@ function Login(props) {
               </Row>
             </Card>
           </Row>
-        </Form>
+        {/* </Form> */}
       </Row>
     </Container>
   );

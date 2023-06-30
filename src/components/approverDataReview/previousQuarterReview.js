@@ -11,7 +11,7 @@ import {
   Breadcrumb,
   Container,
 } from "react-bootstrap";
-import { month } from "../constant";
+import { month, roles, user_login_info } from "../constant";
 import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
@@ -27,6 +27,25 @@ function PartnerQuarterApprover( props ) {
   const gridRef = useRef();
   const navigate = useNavigate();
   const location = useLocation();
+
+  //sso login func
+  const [userEmail, setUserEmail] = useState('');
+  const [userRole, setuserRole] = useState('');
+  
+  useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+      //if user not login then redirect to login page
+    if(usrDetails){
+        setUserEmail(usrDetails.email_id);
+        setuserRole(usrDetails.role_id);
+  
+        if(usrDetails.role_id !== roles.supervisor_approv_1_2.toUpperCase()){
+          navigate("/");
+        }
+    }
+  }, []);
+  //------------------//
+    
   let quarterRole = new URLSearchParams(location.search).get("role");
 
   const [rowData, setRowData] = useState([]);

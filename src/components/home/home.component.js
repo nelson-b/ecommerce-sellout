@@ -10,14 +10,31 @@ import editorOverview from "../../data/editorOverview.json";
 import approveOverview from "../../data/approverOverview.json";
 import superOverview from "../../data/superOverview.json";
 import footerTotalReview from "../editorDataReview/footerTotalReview";
+import { roles, user_login_info } from "../constant.js";
 
 function Home(props) {
   const gridRef = useRef();
   const navigate = useNavigate();
-
+  //sso login func
+  const [userEmail, setUserEmail] = useState('');
+  const [userRole, setuserRole] = useState('');
+            
   useEffect(() => {
-    const items = JSON.parse(localStorage.getItem('user_login_info'));
+      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+      //if user not login then redirect to login page
+      if(usrDetails){
+        setUserEmail(usrDetails.email_id);
+        setuserRole(usrDetails.role_id);
+              
+        if(usrDetails.role_id !== roles.editor.toUpperCase() ||
+          usrDetails.role_id !== roles.approve_1.toUpperCase() ||
+          usrDetails.role_id !== roles.approver_2.toUpperCase() ||
+          usrDetails.role_id !== roles.supervisor_approv_1_2.toUpperCase()) {
+          navigate("/");
+        }
+      }
   }, []);
+  //------------------//
 
   const [rowData, setRowData] = useState();
 

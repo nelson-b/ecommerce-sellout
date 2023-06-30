@@ -6,4 +6,4 @@ export const authorizationRequestUrl = redirectUrl.concat("?code=");
 
 export const getAccessTokenUrl = "https://ping-sso-uat.schneider-electric.com/as/token.oauth2";
 
-export const tokenExpiryTime = 7200; //in seconds
+export const tokenExpiryMinusAttr = 1080; //in seconds

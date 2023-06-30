@@ -41,3 +41,4 @@ export const quarters = {
 
 export const client_id = "client_id"
 export const api_ret_client_id = "api_ret_client_id";
+export const user_login_info = "user_login_info";

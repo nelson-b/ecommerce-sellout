@@ -38,12 +38,30 @@ import {
   retrieveByEmailId,
 } from "../../../actions/userAction.js";
 import AlertModal from "../../modal/alertModel.js";
-import { roles, status } from "../../constant.js";
+import { roles, status, user_login_info } from "../../constant.js";
 import { getAPIDateFormatWithTime } from "../../../helper/helper.js";
 import { userRoleOptions } from "../optionsData.js";
 
 function SaveUser(props) {
   const navigate = useNavigate();
+
+  const [userEmail, setUserEmail] = useState('');
+  const [userRoleData, setUserRoleData] = useState('');
+  
+  useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if(usrDetails){
+      setUserEmail(usrDetails.email_id);
+      setUserRoleData(usrDetails.role_id);
+                
+      if(usrDetails.role_id !== roles.admin.toUpperCase()) {
+        navigate("/");
+      }
+    }
+  }, []);
+  //------------------//
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const userRole = new URLSearchParams(location.search).get("role");

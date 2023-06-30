@@ -3,7 +3,7 @@ import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useNavigate } from "react-router-dom";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Button, Row, Col, Container, Breadcrumb } from "react-bootstrap";
 import MyMenu from "../../menu/menu.component.js";
 import { AgGridReact } from "ag-grid-react";
@@ -13,10 +13,29 @@ import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { retrieveAllNewListByRole } from "../../../actions/userAction.js";
 import userEditIcon from "../../../images/edit-icon.png";
-import { roles } from "../../constant.js";
+import { roles, user_login_info } from "../../constant.js";
 
 function UserList(props) {
   const navigate = useNavigate();
+
+  //sso login func
+  const [userEmail, setUserEmail] = useState('');
+  const [userRoleData, setUserRoleData] = useState('');
+                  
+  useEffect(() => {
+        const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+        //if user not login then redirect to login page
+        if(usrDetails){
+          setUserEmail(usrDetails.email_id);
+          setUserRoleData(usrDetails.role_id);
+                    
+          if(usrDetails.role_id !== roles.admin.toUpperCase()) {
+            navigate("/");
+          }
+        }
+  }, []);
+  //------------------//
+
   const [rowData, setRowData] = useState();
   const location = useLocation();
   let userRole = new URLSearchParams(location.search).get("role");

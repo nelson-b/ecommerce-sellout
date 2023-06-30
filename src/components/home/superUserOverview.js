@@ -1,12 +1,30 @@
-import React, { useCallback, useMemo, useState, useRef } from "react";
+import React, { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import MyMenu from "../menu/menu.component.js";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import calender from "./../../images/calender.png";
-import { roles } from "../../components/constant.js";
+import { roles, user_login_info } from "../../components/constant.js";
 
 function SuperUseOverview(props) {
   const navigate = useNavigate();
+
+  //sso login func
+  const [userEmail, setUserEmail] = useState('');
+  const [userRole, setuserRole] = useState('');
+              
+  useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if(usrDetails){
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+                
+      if(usrDetails.role_id !== roles.supervisor.toUpperCase()) {
+        navigate("/");
+      }
+    }
+  }, []);
+  //------------------//
 
   const partnerDataNavigation = () => {
     navigate(`/partner/list?role=${roles.superUser}`);

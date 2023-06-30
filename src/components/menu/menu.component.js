@@ -4,41 +4,41 @@ import {
   Navbar,
   NavDropdown,
   Container,
-  Image,
   Badge,
   Button,
   Toast,
   ToastContainer,
-  Row,
   ListGroup,
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "./../../images/schneider-electric-logo.svg";
-import loginUserPic from "./../../images/loginUser.jpg";
 import { AiFillBell } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./menu.component.css";
 import Cookies from "js-cookie";
+import { user_login_info } from "../constant";
 
 function MyMenu(props) {
   const navigate = useNavigate();
-  const [username, setLoggedInUsrName] = useState("Jean-Pascal");
+  const [userName, setUserName] = useState('');
   const [showNotifiation, setshowNotification] = useState(false);
   const [notificationCount, setnotificationCount] = useState(null); //currently set with test values
-  const [position, setPosition] = useState("top-start");
   const [notificationMessage, setNotificationMessage] = useState([]);
-  
+
+  //sso login
   useEffect(() => {
-    const usrDetails = JSON.parse(localStorage.getItem('user_login_info'));
-    console.log('usrDetails', usrDetails);
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    console.log('menu usrDetails', usrDetails);
     //if user not login then redirect to login page
     if(usrDetails){
-      setUsername(usrDetails.first_name + " " + usrDetails.last_name);
+      setUserName(usrDetails.first_name + ' '+ usrDetails.last_name);
+      console.log('userName', userName);
     }
     else {
       navigate("/");
     }
   }, []);
+  //------------------//
 
   useEffect(() => {
     //notification api call
@@ -235,8 +235,7 @@ function MyMenu(props) {
 
   //set current notification count
   const setNotification = (value) => setnotificationCount(value);
-  //set username
-  const setUsername = (usrname) => setLoggedInUsrName(usrname);
+
   //show/hide notification
   const toggleShowNotification = () => {
     setshowNotification(!showNotifiation);
@@ -247,7 +246,7 @@ function MyMenu(props) {
   const handleLogout = () => {
     //navigate to the login page
     Cookies.remove("access_token");
-    localStorage.removeItem("user_login_info");
+    localStorage.removeItem(user_login_info);
     navigate("/");
   };
 
@@ -256,7 +255,7 @@ function MyMenu(props) {
       <Navbar bg="white" collapseOnSelect variant="light">
         <Container fluid>
           <Navbar.Brand>
-            <Nav.Link href="/">
+            <Nav.Link>
               <img alt="logo" src={logo} style={{ height: 50 }} />
             </Nav.Link>
           </Navbar.Brand>
@@ -311,12 +310,12 @@ function MyMenu(props) {
                 align="end"
                 title={
                   <div>
-                    <Image
+                    {/* <Image
                       src={""}
                       style={{ height: 35, width: 35, padding: 6 }}
                       roundedCircle
-                    ></Image>
-                    <b>{username}</b>
+                    ></Image> */}
+                    <b>{ userName }</b>
                   </div>
                 }
                 className="pull-right"

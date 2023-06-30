@@ -4,7 +4,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useNavigate } from "react-router-dom";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 
 import {
   Button,
@@ -21,7 +21,7 @@ import "ag-grid-enterprise";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
 import AlertModel from "../modal/alertModel";
-import { allCalMonths } from "../constant.js";
+import { allCalMonths, roles, user_login_info } from "../constant.js";
 import * as xlsx from "xlsx-js-style";
 import { ckeckErrors } from "../utils/index.js";
 import { connect } from "react-redux";
@@ -34,6 +34,28 @@ import {
 function BusinessUnitSplit(props) {
   const location = useLocation();
   const navigate = useNavigate();
+
+  //sso login func
+  const [userEmail, setUserEmail] = useState('');
+  const [userRole, setuserRole] = useState('');
+    
+  useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if(usrDetails){
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    
+      if(usrDetails.role_id !== roles.editor.toUpperCase() || 
+         usrDetails.role_id !== roles.approve_1.toUpperCase() ||
+         usrDetails.role_id !== roles.approver_2.toUpperCase() ||
+         usrDetails.role_id !== roles.supervisor_approv_1_2.toUpperCase()) {
+        navigate("/");
+      }
+    }
+  }, []);
+  //------------------//
+
   const [selectedFile, setSelectedFile] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);

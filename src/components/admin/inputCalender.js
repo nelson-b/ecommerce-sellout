@@ -14,18 +14,39 @@ import MyMenu from "../menu/menu.component.js";
 import Home from "../../images/home-icon.png";
 import { useForm } from "react-hook-form";
 import "../admin/inputCalendar.css";
-import { quarters } from "../constant.js";
+import { quarters, roles, user_login_info } from "../constant.js";
 import {
   createInputCalenderData,
   retrieveInputCalenderData,
 } from "../../actions/inputCalenderAction";
 import AlertModel from "../modal/alertModel.js";
 import { getUIDateFormat } from "../../../src/helper/helper";
+import { useNavigate } from "react-router-dom";
 
 function InputCalendar(props) {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const navigate = useNavigate();
+  
+  //sso login func
+  const [userEmail, setUserEmail] = useState('');
+  const [userRole, setuserRole] = useState('');
 
+  useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if(usrDetails){
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+
+      if(usrDetails.role_id !== roles.admin.toUpperCase()){
+        //if not admin then navigate to login page
+        navigate("/");
+      }
+    }
+  }, []);
+  //------------------//
+  
   const {
     register,
     handleSubmit,
@@ -83,13 +104,13 @@ function InputCalendar(props) {
         let finalObj = {
           year_val: year.toString(),
           month_quarter_val: quarterNme,
-          role_id: "approver",
+          role_id: userRole,
           opening_date: data["currmonth_opndt_" + uElement],
           closing_date: data["currmonth_closedt_" + uElement],
           created_date: today,
-          created_by: "john@example.com",
+          created_by: userEmail,
           modified_date: today,
-          modified_by: "jane@example.com",
+          modified_by: userEmail,
         };
 
         finalArray.push(finalObj);
@@ -102,10 +123,6 @@ function InputCalendar(props) {
         setShowSuccessModal(true);
       });
     });
-    // setTimeout(() => {
-    //   setShowSuccessModal(true);
-    //   document.getElementById("input-calender-form").reset();
-    // }, 2000);
   };
 
   const onError = (error) => {
@@ -237,11 +254,8 @@ function InputCalendar(props) {
 
   const successmsg = {
     headerLabel: "Success....",
-
     variant: "success",
-
     header: "Data has been saved successfully!!",
-
     content: [],
   };
 
@@ -253,11 +267,8 @@ function InputCalendar(props) {
 
   const errormsg = {
     headerLabel: "Error....",
-
     variant: "danger",
-
     header: "There are errors while processing.",
-
     content: errorRet,
   };
 
