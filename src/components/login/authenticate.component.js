@@ -61,25 +61,25 @@ function Authenticate(props) {
   }
 
   const handleNavigation = (usrRole) => {
-    if(usrRole === roles.EDITOR){
+    if(usrRole === roles.editor.toUpperCase()){
       navigate("/editor/home");
     }
-    if(usrRole === roles.BACKUP_EDITOR){
+    if(usrRole === roles.backup_editor.toUpperCase()){
       navigate("/editor/home");
     }
-    if(usrRole === roles.APPROVE_1){
+    if(usrRole === roles.approve_1.toUpperCase()){
       navigate("/approver_1/home");
     }
-    if(usrRole === roles.APPROVER_2){
+    if(usrRole === roles.approver_2.toUpperCase()){
       navigate("/approver_2/home");
     }
-    if(usrRole === roles.SUPERVISOR_APPROV_1_2){
+    if(usrRole === roles.supervisor_approv_1_2.toUpperCase()){
       navigate("/superApproverUser/home");
     }
-    if(usrRole === roles.SUPERVISOR){
+    if(usrRole === roles.supervisor.toUpperCase()){
       navigate("/superUser");
     }
-    if(usrRole === roles.ADMIN){
+    if(usrRole === roles.admin.toUpperCase()){
       navigate("/admin/home");
     }
 

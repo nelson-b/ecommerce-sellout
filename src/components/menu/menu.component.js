@@ -30,6 +30,7 @@ function MyMenu(props) {
   
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem('user_login_info'));
+    console.log('usrDetails', usrDetails);
     //if user not login then redirect to login page
     if(usrDetails){
       setUsername(usrDetails.first_name + " " + usrDetails.last_name);
