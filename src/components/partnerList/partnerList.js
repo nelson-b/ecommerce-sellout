@@ -286,7 +286,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Backup Editor",
-      field: "BACKUP_EDITOR",
+      field: "backup_editor",
       width: 140,
       sortable: true,
       filter: true,
@@ -296,7 +296,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Approver 1",
-      field: "Approver1",
+      field: "approve_1",
       width: 180,
       sortable: true,
       filter: true,
@@ -306,7 +306,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Approver 2",
-      field: "Approver2",
+      field: "approver_2",
       width: 180,
       sortable: true,
       filter: true,
@@ -376,46 +376,13 @@ function PartnerList(props) {
       .then((data) => {
         previousAPIData = data?.data;
         let tempRole = screenRole;
-
-        if (screenRole == "admin") {
-          setRowData(previousAPIData);
-        }
+        setRowData(data.data.filter((e) => e.status == "ACTIVE"));
           
         if(screenRole == roles.superUser) {
           tempRole = 'SUPERVISOR'
         }
         if(screenRole == roles.superApproverUser) {
           tempRole = 'SUPERVISOR_APPROV_1_2'
-        }
-        if (screenRole != 'admin') {
-        props.retrieveUserRoleConfigByEmailIdRoleId(userMail, tempRole)
-          .then((data2) => {
-            if (data2.length) {
-              for (let i = 0; i < previousAPIData.length; i++) {
-                data2.map((secondArray) => {
-                  if (previousAPIData[i].partner_id == secondArray.PARTNER_ID) {
-                    previousAPIData[i].Approver1 = secondArray.APPROVE_1;
-                    previousAPIData[i].Approver2 = secondArray.APPROVER_2;
-                    previousAPIData[i].BACKUP_EDITOR =
-                      secondArray.BACKUP_EDITOR;
-
-                    previousAPIData[i].EDITOR = secondArray.EDITOR;
-                  } else {
-                    previousAPIData[i].Approver1 = "";
-                    previousAPIData[i].Approver2 = "";
-                    previousAPIData[i].BACKUP_EDITOR = "";
-                    previousAPIData[i].EDITOR = "";
-                  }
-                });
-              }
-              setRowData(previousAPIData.filter((e) => e.status == "ACTIVE"));
-            } else {
-              setRowData(data.data.filter((e) => e.status == "ACTIVE"));
-            }
-          })
-          .catch((e) => {
-            console.log("Partner list", e);
-          });
         }
         // setRowData(data.data.filter((e) => e.status == "ACTIVE"));
       })

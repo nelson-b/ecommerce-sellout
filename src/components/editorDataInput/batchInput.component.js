@@ -760,4 +760,4 @@ function BatchInputComponent({ savedData, props, userDetails }) {
   );
 }
 
-export default connect(null, { retrieveAllData })(BatchInputComponent);
+export default connect(null, { retrieveAllData, createData })(BatchInputComponent);

@@ -108,6 +108,32 @@
   border-radius: 8px;
   color: #009530;
 }
+.active-button {
+  border: 2px solid var(--unnamed-color-ebf7fd);
+  background: grey 0% 0% no-repeat padding-box !important;
+  border: 2px solid #EBF7FD !important;
+  border-radius: 8px;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.active-button:hover {
+  border: 2px solid var(--unnamed-color-ebf7fd);
+  background: grey 0% 0% no-repeat padding-box !important;
+  border: 2px solid #EBF7FD !important;
+  border-radius: 8px;
+  color: #FFFFFF !important;
+}
+
+.active-button:active:focus {
+  border: 2px solid var(--unnamed-color-ebf7fd);
+  background: grey 0% 0% no-repeat padding-box !important;
+  border: 2px solid #EBF7FD !important;
+  border-radius: 8px;
+  color: #FFFFFF;
+}
 
 .save-header {
   border: 2px solid var(--unnamed-color-ebf7fd);

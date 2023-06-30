@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import {
@@ -21,9 +27,15 @@ import partnerPreviousEuro from "../../data/partnerPreviousDataEuro.json";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
 import { connect } from "react-redux";
-import { getQuarterData } from "../../actions/dataInputAction";
+import AlertModal from "../modal/alertModel";
+import {
+  getQuarterData,
+  createData,
+  updateSellOutData,
+} from "../../actions/dataInputAction";
+import { allCalMonths } from "../constant";
 
-function PartnerQuarterApprover( props ) {
+function PartnerQuarterApprover(props) {
   const gridRef = useRef();
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,11 +44,73 @@ function PartnerQuarterApprover( props ) {
   const [rowData, setRowData] = useState([]);
   const [radioValue, setRadioValue] = useState("1");
   const [message, setMessage] = useState(0);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
     { name: "Euro", value: "2" },
   ];
+
+  const handleValidate = (activeData) => {
+    props
+      .createData(activeData)
+      .then((data) => {
+        // setRowData(data.filter((e) => e.approval_status == "2"));
+        props
+          .getQuarterData(userMail, quarterRole, year, month)
+          .then((data) => {
+            setRowData(data)
+            // setRowData(data.filter((e) => e.approval_status == "1"));
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      })
+      .catch((e) => {
+        console.log("Error", e);
+      });
+  };
+
+  let quarterData = (data) => {
+    const newPartnerId = "CHN-CN-00071";
+    let userData = [];
+    let monthArray = [];
+    monthArray.push({
+      month: "nov",
+      sellout_local_currency: "250",
+      trans_type: "",
+    });
+    // let userData = {
+    //   partner_id: (data.partner_id = newPartnerId),
+    //   partner_name: data.partner_account_name,
+    //   country_code: "CHN",
+    //   year_val: "2023",
+    //   months: monthArray,
+    //   trans_currency_code: "DOL",
+    //   created_by: data.created_by,
+    //   created_date: "2023-06-01 12:29:00",
+    //   approval_status: "1",
+    //   editor_comment: data.editor_comment,
+    //   comments: "waiting for approver",
+    //   batch_upload_flag: "false",
+    // };
+
+    userData.push({
+      partner_id: (data.partner_id = newPartnerId),
+      partner_name: data.partner_account_name,
+      country_code: "CHN",
+      year_val: "2023",
+      months: monthArray,
+      trans_currency_code: "DOL",
+      created_by: data.created_by,
+      created_date: "2023-06-01 12:29:00",
+      approval_status: "1",
+      editor_comment: data.editor_comment,
+      comments: "waiting for approver",
+      batch_upload_flag: "false",
+    });
+    return userData;
+  };
 
   const ChildMessageRenderer = (props) => {
     const invokeReject = () => {
@@ -47,11 +121,12 @@ function PartnerQuarterApprover( props ) {
       );
     };
     const invokeValidate = () => {
-      alert(
-        props.data.Partner?.length
-          ? `${props.data.Partner} partner Sent for Validate`
-          : ""
+      let reqData = quarterData(
+        rowData.find(
+          (e) => e.partner_account_name == props.data.partner_account_name
+        )
       );
+      handleValidate(reqData);
     };
     return (
       <div>
@@ -82,9 +157,6 @@ function PartnerQuarterApprover( props ) {
             Validate
           </Button>
         </div>
-        {/* ) : (
-          <div></div>
-        )} */}
       </div>
     );
   };
@@ -144,7 +216,10 @@ function PartnerQuarterApprover( props ) {
         displayName: "Sellout value Approved",
         radioValue,
       },
-      field: radioValue == 1 ? "sellout_approved_val_in_KE" : "sellout_approved_val_local_currency",
+      field:
+        radioValue == 1
+          ? "sellout_approved_val_in_KE"
+          : "sellout_approved_val_local_currency",
       editable: false,
       minWidth: 150,
       wrapHeaderText: true,
@@ -160,7 +235,8 @@ function PartnerQuarterApprover( props ) {
         radioValue,
       },
       field: "new_value_in_KE",
-      field: radioValue == 1 ? "new_value_in_KE" : "new_value_in_local_currency",
+      field:
+        radioValue == 1 ? "new_value_in_KE" : "new_value_in_local_currency",
       editable: false,
       minWidth: 100,
       wrapHeaderText: true,
@@ -216,16 +292,17 @@ function PartnerQuarterApprover( props ) {
   let userMail = "";
 
   if (quarterRole == "approve_1" || quarterRole == "approver_2") {
-    userMail = "intmy00062@example.com";
+    userMail = "cnchn00073@example.com";
   }
   if (quarterRole == "superApproverUser") {
     quarterRole = "supervisor_approv_1_2";
-    userMail = "intmy00062@example.com";
+    userMail = "cnchn00073@example.com";
   }
   let year = new Date().getFullYear();
-  let month = "dec";
+  let month = "Nov";
 
   const getPreviousData = (userMail, quarterRole, year, month) => {
+    debugger;
     props
       .getQuarterData(userMail, quarterRole, year, month)
       .then((data) => {
@@ -238,9 +315,7 @@ function PartnerQuarterApprover( props ) {
   };
 
   useEffect(() => {
-    console.log("before daat");
-    getPreviousData(userMail, quarterRole,year, month);
-    console.log("after daat");
+    getPreviousData(userMail, quarterRole, year, month);
   }, []);
 
   const defaultColDef = useMemo(() => {
@@ -279,8 +354,70 @@ function PartnerQuarterApprover( props ) {
     }
   };
 
-  const handleConfirm = () => {
-    setRowData(rowData);
+  const handleConfirm = useCallback((data) => {
+    let monthArray = [];
+    let reqData = [];
+    monthArray.push({
+      month: "nov",
+      sellout_local_currency: "250",
+      trans_type: "",
+    });
+
+    data?.forEach((e) => {
+      let itemYear = "23";
+
+      allCalMonths.forEach((element) => {
+        const saveArray =
+          radioValue == 1
+            ? e.month_impacted + itemYear
+            : e.month_impacted + itemYear + "E";
+        // if (saveArray > 0) {
+        // monthArray.push({
+        //   month: e.month_impacted,
+        //   sellout_local_currency: "250",
+        //   trans_type: "",
+        // });
+        // }
+      });
+      const newPartnerId = "CHN-CN-00071";
+
+      reqData.push({
+        partner_id: (e.partner_id = newPartnerId),
+        partner_name: e.partner_account_name,
+        country_code: "CHN",
+        year_val: "2023",
+        months: monthArray,
+        trans_currency_code: "DOL",
+        created_by: e.created_by,
+        created_date: "2023-06-01 12:29:00",
+        approval_status: "1",
+        editor_comment: e.editor_comment,
+        comments: "waiting for approver",
+        batch_upload_flag: "false",
+      });
+    });
+
+    console.log("data", JSON.stringify(reqData));
+    props
+      .createData(reqData)
+      .then((data) => {
+        // setReviewData(data);
+        setShowSuccessModal(true);
+      })
+      .catch((e) => {
+        console.log("Error", e);
+      });
+  }, []);
+
+  const successmsg = {
+    headerLabel: "Success....",
+    variant: "success",
+    header: "Data has been saved successfully!!",
+    content: [],
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
   };
 
   const handleInvestigation = (params) => {
@@ -416,11 +553,16 @@ function PartnerQuarterApprover( props ) {
                 <Button
                   className="btn-data save-header"
                   onClick={() => {
-                    handleConfirm();
+                    handleConfirm(rowData);
                   }}
                 >
                   Validate All
                 </Button>
+                <AlertModal
+                  show={showSuccessModal}
+                  handleClose={handleCloseSuccessModal}
+                  body={successmsg}
+                />
               </Col>
             </Row>
           </div>
@@ -432,4 +574,6 @@ function PartnerQuarterApprover( props ) {
 
 export default connect(null, {
   getQuarterData,
+  createData,
+  updateSellOutData,
 })(PartnerQuarterApprover);
