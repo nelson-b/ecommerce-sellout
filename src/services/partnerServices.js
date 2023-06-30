@@ -35,9 +35,9 @@ class PartnerService {
     );
   }
   
-  getUserRoleConfigByAuthCode(code, emailid) {
+  getUserRoleConfigByAuthCode(code) {
     return http.get(
-      `/ecomm-sellout-dev-lamda-createpartner/get-user-role-partner-config?fetch=get_role_id_by_auth_code&code=${code}&email_id=${emailid}`
+      `/ecomm-sellout-dev-lamda-createpartner/authorizer-token?fetch=FIRST&authorizationToken=${code}`
     );
   }
 

@@ -16,16 +16,28 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "./../../images/schneider-electric-logo.svg";
 import loginUserPic from "./../../images/loginUser.jpg";
 import { AiFillBell } from "react-icons/ai";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./menu.component.css";
 import Cookies from "js-cookie";
 
 function MyMenu(props) {
+  const navigate = useNavigate();
   const [username, setLoggedInUsrName] = useState("Jean-Pascal");
   const [showNotifiation, setshowNotification] = useState(false);
   const [notificationCount, setnotificationCount] = useState(null); //currently set with test values
   const [position, setPosition] = useState("top-start");
   const [notificationMessage, setNotificationMessage] = useState([]);
+  
+  useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem('user_login_info'));
+    //if user not login then redirect to login page
+    if(usrDetails){
+      setUsername(usrDetails.first_name + " " + usrDetails.last_name);
+    } 
+    else {
+      navigate("/");
+    }
+  }, []);
 
   useEffect(() => {
     //notification api call
@@ -220,7 +232,6 @@ function MyMenu(props) {
 
   const location = useLocation();
 
-
   //set current notification count
   const setNotification = (value) => setnotificationCount(value);
   //set username
@@ -232,8 +243,11 @@ function MyMenu(props) {
   };
 
   // Method to remove data from cookies
-  const RemoveCookie = () => {
-      Cookies.remove("token");
+  const handleLogout = () => {
+    //navigate to the login page
+    Cookies.remove("access_token");
+    localStorage.removeItem("user_login_info");
+    navigate("/");
   };
 
   return (
@@ -297,7 +311,7 @@ function MyMenu(props) {
                 title={
                   <div>
                     <Image
-                      src={loginUserPic}
+                      src={""}
                       style={{ height: 35, width: 35, padding: 6 }}
                       roundedCircle
                     ></Image>
@@ -307,7 +321,7 @@ function MyMenu(props) {
                 className="pull-right"
                 id="navbarScrollingDropdown"
               >
-                <NavDropdown.Item onClick={RemoveCookie} href="/">logout</NavDropdown.Item>
+                <NavDropdown.Item onClick={ handleLogout } href="/">logout</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>

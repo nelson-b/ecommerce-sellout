@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useRef } from "react";
+import React, { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import MyMenu from "../menu/menu.component.js";
 import { Container, Row, Col, Button } from "react-bootstrap";
@@ -14,6 +14,10 @@ import footerTotalReview from "../editorDataReview/footerTotalReview";
 function Home(props) {
   const gridRef = useRef();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const items = JSON.parse(localStorage.getItem('user_login_info'));
+  }, []);
 
   const [rowData, setRowData] = useState();
 

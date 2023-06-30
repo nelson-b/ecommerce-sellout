@@ -117,9 +117,9 @@ export const retrieveById = (id) => async (dispatch) => {
   }
 };
 
-export const retrieveUserRoleConfigByAuthCode = (code, emailid) => async(dispatch) => {
+export const retrieveUserRoleConfigByAuthCode = (code) => async(dispatch) => {
   try {
-    const res = await PartnerService.getUserRoleConfigByAuthCode(code, emailid);
+    const res = await PartnerService.getUserRoleConfigByAuthCode(code);
 
     dispatch({
       type: RETRIEVE_USERROLE_CONFIG_BY_AUTHCODE,

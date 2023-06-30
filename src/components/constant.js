@@ -13,7 +13,7 @@ export const allCalMonths = [
   "Dec",
 ];
 
-export const roles ={ 
+export const roles ={
   "editor": "editor",
   "approver": "approver",
   "superUser": "superUser",
@@ -23,6 +23,13 @@ export const roles ={
   "approver_2": "approver_2",
   "supervisor_approv_1_2": "supervisor_approv_1_2", // superApproverUser
   "backup_editor": "backup_editor",
+  "ADMIN": "ADMIN",
+  "EDITOR":"EDITOR",
+  "BACKUP_EDITOR": "BACKUP_EDITOR",
+  "APPROVE_1": "APPROVE_1",
+  "APPROVER_2": "APPROVER_2",
+  "SUPERVISOR": "SUPERVISOR",
+  "SUPERVISOR_APPROV_1_2": "SUPERVISOR_APPROV_1_2"  
 };
 
 export const status = {
