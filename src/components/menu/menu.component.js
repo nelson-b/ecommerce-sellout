@@ -17,13 +17,23 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./menu.component.css";
 import Cookies from "js-cookie";
 import { user_login_info } from "../constant";
+import { getNotificationsByRoleAndEmail } from "../../actions/dataInputAction";
+import { connect } from "react-redux";
 
 function MyMenu(props) {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('');
   const [showNotifiation, setshowNotification] = useState(false);
+
   const [notificationCount, setnotificationCount] = useState(null); //currently set with test values
+
+  const [position, setPosition] = useState("top-start");
+
   const [notificationMessage, setNotificationMessage] = useState([]);
+
+  const [dynamicNotificationMessage, setDynamicNotificationMessage] = useState(
+    []
+  );
 
   //sso login
   useEffect(() => {
@@ -42,203 +52,39 @@ function MyMenu(props) {
 
   useEffect(() => {
     //notification api call
-    setNotificationMessage([
-      {
-        Id: "1",
-        Title: "Partner request creation has been approved",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "2",
-        Title: "Data Input Window closing reminder - 6 days Remaining",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "3",
-        Title: "Partner data update request sent successfully.",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "4",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "5",
-        Title: "Partner request creation has been approved",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "6",
-        Title: "Data Input Window closing reminder - 6 days Remaining",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "7",
-        Title: "Partner data update request sent successfully.",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "8",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "9",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "10",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "11",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "12",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "13",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "14",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "15",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "16",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "17",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "18",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "19",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "20",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "21",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "22",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "23",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "24",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "25",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "26",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "27",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "28",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "29",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-      {
-        Id: "30",
-        Title: "Approver sent back data for correction - View",
-        Content: "",
-        URL: "",
-      },
-    ]);
+
+    callApiToGetNotifications();
   }, []);
 
-  useEffect(() => {
-    console.log("notificationMessage", notificationMessage.length);
-    setnotificationCount(notificationMessage.length);
-  }, [notificationMessage]);
+  useEffect(() => {}, [notificationMessage]);
+
+  const callApiToGetNotifications = () => {
+    props
+
+      .getNotificationsByRoleAndEmail("sdoiuj796@example.com", "APPROVE_1")
+
+      .then((data) => {
+        setDynamicNotificationMessage(data);
+
+        setnotificationCount(data.length);
+      })
+
+      .catch((e) => {
+        console.log("menu notifications error", e);
+      });
+  };
 
   const location = useLocation();
 
   //set current notification count
+
   const setNotification = (value) => setnotificationCount(value);
 
   //show/hide notification
+
   const toggleShowNotification = () => {
     setshowNotification(!showNotifiation);
+
     setnotificationCount(0);
   };
 
@@ -261,8 +107,10 @@ function MyMenu(props) {
           </Navbar.Brand>
 
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto"></Nav>
+
             <Nav>
               {props.role != "admin" ? (
                 <Nav.Link>
@@ -272,10 +120,12 @@ function MyMenu(props) {
                     onClick={toggleShowNotification}
                   >
                     <AiFillBell />
+
                     <Badge pill bg="danger">
                       {notificationCount}
                     </Badge>
                   </Button>
+
                   <ToastContainer containerPosition="position-relative">
                     <Toast
                       show={showNotifiation}
@@ -287,13 +137,15 @@ function MyMenu(props) {
                           className="rounded me-2"
                           alt=""
                         />
+
                         <strong className="me-auto">Notifications</strong>
                       </Toast.Header>
+
                       <Toast.Body>
                         <ListGroup className="list-group">
-                          {notificationMessage.map((row) => (
-                            <ListGroup.Item key={row.Title}>
-                              {row.Title}
+                          {dynamicNotificationMessage.map((row) => (
+                            <ListGroup.Item key={row.ID}>
+                              {row.NOTIFICATION_INFO}
                             </ListGroup.Item>
                           ))}
                         </ListGroup>
@@ -331,4 +183,6 @@ function MyMenu(props) {
   );
 }
 
-export default MyMenu;
+export default connect(null, {
+  getNotificationsByRoleAndEmail,
+})(MyMenu);

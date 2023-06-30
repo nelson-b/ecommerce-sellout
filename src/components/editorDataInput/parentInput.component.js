@@ -37,6 +37,9 @@ import {
   retrieveAllData,
   updateSellOutData,
 } from "../../actions/dataInputAction";
+import {
+  retrievePartnerByRole
+} from "../../actions/partneraction";
 
 import { connect } from "react-redux";
 
@@ -877,6 +880,17 @@ function DataInputComponent(props) {
     let todays = new Date();
     let cMonth = todays.getMonth();
     getPreviousQuarterData(monthsOfTheYear[cMonth]);
+
+    // props
+    // .retrievePartnerByRole(filterGlobalData.loginUser,
+    //   filterGlobalData.userRole
+    // )
+    // .then((data) => {
+    //   setRowData(data.data);
+    // })
+    // .catch((e) => {
+    //   console.log("Data Input", e);
+    // });
   }, []);
 
   const getPreviousQuarterData = (quarter) => {
@@ -886,6 +900,14 @@ function DataInputComponent(props) {
       .retrieveInputCalenderData(year, quarter, "approver")
       .then((data) => {
         let closingData = data.CLOSING_DATE;
+        let openingDate = data.OPENING_DATE;
+
+        let dataOpen = new Date(openingDate);
+        var day1 = dataOpen.getDate().toString().padStart(2, "0");
+        var month1 = (dataOpen.getMonth() + 1).toString().padStart(2, "0");
+        var year1 = dataOpen.getFullYear().toString();
+        let openD =  month1 + "-" + day1 + "-" + year1;
+
         let dateCus = new Date(closingData);
         var day = dateCus.getDate().toString().padStart(2, "0");
         var month = (dateCus.getMonth() + 1).toString().padStart(2, "0");
@@ -900,9 +922,12 @@ function DataInputComponent(props) {
           today.getFullYear();
         let tempToday = new Date(datessss);
         let tempClosing = new Date(complete);
+        let tempOpen = new Date(openD);
+        let tempOpenTime = tempOpen.getTime();
+
         let tempToDayTime = tempToday.getTime();
         let tempClosingTime = tempClosing.getTime();
-        if (tempToDayTime > tempClosingTime) {
+        if (tempToDayTime > tempClosingTime || tempToDayTime < tempOpenTime) {
           setShouldDisableSaveButton(true);
         } else {
           setShouldDisableSaveButton(false);
@@ -981,7 +1006,7 @@ function DataInputComponent(props) {
 
           <Col xs="auto">
             <Button
-              className="btn-upload edit-header"
+              className={shouldDisableSaveButton ? 'btn-upload active-button' : 'btn-upload edit-header'}
               disabled={shouldDisableSaveButton}
               onClick={() => {
                 handleSave();
@@ -1031,4 +1056,5 @@ export default connect(null, {
   retrieveAllData,
   updateSellOutData,
   retrieveInputCalenderData,
+  retrievePartnerByRole
 })(DataInputComponent);

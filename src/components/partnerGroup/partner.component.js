@@ -363,6 +363,11 @@ function PartnerComponent(props) {
       .createUserPartnerRoleConfig(reqUserPartConfData)
       .then((data) => {
         console.log("createUserPartnerRoleConfig", data);
+        if(isCreateScreen) {
+          setSuccessRet(['Partner has been created successfully'])
+        } else {
+          setSuccessRet(['Partner has been updated successfully'])
+        }
         setShowSuccessModal(true);
         setShowErrorModal(false);
         if (isCreateScreen) {
@@ -1441,7 +1446,7 @@ function PartnerComponent(props) {
                           <option value=""></option>
                           {usrRoleData &&
                             usrRoleData
-                              .filter((role) => role.role_id == "APPROVER_1")
+                              .filter((role) => role.role_id == "APPROVE_1")
                               .map((row) => (
                                 <option value={row.email_id}>{`${
                                   row.first_name + " " + row.last_name

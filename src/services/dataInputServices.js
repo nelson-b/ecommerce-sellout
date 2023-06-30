@@ -19,6 +19,9 @@ class DataInputService {
     getQuarter(user, role, year, month) {
         return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-previous-quarter-data-review?USER=${user}&ROLE_ID=${role}&YEAR_VAL=${year}&MONTH_VAL=${JSON.stringify(month)}`);
     }
+    getNotifications(email, role) {
+        return http.get(`/ecomm-sellout-dev-lamda-createpartner/pop-up-notification-get-api-query-parameters:?email=${email}&role=${role}`);
+    }
 }
 
 export default new DataInputService();

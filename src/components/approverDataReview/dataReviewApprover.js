@@ -259,8 +259,12 @@ function DataReviewApprover(props) {
 
   let userMail = "";
 
-  if (historicalRole == "approve_1" || historicalRole == "approver_2") {
-    userMail = "cnchn00073@example.com";
+  if (historicalRole == "approve_1") {
+    userMail = "nelson@se.com";
+  }
+
+  if (historicalRole == "approver_2") {
+    userMail = "nelson@se.com";
   }
 
   if (historicalRole == "superApproverUser") {
@@ -398,6 +402,14 @@ function DataReviewApprover(props) {
       .retrieveInputCalenderData(year, quarter, "approver")
       .then((data) => {
         let closingData = data.CLOSING_DATE;
+        let openingDate = data.OPENING_DATE;
+
+        let dataOpen = new Date(openingDate);
+        var day1 = dataOpen.getDate().toString().padStart(2, "0");
+        var month1 = (dataOpen.getMonth() + 1).toString().padStart(2, "0");
+        var year1 = dataOpen.getFullYear().toString();
+        let openD =  month1 + "-" + day1 + "-" + year1;
+
         let dateCus = new Date(closingData);
         var day = dateCus.getDate().toString().padStart(2, "0");
         var month = (dateCus.getMonth() + 1).toString().padStart(2, "0");
@@ -412,9 +424,12 @@ function DataReviewApprover(props) {
           today.getFullYear();
         let tempToday = new Date(datessss);
         let tempClosing = new Date(complete);
+        let tempOpen = new Date(openD);
+        let tempOpenTime = tempOpen.getTime();
+
         let tempToDayTime = tempToday.getTime();
         let tempClosingTime = tempClosing.getTime();
-        if (tempToDayTime > tempClosingTime) {
+        if (tempToDayTime > tempClosingTime || tempToDayTime < tempOpenTime) {
           setShouldDisableSaveButton(true);
         } else {
           setShouldDisableSaveButton(false);
@@ -1977,7 +1992,7 @@ function DataReviewApprover(props) {
 
               <Col xs="auto">
                 <Button
-                  className="btn-invest edit-header"
+                  className={shouldDisableSaveButton ? 'btn-invest active-button' : 'btn-invest edit-header'}
                   disabled={shouldDisableSaveButton}
                   onClick={(e) => handleInvestigation(message)}
                 >
@@ -1987,7 +2002,7 @@ function DataReviewApprover(props) {
 
               <Col xs="auto">
                 <Button
-                  className="btn-upload edit-header"
+                  className={shouldDisableSaveButton ? 'btn-upload active-button' : 'btn-upload edit-header'}
                   disabled={shouldDisableSaveButton}
                   onClick={(e) => handleSave(reviewData, 0)}
                 >
@@ -2002,7 +2017,7 @@ function DataReviewApprover(props) {
 
               <Col>
                 <Button
-                  className="btn-upload save-header"
+                  className={shouldDisableSaveButton ? 'btn-upload active-button' : 'btn-upload save-header'}
                   disabled={shouldDisableSaveButton}
                   onClick={() => {
                     handleSave(reviewData, 1);
