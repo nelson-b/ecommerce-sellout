@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import {
@@ -21,15 +21,15 @@ import partnerPreviousEuro from "../../data/partnerPreviousDataEuro.json";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
 import { connect } from "react-redux";
-import { retrievePreviousQuarterData } from "../../actions/dataReviewAction";
+import { getQuarterData } from "../../actions/dataInputAction";
 
-function PartnerQuarterApprover({ props }) {
+function PartnerQuarterApprover( props ) {
   const gridRef = useRef();
   const navigate = useNavigate();
   const location = useLocation();
   let quarterRole = new URLSearchParams(location.search).get("role");
 
-  const [rowData, setRowData] = useState("");
+  const [rowData, setRowData] = useState([]);
   const [radioValue, setRadioValue] = useState("1");
   const [message, setMessage] = useState(0);
 
@@ -55,9 +55,8 @@ function PartnerQuarterApprover({ props }) {
     };
     return (
       <div>
-        {/* {props.data.editorComments.length ? ( */}
         <div>
-          {props.data.editorComments}
+          {props.data.editor_comment}
           <Button
             style={{
               height: 30,
@@ -103,7 +102,7 @@ function PartnerQuarterApprover({ props }) {
 
   const columnDefs = [
     {
-      field: "Zone",
+      field: "zone_val",
       headerName: "Zone",
       filter: true,
       width: 140,
@@ -116,7 +115,7 @@ function PartnerQuarterApprover({ props }) {
     },
     {
       headerName: "Country",
-      field: "Country",
+      field: "country_code",
       filter: true,
       width: 140,
       pinned: "left",
@@ -125,7 +124,7 @@ function PartnerQuarterApprover({ props }) {
     },
     {
       headerName: "Partner Account Name",
-      field: "Partner",
+      field: "partner_account_name",
       filter: true,
       pinned: "left",
       width: 170,
@@ -133,7 +132,7 @@ function PartnerQuarterApprover({ props }) {
     },
     {
       headerName: "Month Impacted",
-      field: "month",
+      field: "month_impacted",
       pinned: "left",
       width: 140,
       editable: false,
@@ -145,7 +144,7 @@ function PartnerQuarterApprover({ props }) {
         displayName: "Sellout value Approved",
         radioValue,
       },
-      field: "SelloutValue",
+      field: radioValue == 1 ? "sellout_approved_val_in_KE" : "sellout_approved_val_local_currency",
       editable: false,
       minWidth: 150,
       wrapHeaderText: true,
@@ -160,7 +159,8 @@ function PartnerQuarterApprover({ props }) {
         displayName: "New value",
         radioValue,
       },
-      field: "newValue",
+      field: "new_value_in_KE",
+      field: radioValue == 1 ? "new_value_in_KE" : "new_value_in_local_currency",
       editable: false,
       minWidth: 100,
       wrapHeaderText: true,
@@ -200,7 +200,7 @@ function PartnerQuarterApprover({ props }) {
     },
     {
       headerName: "Editors Comments",
-      field: "editorComments",
+      field: "editor_comment",
       minWidth: 600,
       maxWidth: 600,
       flex: 5,
@@ -212,6 +212,38 @@ function PartnerQuarterApprover({ props }) {
       cellStyle: { "border-color": "#e2e2e2" },
     },
   ];
+
+  let userMail = "";
+
+  if (quarterRole == "approve_1" || quarterRole == "approver_2") {
+    userMail = "intmy00062@example.com";
+  }
+  if (quarterRole == "superApproverUser") {
+    quarterRole = "supervisor_approv_1_2";
+    userMail = "intmy00062@example.com";
+  }
+  let year = new Date().getFullYear();
+  let month = "dec";
+
+  const getPreviousData = (userMail, quarterRole, year, month) => {
+    debugger;
+    props
+      .getQuarterData(userMail, quarterRole, year, month)
+      .then((data) => {
+        console.log("use daat", data);
+        setRowData(data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    debugger;
+    console.log("before daat");
+    getPreviousData(userMail, quarterRole,year, month);
+    console.log("after daat");
+  }, []);
 
   const defaultColDef = useMemo(() => {
     return {
@@ -252,29 +284,6 @@ function PartnerQuarterApprover({ props }) {
   const handleConfirm = () => {
     setRowData(rowData);
   };
-
-  let userMail = "";
-
-  if (quarterRole == "approve_1" || quarterRole == "approver_2") {
-    userMail = "katie@se.com";
-  }
-  if (quarterRole == "superApproverUser") {
-    quarterRole = "supervisor_approv_1_2";
-    userMail = "abc@example.com";
-  }
-  let year = 2023;
-  let month = "may";
-
-  const onGridReady = useCallback((params) => {
-    props
-      .retrievePreviousQuarterData(userMail, quarterRole, year, month)
-      .then((data) => {
-        setRowData(data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
 
   const handleInvestigation = (params) => {
     alert(
@@ -368,7 +377,7 @@ function PartnerQuarterApprover({ props }) {
             defaultColDef={defaultColDef}
             groupHideOpenParents={true}
             animateRows={true}
-            onGridReady={onGridReady}
+            // onGridReady={onGridReady}
             rowSelection={"multiple"}
             suppressRowClickSelection={true}
             onSelectionChanged={handleCheckboxClick}
@@ -423,6 +432,6 @@ function PartnerQuarterApprover({ props }) {
   );
 }
 
-export default connect(null, { retrievePreviousQuarterData })(
-  PartnerQuarterApprover
-);
+export default connect(null, {
+  getQuarterData,
+})(PartnerQuarterApprover);

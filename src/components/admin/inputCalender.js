@@ -63,7 +63,7 @@ function InputCalendar(props) {
     });
     let uniqueArray = [...new Set(newArr)];
     let finalArray = [];
-
+    
     uniqueArray.forEach((uElement) => {
       if (
         (data["currmonth_closedt_" + uElement] &&
@@ -99,12 +99,13 @@ function InputCalendar(props) {
     finalArray.forEach((dataToPost) => {
       props.createInputCalenderData(dataToPost).then((data) => {
         console.log("data is saved::", data);
+        setShowSuccessModal(true);
       });
     });
-    setTimeout(() => {
-      setShowSuccessModal(true);
-      document.getElementById("input-calender-form").reset();
-    }, 2000);
+    // setTimeout(() => {
+    //   setShowSuccessModal(true);
+    //   document.getElementById("input-calender-form").reset();
+    // }, 2000);
   };
 
   const onError = (error) => {
@@ -383,7 +384,6 @@ function InputCalendar(props) {
                                 <th>Closing Date</th>
                               </tr>
                             </thead>
-
                             <tbody>
                               {prevQuaterMonthsData &&
                                 prevQuaterMonthsData
@@ -500,7 +500,6 @@ function InputCalendar(props) {
                                 <th>Closing Date</th>
                               </tr>
                             </thead>
-
                             <tbody>
                               {prevQuarter &&
                                 prevQuarter.map((data, index) => (
@@ -533,7 +532,6 @@ function InputCalendar(props) {
             handleClose={handleCloseSuccessModal}
             body={successmsg}
           />
-
           <AlertModel
             show={showErrorModal}
             handleClose={handleCloseErrorModal}

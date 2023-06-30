@@ -873,19 +873,19 @@ function DataInputComponent(props) {
         var day = dateCus.getDate().toString().padStart(2, "0");
         var month = (dateCus.getMonth() + 1).toString().padStart(2, "0");
         var year = dateCus.getFullYear().toString();
-        let complete = day + "-" + month + "-" + year;
+        let complete =  month + "-" + day + "-" + year;
         let today = new Date();
         let datessss =
-          today.getDate() +
-          "-" +
           parseInt(today.getMonth() + 1) +
           "-" +
+          today.getDate() +
+          "-" +
           today.getFullYear();
-
         let tempToday = new Date(datessss);
         let tempClosing = new Date(complete);
         let tempToDayTime = tempToday.getTime();
         let tempClosingTime = tempClosing.getTime();
+        debugger;
         if (tempToDayTime > tempClosingTime) {
           setShouldDisableSaveButton(true);
         } else {

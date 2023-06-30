@@ -1,4 +1,4 @@
-import { RETRIEVE_ALL_DATA_INPUT, CREATE_DATA_INPUT, UPDATE_DATA_INPUT , UPDATE_DATA_REVIEW_INPUT} from "./type";
+import { RETRIEVE_ALL_DATA_INPUT, CREATE_DATA_INPUT, UPDATE_DATA_INPUT , UPDATE_DATA_REVIEW_INPUT, RETRIEVE_PREVIOUS_QUARTER_DATA} from "./type";
 
 import dataInputServices from "../services/dataInputServices";
 
@@ -64,5 +64,21 @@ export const createData = (data) => async(dispatch) => {
       
     } catch (err) {
       return Promise.reject(err);
+    }
+  };
+
+  export const getQuarterData = (user, role, year, month) => async (dispatch) => {
+    try {
+      const res = await dataInputServices.getQuarter(user, role, year, month);
+      
+      dispatch({
+        type: RETRIEVE_PREVIOUS_QUARTER_DATA,
+        payload: res.data,
+      });
+
+      return Promise.resolve(res.data);
+
+    } catch (err) {
+      console.log(err);
     }
   };

@@ -383,7 +383,7 @@ function BusinessUnitSplit(props) {
   let userMail = "";
 
   if (buRole == "editor") {
-    userMail = "chncn00072@example.com";
+    userMail = "nelson@se.com";
   }
   if (buRole == "approve_1" || buRole == "approver_2") {
     userMail = "chncn00072@example.com";

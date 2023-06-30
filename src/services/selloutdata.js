@@ -2,7 +2,6 @@ import http from "../http-common";
 
 class SellOutDataService {
   getHistoricalData(user, year, id) {
-    debugger;
     let isSuperApproverUser = " ";
     if (id == "supervisor_approv_1_2") {
       isSuperApproverUser = `/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?fetch=all`;

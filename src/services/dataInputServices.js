@@ -16,6 +16,9 @@ class DataInputService {
     updateReviewData(data) {
         return http.post(`/ecomm-sellout-dev-lamda-createpartner/create-update-input-calander/create-sellout-transactions`, data);
     }
+    getQuarter(user, role, year, month) {
+        return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-previous-quarter-data-review?USER=${user}&ROLE_ID=${role}&YEAR_VAL=${year}&MONTH_VAL=${JSON.stringify(month)}`);
+    }
 }
 
 export default new DataInputService();

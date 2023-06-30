@@ -623,11 +623,10 @@ function SaveUser(props) {
     const isValid = validateForm();
     console.log("isValid", isValid);
     if (!isValid) {
+      setShowErrorModal(true)
       return false;
     }
-
     console.log("Data:", form);
-
     //api call
     if (isValid) {
       postForm();

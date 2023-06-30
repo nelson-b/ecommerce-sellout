@@ -14,7 +14,6 @@ import partnerEdit from "../../images/edit-icon.png";
 import Home from "../../images/home-icon.png";
 import "../partnerList/partnerList.css";
 import {
-  retrieveAllPartnerData,
   retrievePartnerByRole,
   retrieveUserRoleConfigByEmailIdRoleId,
 } from "../../actions/partneraction";
@@ -27,7 +26,7 @@ function PartnerList(props) {
   const navigate = useNavigate();
   const [rowData, setRowData] = useState();
   const location = useLocation();
-  const screenRole = new URLSearchParams(location.search).get("role");
+  let screenRole = new URLSearchParams(location.search).get("role");
 
   const handlePartnerEdit = (params) => {
     if (
@@ -348,6 +347,11 @@ function PartnerList(props) {
   if (screenRole == "approver_2") {
     userMail = "cnchn00073@example.com";
   }
+  // screenRole = (screenRole == "superUser" 
+  // ? "SUPERVISOR" 
+  // : screenRole == "superApproverUser" 
+  // ? "SUPERVISOR_APPROVER_1_2"
+  // : screenRole)
 
   const onGridReady = useCallback((params) => {
     let filterData = {
@@ -362,63 +366,59 @@ function PartnerList(props) {
           screenRole == roles.superUser ||
           screenRole == roles.superApproverUser
           ? ""
-          : filterData.role,
-
+          : filterData.userMail, 
         screenRole == roles.admin ||
           screenRole == roles.superUser ||
           screenRole == roles.superApproverUser
           ? ""
-          : filterData.userMail
+          : filterData.role
       )
-
       .then((data) => {
         previousAPIData = data?.data;
         let tempRole = screenRole;
+
+        if (screenRole == "admin") {
+          setRowData(previousAPIData);
+        }
+          
         if(screenRole == roles.superUser) {
           tempRole = 'SUPERVISOR'
         }
-        if(screenRole == roles.admin) {
-          tempRole = 'SUPERVISOR'
-        }
         if(screenRole == roles.superApproverUser) {
-          tempRole = 'SUPERVISOR'
+          tempRole = 'SUPERVISOR_APPROV_1_2'
         }
-        props
-          .retrieveUserRoleConfigByEmailIdRoleId(userMail, tempRole)
+        debugger;
+        if (screenRole != 'admin') {
+        props.retrieveUserRoleConfigByEmailIdRoleId(userMail, tempRole)
           .then((data2) => {
             if (data2.length) {
               for (let i = 0; i < previousAPIData.length; i++) {
                 data2.map((secondArray) => {
                   if (previousAPIData[i].partner_id == secondArray.PARTNER_ID) {
                     previousAPIData[i].Approver1 = secondArray.APPROVE_1;
-
                     previousAPIData[i].Approver2 = secondArray.APPROVER_2;
-
+                   debugger;
                     previousAPIData[i].BACKUP_EDITOR =
                       secondArray.BACKUP_EDITOR;
 
                     previousAPIData[i].EDITOR = secondArray.EDITOR;
                   } else {
                     previousAPIData[i].Approver1 = "";
-
                     previousAPIData[i].Approver2 = "";
-
                     previousAPIData[i].BACKUP_EDITOR = "";
-
                     previousAPIData[i].EDITOR = "";
                   }
                 });
               }
-
               setRowData(previousAPIData.filter((e) => e.status == "ACTIVE"));
             } else {
               setRowData(data.data.filter((e) => e.status == "ACTIVE"));
             }
           })
-
           .catch((e) => {
             console.log("Partner list", e);
           });
+        }
         // setRowData(data.data.filter((e) => e.status == "ACTIVE"));
       })
 
@@ -484,7 +484,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "superUser" ? (
+          ) : screenRole === "superUser" || screenRole == "SUPERVISOR" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superUser">
                 <img
@@ -560,7 +560,6 @@ function PartnerList(props) {
 }
 
 export default connect(null, {
-  retrieveAllPartnerData,
   retrievePartnerByRole,
   retrieveUserRoleConfigByEmailIdRoleId,
 })(PartnerList);

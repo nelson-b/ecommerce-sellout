@@ -14,7 +14,7 @@ class PartnerService {
   }
 
   getByRole(email, role) {
-    if(role != '' && email != ''){
+    if(email != '' && role != ''){
     console.log('by_user', role, email);
     return http.get(      
       `/ecomm-sellout-dev-lamda-createpartner/get-partner-list?fetch=by_user&user=${email}&role_id=${role}`
