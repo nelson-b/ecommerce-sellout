@@ -33,7 +33,7 @@ function MyMenu(props) {
     //if user not login then redirect to login page
     if(usrDetails){
       setUsername(usrDetails.first_name + " " + usrDetails.last_name);
-    } 
+    }
     else {
       navigate("/");
     }
