@@ -37,6 +37,10 @@ function MyMenu(props) {
 
   //sso login
   useEffect(() => {
+    //--------code to test(comment before deploying)---------//
+    // let principalId = "{'email_id':'SESA719253@se.com','role_id':'EDITOR','first_name':'Nelson','last_name':'Dmonte','status':'ACTIVE','modified_by':'jean@se.com','created_date':'2023-06-29T06:25:30','modified_date':'2023-06-29T06:24:54','ops_val':'Operations Val','zone_val':'Zone Val2','model_val':'Model Val','country_code':'USA'}";
+    // localStorage.setItem(user_login_info, principalId.replace(/'/g, '"'));
+    //--------code to test---------//
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     console.log('menu usrDetails', usrDetails);
     //if user not login then redirect to login page

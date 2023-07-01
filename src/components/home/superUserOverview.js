@@ -19,7 +19,9 @@ function SuperUseOverview(props) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
                 
-      if(usrDetails.role_id !== roles.supervisor.toUpperCase()) {
+      if(usrDetails.role_id === roles.supervisor.toUpperCase()) {
+        console.log('Home screen for role supervisor');
+      }else{
         navigate("/");
       }
     }

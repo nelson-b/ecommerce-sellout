@@ -51,7 +51,9 @@ function PartnerQuarterApprover(props) {
         setUserEmail(usrDetails.email_id);
         setuserRole(usrDetails.role_id);
   
-        if(usrDetails.role_id !== roles.supervisor_approv_1_2.toUpperCase()){
+        if(usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()){
+          console.log('previous quarter review for approver for supervisor_approv_1_2');
+        } else {
           navigate("/");
         }
     }

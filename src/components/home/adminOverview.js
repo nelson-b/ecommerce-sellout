@@ -26,7 +26,9 @@ function AdminOverview(props) {
         setUserEmail(usrDetails.email_id);
         setuserRole(usrDetails.role_id);
               
-        if(usrDetails.role_id !== roles.admin.toUpperCase()) {
+        if(usrDetails.role_id === roles.admin.toUpperCase()) {
+          console.log('admin home page is for role admin');
+        }else{
           navigate("/");
         }
       }

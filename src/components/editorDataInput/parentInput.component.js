@@ -66,7 +66,9 @@ function DataInputComponent(props) {
           setUserEmail(usrDetails.email_id);
           setuserRole(usrDetails.role_id);
           
-          if(usrDetails.role_id !== roles.editor.toUpperCase()) {
+          if(usrDetails.role_id === roles.editor.toUpperCase()) {
+            console('input screen for editor role');
+          } else{
             navigate("/");
           }
         }

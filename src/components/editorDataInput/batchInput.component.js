@@ -19,9 +19,8 @@ function BatchInputComponent({ savedData, props, userDetails }) {
   );
   const location = useLocation();
   const historicalRole = new URLSearchParams(location.search).get("role");
-
   const navigate = useNavigate();
-
+  
   const {
     register,
     handleSubmit,

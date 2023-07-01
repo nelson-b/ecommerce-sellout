@@ -70,10 +70,12 @@ function DataReviewComponent(props) {
           setUserEmail(usrDetails.email_id);
           setuserRole(usrDetails.role_id);
           
-        if(usrDetails.role_id !== roles.editor.toUpperCase() ||
-           usrDetails.role_id !== roles.approve_1.toUpperCase() ||
-           usrDetails.role_id !== roles.approver_2.toUpperCase() ||
-           usrDetails.role_id !== roles.supervisor_approv_1_2.toUpperCase()) {
+        if(usrDetails.role_id === roles.editor.toUpperCase() ||
+          usrDetails.role_id === roles.approve_1.toUpperCase() ||
+          usrDetails.role_id === roles.approver_2.toUpperCase() ||
+          usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
+          console.log('data review screen for editor/approve_1/approver_2/supervisor_approv_1_2')
+        } else{
           navigate("/");
         }
       }

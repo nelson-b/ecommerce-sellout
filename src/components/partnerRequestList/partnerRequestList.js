@@ -60,10 +60,12 @@ function PartnerRequestList(props) {
         setUserEmail(usrDetails.email_id);
         setuserRole(usrDetails.role_id);
                   
-        if(usrDetails.role_id !== roles.admin.toUpperCase() ||
-          usrDetails.role_id !== roles.supervisor.toUpperCase() ||
-          usrDetails.role_id !== roles.supervisor_approv_1_2.toUpperCase()
+        if(usrDetails.role_id === roles.admin.toUpperCase() ||
+          usrDetails.role_id === roles.supervisor.toUpperCase() ||
+          usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()
         ) {
+          console.log('Partner request page for role admin/supervisor/supervisor_approv_1_2');
+        } else{
           navigate("/");
         }
       }

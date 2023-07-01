@@ -53,7 +53,9 @@ function InputCalendar(props) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
 
-      if(usrDetails.role_id !== roles.admin.toUpperCase()){
+      if(usrDetails.role_id === roles.admin.toUpperCase()){
+        console.log('input calendar page');
+      } else {
         //if not admin then navigate to login page
         navigate("/");
       }
@@ -234,7 +236,7 @@ function InputCalendar(props) {
 
     let year = today.getFullYear();
     props
-      .retrieveInputCalenderData(year, quarter, "approver")
+      .retrieveInputCalenderData(year, quarter, userRole)
       .then((data) => {
         let obj = {
           quarter: data.MONTH_QUARTER_VAL,

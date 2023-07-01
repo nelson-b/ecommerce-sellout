@@ -29,7 +29,9 @@ function UserList(props) {
           setUserEmail(usrDetails.email_id);
           setUserRoleData(usrDetails.role_id);
                     
-          if(usrDetails.role_id !== roles.admin.toUpperCase()) {
+          if(usrDetails.role_id === roles.admin.toUpperCase()) {
+            console.log('user list for role admin');
+          } else {
             navigate("/");
           }
         }
