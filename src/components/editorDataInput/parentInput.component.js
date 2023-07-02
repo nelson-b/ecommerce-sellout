@@ -67,7 +67,7 @@ function DataInputComponent(props) {
           setuserRole(usrDetails.role_id);
           
           if(usrDetails.role_id === roles.editor.toUpperCase()) {
-            console('input screen for editor role');
+            console.log('input screen for editor role');
           } else{
             navigate("/");
           }
