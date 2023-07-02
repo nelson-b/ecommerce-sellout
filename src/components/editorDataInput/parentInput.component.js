@@ -750,92 +750,52 @@ function DataInputComponent(props) {
   };
 
   const formatGetPayload = useCallback((data, isManualInput) => {
+    console.log('formatGetPayload::', data);
     let respPayload = [];
 
     data.forEach((row, index) => {
       let indvRespPayload = {
         Zone: row.zone_val,
-
         Country: row.country_name,
-
         Country_code: row.country_code,
-
         Partner_Account_Name: row.partner_account_name,
-
         id: row.partner_id,
-
         Partner_id: row.partner_id,
-
         Model: row.model_type,
-
         Currency_Of_Reporting: row.trans_currency_code,
-
         Status: row.status,
-
         Year: row.year_val,
-
-        Jan_Amount: getMonthVal(row.months, allCalMonths[0]), // "jan"
-
-        Feb_Amount: getMonthVal(row.months, allCalMonths[1]), //"feb"
-
-        Mar_Amount: getMonthVal(row.months, allCalMonths[2]), //"march"
-
-        Apr_Amount: getMonthVal(row.months, allCalMonths[3]), //"apr"
-
-        May_Amount: getMonthVal(row.months, allCalMonths[4]), //may
-
-        Jun_Amount: getMonthVal(row.months, allCalMonths[5]), //jun
-
-        Jul_Amount: getMonthVal(row.months, allCalMonths[6]), //"jul"
-
-        Aug_Amount: getMonthVal(row.months, allCalMonths[7]), //aug
-
-        Sep_Amount: getMonthVal(row.months, allCalMonths[8]), //sep
-
-        Oct_Amount: getMonthVal(row.months, allCalMonths[9]), //oct
-
-        Nov_Amount: getMonthVal(row.months, allCalMonths[10]), //nov
-
-        Dec_Amount: getMonthVal(row.months, allCalMonths[11]), //dec
-
-        Jan_Estimated: getTransTypeVal(row.months, allCalMonths[0]), //jan
-
-        Feb_Estimated: getTransTypeVal(row.months, allCalMonths[1]), //feb
-
-        Mar_Estimated: getTransTypeVal(row.months, allCalMonths[2]), //"mar"
-
-        Apr_Estimated: getTransTypeVal(row.months, allCalMonths[3]), //"apr"
-
-        May_Estimated: getTransTypeVal(row.months, allCalMonths[4]), //may
-
-        Jun_Estimated: getTransTypeVal(row.months, allCalMonths[5]), //jun
-
-        Jul_Estimated: getTransTypeVal(row.months, allCalMonths[6]), //jul
-
-        Aug_Estimated: getTransTypeVal(row.months, allCalMonths[7]), //aug
-
-        Sep_Estimated: getTransTypeVal(row.months, allCalMonths[8]), //sep
-
-        Oct_Estimated: getTransTypeVal(row.months, allCalMonths[9]), //oct
-
-        Nov_Estimated: getTransTypeVal(row.months, allCalMonths[10]), //nov
-
-        Dec_Estimated: getTransTypeVal(row.months, allCalMonths[11]), //dec
-
+        Jan_Amount: row.months?getMonthVal(row.months, allCalMonths[0]):'', // "jan"
+        Feb_Amount: row.months?getMonthVal(row.months, allCalMonths[1]):'', //"feb"
+        Mar_Amount: row.months?getMonthVal(row.months, allCalMonths[2]):'', //"march"
+        Apr_Amount: row.months?getMonthVal(row.months, allCalMonths[3]):'', //"apr"
+        May_Amount: row.months?getMonthVal(row.months, allCalMonths[4]):'', //may
+        Jun_Amount: row.months?getMonthVal(row.months, allCalMonths[5]):'', //jun
+        Jul_Amount: row.months?getMonthVal(row.months, allCalMonths[6]):'', //"jul"
+        Aug_Amount: row.months?getMonthVal(row.months, allCalMonths[7]):'', //aug
+        Sep_Amount: row.months?getMonthVal(row.months, allCalMonths[8]):'', //sep
+        Oct_Amount: row.months?getMonthVal(row.months, allCalMonths[9]):'', //oct
+        Nov_Amount: row.months?getMonthVal(row.months, allCalMonths[10]):'', //nov
+        Dec_Amount: row.months?getMonthVal(row.months, allCalMonths[11]):'', //dec
+        Jan_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[0]):'', //jan
+        Feb_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[1]):'', //feb
+        Mar_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[2]):'', //"mar"
+        Apr_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[3]):'', //"apr"
+        May_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[4]):'', //may
+        Jun_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[5]):'', //jun
+        Jul_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[6]):'', //jul
+        Aug_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[7]):'', //aug
+        Sep_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[8]):'', //sep
+        Oct_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[9]):'', //oct
+        Nov_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[10]):'', //nov
+        Dec_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[11]):'', //dec
         created_by: row.created_by,
-
         created_date: row.created_date,
-
         approved_by: row.approved_by,
-
         approved_date: row.approved_date,
-
         approval_status: row.approval_status,
-
         Comment: row.editor_comment,
-
         comments: row.comments,
-
         batch_upload_flag: "false",
       };
 
@@ -846,15 +806,41 @@ function DataInputComponent(props) {
   });
 
   const onGridReady = useCallback((params) => {
+    console.log('coming inside parent input component');
+    let previousAPIData = [];
     props
       .retrieveAllData(
         filterGlobalData.loginUser,
         filterGlobalData.currentYear,
-        filterGlobalData.userRole
+       'EDITOR'
       )
       .then((data) => {
         if (data) {
-          setRowData(formatGetPayload(data, true));
+          console.log('data::::::', data);
+          previousAPIData = data;
+
+        //  setRowData(formatGetPayload(data, true));
+        
+    props
+    .retrievePartnerByRole('nelson@se.com','EDITOR')
+    .then((data) => {
+      console.log('showMeData from next API', data.data);
+      let secondArray =[];
+      secondArray = data?.data;
+      let letsCreateNewCombinedArray = [];
+      for(let i=0; i<previousAPIData.length; i++) {
+        for(let j=0; j<secondArray.length; j++) {
+          if(previousAPIData[i].partner_id == secondArray[j].partner_id){
+            secondArray.splice(j,1);
+          }
+        }
+      }
+      previousAPIData = previousAPIData.concat(secondArray);
+      setRowData(formatGetPayload(previousAPIData, true));
+    })
+    .catch((e) => {
+      console.log("Data Input", e);
+    });
         }
       })
       .catch((e) => {
@@ -864,16 +850,6 @@ function DataInputComponent(props) {
     let cMonth = todays.getMonth();
     getPreviousQuarterData(monthsOfTheYear[cMonth]);
 
-    // props
-    // .retrievePartnerByRole(filterGlobalData.loginUser,
-    //   filterGlobalData.userRole
-    // )
-    // .then((data) => {
-    //   setRowData(data.data);
-    // })
-    // .catch((e) => {
-    //   console.log("Data Input", e);
-    // });
   }, []);
 
   const getPreviousQuarterData = (quarter) => {

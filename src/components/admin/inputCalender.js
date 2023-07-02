@@ -21,7 +21,7 @@ import { useForm } from "react-hook-form";
 
 import "../admin/inputCalendar.css";
 
-import { quarters } from "../constant.js";
+import { quarters, roles } from "../constant.js";
 
 import {
   createInputCalenderData,
@@ -34,12 +34,33 @@ import {
   getUIDateFormat,
   getUIDateFormatForInputScreen,
 } from "../../helper/helper.js";
+import { useNavigate } from "react-router-dom";
 
 function InputCalendar(props) {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const navigate = useNavigate();
+  
+  //sso login func
+  const [userEmail, setUserEmail] = useState('');
+  const [userRole, setuserRole] = useState('');
 
+  useEffect(() => {
+    // const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    // //if user not login then redirect to login page
+    // if(usrDetails){
+    //   setUserEmail(usrDetails.email_id);
+    //   setuserRole(usrDetails.role_id);
+
+    //   if(usrDetails.role_id !== roles.admin.toUpperCase()){
+    //     //if not admin then navigate to login page
+    //     navigate("/");
+    //   }
+    // }
+  }, []);
+  //------------------//
+  
   const {
     register,
 
@@ -119,20 +140,14 @@ function InputCalendar(props) {
           year_val: year.toString(),
 
           month_quarter_val: quarterNme,
-
-          role_id: "approver",
-
+          role_id: 'approver',
           opening_date: data["currmonth_opndt_" + uElement],
 
           closing_date: data["currmonth_closedt_" + uElement],
-
           created_date: today,
-
-          created_by: "john@example.com",
-
+          created_by: 'nelson@se.com',
           modified_date: today,
-
-          modified_by: "jane@example.com",
+          modified_by: 'nelson@se.com',
         };
 
         finalArray.push(finalObj);
@@ -146,12 +161,6 @@ function InputCalendar(props) {
         setShowSuccessModal(true);
       });
     });
-
-    // setTimeout(() => {
-
-    //   setShowSuccessModal(true);
-    //   document.getElementById("input-calender-form").reset();
-    // }, 2000);
   };
 
   const onError = (error) => {
@@ -160,14 +169,15 @@ function InputCalendar(props) {
 
   const getCurrentQuarter = () => {
     const today = new Date();
-    const month = today.getMonth() + 1;
+    const month = today.getMonth();
+    console.log('month:::', month);
     const quarter = Math.ceil(month / 3);
     return `Q${quarter}`;
   };
 
   const getPrevQuarter = () => {
     const today = new Date();
-    const month = today.getMonth() + 1;
+    const month = today.getMonth() ;
     const quarter = Math.ceil(month / 3);
     if (quarter == 1) {
       return `Q${quarter}`;
@@ -216,7 +226,7 @@ function InputCalendar(props) {
     }
     getPreviousQuarterData(prevQuater);
     getNextQuarter();
-    getPreviousQuarterMonthViseData(monthsArrayReverse.reverse());
+    getPreviousQuarterMonthViseData(monthsArrayReverse);
   }, []);
 
   const getPreviousQuarterData = (quarter) => {
@@ -281,6 +291,7 @@ function InputCalendar(props) {
   const [prevQuaterMonthsData, setPrevQuaterMonthsData] = useState([]);
 
   const getNextMonthsViseData = (prevQuarterMonths) => {
+    console.log('next months ::', prevQuarterMonths);
     let today = new Date();
 
     let year = today.getFullYear();
@@ -293,25 +304,28 @@ function InputCalendar(props) {
         .then((data) => {
           let obj = {
             month: data.MONTH_QUARTER_VAL,
-
             openingDate: getUIDateFormatForInputScreen(
               data.OPENING_DATE,
               false
             ),
-
             closingDate: getUIDateFormatForInputScreen(
               data.CLOSING_DATE,
               false
             ),
-
             srNo: i + 1,
           };
-
           setQuaterMonths((prevArray) => [...prevArray, obj]);
         })
 
         .catch((e) => {
           console.log("QURTER list", e);
+          let obj = {
+            month: prevQuarterMonths[i],
+            openingDate: "",
+            closingDate: "",
+            srNo: i + 1,
+          };
+          setQuaterMonths((prevArray) => [...prevArray, obj]);
         });
     }
   };
@@ -333,6 +347,7 @@ function InputCalendar(props) {
           };
 
           setPrevQuaterMonthsData((prevArray) => [...prevArray, obj]);
+          
         })
 
         .catch((e) => {
@@ -357,11 +372,8 @@ function InputCalendar(props) {
 
   const successmsg = {
     headerLabel: "Success....",
-
     variant: "success",
-
     header: "Data has been saved successfully!!",
-
     content: [],
   };
 
@@ -373,11 +385,8 @@ function InputCalendar(props) {
 
   const errormsg = {
     headerLabel: "Error....",
-
     variant: "danger",
-
     header: "There are errors while processing.",
-
     content: errorRet,
   };
 
@@ -424,7 +433,7 @@ function InputCalendar(props) {
                   <Row>
                     <Col md="5">
                       {quaterMonths &&
-                        quaterMonths.map((month, index) => (
+                        quaterMonths.sort((a, b) => (a.srNo > b.srNo ? 1 : -1)).map((month, index) => (
                           <>
                             <Row>
                               <h6 className="form-sellout-header">
@@ -446,7 +455,7 @@ function InputCalendar(props) {
                                   size="sm"
                                   id={"currmonth_opndt_" + month.month}
                                   name={"currmonth_opndt_" + month.month}
-                                  value={month.openingDate}
+                                   defaultValue={month.openingDate}
                                   min={new Date().toISOString().split("T")[0]}
                                   type="date"
                                   {...register(
@@ -476,7 +485,7 @@ function InputCalendar(props) {
                                   size="sm"
                                   id={"currmonth_closedt_" + month.month}
                                   name={"currmonth_closedt_" + month.month}
-                                  value={month.closingDate}
+                                  defaultValue={month.closingDate}
                                   type="date"
                                   {...register(
                                     `currmonth_closedt_${month.month}`
@@ -572,7 +581,7 @@ function InputCalendar(props) {
                                     size="sm"
                                     id={"currmonth_opndt_" + quarter.quarter}
                                     name={"currmonth_opndt_" + quarter.quarter}
-                                    value={quarter.openingDate}
+                                    defaultValue={quarter.openingDate}
                                     min={new Date().toISOString().split("T")[0]}
                                     type="date"
                                     {...register(
@@ -609,7 +618,7 @@ function InputCalendar(props) {
                                     name={
                                       "currmonth_closedt_" + quarter.quarter
                                     }
-                                    value={quarter.openingDate}
+                                    defaultValue={quarter.openingDate}
                                     type="date"
                                     {...register(
                                       `currmonth_closedt_${quarter.quarter}`
