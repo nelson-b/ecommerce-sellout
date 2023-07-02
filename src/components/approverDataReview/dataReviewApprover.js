@@ -1782,8 +1782,6 @@ function DataReviewApprover(props) {
 
         if (node.level === 0) {
           gridRef.current.api.setRowNodeExpanded(node, true);
-
-          return;
         }
       });
     } else if (e.target.value === "Country") {
@@ -1792,8 +1790,6 @@ function DataReviewApprover(props) {
 
         if (node.level === 0 || node.level === 1) {
           gridRef.current.api.setRowNodeExpanded(node, true);
-
-          return;
         }
       });
     } else if (e.target.value === "Model") {
@@ -1802,8 +1798,6 @@ function DataReviewApprover(props) {
 
         if (node.level === 0 || node.level === 1 || node.level === 2) {
           gridRef.current.api.setRowNodeExpanded(node, true);
-
-          return;
         }
       });
     } else if (e.target.value === "Partner") {
@@ -1817,17 +1811,11 @@ function DataReviewApprover(props) {
           node.level === 3
         ) {
           gridRef.current.api.setRowNodeExpanded(node, true);
-
-          return;
         }
       });
     } else {
       gridRef.current.api.collapseAll();
     }
-  }, []);
-
-  const onCollapseAll = useCallback(() => {
-    gridRef.current.api.collapseAll();
   }, []);
 
   const successmsg = {
@@ -1991,16 +1979,6 @@ function DataReviewApprover(props) {
               </Col>
             </Row>
           </Col>
-
-          {/* <Col md={2}>
-
-            <Button className="btn-collapseall edit-header"
-
-            onClick={onCollapseAll}
-
-            >Collapse all</Button>
-
-          </Col> */}
         </Row>
 
         <Row
