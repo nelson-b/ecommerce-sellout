@@ -1,20 +1,15 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import "./login.component.css";
 import logo from "./../../images/schneider-electric-logo.svg";
 import {
   Button,
-  Col,
   Form,
   Row,
   Container,
-  Breadcrumb,
   Card,
 } from "react-bootstrap";
-import { BiHome } from "react-icons/bi";
-import MyMenu from "../menu/menu.component";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { connect } from "react-redux";
 import { retrieveStaticDataByAttrName } from "../../actions/staticDataAction";
 import { retrieveByEmailId } from "../../actions/userAction";
@@ -42,21 +37,14 @@ function Login(props) {
   });
 
   const [formData, setFormData] = useState(initialState);
-
-  // const onSubmit = (data) => {
-  //   loginNavigation(data);
-  // };
-
   const onError = (error) => {
     console.log("ERROR:::", error);
   };
-
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
   };
   const [successRet, setSuccessRet] = useState([]);
-
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
@@ -78,64 +66,6 @@ function Login(props) {
     content: errorRet,
   };
 
-  // const loginNavigation = (data) => {
-  //   props.retrieveByEmailId(data.username)
-  //     .then((data) => {
-  //       console.log('retrieveByEmailId', data);
-  //       if(data.length > 0){
-  //       setShowErrorModal(false);
-        
-  //       let respData = {
-  //         email: data[0].email_id,
-  //         role_id: data[0].role_id,
-  //         first_name: data[0].first_name,
-  //         last_name: data[0].last_name
-  //       }
-
-  //       console.log('respData', respData);
-  //       //save in local storage
-  //         localStorage.setItem('user_login_info', JSON.stringify(respData))
-  //         //redirect to home page
-  //         handleNavigation(respData.role_id);
-  //       }
-  //       else {
-  //         //user does not exist
-  //         console.error('user does not exist!!');
-  //         setErrorRet(["User does not exist!!"]);
-  //         setShowErrorModal(true);
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //     })
-  // };
-
-  const handleNavigation = (usrRole) => {
-    if(usrRole === roles.EDITOR){
-      navigate("/editor/home");
-    }
-    if(usrRole === roles.BACKUP_EDITOR){
-      navigate("/editor/home");
-    }
-    if(usrRole === roles.APPROVE_1){
-      navigate("/approver_1/home");
-    }
-    if(usrRole === roles.APPROVER_2){
-      navigate("/approver_2/home");
-    }
-    if(usrRole === roles.SUPERVISOR_APPROV_1_2){
-      navigate("/superApproverUser/home");
-    }
-    if(usrRole === roles.SUPERVISOR){
-      navigate("/superUser");
-    }
-    if(usrRole === roles.ADMIN){
-      navigate("/admin/home");
-    }
-
-    console.log('loginNavigation', roles);
-  }
-
   const handleSSOLogin = () => {
         //redirected to below Ping login URL
         const headers = {
@@ -155,7 +85,8 @@ function Login(props) {
           if(data){
             console.log('data[0].attribute_value', data[0].attribute_value);
             if(data[0].attribute_value){
-              let signInLinkWithClientId = link.replace(`[${api_ret_client_id}]`,data[0].attribute_value);
+              let signInLinkWithClientId = link.replace(`[${api_ret_client_id}]`,
+              data[0].attribute_value);
               console.log('apiWithClientId', signInLinkWithClientId);
               //open the ping url in browser, it will redirect to authenticate url with auth code to validate authendication
               window.open(signInLinkWithClientId, "_self");

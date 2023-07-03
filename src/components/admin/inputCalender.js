@@ -54,7 +54,7 @@ function InputCalendar(props) {
       setuserRole(usrDetails.role_id);
 
       if(usrDetails.role_id === roles.admin.toUpperCase()){
-        console.log('input calendar page');
+        console.log('input calendar page for role admin');
       } else {
         //if not admin then navigate to login page
         navigate("/");
@@ -234,9 +234,11 @@ function InputCalendar(props) {
   const getPreviousQuarterData = (quarter) => {
     let today = new Date();
 
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
     let year = today.getFullYear();
     props
-      .retrieveInputCalenderData(year, quarter, userRole)
+      .retrieveInputCalenderData(year, quarter, usrDetails.role_id)
       .then((data) => {
         let obj = {
           quarter: data.MONTH_QUARTER_VAL,
@@ -258,10 +260,10 @@ function InputCalendar(props) {
     let year = today.getFullYear();
     for (let i = 0; i < quarters.length; i++) {
       let customizedQuarter = "Q" + quarters[i];
-
+      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
       props
 
-        .retrieveInputCalenderData(year, customizedQuarter, "approver")
+        .retrieveInputCalenderData(year, customizedQuarter, usrDetails.role_id)
 
         .then((data) => {
           let obj = {
@@ -298,10 +300,12 @@ function InputCalendar(props) {
 
     let year = today.getFullYear();
 
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
     for (let i = 0; i < prevQuarterMonths.length; i++) {
       props
 
-        .retrieveInputCalenderData(year, prevQuarterMonths[i], "approver")
+        .retrieveInputCalenderData(year, prevQuarterMonths[i], usrDetails.role_id)
 
         .then((data) => {
           let obj = {
@@ -337,8 +341,9 @@ function InputCalendar(props) {
     let year = today.getFullYear();
     let prevQuarterMonthViseData = [];
     for (let i = 0; i < prevQuarterMonths.length; i++) {
+      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
       props
-        .retrieveInputCalenderData(year, prevQuarterMonths[i], "approver")
+        .retrieveInputCalenderData(year, prevQuarterMonths[i], usrDetails.role_id)
 
         .then((data) => {
           let obj = {
@@ -365,7 +370,6 @@ function InputCalendar(props) {
       nextQuatrs = nextQuatrs.concat(i);
     }
     getNextQuarterData(nextQuatrs);
-    // setNextQuarter(nextQuatrs || []);
   }, []);
 
   const handleCloseSuccessModal = () => {

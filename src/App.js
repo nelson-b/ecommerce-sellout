@@ -9,6 +9,7 @@ import "./App.css";
 import DataReview from "./components/editorDataReview/dataReview.component.js";
 import PartnerList from "./components/partnerList/partnerList.js";
 import LoginComponent from "./components/login/login.component.js";
+import TesterLoginComponent from "./components/login/login.tester.component.js";
 import DataReviewApprover from "./components/approverDataReview/dataReviewApprover.js";
 import PartnerQuarterApprover from "./components/approverDataReview/previousQuarterReview.js";
 import PartnerRequestList from "./components/partnerRequestList/partnerRequestList.js";
@@ -132,6 +133,7 @@ function App() {
             <Route path="/user/Request" element={<UserRequestComponent />} />
           </Route>
           <Route path="/" element={<LoginComponent />} />
+          <Route path="/testerLogin" element={<TesterLoginComponent />} />
           <Route path="/authenticate" element = {<Authenticate />} />
         </Routes>
       </Router>
