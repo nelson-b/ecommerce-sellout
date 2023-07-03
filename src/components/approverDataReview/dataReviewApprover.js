@@ -19,9 +19,7 @@ import {
   Container,
   Form,
 } from "react-bootstrap";
-
 import { allCalMonths, quarters, roles, user_login_info } from "../constant";
-
 import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
@@ -49,31 +47,32 @@ import {retrievePartnerByRole} from "../../actions/partneraction";
 
 function DataReviewApprover(props) {
   const gridRef = useRef();
+
   const navigate = useNavigate();
 
-  //sso login func
-  const [userEmail, setUserEmail] = useState('');
-  const [userRole, setuserRole] = useState('');
-
-  useEffect(() => {
-    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    //if user not login then redirect to login page
-    if(usrDetails){
-      setUserEmail(usrDetails.email_id);
-      setuserRole(usrDetails.role_id);
-
-      if(usrDetails.role_id === roles.approve_1.toUpperCase() || 
-        usrDetails.role_id === roles.approver_2.toUpperCase() ||
-        usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()){
-          console.log('data review for approver');
-      } else {
-        //if not approver 1 or approver 2 then navigate to login page
-        navigate("/");
+    //sso login func
+    const [userEmail, setUserEmail] = useState('');
+    const [userRole, setuserRole] = useState('');
+  
+    useEffect(() => {
+      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+      //if user not login then redirect to login page
+      if(usrDetails){
+        setUserEmail(usrDetails.email_id);
+        setuserRole(usrDetails.role_id);
+  
+        if(usrDetails.role_id === roles.approve_1.toUpperCase() || 
+          usrDetails.role_id === roles.approver_2.toUpperCase() ||
+          usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()){
+            console.log('data review for approver');
+        } else {
+          //if not approver 1 or approver 2 then navigate to login page
+          navigate("/");
+        }
       }
-    }
-  }, []);
-  //------------------//
-
+    }, []);
+    //------------------//
+    
   const [rowData, setRowData] = useState();
 
   const [reviewData, setReviewData] = useState([]);
@@ -88,7 +87,35 @@ function DataReviewApprover(props) {
   const [isYearColumnVisible, setIsYearColumnVisible] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [shouldDisableSaveButton, setShouldDisableSaveButton] = useState(false);
-
+const someData = [{
+  zone_val: 'US',
+  year_val: 2022,
+  trans_currency_codeE: 'EUR',
+  trans_currency_code: 'USD',
+  systemComments: 'hello',
+  status: 'ACTIVE',
+  partner_id: 'NAM-US-00283',
+  partner_account_name: 'Taj Mahal USA',
+  model_type: "E1 - Dist",
+  editorComments: 'hello editor comment',
+  country_code: 'USA',
+  batch_upload_flag: false,
+  approverComments: 'hello approver comment',
+  ambition: 'ambition',
+  YTD_Growth: '',
+  YTD: '',
+  SelloutCQ: '',
+  May23E: null,
+  May23: 72,
+  Mar23E: null,
+  Mar23: 22,
+  Jun23E: null,
+  Jun23: 33,
+  Feb23E: null,
+  Feb23: 23,
+  Apr23E: null,
+  Apr23: 56
+}]
   const radios = [
     { name: "Reporting Currency", value: "1" },
     { name: "Euro", value: "2" },
@@ -120,32 +147,23 @@ function DataReviewApprover(props) {
     "Dec",
   ];
 
+
+
   const columnDefs = [
     {
       headerName: "Zone",
-
       field: "zone_val",
-
       rowGroup: true,
-
       hide: true,
     },
-
     {
       headerName: "Country",
-
       field: "country_code",
-
       rowGroup: true,
-
       hide: true,
-
       filter: true,
-
       pinned: "left",
-
       suppressSizeToFit: true,
-
       editable: false,
     },
 
@@ -169,9 +187,7 @@ function DataReviewApprover(props) {
 
     {
       headerName: "Partner Account Name",
-
       field: "partner_account_name",
-
       rowGroup: true,
 
       hide: true,
@@ -263,6 +279,9 @@ function DataReviewApprover(props) {
   const year = new Date().getFullYear();
 
   const getQuarterReviewData = (userMail, year, historicalRole) => {
+
+    // setReviewData(someData);
+    // return
     let yearCurrent = new Date().getFullYear();
     props
       .retrieveHistoricalData(userMail, year, historicalRole)
@@ -273,7 +292,6 @@ function DataReviewApprover(props) {
           props
           .retrievePartnerByRole(userMail,historicalRole)
           .then((data) => {
-            console.log('showMeData from next API', data.data);
             if(data.data.length) {
               let secondArray =[];
               secondArray = data?.data;
@@ -285,7 +303,6 @@ function DataReviewApprover(props) {
                 }
               }
               previousAPIData = previousAPIData.concat(secondArray);
-              console.log('previousAPIData:::', previousAPIData);
               previousAPIData.map((item) => {
                 let string_year_val = item.year_val? item.year_val.toString(): yearCurrent.toString();
                 let itemYear = string_year_val.slice(2, string_year_val.length);
@@ -386,10 +403,8 @@ function DataReviewApprover(props) {
                 }
                 final_arr.push(obj);
               });
-              console.log('final_arr::', final_arr);
               let preYear = yearCurrent - 1;
               getQuarterReviewDataPrevious(final_arr, preYear);
-             // setRowData(formatGetPayload(previousAPIData, true));
             } else {
               previousAPIData.map((item) => {
                 let string_year_val = item.year_val? item.year_val.toString(): yearCurrent.toString();
@@ -465,9 +480,7 @@ function DataReviewApprover(props) {
                 final_arr.push(obj);
               });
               let preYear = yearCurrent - 1;
-              console.log('final_arr::', final_arr);
               getQuarterReviewDataPrevious(final_arr, preYear);
-             // setRowData(formatGetPayload(previousAPIData, true));
             }
      
           })
@@ -625,11 +638,17 @@ function DataReviewApprover(props) {
               }
             });
           });
-
-          setReviewData(combinedArray);
+          let newArrC = [];
+          for(let j=0; j< combinedArray.length; j++) {
+            newArrC.push(combinedArray[j]);
+          }
+          setReviewData(newArrC);
         } else {
-          console.log('currentYearArray:::', currentYearArray);
-          setReviewData(currentYearArray);
+          let newArr = [];
+          for(let i = 0; i < currentYearArray.length ; i++) {
+            newArr.push(currentYearArray[i]);
+          }
+          setReviewData(newArr);
         }
       })
       .catch((e) => {
@@ -679,7 +698,6 @@ function DataReviewApprover(props) {
     let gridArr = [
       {
         headerName: "Zone",
-
         field: "zone_val",
 
         rowGroup: true,
@@ -904,51 +922,51 @@ function DataReviewApprover(props) {
         },
       },
 
-      {
-        headerName: "YTD Sellout Growth",
+      // {
+      //   headerName: "YTD Sellout Growth",
 
-        field: "YTD_Growth",
+      //   field: "YTD_Growth",
 
-        editable: false,
+      //   editable: false,
 
-        minWidth: 150,
+      //   minWidth: 150,
 
-        wrapHeaderText: true,
+      //   wrapHeaderText: true,
 
-        aggFunc: "sum",
+      //   aggFunc: "sum",
 
-        sortable: true,
+      //   sortable: true,
 
-        suppressMenu: true,
+      //   suppressMenu: true,
 
-        valueFormatter: (params) => {
-          return callThisFunction(params);
-         },
+      //   valueFormatter: (params) => {
+      //     return callThisFunction(params);
+      //    },
 
-        valueGetter: (params) => {
-          return getYTDSelloutGrowthPercCalc(params);
-        },
+      //   valueGetter: (params) => {
+      //     return getYTDSelloutGrowthPercCalc(params);
+      //   },
 
-        cellStyle: function (params) {
-          if (params.value < "0") {
-            return {
-              color: "#ff0000",
+      //   cellStyle: function (params) {
+      //     if (params.value < "0") {
+      //       return {
+      //         color: "#ff0000",
 
-              fontWeight: "bold",
+      //         fontWeight: "bold",
 
-              "border-color": "#e2e2e2",
-            };
-          } else {
-            return {
-              color: "#009530",
+      //         "border-color": "#e2e2e2",
+      //       };
+      //     } else {
+      //       return {
+      //         color: "#009530",
 
-              fontWeight: "bold",
+      //         fontWeight: "bold",
 
-              "border-color": "#e2e2e2",
-            };
-          }
-        },
-      },
+      //         "border-color": "#e2e2e2",
+      //       };
+      //     }
+      //   },
+      // },
 
       {
         headerName: "Ambition Data",
@@ -1195,51 +1213,51 @@ function DataReviewApprover(props) {
         },
       },
 
-      {
-        headerName: "YTD Sellout Growth",
+      // {
+      //   headerName: "YTD Sellout Growth",
 
-        field: "YTD_Growth",
+      //   field: "YTD_Growth",
 
-        editable: false,
+      //   editable: false,
 
-        minWidth: 150,
+      //   minWidth: 150,
 
-        wrapHeaderText: true,
+      //   wrapHeaderText: true,
 
-        aggFunc: "sum",
+      //   aggFunc: "sum",
 
-        sortable: true,
+      //   sortable: true,
 
-        suppressMenu: true,
+      //   suppressMenu: true,
 
-        valueFormatter: (params) => {
-          return callThisFunction(params);
-         },
+      //   valueFormatter: (params) => {
+      //     return callThisFunction(params);
+      //    },
 
-        valueGetter: (params) => {
-          return getYTDSelloutGrowthPercCalc(params);
-        },
+      //   valueGetter: (params) => {
+      //     return getYTDSelloutGrowthPercCalc(params);
+      //   },
 
-        cellStyle: function (params) {
-          if (params.value < "0") {
-            return {
-              color: "#ff0000",
+      //   cellStyle: function (params) {
+      //     if (params.value < "0") {
+      //       return {
+      //         color: "#ff0000",
 
-              fontWeight: "bold",
+      //         fontWeight: "bold",
 
-              "border-color": "#e2e2e2",
-            };
-          } else {
-            return {
-              color: "#009530",
+      //         "border-color": "#e2e2e2",
+      //       };
+      //     } else {
+      //       return {
+      //         color: "#009530",
 
-              fontWeight: "bold",
+      //         fontWeight: "bold",
 
-              "border-color": "#e2e2e2",
-            };
-          }
-        },
-      },
+      //         "border-color": "#e2e2e2",
+      //       };
+      //     }
+      //   },
+      // },
 
       {
         headerName: "Ambition Data",
@@ -1350,7 +1368,6 @@ function DataReviewApprover(props) {
     quatMonths.forEach((element) => {
       customizedQuarterMonths.push(element + choppedOffYear);
     });
-
     let tempTotal = 0;
     customizedQuarterMonths.map((item) => {
       if (item in params?.data) {
@@ -1369,38 +1386,31 @@ function DataReviewApprover(props) {
   };
 
   const getTotalYTDSellOutGrowthCalc = (params) => {
+    if(params.data) {
     let year = new Date().getFullYear();
-
     let selectedValueString = year.toString();
-
     let choppedOffYear = selectedValueString.slice(
       2,
-
       selectedValueString.length
     );
-
     let customizedQuarterMonths = [];
-
     monthsOfTheYear.forEach((element) => {
       customizedQuarterMonths.push(element + choppedOffYear);
     });
-
     let tempTotal = 0;
-
     customizedQuarterMonths.map((item) => {
       if (item in params?.data) {
         tempTotal += params?.data[item];
       }
     });
-
     if (isNaN(tempTotal)) {
       tempTotal = "";
     }
     if (tempTotal == 0) {
       tempTotal = "";
     }
-
     return tempTotal;
+  }
   };
 
   const callThisFunction = (params) => {
@@ -1408,45 +1418,31 @@ function DataReviewApprover(props) {
   };
 
   const getYTDSelloutGrowthPercCalc = (params) => {
-    let previousYearData = params.data.PreviousYearData;
-
-    let currentYearData = params.data;
+    let previousYearData = params?.data?.PreviousYearData;
 
     if (previousYearData) {
       let percentageOfGrowth = 0;
-
       let totalOfCurrentYearGrowth = getTotalYTDSellOutGrowthCalc(params);
-
       let yearCustom = previousYearData.year_val;
-
       let selectedValueString = yearCustom.toString();
-
       let choppedOffYear = selectedValueString.slice(
         2,
         selectedValueString.length
       );
-
       let customizedYearMonths = [];
-
       monthsOfTheYear.forEach((element) => {
         customizedYearMonths.push(element + choppedOffYear);
       });
-
       let tempTotalPreviousYear = 0;
-
       customizedYearMonths.map((item) => {
         if (item in previousYearData) {
           tempTotalPreviousYear += previousYearData[item];
         }
       });
-
       if (tempTotalPreviousYear > 0 && totalOfCurrentYearGrowth > 0) {
         let tempTotalDiff = totalOfCurrentYearGrowth - tempTotalPreviousYear;
-
         let tempDivision = tempTotalDiff / tempTotalPreviousYear;
-
         percentageOfGrowth = tempDivision * 100;
-
         return percentageOfGrowth;
       } else {
         return percentageOfGrowth;
@@ -1505,51 +1501,51 @@ function DataReviewApprover(props) {
       },
     },
 
-    {
-      headerName: "YTD Sellout Growth",
+    // {
+    //   headerName: "YTD Sellout Growth",
 
-      field: "YTD_Growth",
+    //   field: "YTD_Growth",
 
-      editable: false,
+    //   editable: false,
 
-      minWidth: 150,
+    //   minWidth: 150,
 
-      wrapHeaderText: true,
+    //   wrapHeaderText: true,
 
-      aggFunc: "sum",
+    //   aggFunc: "sum",
 
-      sortable: true,
+    //   sortable: true,
 
-      suppressMenu: true,
+    //   suppressMenu: true,
 
-      valueFormatter: (params) => {
-        return callThisFunction(params);
-       },
+    //   valueFormatter: (params) => {
+    //     return callThisFunction(params);
+    //    },
 
-      valueGetter: (params) => {
-        return getYTDSelloutGrowthPercCalc(params);
-      },
+    //   valueGetter: (params) => {
+    //     return getYTDSelloutGrowthPercCalc(params);
+    //   },
 
-      cellStyle: function (params) {
-        if (params.value < "0") {
-          return {
-            color: "#ff0000",
+    //   cellStyle: function (params) {
+    //     if (params.value < "0") {
+    //       return {
+    //         color: "#ff0000",
 
-            fontWeight: "bold",
+    //         fontWeight: "bold",
 
-            "border-color": "#e2e2e2",
-          };
-        } else {
-          return {
-            color: "#009530",
+    //         "border-color": "#e2e2e2",
+    //       };
+    //     } else {
+    //       return {
+    //         color: "#009530",
 
-            fontWeight: "bold",
+    //         fontWeight: "bold",
 
-            "border-color": "#e2e2e2",
-          };
-        }
-      },
-    },
+    //         "border-color": "#e2e2e2",
+    //       };
+    //     }
+    //   },
+    // },
 
     {
       headerName: "Ambition Data",
@@ -1740,6 +1736,7 @@ function DataReviewApprover(props) {
       });
   }, []);
 
+ 
   const handleReviewNavigation = () => {
     if (
       historicalRole === "superApproverUser" ||
@@ -1987,7 +1984,7 @@ function DataReviewApprover(props) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={radioValue == 1 ? reviewData : reviewData}
+            rowData={ reviewData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}

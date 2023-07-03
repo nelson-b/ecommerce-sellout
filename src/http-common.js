@@ -6,6 +6,6 @@ export default axios.create({
   headers: {
     "Content-type": "application/json",
     "Accept": "*/*",
-    "Authorization": Cookies.get('token')
+    "Authorization": Cookies.get('access_token')
   }
 });

@@ -55,26 +55,26 @@ import {
 
 function DataInputComponent(props) {
   const navigate = useNavigate();
-  //sso login func
-  const [userEmail, setUserEmail] = useState('');
-  const [userRole, setuserRole] = useState('');
-        
-  useEffect(() => {
-      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-        //if user not login then redirect to login page
-        if(usrDetails){
-          setUserEmail(usrDetails.email_id);
-          setuserRole(usrDetails.role_id);
-          
-          if(usrDetails.role_id === roles.editor.toUpperCase()) {
-            console.log('input screen for editor role');
-          } else{
-            navigate("/");
-          }
-        }
-  }, []);
-  //------------------//
 
+    //sso login func
+    const [userEmail, setUserEmail] = useState('');
+    const [userRoleData, setuserRoleData] = useState('');
+          
+    useEffect(() => {
+        const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+          //if user not login then redirect to login page
+          if(usrDetails){
+            setUserEmail(usrDetails.email_id);
+            setuserRoleData(usrDetails.role_id);
+            
+            if(usrDetails.role_id === roles.editor.toUpperCase()) {
+              console.log('input screen for editor role');
+            } else{
+              navigate("/");
+            }
+          }
+    }, []);
+    //------------------//
   const [showModal, setShowModal] = useState(false);
 
   const [shouldDisableSaveButton, setShouldDisableSaveButton] = useState(false);
@@ -83,7 +83,7 @@ function DataInputComponent(props) {
 
   const location = useLocation();
 
-  // const userRole = new URLSearchParams(location.search).get("role");
+  const userRole = new URLSearchParams(location.search).get("role");
 
   const monthsOfTheYear = [
     "Jan",
@@ -209,6 +209,7 @@ function DataInputComponent(props) {
   };
 
   const postData = useCallback(() => {
+
     setShowShouldUpdModal(false);
 
     let payload = [];
@@ -216,33 +217,55 @@ function DataInputComponent(props) {
     //iterate in the grid
 
     gridRef.current.api.forEachNode((rowNode, index) => {
+
       //api to save data
 
       let monthArray = [];
 
-      //12 months loop
-
       allCalMonths.forEach((element) => {
+
+        let amount = rowNode.data[`${element}_Amount`];
+
+        console.log('amount::', amount);
+
+        if(amount) {
+
+        } else {
+
+          amount = 0;
+
+        }
+
         if (rowNode.data[`${element}_Amount`] > 0) {
+
           monthArray.push({
+
             month: element.toLowerCase(),
 
-            sellout_local_currency: String(rowNode.data[`${element}_Amount`]),
+             sellout_local_currency: String(amount),
 
             trans_type:
+
               rowNode.data[`${element}_Estimated`] == true ? "EST" : "ACT",
+
           });
+
         }
+
       });
 
+      let currentYear = String(currentDate.getFullYear());
+
+
       let formatPayload = {
+
         partner_id: rowNode.data.id,
 
         partner_name: rowNode.data.Partner_Account_Name,
 
         country_code: rowNode.data.Country_code,
 
-        year_val: String(rowNode.data.Year),
+        year_val:rowNode.data.Year? String(rowNode.data.Year):currentYear,
 
         months: monthArray,
 
@@ -259,20 +282,26 @@ function DataInputComponent(props) {
         comments: "waiting for approver",
 
         batch_upload_flag: rowNode.data.batch_upload_flag,
+
       };
 
+
       if (formatPayload.months.length > 0) {
+
         payload.push(formatPayload);
+
       }
+
     });
 
     // payload.forEach((row, index) => {
 
     props
 
-      .updateSellOutData(payload)
+     .updateSellOutData(payload)
 
       .then((data) => {
+
         setFileError([]);
 
         setShowErrorModal(false);
@@ -280,9 +309,11 @@ function DataInputComponent(props) {
         setShowSuccessModal(true);
 
         setShowShouldUpdModal(false);
+
       })
 
       .catch((e) => {
+
         setFileError([]);
 
         setShowErrorModal(true);
@@ -290,11 +321,14 @@ function DataInputComponent(props) {
         setShowSuccessModal(false);
 
         setShowShouldUpdModal(false);
+
       });
+
 
     // })
 
     gridRef.current.api.refreshCells();
+
   }, []);
 
   const gridRef = useRef(null);

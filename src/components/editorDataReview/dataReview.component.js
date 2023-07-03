@@ -19,9 +19,7 @@ import {
   Container,
 } from "react-bootstrap";
 import "./dataReview.css";
-
 import { allCalMonths, roles, user_login_info } from "../constant";
-
 import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
@@ -45,29 +43,28 @@ function DataReviewComponent(props) {
   const gridRef = useRef();
 
   const navigate = useNavigate();
-
-  //sso login func
-  const [userEmail, setUserEmail] = useState('');
-  const [userRole, setuserRole] = useState('');
-        
-  useEffect(() => {
-      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-        //if user not login then redirect to login page
-        if(usrDetails){
-          setUserEmail(usrDetails.email_id);
-          setuserRole(usrDetails.role_id);
+    //sso login func
+    const [userEmail, setUserEmail] = useState('');
+    const [userRole, setuserRole] = useState('');
           
-        if(usrDetails.role_id === roles.editor.toUpperCase() ||
-          usrDetails.role_id === roles.approve_1.toUpperCase() ||
-          usrDetails.role_id === roles.approver_2.toUpperCase() ||
-          usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
-          console.log('data review screen for editor/approve_1/approver_2/supervisor_approv_1_2')
-        } else{
-          navigate("/");
+    useEffect(() => {
+        const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+          //if user not login then redirect to login page
+          if(usrDetails){
+            setUserEmail(usrDetails.email_id);
+            setuserRole(usrDetails.role_id);
+            
+          if(usrDetails.role_id === roles.editor.toUpperCase() ||
+            usrDetails.role_id === roles.approve_1.toUpperCase() ||
+            usrDetails.role_id === roles.approver_2.toUpperCase() ||
+            usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
+            console.log('data review screen for editor/approve_1/approver_2/supervisor_approv_1_2')
+          } else{
+            navigate("/");
+          }
         }
-      }
-  }, []);
-  //------------------//
+    }, []);
+    //------------------//
 
   const [rowData, setRowData] = useState();
 

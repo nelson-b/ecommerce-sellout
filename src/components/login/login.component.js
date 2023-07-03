@@ -101,65 +101,14 @@ function Login(props) {
   return (
     <Container fluid>
       <Row>
-        {/* <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}> */}
           <Row className="justify-content-center">
             <Card className="cardPanel">
               <center>
                 <Card.Img className="logo" variant="top" src={logo} />
               </center>
               <Row>
-                {/* <Form.Group className="mb-4">
-                  <Row className="justify-content-center">
-                    <Form.Control
-                      size="sm"
-                      className="formField"
-                      id="username"
-                      name="username"
-                      placeholder="john@se.com"
-                      type="text"
-                      {...register("username", {
-                        required: "User name is required",
-                      })}
-                    />
-                    {errors.username && (
-                      <center>
-                        <Form.Text className="text-danger">
-                          {errors.username.message}
-                        </Form.Text>
-                      </center>
-                    )}
-                  </Row>
-                </Form.Group>
-                <Form.Group className="mb-4">
-                  <Row className="justify-content-center">
-                    <Form.Control
-                      size="sm"
-                      className="formField"
-                      id="usrpassword"
-                      name="usrpassword"
-                      placeholder="*****"
-                      type="password"
-                      {...register("usrpassword", {
-                        required: "Password is required",
-                      })}
-                    />
-                    {errors.usrpassword && (
-                      <center>
-                        <Form.Text className="text-danger">
-                          {errors.usrpassword.message}
-                        </Form.Text>
-                      </center>
-                    )}
-                  </Row>
-                </Form.Group> */}
                 <Form.Group className="mb-4">
                   <Row className="justify-content-center mb-4">
-                    {/* <Button
-                      className="btn-login save-header btn-create"
-                      type="submit"
-                      >
-                      Login
-                    </Button> */}
                     <Button
                       className="btn-login save-header btn-create"
                       onClick={handleSSOLogin}
@@ -181,7 +130,6 @@ function Login(props) {
               </Row>
             </Card>
           </Row>
-        {/* </Form> */}
       </Row>
     </Container>
   );

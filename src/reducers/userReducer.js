@@ -23,4 +23,3 @@ function userReducer(data = initialState, action) {
 }
 
 export default userReducer;
-
