@@ -13,7 +13,7 @@ export const allCalMonths = [
   "Dec",
 ];
 
-export const roles = {
+export const roles ={ 
   "editor": "editor",
   "approver": "approver",
   "superUser": "superUser",
@@ -23,7 +23,6 @@ export const roles = {
   "approver_2": "approver_2",
   "supervisor_approv_1_2": "supervisor_approv_1_2", // superApproverUser
   "backup_editor": "backup_editor",
-  "supervisor": "supervisor",
 };
 
 export const status = {
@@ -38,7 +37,3 @@ export const quarters = {
   Q3: ["Jul", "Aug", "Sep"],
   Q4: ["Oct", "Nov", "Dec"],
 };
-
-export const client_id = "client_id"
-export const api_ret_client_id = "api_ret_client_id";
-export const user_login_info = "user_login_info";

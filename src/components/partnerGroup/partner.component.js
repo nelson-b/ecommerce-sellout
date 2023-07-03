@@ -35,7 +35,7 @@ import {
 } from "../../actions/userAction.js";
 import AlertModel from "../modal/alertModel";
 import { useNavigate } from "react-router-dom";
-import { roles, status, user_login_info } from "../constant.js";
+import { roles, status } from "../constant.js";
 import {
   getAPIDateFormatWithTime,
   getUIDateFormat,
@@ -44,21 +44,6 @@ import {
 
 function PartnerComponent(props) {
   const navigate = useNavigate();
-
-  //sso login func
-  const [userEmail, setUserEmail] = useState('');
-  const [userRoleData, setUserRoleData] = useState('');
-                
-  useEffect(() => {
-      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-      //if user not login then redirect to login page
-      if(usrDetails){
-        setUserEmail(usrDetails.email_id);
-        setUserRoleData(usrDetails.role_id);
-      }
-  }, []);
-  //------------------//
-
   const location = useLocation();
   const partnerId = new URLSearchParams(location.search).get("id");
   const userRole = new URLSearchParams(location.search).get("role");

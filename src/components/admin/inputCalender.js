@@ -21,7 +21,7 @@ import { useForm } from "react-hook-form";
 
 import "../admin/inputCalendar.css";
 
-import { quarters, roles, user_login_info } from "../constant.js";
+import { quarters, roles } from "../constant.js";
 
 import {
   createInputCalenderData,
@@ -47,19 +47,17 @@ function InputCalendar(props) {
   const [userRole, setuserRole] = useState('');
 
   useEffect(() => {
-    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    //if user not login then redirect to login page
-    if(usrDetails){
-      setUserEmail(usrDetails.email_id);
-      setuserRole(usrDetails.role_id);
+    // const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    // //if user not login then redirect to login page
+    // if(usrDetails){
+    //   setUserEmail(usrDetails.email_id);
+    //   setuserRole(usrDetails.role_id);
 
-      if(usrDetails.role_id === roles.admin.toUpperCase()){
-        console.log('input calendar page for role admin');
-      } else {
-        //if not admin then navigate to login page
-        navigate("/");
-      }
-    }
+    //   if(usrDetails.role_id !== roles.admin.toUpperCase()){
+    //     //if not admin then navigate to login page
+    //     navigate("/");
+    //   }
+    // }
   }, []);
   //------------------//
   
@@ -142,14 +140,14 @@ function InputCalendar(props) {
           year_val: year.toString(),
 
           month_quarter_val: quarterNme,
-          role_id: userRole,
+          role_id: 'approver',
           opening_date: data["currmonth_opndt_" + uElement],
 
           closing_date: data["currmonth_closedt_" + uElement],
           created_date: today,
-          created_by: userEmail,
+          created_by: 'nelson@se.com',
           modified_date: today,
-          modified_by: userEmail,
+          modified_by: 'nelson@se.com',
         };
 
         finalArray.push(finalObj);
@@ -234,11 +232,9 @@ function InputCalendar(props) {
   const getPreviousQuarterData = (quarter) => {
     let today = new Date();
 
-    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-
     let year = today.getFullYear();
     props
-      .retrieveInputCalenderData(year, quarter, usrDetails.role_id)
+      .retrieveInputCalenderData(year, quarter, "approver")
       .then((data) => {
         let obj = {
           quarter: data.MONTH_QUARTER_VAL,
@@ -260,10 +256,10 @@ function InputCalendar(props) {
     let year = today.getFullYear();
     for (let i = 0; i < quarters.length; i++) {
       let customizedQuarter = "Q" + quarters[i];
-      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
       props
 
-        .retrieveInputCalenderData(year, customizedQuarter, usrDetails.role_id)
+        .retrieveInputCalenderData(year, customizedQuarter, "approver")
 
         .then((data) => {
           let obj = {
@@ -300,12 +296,10 @@ function InputCalendar(props) {
 
     let year = today.getFullYear();
 
-    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-
     for (let i = 0; i < prevQuarterMonths.length; i++) {
       props
 
-        .retrieveInputCalenderData(year, prevQuarterMonths[i], usrDetails.role_id)
+        .retrieveInputCalenderData(year, prevQuarterMonths[i], "approver")
 
         .then((data) => {
           let obj = {
@@ -341,9 +335,8 @@ function InputCalendar(props) {
     let year = today.getFullYear();
     let prevQuarterMonthViseData = [];
     for (let i = 0; i < prevQuarterMonths.length; i++) {
-      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
       props
-        .retrieveInputCalenderData(year, prevQuarterMonths[i], usrDetails.role_id)
+        .retrieveInputCalenderData(year, prevQuarterMonths[i], "approver")
 
         .then((data) => {
           let obj = {
@@ -370,6 +363,7 @@ function InputCalendar(props) {
       nextQuatrs = nextQuatrs.concat(i);
     }
     getNextQuarterData(nextQuatrs);
+    // setNextQuarter(nextQuatrs || []);
   }, []);
 
   const handleCloseSuccessModal = () => {

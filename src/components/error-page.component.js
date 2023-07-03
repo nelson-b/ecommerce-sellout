@@ -11,6 +11,10 @@ function ErrorPage(){
           The site configured at this address does not
           contain the requested page.
         </p>
+  
+        <p>
+          If this is your site, make sure that the filename case matches the URL.<br/>
+        </p>
         </center>
       </div>
     );

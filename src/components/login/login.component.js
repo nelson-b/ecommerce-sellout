@@ -1,23 +1,21 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import "./login.component.css";
 import logo from "./../../images/schneider-electric-logo.svg";
 import {
   Button,
+  Col,
   Form,
   Row,
   Container,
+  Breadcrumb,
   Card,
 } from "react-bootstrap";
+import { BiHome } from "react-icons/bi";
+import MyMenu from "../menu/menu.component";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { connect } from "react-redux";
-import { retrieveStaticDataByAttrName } from "../../actions/staticDataAction";
-import { retrieveByEmailId } from "../../actions/userAction";
-import { redirectUrl, signInLink } from "../../config";
-import { api_ret_client_id, client_id, roles } from "../constant";
-import AlertModal from "../modal/alertModel";
 
-function Login(props) {
+function Login() {
   const navigate = useNavigate();
   
   const initialState = {
@@ -37,78 +35,49 @@ function Login(props) {
   });
 
   const [formData, setFormData] = useState(initialState);
+
+  const onSubmit = (data) => {
+    loginNavigation(data);
+  };
+
   const onError = (error) => {
     console.log("ERROR:::", error);
   };
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const handleCloseSuccessModal = () => {
-    setShowSuccessModal(false);
-  };
-  const [successRet, setSuccessRet] = useState([]);
-  const successmsg = {
-    headerLabel: "Success....",
-    variant: "success",
-    header: successRet,
-    content: [],
-  };
 
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const handleCloseErrorModal = () => {
-    setShowErrorModal(false);
+  const loginNavigation = (data) => {
+    if(data.username=="nelson@se.com" && data.usrpassword=="test@123"){
+      navigate("/editor/home");
+    }
+    if(data.username=="approve_1@se.com" && data.usrpassword=="test@123"){
+      navigate("/approver_1/home");
+    }
+    if(data.username=="approver_2@se.com" && data.usrpassword=="test@123"){
+      navigate("/approver_2/home");
+    }
+    if(data.username=="thomas@se.com" && data.usrpassword=="test@123"){
+      navigate("/superApproverUser/home");
+    }
+    if(data.username=="jean@se.com" && data.usrpassword=="test@123"){
+      navigate("/admin/home");
+    }
+    if(data.username=="marie@se.com" && data.usrpassword=="test@123"){
+      navigate("/superUser");
+    }
+
+    console.log('loginNavigation', data);
   };
-
-  const [errorRet, setErrorRet] = useState([]);
-
-  const errormsg = {
-    headerLabel: "Error....",
-    variant: "danger",
-    header: "There are errors while processing.",
-    content: errorRet,
-  };
-
-  const handleSSOLogin = () => {
-        //redirected to below Ping login URL
-        const headers = {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Access-Control-Allow-Origin,Accept",
-          "Access-Control-Allow-Methods" : "OPTIONS,POST,GET,PUT",
-          "Access-Control-Allow-Credentials": "true",
-          "Access-Control-Allow-Origin": "*",
-          "X-Requested-With" : "*"
-        }
-    
-        let link = signInLink.concat(redirectUrl);
-        console.log('signInLink', link);
-        props.retrieveStaticDataByAttrName(client_id)
-          .then((data)=>{
-          if(data){
-            console.log('data[0].attribute_value', data[0].attribute_value);
-            if(data[0].attribute_value){
-              let signInLinkWithClientId = link.replace(`[${api_ret_client_id}]`,
-              data[0].attribute_value);
-              console.log('apiWithClientId', signInLinkWithClientId);
-              //open the ping url in browser, it will redirect to authenticate url with auth code to validate authendication
-              window.open(signInLinkWithClientId, "_self");
-            }
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-  }
 
   return (
     <Container fluid>
       <Row>
-        {/* <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}> */}
+        <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
           <Row className="justify-content-center">
             <Card className="cardPanel">
               <center>
                 <Card.Img className="logo" variant="top" src={logo} />
               </center>
               <Row>
-                {/* <Form.Group className="mb-4">
+                <Form.Group className="mb-4">
                   <Row className="justify-content-center">
                     <Form.Control
                       size="sm"
@@ -151,40 +120,54 @@ function Login(props) {
                       </center>
                     )}
                   </Row>
-                </Form.Group> */}
+                </Form.Group>
                 <Form.Group className="mb-4">
                   <Row className="justify-content-center mb-4">
-                    {/* <Button
+                    <Button
                       className="btn-login save-header btn-create"
                       type="submit"
                       >
                       Login
-                    </Button> */}
-                    <Button
-                      className="btn-login save-header btn-create"
-                      onClick={handleSSOLogin}
-                      >
-                      SSO Login
                     </Button>
-                    <AlertModal
-                      show={showSuccessModal}
-                      handleClose={handleCloseSuccessModal}
-                      body={successmsg}
-                    />
-                    <AlertModal
-                      show={showErrorModal}
-                      handleClose={handleCloseErrorModal}
-                      body={errormsg}
-                    />
                   </Row>
                 </Form.Group>
               </Row>
             </Card>
           </Row>
-        {/* </Form> */}
+        </Form>
       </Row>
     </Container>
+
+    //   <div className="LoginApp">
+    //     <img width="50%" height="50%"
+    // alt="Schneider Electric"
+    // src={logo}
+    // />
+    // <Card>
+    //     <Form className="Loginform" onSubmit={handleSubmit}>
+    //     <h1>Sign in</h1>
+    //     <FormGroup>
+    //         <Input
+    //           type="email"
+    //           name="email"
+    //           id="exampleEmail"
+    //           placeholder="Username"
+    //         />
+    //     </FormGroup>
+    //     <FormGroup>
+    //         <Input
+    //           type="password"
+    //           name="password"
+    //           id="examplePassword"
+    //           placeholder="Password"
+    //         />
+    //     </FormGroup>
+
+    //     <input type="submit" value="Login" />
+    //   </Form>
+    //   </Card>
+    // </div>
   );
 }
 
-export default connect(null, { retrieveStaticDataByAttrName, retrieveByEmailId })(Login);
+export default Login;

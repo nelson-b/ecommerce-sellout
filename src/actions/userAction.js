@@ -16,20 +16,6 @@ export const retrieveAllUserListData = (id, user) => async (dispatch) => {
   }
 };
 
-export const retrieveAuthendClientData = () => async (dispatch) => {
-  try {
-    const res = await UserService.getClientId();
-    dispatch({
-      type: RETRIEVE_USERSDATA,
-      payload: res.data,
-    });
-
-    return Promise.resolve(res.data);
-  } catch (err) {
-    return Promise.reject(err);
-  }
-};
-
 export const retrieveAllNewListByRole = (id) => async (dispatch) => {
   try {
     const res = await UserService.getByUserRole(id);
