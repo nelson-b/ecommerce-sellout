@@ -8,7 +8,6 @@ import {
   RETRIEVE_USERROLE_CONFIG_BY_PARTNERID,
   RETRIEVE_USERROLE_CONFIG_BY_EMAILIDROLEID,
   RETRIEVE_ALL_USERROLE_CONFIG,
-  RETRIEVE_USERROLE_CONFIG_BY_AUTHCODE,
 } from "./type";
 import PartnerService from "../services/partnerServices";
 
@@ -114,21 +113,6 @@ export const retrieveById = (id) => async (dispatch) => {
     });
   } catch (err) {
     console.log(err);
-  }
-};
-
-export const retrieveUserRoleConfigByAuthCode = (code) => async(dispatch) => {
-  try {
-    const res = await PartnerService.getUserRoleConfigByAuthCode(code);
-
-    dispatch({
-      type: RETRIEVE_USERROLE_CONFIG_BY_AUTHCODE,
-      payload: res.data,
-    });
-
-    return Promise.resolve(res.data);
-  }catch (err) {
-    return Promise.reject(err);
   }
 };
 

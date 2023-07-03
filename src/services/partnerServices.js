@@ -34,12 +34,6 @@ class PartnerService {
       `/ecomm-sellout-dev-lamda-createpartner/get-user-role-partner-config?fetch=by_partner_id&partner_id=${id}`
     );
   }
-  
-  getUserRoleConfigByAuthCode(code) {
-    return http.get(
-      `/ecomm-sellout-dev-lamda-createpartner/authorizer-token?fetch=FIRST&authorizationToken=${code}`
-    );
-  }
 
   getAllUserRoleConfig() {
     return http.get(

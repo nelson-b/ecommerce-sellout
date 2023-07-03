@@ -1,28 +1,38 @@
 import React, { useEffect, useState } from "react";
+
 import {
   Nav,
   Navbar,
   NavDropdown,
   Container,
+  Image,
   Badge,
   Button,
   Toast,
   ToastContainer,
+  Row,
   ListGroup,
 } from "react-bootstrap";
+
 import "bootstrap/dist/css/bootstrap.min.css";
+
 import logo from "./../../images/schneider-electric-logo.svg";
+
+import loginUserPic from "./../../images/loginUser.jpg";
+
 import { AiFillBell } from "react-icons/ai";
-import { useLocation, useNavigate } from "react-router-dom";
+
+import { useLocation } from "react-router-dom";
+
 import "./menu.component.css";
-import Cookies from "js-cookie";
-import { user_login_info } from "../constant";
+
 import { getNotificationsByRoleAndEmail } from "../../actions/dataInputAction";
+
 import { connect } from "react-redux";
 
 function MyMenu(props) {
-  const navigate = useNavigate();
-  const [userName, setUserName] = useState('');
+  const [username, setLoggedInUsrName] = useState("Jean-Pascal");
+
   const [showNotifiation, setshowNotification] = useState(false);
 
   const [notificationCount, setnotificationCount] = useState(null); //currently set with test values
@@ -34,25 +44,6 @@ function MyMenu(props) {
   const [dynamicNotificationMessage, setDynamicNotificationMessage] = useState(
     []
   );
-
-  //sso login
-  useEffect(() => {
-    //--------code to test(comment before deploying)---------//
-    // let principalId = "{'email_id':'SESA719253@se.com','role_id':'EDITOR','first_name':'Nelson','last_name':'Dmonte','status':'ACTIVE','modified_by':'jean@se.com','created_date':'2023-06-29T06:25:30','modified_date':'2023-06-29T06:24:54','ops_val':'Operations Val','zone_val':'Zone Val2','model_val':'Model Val','country_code':'USA'}";
-    // localStorage.setItem(user_login_info, principalId.replace(/'/g, '"'));
-    //--------code to test---------//
-    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    console.log('menu usrDetails', usrDetails);
-    //if user not login then redirect to login page
-    if(usrDetails){
-      setUserName(usrDetails.first_name + ' '+ usrDetails.last_name);
-      console.log('userName', userName);
-    }
-    else {
-      navigate("/");
-    }
-  }, []);
-  //------------------//
 
   useEffect(() => {
     //notification api call
@@ -84,6 +75,10 @@ function MyMenu(props) {
 
   const setNotification = (value) => setnotificationCount(value);
 
+  //set username
+
+  const setUsername = (usrname) => setLoggedInUsrName(usrname);
+
   //show/hide notification
 
   const toggleShowNotification = () => {
@@ -92,20 +87,12 @@ function MyMenu(props) {
     setnotificationCount(0);
   };
 
-  // Method to remove data from cookies
-  const handleLogout = () => {
-    //navigate to the login page
-    Cookies.remove("access_token");
-    localStorage.removeItem(user_login_info);
-    navigate("/");
-  };
-
   return (
     <>
       <Navbar bg="white" collapseOnSelect variant="light">
         <Container fluid>
           <Navbar.Brand>
-            <Nav.Link>
+            <Nav.Link href="/">
               <img alt="logo" src={logo} style={{ height: 50 }} />
             </Nav.Link>
           </Navbar.Brand>
@@ -166,18 +153,19 @@ function MyMenu(props) {
                 align="end"
                 title={
                   <div>
-                    {/* <Image
-                      src={""}
+                    <Image
+                      src={loginUserPic}
                       style={{ height: 35, width: 35, padding: 6 }}
                       roundedCircle
-                    ></Image> */}
-                    <b>{ userName }</b>
+                    ></Image>
+
+                    <b>{username}</b>
                   </div>
                 }
                 className="pull-right"
                 id="navbarScrollingDropdown"
               >
-                <NavDropdown.Item onClick={ handleLogout } href="/">logout</NavDropdown.Item>
+                <NavDropdown.Item href="/">logout</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>

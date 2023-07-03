@@ -3,7 +3,7 @@ import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useNavigate } from "react-router-dom";
-import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { Button, Row, Col, Container, Breadcrumb } from "react-bootstrap";
 import MyMenu from "../menu/menu.component.js";
 import { AgGridReact } from "ag-grid-react";
@@ -20,25 +20,10 @@ import {
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { getUIDateFormat } from "../../helper/helper.js";
-import { roles, user_login_info } from "../constant.js";
+import { roles } from "../constant.js";
 
 function PartnerList(props) {
   const navigate = useNavigate();
-
-  //sso login func
-  const [userEmail, setUserEmail] = useState('');
-  const [userRole, setUserRole] = useState('');
-                  
-  useEffect(() => {
-    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    //if user not login then redirect to login page
-    if(usrDetails){
-      setUserEmail(usrDetails.email_id);
-      setUserRole(usrDetails.role_id);
-    }
-  }, []);
-  //------------------//
-
   const [rowData, setRowData] = useState();
   const location = useLocation();
   let screenRole = new URLSearchParams(location.search).get("role");

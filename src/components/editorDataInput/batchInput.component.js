@@ -2,10 +2,10 @@ import { Form, Row, Col, Button, Container } from "react-bootstrap";
 import "./parentInput.component.css";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import * as xlsx from "xlsx-js-style";
 import AlertModel from "../modal/alertModel";
-import { allCalMonths, roles, user_login_info } from "../constant";
+import { allCalMonths } from "../constant";
 import { ckeckErrors } from "../utils/index.js";
 import { retrieveAllData, createData } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
@@ -19,8 +19,9 @@ function BatchInputComponent({ savedData, props, userDetails }) {
   );
   const location = useLocation();
   const historicalRole = new URLSearchParams(location.search).get("role");
+
   const navigate = useNavigate();
-  
+
   const {
     register,
     handleSubmit,
