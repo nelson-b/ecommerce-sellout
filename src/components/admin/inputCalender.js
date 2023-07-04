@@ -136,11 +136,16 @@ function InputCalendar(props) {
         ) {
           quarterNme = "Q" + uElement;
         }
+        
+        console.log('month_quarter_val', quarterNme);
 
+        let checkQuarterNme = new RegExp('Q', 'g');
+        let isQuarterData = quarterNme.match(checkQuarterNme);
+        
         let finalObj = {
           year_val: year.toString(),
           month_quarter_val: quarterNme,
-          role_id: userRole,
+          role_id: isQuarterData ? 'APPROVER' : 'EDITOR',
           opening_date: data["currmonth_opndt_" + uElement],
           closing_date: data["currmonth_closedt_" + uElement],
           created_date: today,
@@ -227,12 +232,14 @@ function InputCalendar(props) {
 
   const getPreviousQuarterData = (quarter) => {
     let today = new Date();
-
+    console.log(`quarter`, quarter);
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
     let year = today.getFullYear();
+
+    let filter = ['EDITOR', 'APPROVER'];
     props
-      .retrieveInputCalenderData(year, quarter, usrDetails.role_id)
+      .retrieveInputCalenderData(year, quarter, 'APPROVER')
       .then((data) => {
         let obj = {
           quarter: data.MONTH_QUARTER_VAL,
@@ -256,7 +263,7 @@ function InputCalendar(props) {
       const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
       props
 
-        .retrieveInputCalenderData(year, customizedQuarter, usrDetails.role_id)
+        .retrieveInputCalenderData(year, customizedQuarter, 'APPROVER')
 
         .then((data) => {
           let obj = {
@@ -289,7 +296,7 @@ function InputCalendar(props) {
     let year = today.getFullYear();
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     for (let i = 0; i < prevQuarterMonths.length; i++) {
-      props.retrieveInputCalenderData(year, prevQuarterMonths[i], usrDetails.role_id).then((data) => {
+      props.retrieveInputCalenderData(year, prevQuarterMonths[i], 'EDITOR').then((data) => {
           let obj = {
             month: data.MONTH_QUARTER_VAL,
             openingDate: getUIDateFormatForInputScreen(
@@ -324,7 +331,7 @@ function InputCalendar(props) {
     let prevQuarterMonthViseData = [];
     for (let i = 0; i < prevQuarterMonths.length; i++) {
       const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-      props.retrieveInputCalenderData(year, prevQuarterMonths[i], usrDetails.role_id).then((data) => {
+      props.retrieveInputCalenderData(year, prevQuarterMonths[i], 'EDITOR').then((data) => {
           let obj = {
             month: data.MONTH_QUARTER_VAL,
             openingDate: getUIDateFormat(data.OPENING_DATE, true),
