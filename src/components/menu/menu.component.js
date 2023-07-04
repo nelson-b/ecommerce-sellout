@@ -63,16 +63,13 @@ function MyMenu(props) {
   useEffect(() => {}, [notificationMessage]);
 
   const callApiToGetNotifications = () => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     props
-
-      .getNotificationsByRoleAndEmail("sdoiuj796@example.com", "APPROVE_1")
-
+      .getNotificationsByRoleAndEmail(usrDetails.email_id, usrDetails.role_id)
       .then((data) => {
         setDynamicNotificationMessage(data);
-
         setnotificationCount(data.length);
       })
-
       .catch((e) => {
         console.log("menu notifications error", e);
       });
@@ -88,7 +85,6 @@ function MyMenu(props) {
 
   const toggleShowNotification = () => {
     setshowNotification(!showNotifiation);
-
     setnotificationCount(0);
   };
 

@@ -44,7 +44,7 @@ import { userRoleOptions } from "../optionsData.js";
 
 function SaveUser(props) {
   const navigate = useNavigate();
-
+  //sso login
   const [userEmail, setUserEmail] = useState('');
   const [userRoleData, setUserRoleData] = useState('');
   
