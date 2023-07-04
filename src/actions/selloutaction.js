@@ -11,9 +11,7 @@ import {
 
   export const createSellOutData = (data) => async(dispatch) => {
     try{
-        console.log('createSellOutData', createSellOutData);
         const res = await SellOutDataService.create(data);
-
         dispatch({
             type: CREATE_SELLOUTDATA,
             payload: res.data,

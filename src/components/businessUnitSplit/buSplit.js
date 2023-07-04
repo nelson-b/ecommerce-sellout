@@ -50,7 +50,6 @@ function BusinessUnitSplit(props) {
         usrDetails.role_id === roles.approve_1.toUpperCase() ||
         usrDetails.role_id === roles.approver_2.toUpperCase() ||
         usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
-        console.log('busplit screen for editor/approve_1/approver_2/supervisor_approv_1_2');
       } else {
         navigate("/");
       }
@@ -80,7 +79,6 @@ function BusinessUnitSplit(props) {
   });
 
   const [rowData, setRowData] = useState([]);
-  const buRole = new URLSearchParams(location.search).get("role");
   const handleClearClick = () => {
     window.location.reload();
   };
@@ -93,9 +91,9 @@ function BusinessUnitSplit(props) {
       year_val: data[0].year_val,
       quarter: data[0].quarter,
       attributes: data[0].attributes,
-      created_by: data[0].created_by,
+      created_by: data[0].created_by?data[0].created_by:userEmail,
       created_date: data[0].created_date,
-      modified_by: data[0].modified_by,
+      modified_by: data[0].modified_by?data[0].modified_by:userEmail,
       modified_date: data[0].modified_date,
       active_flag: data[0].active_flag,
     };
@@ -141,9 +139,9 @@ function BusinessUnitSplit(props) {
       ],
       partner_id: "CHN-CN-00072",
       year_val: new Date().getFullYear(),
-      created_by: userMail,
+      created_by: userEmail,
       created_date: new Date().toUTCString(),
-      modified_by: userMail,
+      modified_by: userEmail,
       modified_date: new Date().toUTCString(),
       active_flag: "false",
     };
@@ -404,24 +402,14 @@ function BusinessUnitSplit(props) {
     []
   );
 
-  let userMail = "";
 
-  if (buRole == "editor") {
-    userMail = "chncn00072@example.com";
-  }
-  if (buRole == "approve_1" || buRole == "approver_2") {
-    userMail = "chncn00072@example.com";
-  }
-  if (buRole == "superApproverUser") {
-    userMail = "chncn00072@example.com";
-  }
   let year = new Date().getFullYear();
 
   const onGridReady = useCallback((params) => {
     props
       .retrieveBuSplitData(
-        userMail,
-        buRole == "superApproverUser" ? "supervisor_approv_1_2" : buRole,
+        userEmail,
+        userRole == "superApproverUser" ? "supervisor_approv_1_2" : userRole,
         year
       )
       .then((data) => {
@@ -488,7 +476,6 @@ function BusinessUnitSplit(props) {
   };
 
   const handleChange = ({ target }) => {
-    console.log("handle change::. ", target);
     setSelectedFile(target);
   };
 
@@ -598,9 +585,6 @@ function BusinessUnitSplit(props) {
 
           json.forEach((e) => {
             const splitData = e.SP + e["H&D"] + e.PP + e.DE + e.IA;
-
-            console.log("e in total", JSON.stringify(e), splitData);
-
             if (splitData > 100) {
               errorJson.push(
                 `Total should not be greater than or less than 100% for - ${e.Partner_Account_Name} partner`
@@ -649,7 +633,6 @@ function BusinessUnitSplit(props) {
       if (currentYear !== year && currentMonth !== 0) continue;
       let data = rowData.filter((item) => item[monthField] != "");
       if (data.length > 0) {
-        console.log("show data already exist popup");
         setShowShouldUpdModal(true);
         return;
       }
@@ -658,13 +641,11 @@ function BusinessUnitSplit(props) {
   };
 
   const onSubmit = (frmData) => {
-    console.log("frmData", frmData);
     setSelectedFile(frmData);
     ShouldUpdate();
   };
 
   const onError = (error) => {
-    console.log("ERROR:::", error);
   };
 
   const excelStyles = useMemo(() => {
@@ -703,7 +684,7 @@ function BusinessUnitSplit(props) {
 
         <Row>
           <Stack direction="horizontal" gap={4}>
-            {buRole === "editor" ? (
+            {userRole === "editor" ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/editor/home">
                   <img
@@ -713,7 +694,7 @@ function BusinessUnitSplit(props) {
                   />
                 </Breadcrumb.Item>
               </Breadcrumb>
-            ) : buRole === "approve_1" ? (
+            ) : userRole === "approve_1" ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/approver_1/home">
                   <img
@@ -723,7 +704,7 @@ function BusinessUnitSplit(props) {
                   />
                 </Breadcrumb.Item>
               </Breadcrumb>
-            ) : buRole === "approver_2" ? (
+            ) : userRole === "approver_2" ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/approver_2/home">
                   <img
@@ -733,8 +714,8 @@ function BusinessUnitSplit(props) {
                   />
                 </Breadcrumb.Item>
               </Breadcrumb>
-            ) : buRole === "superApproverUser" ||
-              buRole === "supervisor_approv_1_2" ? (
+            ) : userRole === "superApproverUser" ||
+            userRole === "supervisor_approv_1_2" ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/superApproverUser/home">
                   <img

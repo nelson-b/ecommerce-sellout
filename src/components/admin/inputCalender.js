@@ -54,7 +54,6 @@ function InputCalendar(props) {
       setuserRole(usrDetails.role_id);
 
       if(usrDetails.role_id === roles.admin.toUpperCase()){
-        console.log('input calendar page for role admin');
       } else {
         //if not admin then navigate to login page
         navigate("/");
@@ -140,11 +139,9 @@ function InputCalendar(props) {
 
         let finalObj = {
           year_val: year.toString(),
-
           month_quarter_val: quarterNme,
           role_id: userRole,
           opening_date: data["currmonth_opndt_" + uElement],
-
           closing_date: data["currmonth_closedt_" + uElement],
           created_date: today,
           created_by: userEmail,
@@ -158,8 +155,6 @@ function InputCalendar(props) {
 
     finalArray.forEach((dataToPost) => {
       props.createInputCalenderData(dataToPost).then((data) => {
-        console.log("data is saved::", data);
-
         setShowSuccessModal(true);
       });
     });
@@ -172,7 +167,6 @@ function InputCalendar(props) {
   const getCurrentQuarter = () => {
     const today = new Date();
     const month = today.getMonth();
-    console.log('month:::', month);
     const quarter = Math.ceil(month / 3);
     return `Q${quarter}`;
   };
@@ -255,7 +249,6 @@ function InputCalendar(props) {
   };
 
   const getNextQuarterData = (quarters) => {
-    console.log("quarters::::", quarters);
     let today = new Date();
     let year = today.getFullYear();
     for (let i = 0; i < quarters.length; i++) {
@@ -280,10 +273,7 @@ function InputCalendar(props) {
             ),
             srNo: i + 1,
           };
-
-          console.log("getNextQuarterDataobj:::", obj);
           setNextQuarter((prevArray) => [...prevArray, obj]);
-          //  setQuaterMonths((prevArray) => [...prevArray, obj]);
         })
 
         .catch((e) => {
@@ -295,19 +285,11 @@ function InputCalendar(props) {
   const [prevQuaterMonthsData, setPrevQuaterMonthsData] = useState([]);
 
   const getNextMonthsViseData = (prevQuarterMonths) => {
-    console.log('next months ::', prevQuarterMonths);
     let today = new Date();
-
     let year = today.getFullYear();
-
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-
     for (let i = 0; i < prevQuarterMonths.length; i++) {
-      props
-
-        .retrieveInputCalenderData(year, prevQuarterMonths[i], usrDetails.role_id)
-
-        .then((data) => {
+      props.retrieveInputCalenderData(year, prevQuarterMonths[i], usrDetails.role_id).then((data) => {
           let obj = {
             month: data.MONTH_QUARTER_VAL,
             openingDate: getUIDateFormatForInputScreen(
@@ -342,10 +324,7 @@ function InputCalendar(props) {
     let prevQuarterMonthViseData = [];
     for (let i = 0; i < prevQuarterMonths.length; i++) {
       const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-      props
-        .retrieveInputCalenderData(year, prevQuarterMonths[i], usrDetails.role_id)
-
-        .then((data) => {
+      props.retrieveInputCalenderData(year, prevQuarterMonths[i], usrDetails.role_id).then((data) => {
           let obj = {
             month: data.MONTH_QUARTER_VAL,
             openingDate: getUIDateFormat(data.OPENING_DATE, true),
@@ -624,7 +603,7 @@ function InputCalendar(props) {
                                     name={
                                       "currmonth_closedt_" + quarter.quarter
                                     }
-                                    defaultValue={quarter.openingDate}
+                                    defaultValue={quarter.closingDate}
                                     type="date"
                                     {...register(
                                       `currmonth_closedt_${quarter.quarter}`

@@ -61,8 +61,6 @@ export const updateSellOutReviewData = (data) => async (dispatch) => {
       type: UPDATE_DATA_REVIEW_INPUT,
       payload: data,
     });
-    console.log("res in aa", res);
-
     return Promise.resolve(res.data);
   } catch (err) {
     return Promise.reject(err);

@@ -85,8 +85,6 @@ function HistoricalData(props) {
 
   const location = useLocation();
 
-  let screenRole = new URLSearchParams(location.search).get("role");
-
   const [selectedValue, setSelectedValue] = useState(new Date().getFullYear());
 
   const [historicalData, setHistoricalData] = useState([]);
@@ -249,19 +247,8 @@ function HistoricalData(props) {
     },
   ];
 
-  let userMail = "chncn00071@example.com";
 
-  if (screenRole == "editor") {
-    userMail = "nelson@se.com";
-  }
 
-  if (screenRole == "approve_1" || screenRole == "approver_2") {
-    userMail = "cnchn00073@example.com";
-  }
-
-  if (screenRole == "supervisor_approv_1_2") {
-    userMail = "cnchn00073@example.com";
-  }
 
   const getHistoricalData = (mail, year, screenRole) => {
     props
@@ -378,7 +365,7 @@ function HistoricalData(props) {
     }
 
     setSessionValue(arrayForLast4YearsDropdown);
-    getHistoricalData(userMail, selectedValue, screenRole);
+    getHistoricalData(userEmail, selectedValue, userRole);
   }, []);
 
   const getMonths = [];
@@ -608,7 +595,7 @@ function HistoricalData(props) {
   const handleChange = (event) => {
     const value = event.target.value;
     setSelectedValue(value);
-    getHistoricalData(userMail, value, screenRole);
+    getHistoricalData(userEmail, value, userRole);
   };
 
   const getMonthFeildValues = (params) => {
@@ -701,7 +688,7 @@ function HistoricalData(props) {
         </Row>
 
         <div>
-          {screenRole === "editor" ? (
+          {userRole === "editor" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/editor/home">
                 <img
@@ -717,7 +704,7 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "approve_1" ? (
+          ) : userRole === "approve_1" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/approver_1/home">
                 <img
@@ -731,7 +718,7 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "approver_2" ? (
+          ) : userRole === "approver_2" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/approver_2/home">
                 <img
@@ -745,7 +732,7 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "superApproverUser" || "supervisor_approv_1_2" ? (
+          ) : userRole === "superApproverUser" || "supervisor_approv_1_2" ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img

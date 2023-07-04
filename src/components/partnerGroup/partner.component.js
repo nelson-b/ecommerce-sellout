@@ -61,33 +61,11 @@ function PartnerComponent(props) {
 
   const location = useLocation();
   const partnerId = new URLSearchParams(location.search).get("id");
-  const userRole = new URLSearchParams(location.search).get("role");
   const isHigherLevelUser =
-    userRole === roles.admin ||
-    userRole === roles.superUser ||
-    userRole === roles.superApproverUser;
+    userRoleData === roles.admin ||
+    userRoleData === roles.superUser ||
+    userRoleData === roles.superApproverUser;
   console.log("isHigherLevelUser", isHigherLevelUser);
-
-  let userMail = "";
-
-  if (userRole == roles.editor) {
-    userMail = "nelson@se.com";
-  }
-  if (userRole == roles.superUser) {
-    userMail = "marie@se.com";
-  }
-  if (userRole == roles.superApproverUser) {
-    userMail = "thomas@se.com";
-  }
-  if (userRole == roles.admin) {
-    userMail = "jean@se.com";
-  }
-  if (userRole == roles.approve_1) {
-    userMail = "katie@se.com";
-  }
-  if (userRole == roles.approver_2) {
-    userMail = "katie@se.com";
-  }
 
   const initialData = {
     partner_id: "",
@@ -340,12 +318,12 @@ function PartnerComponent(props) {
   ) => {
     let reqUserPartConfData = {
       partner_id: partner_id,
-      role_id: userRole,
+      role_id: userRoleData,
       country_code: reqData.country_code,
-      email_id: userMail, //login user email
-      created_by: userMail, //login user email
+      email_id: userEmail, //login user email
+      created_by: userEmail, //login user email
       created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
-      updated_by: userMail, //login user email
+      updated_by: userEmail, //login user email
       editor: reqData.editor,
       backup_editor: reqData.backupEditor,
       approve_1: reqData.approver1,
@@ -412,14 +390,14 @@ function PartnerComponent(props) {
         partner_url: data.partner_url,
         e2_playbook_type: data.e2_playbook_type,
         gtm_type: data.gtm_type,
-        created_by: userMail,
+        created_by: userEmail,
         created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
-        modified_by: userMail,
+        modified_by: userEmail,
         last_modified_date: new Date().toUTCString(),
         status:
-          userRole == roles.admin ||
-          userRole == roles.superUser ||
-          userRole == roles.superApproverUser
+          userRoleData == roles.admin ||
+          userRoleData == roles.superUser ||
+          userRoleData == roles.superApproverUser
             ? status.active
             : status.pending,
         batch_upload_flag: false,
@@ -456,9 +434,9 @@ function PartnerComponent(props) {
                 console.log("createPartnerData", data);
                 //create user partner role config for higher level user
                 if (
-                  userRole === roles.superUser ||
-                  userRole === roles.superApproverUser ||
-                  userRole === roles.admin
+                  userRoleData === roles.superUser ||
+                  userRoleData === roles.superApproverUser ||
+                  userRoleData === roles.admin
                 ) {
                   //call get by id api
                   props
@@ -523,9 +501,9 @@ function PartnerComponent(props) {
         e2_playbook_type: data.e2_playbook_type,
         bopp_type: data.bopp_type,
         gtm_type: data.gtm_type,
-        created_by: userMail,
+        created_by: userEmail,
         created_date: new Date().toUTCString(),
-        modified_by: userMail,
+        modified_by: userEmail,
         last_modified_date: new Date().toUTCString(),
         status: data.partner_status,
         batch_upload_flag: false,
@@ -560,9 +538,9 @@ function PartnerComponent(props) {
           console.log("data", data);
           //update user partner role config for higher level user
           if (
-            userRole === roles.superUser ||
-            userRole === roles.superApproverUser ||
-            userRole === roles.admin
+            userRoleData === roles.superUser ||
+            userRoleData === roles.superApproverUser ||
+            userRoleData === roles.admin
           ) {
             saveUserPartnerConfigDetails(partnerId, formData, false);
           } else {
@@ -588,7 +566,7 @@ function PartnerComponent(props) {
   const tooltip = (val) => <Tooltip id="tooltip">{val}</Tooltip>;
 
   const handlePartnerCancel = () => {
-    navigate(`/partner/list?role=${userRole}`);
+    navigate(`/partner/list?role=${userRoleData}`);
   };
 
   const updateForm = useCallback((e) => {
@@ -603,7 +581,7 @@ function PartnerComponent(props) {
       </Row>
       <Row>
         <Breadcrumb>
-          {userRole === "editor" && (
+          {userRoleData === "editor" && (
             <Breadcrumb.Item href="/editor/home">
               <img
                 src={Home}
@@ -612,7 +590,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-          {userRole === "approve_1" && (
+          {userRoleData === "approve_1" && (
             <Breadcrumb.Item href="/approver_1/home">
               <img
                 src={Home}
@@ -621,7 +599,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-          {userRole === "approver_2" && (
+          {userRoleData === "approver_2" && (
             <Breadcrumb.Item href="/approver_2/home">
               <img
                 src={Home}
@@ -630,7 +608,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-          {userRole === "superApproverUser" && (
+          {userRoleData === "superApproverUser" && (
             <Breadcrumb.Item href="/superApproverUser/home">
               <img
                 src={Home}
@@ -639,7 +617,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-          {userRole === "superUser" && (
+          {userRoleData === "superUser" && (
             <Breadcrumb.Item href="/superUser">
               <img
                 src={Home}
@@ -648,7 +626,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-          {userRole === "admin" && (
+          {userRoleData === "admin" && (
             <Breadcrumb.Item href="/admin/home">
               <img
                 src={Home}
@@ -1348,9 +1326,9 @@ function PartnerComponent(props) {
                         &nbsp;
                         <Form.Select
                           disabled={
-                            userRole === roles.editor ||
-                            userRole === roles.approver_2 ||
-                            userRole === roles.approve_1
+                            userRoleData === roles.editor ||
+                            userRoleData === roles.approver_2 ||
+                            userRoleData === roles.approve_1
                               ? true
                               : false
                           }
@@ -1375,9 +1353,9 @@ function PartnerComponent(props) {
                               ))}
                         </Form.Select>
                         {errors.editor &&
-                          (userRole === roles.admin ||
-                            userRole === roles.superUser ||
-                            userRole === roles.superApproverUser) && (
+                          (userRoleData === roles.admin ||
+                            userRoleData === roles.superUser ||
+                            userRoleData === roles.superApproverUser) && (
                             <Form.Text className="text-danger">
                               {errors.editor.message}
                             </Form.Text>
@@ -1390,9 +1368,9 @@ function PartnerComponent(props) {
                         &nbsp;
                         <Form.Select
                           disabled={
-                            userRole === roles.editor ||
-                            userRole === roles.approver_2 ||
-                            userRole === roles.approve_1
+                            userRoleData === roles.editor ||
+                            userRoleData === roles.approver_2 ||
+                            userRoleData === roles.approve_1
                           }
                           size="sm"
                           className="field-Prop"
@@ -1415,9 +1393,9 @@ function PartnerComponent(props) {
                               ))}
                         </Form.Select>
                         {errors.backupEditor &&
-                          (userRole === roles.admin ||
-                            userRole === roles.superUser ||
-                            userRole === roles.superApproverUser) && (
+                          (userRoleData === roles.admin ||
+                            userRoleData === roles.superUser ||
+                            userRoleData === roles.superApproverUser) && (
                             <Form.Text className="text-danger">
                               {errors.backupEditor.message}
                             </Form.Text>
@@ -1429,9 +1407,9 @@ function PartnerComponent(props) {
                         </Form.Label>
                         <Form.Select
                           disabled={
-                            userRole === roles.editor ||
-                            userRole === roles.approver_2 ||
-                            userRole === roles.approve_1
+                            userRoleData === roles.editor ||
+                            userRoleData === roles.approver_2 ||
+                            userRoleData === roles.approve_1
                           }
                           size="sm"
                           className="field-Prop"
@@ -1454,9 +1432,9 @@ function PartnerComponent(props) {
                               ))}
                         </Form.Select>
                         {errors.approver1 &&
-                          (userRole === roles.admin ||
-                            userRole === roles.superUser ||
-                            userRole === roles.superApproverUser) && (
+                          (userRoleData === roles.admin ||
+                            userRoleData === roles.superUser ||
+                            userRoleData === roles.superApproverUser) && (
                             <Form.Text className="text-danger">
                               {errors.approver1.message}
                             </Form.Text>
@@ -1468,9 +1446,9 @@ function PartnerComponent(props) {
                         </Form.Label>
                         <Form.Select
                           disabled={
-                            userRole === roles.editor ||
-                            userRole === roles.approver_2 ||
-                            userRole === roles.approve_1
+                            userRoleData === roles.editor ||
+                            userRoleData === roles.approver_2 ||
+                            userRoleData === roles.approve_1
                           }
                           size="sm"
                           className="field-Prop"
@@ -1493,9 +1471,9 @@ function PartnerComponent(props) {
                               ))}
                         </Form.Select>
                         {errors.approver2 &&
-                          (userRole === roles.admin ||
-                            userRole === roles.superUser ||
-                            userRole === roles.superApproverUser) && (
+                          (userRoleData === roles.admin ||
+                            userRoleData === roles.superUser ||
+                            userRoleData === roles.superApproverUser) && (
                             <Form.Text className="text-danger">
                               {errors.approver2.message}
                             </Form.Text>
@@ -1511,7 +1489,7 @@ function PartnerComponent(props) {
                 <Button
                   className="btn-upload cancel-header"
                   onClick={() => {
-                    handlePartnerCancel(userRole);
+                    handlePartnerCancel(userRoleData);
                   }}
                 >
                   Cancel

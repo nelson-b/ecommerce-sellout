@@ -38,18 +38,16 @@ function UserList(props) {
           }
         }
   }, []);
-  //------------------//
 
   const [rowData, setRowData] = useState();
   const location = useLocation();
-  let userRole = new URLSearchParams(location.search).get("role");
 
   const handleUserEdit = (params) => {
-    navigate(`/user/update?id=${params.data.email_id}&role=${userRole}`);
+    navigate(`/user/update?id=${params.data.email_id}&role=${userRoleData}`);
   };
 
   const handleCreate = () => {
-    navigate(`/user/create?role=${userRole}`);
+    navigate(`/user/create?role=${userRoleData}`);
   };
 
   const columnDefs = [
@@ -165,22 +163,11 @@ function UserList(props) {
     []
   );
 
-  let userMail = '';
 
-  if(userRole == 'superApproverUser') {
-    userRole = "SUPERVISOR_APPROVER_1_2"
-    userMail = 'thomas@se.com'
-  }
-  if(userRole == 'admin') {
-    userMail = 'jean@se.com'
-  } 
-  if(userRole == 'superUser') {
-    userMail = 'marie@se.com'
-  }  
 
   const onGridReady = useCallback((params) => {
     props
-      .retrieveAllNewListByRole(userRole == roles.admin ? '' : userRole)// for admin all users should be visible
+      .retrieveAllNewListByRole(userRoleData == roles.admin ? '' : userRoleData)// for admin all users should be visible
       .then((data) => {
         setRowData(data.filter((e) => e.status == "ACTIVE"));
       })
@@ -190,7 +177,7 @@ function UserList(props) {
   }, []);
 
   const handleRequest = () => {
-    navigate(`/user/Request?role=${userRole}`);
+    navigate(`/user/Request?role=${userRoleData}`);
   };
 
   return (
@@ -200,7 +187,7 @@ function UserList(props) {
           <MyMenu />
         </Row>
         <div>
-          {userRole === "admin" ? (
+          {userRoleData === "admin" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/admin/home">
                 <img
@@ -214,7 +201,7 @@ function UserList(props) {
                 &nbsp;User List
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "superApproverUser" ? (
+          ) : userRoleData === "superApproverUser" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img
@@ -228,7 +215,7 @@ function UserList(props) {
                 &nbsp;User List
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "superUser" ? (
+          ) : userRoleData === "superUser" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superUser">
                 <img
@@ -254,12 +241,12 @@ function UserList(props) {
             <div>
               <Row className="" style={{ float: "right" }}>
                 <Col xs="auto">
-                  {userRole == "admin" && (
+                  {userRoleData == "admin" && (
                     <Button
                       size="md"
                       className="btn-overview save-header"
                       onClick={() => {
-                        handleRequest(userRole);
+                        handleRequest(userRoleData);
                       }}
                     >
                       Requests
@@ -271,7 +258,7 @@ function UserList(props) {
                     size="md"
                     className="btn-overview save-header"
                     onClick={() => {
-                      handleCreate(userRole);
+                      handleCreate(userRoleData);
                     }}
                   >
                     Create User

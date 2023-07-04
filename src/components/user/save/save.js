@@ -44,7 +44,7 @@ import { userRoleOptions } from "../optionsData.js";
 
 function SaveUser(props) {
   const navigate = useNavigate();
-  //sso login
+
   const [userEmail, setUserEmail] = useState('');
   const [userRoleData, setUserRoleData] = useState('');
   
@@ -54,7 +54,7 @@ function SaveUser(props) {
     if(usrDetails){
       setUserEmail(usrDetails.email_id);
       setUserRoleData(usrDetails.role_id);
-                
+      
       if(usrDetails.role_id === roles.admin.toUpperCase() ||
       usrDetails.role_id === roles.supervisor.toUpperCase() ||
       usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
@@ -247,7 +247,6 @@ function SaveUser(props) {
     props
       .retrieveAllPartnerData()
       .then((data) => {
-        console.log("retrieveAllPartnerData", data);
         let partnerOptions = [];
         data.data.forEach((partnerData) => {
           partnerOptions = partnerOptions.concat({
@@ -326,7 +325,6 @@ function SaveUser(props) {
                 prefillForm.userrole
               )
               .then((data) => {
-                console.log("retrieveUserRoleConfigByEmailIdRoleId", data);
                 let filterData = data.filter(
                   (data) =>
                     data.EMAIL_ID === prefillForm.useremailid &&
@@ -426,7 +424,6 @@ function SaveUser(props) {
     props
       .retrieveAllUserRoleConfig() //i/p for test purpose
       .then((data) => {
-        console.log("retrieveAllPartnerData", data);
         let gridInput = {
           dropdownField: selected,
           data: data,

@@ -73,35 +73,20 @@ function PartnerRequestList(props) {
   //------------------//
 
   const location = useLocation();
-
-  const screenRole = new URLSearchParams(location.search).get("role");
-
   const [rowData, setRowData] = useState();
-
   const [message, setMessage] = useState(0);
-
   const [rowsSelectedForUpdation, setRowsSelectedForUpdation] = useState(0);
-
   const columnDefs = [
     {
       headerName: "Partner Account Name",
-
       field: "partner_account_name",
-
       filter: true,
-
       pinned: "left",
-
       width: 220,
-
       suppressSizeToFit: true,
-
       editable: false,
-
       headerCheckboxSelection: true,
-
       checkboxSelection: true,
-
       showDisabledCheckboxes: true,
     },
 
@@ -531,9 +516,9 @@ function PartnerRequestList(props) {
       e2_playbook_type: data.e2_playbook_type,
       bopp_type: data.bopp_type,
       gtm_type: data.gtm_type,
-      created_by: data.created_by,
+      created_by: data.created_by?data.created_by:userEmail,
       created_date: new Date().toUTCString(),
-      modified_by: userMail,
+      modified_by: userEmail,
       last_modified_date: new Date().toUTCString(),
       status: status,
       batch_upload_flag: false,
@@ -552,21 +537,21 @@ function PartnerRequestList(props) {
           .updatePartner(reqData)
           .then((data) => {
             let filterData = {
-              role: screenRole,
-              userMail: userMail,
+              role: userRole,
+              userMail: userEmail,
             };
 
             props
               .retrievePartnerByRole(
-                screenRole == roles.admin ||
-                screenRole == roles.superUser ||
-                screenRole == roles.superApproverUser
+                userRole == roles.admin ||
+                userRole == roles.superUser ||
+                userRole == roles.superApproverUser
                 ? ""
                 : filterData.role,
 
-                screenRole == roles.admin ||
-                screenRole == roles.superUser ||
-                screenRole == roles.superApproverUser
+                userRole == roles.admin ||
+                userRole == roles.superUser ||
+                userRole == roles.superApproverUser
                 ? ""
                 : filterData.userMail
               )
@@ -598,21 +583,21 @@ function PartnerRequestList(props) {
           .updatePartner(reqData)
           .then((data) => {
             let filterData = {
-              role: screenRole,
-              userMail: userMail,
+              role: userRole,
+              userMail: userEmail,
             };
 
             props
               .retrievePartnerByRole(
-                screenRole == roles.admin ||
-                  screenRole == roles.superUser ||
-                  screenRole == roles.superApproverUser
+                userRole == roles.admin ||
+                  userRole == roles.superUser ||
+                  userRole == roles.superApproverUser
                   ? ""
                   : filterData.role,
 
-                screenRole == roles.admin ||
-                  screenRole == roles.superUser ||
-                  screenRole == roles.superApproverUser
+                userRole == roles.admin ||
+                  userRole == roles.superUser ||
+                  userRole == roles.superApproverUser
                   ? ""
                   : filterData.userMail
               )
@@ -634,44 +619,22 @@ function PartnerRequestList(props) {
     }
   };
 
-  let userMail = "";
-
-  if (screenRole == "editor") {
-    userMail = "nelson@se.com";
-  }
-
-  if (screenRole == "approver") {
-    userMail = "katie@se.com";
-  }
-
-  if (screenRole == "superApproverUser") {
-    userMail = "thomas@se.com";
-  }
-
-  if (screenRole == "admin") {
-    userMail = "jean@se.com";
-  }
-
-  if (screenRole == "superUser") {
-    userMail = "marie@se.com";
-  }
-
   const onGridReady = useCallback((params) => {
     let filterData = {
-      role: screenRole,
-      userMail: userMail,
+      role: userRole,
+      userMail: userEmail,
     };
     props
       .retrievePartnerByRole(
-        screenRole == roles.admin ||
-          screenRole == roles.superUser ||
-          screenRole == roles.superApproverUser
+        userRole == roles.admin ||
+          userRole == roles.superUser ||
+          userRole == roles.superApproverUser
           ? ""
           : filterData.role,
 
-        screenRole == roles.admin ||
-          screenRole == roles.superUser ||
-          screenRole == roles.superApproverUser
+        userRole == roles.admin ||
+          userRole == roles.superUser ||
+          userRole == roles.superApproverUser
           ? ""
           : filterData.userMail
       )
@@ -695,7 +658,7 @@ function PartnerRequestList(props) {
         </Row>
 
         <div>
-          {screenRole === "admin" ? (
+          {userRole === "admin" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/admin/home">
                 <img
@@ -711,7 +674,7 @@ function PartnerRequestList(props) {
                 &nbsp;Partner List
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "superUser" ? (
+          ) : userRole === "superUser" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superUser">
                 <img

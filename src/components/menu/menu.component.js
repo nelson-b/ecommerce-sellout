@@ -19,6 +19,7 @@ import Cookies from "js-cookie";
 import { user_login_info } from "../constant";
 import { getNotificationsByRoleAndEmail } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
+import { redirectUrl, signInLink, tokenExpiryMinusAttr } from "../../config";
 
 function MyMenu(props) {
   const navigate = useNavigate();
@@ -38,8 +39,10 @@ function MyMenu(props) {
   //sso login
   useEffect(() => {
     //--------code to test(comment before deploying)---------//
-    // let principalId = "{'email_id':'SESA719253@se.com','role_id':'EDITOR','first_name':'Nelson','last_name':'Dmonte','status':'ACTIVE','modified_by':'jean@se.com','created_date':'2023-06-29T06:25:30','modified_date':'2023-06-29T06:24:54','ops_val':'Operations Val','zone_val':'Zone Val2','model_val':'Model Val','country_code':'USA'}";
+    // let principalId = "{'email_id': 'SESA719275@se.com', 'role_id': 'APPROVE_1', 'first_name': 'Nelson', 'last_name': 'Dmonte', 'status': 'ACTIVE', 'modified_by': 'jean@se.com', 'created_date': '2023-06-29T06:25:30', 'modified_date': '2023-06-29T06:24:54', 'ops_val': 'Operations Val', 'zone_val': 'Zone Val2', 'model_val': 'Model Val', 'country_code': 'USA'}";
     // localStorage.setItem(user_login_info, principalId.replace(/'/g, '"'));
+    // let inMinutes = new Date(new Date().getTime() + Number(7200 - tokenExpiryMinusAttr) * 1000); //data.expires_in 2 hr
+    // Cookies.set('access_token', '0003iVQuKLAfubveu482WxN5ISvy', { expires: inMinutes }) //token expires in a day
     //--------code to test---------//
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     console.log('menu usrDetails', usrDetails);
@@ -85,6 +88,7 @@ function MyMenu(props) {
 
   const toggleShowNotification = () => {
     setshowNotification(!showNotifiation);
+
     setnotificationCount(0);
   };
 

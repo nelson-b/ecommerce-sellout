@@ -26,7 +26,7 @@ function Home(props) {
         setUserEmail(usrDetails.email_id);
         setuserRole(usrDetails.role_id);
         console.log('editor home', usrDetails.role_id);
-
+        console.log('roles.approver_2:', roles.editor.toUpperCase());
         if(usrDetails.role_id === roles.editor.toUpperCase() ||
           usrDetails.role_id === roles.approve_1.toUpperCase() ||
           usrDetails.role_id === roles.approver_2.toUpperCase() ||

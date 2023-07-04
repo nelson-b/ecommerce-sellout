@@ -41,38 +41,37 @@ function PartnerList(props) {
 
   const [rowData, setRowData] = useState();
   const location = useLocation();
-  let screenRole = new URLSearchParams(location.search).get("role");
 
   const handlePartnerEdit = (params) => {
     if (
-      screenRole === "superUser" ||
-      screenRole === "admin" ||
-      screenRole === "superApproverUser"
+      userRole === "superUser" ||
+      userRole === "admin" ||
+      userRole === "superApproverUser"
     ) {
       navigate(
-        `/higerLevelUser/partner/update?id=${params.data.partner_id}&role=${screenRole}`
+        `/higerLevelUser/partner/update?id=${params.data.partner_id}&role=${userRole}`
       );
     } else {
       navigate(
-        `/partner/update?id=${params.data.partner_id}&role=${screenRole}`
+        `/partner/update?id=${params.data.partner_id}&role=${userRole}`
       );
     }
   };
 
   const handleCreate = () => {
     if (
-      screenRole === "superUser" ||
-      screenRole === "admin" ||
-      screenRole === "superApproverUser"
+      userRole === "superUser" ||
+      userRole === "admin" ||
+      userRole === "superApproverUser"
     ) {
-      navigate(`/higerLevelUser/partner/create?role=${screenRole}`);
+      navigate(`/higerLevelUser/partner/create?role=${userRole}`);
     } else {
-      navigate(`/partner/create?role=${screenRole}`);
+      navigate(`/partner/create?role=${userRole}`);
     }
   };
 
   const handleRequest = () => {
-    navigate(`/partner/requestList?role=${screenRole}`);
+    navigate(`/partner/requestList?role=${userRole}`);
   };
 
   const columnDefs = [
@@ -342,61 +341,37 @@ function PartnerList(props) {
     []
   );
 
-  let userMail = "";
 
-  if (screenRole == "editor") {
-    userMail = "nelson@se.com";
-  }
-  if (screenRole == "superApproverUser") {
-    userMail = "thomas@se.com";
-  }
-  if (screenRole == "admin") {
-    userMail = "jean@se.com";
-  }
-  if (screenRole == "superUser") {
-    userMail = "marie@se.com";
-  }
-  if (screenRole == "approve_1") {
-    userMail = "cnchn00073@example.com";
-  }
-  if (screenRole == "approver_2") {
-    userMail = "cnchn00073@example.com";
-  }
-  // screenRole = (screenRole == "superUser" 
-  // ? "SUPERVISOR" 
-  // : screenRole == "superApproverUser" 
-  // ? "SUPERVISOR_APPROVER_1_2"
-  // : screenRole)
 
   const onGridReady = useCallback((params) => {
     let filterData = {
-      role: screenRole,
-      userMail: userMail,
+      role: userRole,
+      userMail: userEmail,
     };
 
     let previousAPIData = [];
     props
       .retrievePartnerByRole(
-        screenRole == roles.admin ||
-          screenRole == roles.superUser ||
-          screenRole == roles.superApproverUser
+        userRole == roles.admin ||
+          userRole == roles.superUser ||
+          userRole == roles.superApproverUser
           ? ""
           : filterData.userMail, 
-        screenRole == roles.admin ||
-          screenRole == roles.superUser ||
-          screenRole == roles.superApproverUser
+        userRole == roles.admin ||
+          userRole == roles.superUser ||
+          userRole == roles.superApproverUser
           ? ""
           : filterData.role
       )
       .then((data) => {
         previousAPIData = data?.data;
-        let tempRole = screenRole;
+        let tempRole = userRole;
         setRowData(data.data.filter((e) => e.status == "ACTIVE"));
           
-        if(screenRole == roles.superUser) {
+        if(userRole == roles.superUser) {
           tempRole = 'SUPERVISOR'
         }
-        if(screenRole == roles.superApproverUser) {
+        if(userRole == roles.superApproverUser) {
           tempRole = 'SUPERVISOR_APPROV_1_2'
         }
         // setRowData(data.data.filter((e) => e.status == "ACTIVE"));
@@ -414,7 +389,7 @@ function PartnerList(props) {
           <MyMenu />
         </Row>
         <div>
-          {screenRole === "admin" ? (
+          {userRole === "admin" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/admin/home">
                 <img
@@ -424,7 +399,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "superApproverUser" ? (
+          ) : userRole === "superApproverUser" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img
@@ -434,7 +409,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "approve_1" ? (
+          ) : userRole === "approve_1" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/approver_1/home">
                 <img
@@ -444,7 +419,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "approver_2" ? (
+          ) : userRole === "approver_2" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/approver_2/home">
                 <img
@@ -454,7 +429,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "editor" ? (
+          ) : userRole === "editor" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/editor/home">
                 <img
@@ -464,7 +439,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : screenRole === "superUser" || screenRole == "SUPERVISOR" ? (
+          ) : userRole === "superUser" || userRole == "SUPERVISOR" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superUser">
                 <img
@@ -485,15 +460,15 @@ function PartnerList(props) {
                 Sell Out Partner List
               </div>
             </Col>
-            {screenRole === "admin" ||
-            screenRole === "superUser" ||
-            screenRole === "superApproverUser" ? (
+            {userRole === "admin" ||
+            userRole === "superUser" ||
+            userRole === "superApproverUser" ? (
               <Col xs="auto" className="partner-container">
                 <Button
                   size="md"
                   className="partner-header save-header"
                   onClick={() => {
-                    handleRequest(screenRole);
+                    handleRequest(userRole);
                   }}
                 >
                   Pending requests
@@ -507,7 +482,7 @@ function PartnerList(props) {
                 size="md"
                 className="partner-header save-header"
                 onClick={() => {
-                  handleCreate(screenRole);
+                  handleCreate(userRole);
                 }}
               >
                 Create Partner

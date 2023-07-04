@@ -1,11 +1,8 @@
 "use strict";
 
 import { AgGridReact } from "ag-grid-react";
-
 import { useNavigate } from "react-router-dom";
-
 import "ag-grid-community/styles/ag-grid.css";
-
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
@@ -112,32 +109,11 @@ function DataInputComponent(props) {
   ];
 
   const filterGlobalData = {
-    loginUser: "nelson@se.com",
-
+    loginUser: userEmail,
     currentYear: String(new Date().getFullYear()),
-
     userRole: userRole,
   };
 
-  if (userRole == roles.editor) {
-    filterGlobalData.loginUser = "nelson@se.com";
-  }
-
-  if (userRole == roles.approver) {
-    filterGlobalData.loginUser = "katie@se.com";
-  }
-
-  if (userRole == roles.superUser) {
-    filterGlobalData.loginUser = "marie@se.com";
-  }
-
-  if (userRole == roles.superApproverUser) {
-    filterGlobalData.loginUser = "thomas@se.com";
-  }
-
-  if (userRole == roles.admin) {
-    filterGlobalData.loginUser = "jean@se.com";
-  }
 
   const handleClearClick = () => {
     window.location.reload();
@@ -237,52 +213,29 @@ function DataInputComponent(props) {
         }
 
         if (rowNode.data[`${element}_Amount`] > 0) {
-
           monthArray.push({
-
             month: element.toLowerCase(),
-
              sellout_local_currency: String(amount),
-
             trans_type:
-
               rowNode.data[`${element}_Estimated`] == true ? "EST" : "ACT",
-
           });
-
         }
-
       });
-
       let currentYear = String(currentDate.getFullYear());
-
-
       let formatPayload = {
-
         partner_id: rowNode.data.id,
-
         partner_name: rowNode.data.Partner_Account_Name,
-
         country_code: rowNode.data.Country_code,
-
         year_val:rowNode.data.Year? String(rowNode.data.Year):currentYear,
-
         months: monthArray,
-
         trans_currency_code: rowNode.data.Currency_Of_Reporting,
-
-        created_by: filterGlobalData.loginUser, //login user
-
+        created_by: userEmail, //login user
         created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
-
-        approval_status: "1",
-
+        approval_status: "0",
         editor_comment: rowNode.data.Comment,
-
         comments: "waiting for approver",
-
         batch_upload_flag: rowNode.data.batch_upload_flag,
-
+        approved_date: new Date().toISOString().replace("T", " ").slice(0, -5),
       };
 
 
@@ -294,34 +247,20 @@ function DataInputComponent(props) {
 
     });
 
-    // payload.forEach((row, index) => {
-
     props
-
      .updateSellOutData(payload)
-
       .then((data) => {
-
         setFileError([]);
-
         setShowErrorModal(false);
-
         setShowSuccessModal(true);
-
         setShowShouldUpdModal(false);
-
       })
 
       .catch((e) => {
-
         setFileError([]);
-
         setShowErrorModal(true);
-
         setShowSuccessModal(false);
-
         setShowShouldUpdModal(false);
-
       });
 
 
@@ -863,19 +802,15 @@ function DataInputComponent(props) {
     let previousAPIData = [];
     props
       .retrieveAllData(
-        filterGlobalData.loginUser,
+        userEmail,
         filterGlobalData.currentYear,
-       'EDITOR'
+       userRoleData
       )
       .then((data) => {
         if (data) {
-          console.log('data::::::', data);
-          previousAPIData = data;
-
-        //  setRowData(formatGetPayload(data, true));
-        
+          previousAPIData = data;        
     props
-    .retrievePartnerByRole('nelson@se.com','EDITOR')
+    .retrievePartnerByRole(userEmail,userRoleData)
     .then((data) => {
       console.log('showMeData from next API', data.data);
       let secondArray =[];
@@ -906,10 +841,12 @@ function DataInputComponent(props) {
   }, []);
 
   const getPreviousQuarterData = (quarter) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
     let today = new Date();
     let year = today.getFullYear();
     props
-      .retrieveInputCalenderData(year, quarter, "approver")
+      .retrieveInputCalenderData(year, quarter, usrDetails.role_id)
       .then((data) => {
         let closingData = data.CLOSING_DATE;
         let openingDate = data.OPENING_DATE;
@@ -940,7 +877,7 @@ function DataInputComponent(props) {
         let tempToDayTime = tempToday.getTime();
         let tempClosingTime = tempClosing.getTime();
         if (tempToDayTime > tempClosingTime || tempToDayTime < tempOpenTime) {
-          setShouldDisableSaveButton(true);
+        //  setShouldDisableSaveButton(true);
         } else {
           setShouldDisableSaveButton(false);
         }

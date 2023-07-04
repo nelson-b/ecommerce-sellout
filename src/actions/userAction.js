@@ -60,7 +60,6 @@ export const retrieveByEmailId = (id) => async (dispatch) => {
 
 export const createUserPartnerRoleConfig = (data) => async(dispatch) => {
   try{
-      console.log('createUserPartnerRoleConfig', data);
       const res = await UserService.createPartnerUserRoleConfig(data);
 
       dispatch({
@@ -76,9 +75,7 @@ export const createUserPartnerRoleConfig = (data) => async(dispatch) => {
 
 export const createUserProfileConfig = (data) => async(dispatch) => {
   try{
-      console.log('createUserPartnerRoleConfig', data);
       const res = await UserService.createUserProfile(data);
-
       dispatch({
           type: CREATE_USER_PROFILE,
           payload: res.data,

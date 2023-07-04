@@ -28,7 +28,7 @@ function AdminOverview(props) {
               
         if(usrDetails.role_id === roles.admin.toUpperCase()) {
           console.log('admin home page is for role admin');
-        }else{
+        } else {
           navigate("/");
         }
       }

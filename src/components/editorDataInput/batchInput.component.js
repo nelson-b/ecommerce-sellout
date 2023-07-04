@@ -18,7 +18,6 @@ function BatchInputComponent({ savedData, props, userDetails }) {
     getAPIDateFormatWithTime(new Date().toUTCString())
   );
   const location = useLocation();
-  const historicalRole = new URLSearchParams(location.search).get("role");
 
   const navigate = useNavigate();
     //sso login func
@@ -36,7 +35,6 @@ function BatchInputComponent({ savedData, props, userDetails }) {
           usrDetails.role_id === roles.approve_1.toUpperCase() ||
           usrDetails.role_id === roles.approver_2.toUpperCase() ||
           usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
-          console.log('busplit screen for editor/approve_1/approver_2/supervisor_approv_1_2');
         } else {
           navigate("/");
         }
@@ -107,9 +105,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
   };
 
   const postBatchData = (frmData) => {
-    console.log("postBatchData", frmData);
     const file = frmData.file[0];
-    console.log("file", file);
     if (
       file.type !==
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -130,7 +126,6 @@ function BatchInputComponent({ savedData, props, userDetails }) {
           let json = xlsx.utils.sheet_to_json(worksheet);
           let errorJson = [];
           setFileData(json);
-          console.log("json", json);
           errorJson = ckeckErrors(json, json);
 
           json.forEach((i) => {
@@ -243,9 +238,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
 
             // //iterate in the grid
             json.forEach((rowNode, index) => {
-              console.log("index", index);
               //api to save data
-              console.log("editor inp grid", rowNode);
               let monthArray = [];
               //12 months loop
               allCalMonths.forEach((element) => {
@@ -278,26 +271,19 @@ function BatchInputComponent({ savedData, props, userDetails }) {
                 batch_upload_flag: "true",
               };
 
-              console.log("formatPayload", formatPayload);
               if (formatPayload.months.length > 0) {
                 payload.push(formatPayload);
               }
             });
-
-            console.log("payload", payload);
-
-            // payload.forEach((row, index) => {
-            console.log("createData row length", payload.length);
             props
               .createData(payload)
               .then((data) => {
-                console.log(data);
                 document.getElementById("sellout-editor-input").reset();
                 setFileError([]);
                 setShowErrorModal(false);
                 setShowSuccessModal(true);
                 setShowShouldUpdModal(false);
-                setTimeout(() => navigate(`/dataReview?role=${historicalRole}`), 3000);
+                setTimeout(() => navigate(`/dataReview?role=${userRole}`), 3000);
               })
               .catch((e) => {
                 document.getElementById("sellout-editor-input").reset();
@@ -319,7 +305,6 @@ function BatchInputComponent({ savedData, props, userDetails }) {
   };
 
   const onSubmit = (frmData) => {
-    console.log("frmData", frmData);
     postBatchData(frmData);
   };
 
