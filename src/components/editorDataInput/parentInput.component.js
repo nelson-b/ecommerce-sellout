@@ -4,74 +4,54 @@ import { AgGridReact } from "ag-grid-react";
 import { useNavigate } from "react-router-dom";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-
 import { Button, Row, Col, Container, Form, Breadcrumb } from "react-bootstrap";
-
 import { allCalMonths, roles, user_login_info } from "../constant";
-
 import "./parentInput.component.css";
-
 import BatchInputComponent from "./batchInput.component";
-
 import MyMenu from "../menu/menu.component.js";
-
 import "ag-grid-enterprise";
-
 import active from "../../images/active.png";
-
 import closed from "../../images/closed.png";
-
 import Home from "../../images/home-icon.png";
-
 import AlertModal from "../modal/alertModel";
-
 import { useLocation } from "react-router-dom";
-
 import {
   createData,
   retrieveAllData,
   updateSellOutData,
 } from "../../actions/dataInputAction";
-import {
-  retrievePartnerByRole
-} from "../../actions/partneraction";
-
+import { retrievePartnerByRole } from "../../actions/partneraction";
 import { connect } from "react-redux";
-
 import {
   getAPIDateFormatWithTime,
   getUIDateFormat,
   getUIDateFormatWithTime,
 } from "../../helper/helper";
-
-import {
-    retrieveInputCalenderData,
-} from "../../actions/inputCalenderAction";
-
+import { retrieveInputCalenderData } from "../../actions/inputCalenderAction";
 function DataInputComponent(props) {
   const navigate = useNavigate();
 
-    //sso login func
-    const [userEmail, setUserEmail] = useState('');
-    const [userRoleData, setuserRoleData] = useState('');
-          
-    useEffect(() => {
-        const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-          //if user not login then redirect to login page
-          if(usrDetails){
-            setUserEmail(usrDetails.email_id);
-            setuserRoleData(usrDetails.role_id);
-            
-            if(usrDetails.role_id === roles.editor.toUpperCase()) {
-              console.log('input screen for editor role');
-            } else{
-              navigate("/");
-            }
-          }
-    }, []);
-    //------------------//
+  //sso login func
+  const [userEmail, setUserEmail] = useState("");
+  const [userRoleData, setuserRoleData] = useState("");
+
+  useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRoleData(usrDetails.role_id);
+
+      if (usrDetails.role_id === roles.editor.toUpperCase() ||
+          usrDetails.role_id === roles.backup_editor.toUpperCase()) {
+        console.log("input screen for editor role");
+      } else {
+        navigate("/");
+      }
+    }
+  }, []);
+  //------------------//
   const [showModal, setShowModal] = useState(false);
 
   const [shouldDisableSaveButton, setShouldDisableSaveButton] = useState(false);
@@ -113,7 +93,6 @@ function DataInputComponent(props) {
     currentYear: String(new Date().getFullYear()),
     userRole: userRole,
   };
-
 
   const handleClearClick = () => {
     window.location.reload();
@@ -185,7 +164,6 @@ function DataInputComponent(props) {
   };
 
   const postData = useCallback(() => {
-
     setShowShouldUpdModal(false);
 
     let payload = [];
@@ -193,29 +171,24 @@ function DataInputComponent(props) {
     //iterate in the grid
 
     gridRef.current.api.forEachNode((rowNode, index) => {
-
       //api to save data
 
       let monthArray = [];
 
       allCalMonths.forEach((element) => {
-
         let amount = rowNode.data[`${element}_Amount`];
 
-        console.log('amount::', amount);
+        console.log("amount::", amount);
 
-        if(amount) {
-
+        if (amount) {
         } else {
-
           amount = 0;
-
         }
 
         if (rowNode.data[`${element}_Amount`] > 0) {
           monthArray.push({
             month: element.toLowerCase(),
-             sellout_local_currency: String(amount),
+            sellout_local_currency: String(amount),
             trans_type:
               rowNode.data[`${element}_Estimated`] == true ? "EST" : "ACT",
           });
@@ -226,7 +199,7 @@ function DataInputComponent(props) {
         partner_id: rowNode.data.id,
         partner_name: rowNode.data.Partner_Account_Name,
         country_code: rowNode.data.Country_code,
-        year_val:rowNode.data.Year? String(rowNode.data.Year):currentYear,
+        year_val: rowNode.data.Year ? String(rowNode.data.Year) : currentYear,
         months: monthArray,
         trans_currency_code: rowNode.data.Currency_Of_Reporting,
         created_by: userEmail, //login user
@@ -238,17 +211,13 @@ function DataInputComponent(props) {
         approved_date: new Date().toISOString().replace("T", " ").slice(0, -5),
       };
 
-
       if (formatPayload.months.length > 0) {
-
         payload.push(formatPayload);
-
       }
-
     });
 
     props
-     .updateSellOutData(payload)
+      .updateSellOutData(payload)
       .then((data) => {
         setFileError([]);
         setShowErrorModal(false);
@@ -263,11 +232,9 @@ function DataInputComponent(props) {
         setShowShouldUpdModal(false);
       });
 
-
     // })
 
     gridRef.current.api.refreshCells();
-
   }, []);
 
   const gridRef = useRef(null);
@@ -490,7 +457,7 @@ function DataInputComponent(props) {
 
   const currentYear = String(currentDate.getFullYear()).slice(-2);
 
-  for (let i = 5; i > 0; i--) {
+  for (let i = 6; i > 0; i--) {
     let date = new Date(
       currentDate.getFullYear(),
 
@@ -554,6 +521,7 @@ function DataInputComponent(props) {
             },
 
             enableRangeSelection: true,
+			cellStyle: { "border-color": "#e2e2e2" },			
           },
 
           {
@@ -598,6 +566,7 @@ function DataInputComponent(props) {
           enableRangeSelection: true,
 
           suppressMenu: true,
+		  cellStyle: { "border-color": "#e2e2e2" },
         });
   }
 
@@ -742,7 +711,7 @@ function DataInputComponent(props) {
   };
 
   const formatGetPayload = useCallback((data, isManualInput) => {
-    console.log('formatGetPayload::', data);
+    console.log("formatGetPayload::", data);
     let respPayload = [];
 
     data.forEach((row, index) => {
@@ -757,30 +726,54 @@ function DataInputComponent(props) {
         Currency_Of_Reporting: row.trans_currency_code,
         Status: row.status,
         Year: row.year_val,
-        Jan_Amount: row.months?getMonthVal(row.months, allCalMonths[0]):'', // "jan"
-        Feb_Amount: row.months?getMonthVal(row.months, allCalMonths[1]):'', //"feb"
-        Mar_Amount: row.months?getMonthVal(row.months, allCalMonths[2]):'', //"march"
-        Apr_Amount: row.months?getMonthVal(row.months, allCalMonths[3]):'', //"apr"
-        May_Amount: row.months?getMonthVal(row.months, allCalMonths[4]):'', //may
-        Jun_Amount: row.months?getMonthVal(row.months, allCalMonths[5]):'', //jun
-        Jul_Amount: row.months?getMonthVal(row.months, allCalMonths[6]):'', //"jul"
-        Aug_Amount: row.months?getMonthVal(row.months, allCalMonths[7]):'', //aug
-        Sep_Amount: row.months?getMonthVal(row.months, allCalMonths[8]):'', //sep
-        Oct_Amount: row.months?getMonthVal(row.months, allCalMonths[9]):'', //oct
-        Nov_Amount: row.months?getMonthVal(row.months, allCalMonths[10]):'', //nov
-        Dec_Amount: row.months?getMonthVal(row.months, allCalMonths[11]):'', //dec
-        Jan_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[0]):'', //jan
-        Feb_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[1]):'', //feb
-        Mar_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[2]):'', //"mar"
-        Apr_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[3]):'', //"apr"
-        May_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[4]):'', //may
-        Jun_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[5]):'', //jun
-        Jul_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[6]):'', //jul
-        Aug_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[7]):'', //aug
-        Sep_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[8]):'', //sep
-        Oct_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[9]):'', //oct
-        Nov_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[10]):'', //nov
-        Dec_Estimated: row.months?getTransTypeVal(row.months, allCalMonths[11]):'', //dec
+        Jan_Amount: row.months ? getMonthVal(row.months, allCalMonths[0]) : "", // "jan"
+        Feb_Amount: row.months ? getMonthVal(row.months, allCalMonths[1]) : "", //"feb"
+        Mar_Amount: row.months ? getMonthVal(row.months, allCalMonths[2]) : "", //"march"
+        Apr_Amount: row.months ? getMonthVal(row.months, allCalMonths[3]) : "", //"apr"
+        May_Amount: row.months ? getMonthVal(row.months, allCalMonths[4]) : "", //may
+        Jun_Amount: row.months ? getMonthVal(row.months, allCalMonths[5]) : "", //jun
+        Jul_Amount: row.months ? getMonthVal(row.months, allCalMonths[6]) : "", //"jul"
+        Aug_Amount: row.months ? getMonthVal(row.months, allCalMonths[7]) : "", //aug
+        Sep_Amount: row.months ? getMonthVal(row.months, allCalMonths[8]) : "", //sep
+        Oct_Amount: row.months ? getMonthVal(row.months, allCalMonths[9]) : "", //oct
+        Nov_Amount: row.months ? getMonthVal(row.months, allCalMonths[10]) : "", //nov
+        Dec_Amount: row.months ? getMonthVal(row.months, allCalMonths[11]) : "", //dec
+        Jan_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[0])
+          : "", //jan
+        Feb_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[1])
+          : "", //feb
+        Mar_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[2])
+          : "", //"mar"
+        Apr_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[3])
+          : "", //"apr"
+        May_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[4])
+          : "", //may
+        Jun_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[5])
+          : "", //jun
+        Jul_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[6])
+          : "", //jul
+        Aug_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[7])
+          : "", //aug
+        Sep_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[8])
+          : "", //sep
+        Oct_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[9])
+          : "", //oct
+        Nov_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[10])
+          : "", //nov
+        Dec_Estimated: row.months
+          ? getTransTypeVal(row.months, allCalMonths[11])
+          : "", //dec
         created_by: row.created_by,
         created_date: row.created_date,
         approved_by: row.approved_by,
@@ -798,37 +791,57 @@ function DataInputComponent(props) {
   });
 
   const onGridReady = useCallback((params) => {
-    console.log('coming inside parent input component');
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRoleData(usrDetails.role_id);
+    }
+    console.log("coming inside parent input component");
     let previousAPIData = [];
     props
       .retrieveAllData(
-        userEmail,
+        usrDetails.email_id,
         filterGlobalData.currentYear,
-       userRoleData
+        usrDetails.role_id
       )
       .then((data) => {
         if (data) {
-          previousAPIData = data;        
-    props
-    .retrievePartnerByRole(userEmail,userRoleData)
-    .then((data) => {
-      console.log('showMeData from next API', data.data);
-      let secondArray =[];
-      secondArray = data?.data;
-      let letsCreateNewCombinedArray = [];
-      for(let i=0; i<previousAPIData.length; i++) {
-        for(let j=0; j<secondArray.length; j++) {
-          if(previousAPIData[i].partner_id == secondArray[j].partner_id){
-            secondArray.splice(j,1);
-          }
-        }
-      }
-      previousAPIData = previousAPIData.concat(secondArray);
-      setRowData(formatGetPayload(previousAPIData, true));
-    })
-    .catch((e) => {
-      console.log("Data Input", e);
-    });
+          previousAPIData = data;
+          props
+            .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
+            .then((data) => {
+              console.log("showMeData from next API", data.data);
+              let secondArray = [];
+              secondArray = data?.data;
+              let letsCreateNewCombinedArray = [];
+              for (let i = 0; i < previousAPIData.length; i++) {
+                for (let j = 0; j < secondArray.length; j++) {
+                  if (
+                    previousAPIData[i].partner_id == secondArray[j].partner_id
+                  ) {
+                    secondArray.splice(j, 1);
+                  }
+                }
+              }
+              previousAPIData = previousAPIData.concat(secondArray);
+              setRowData(formatGetPayload(previousAPIData, true));
+            })
+            .catch((e) => {
+              console.log("Data Input", e);
+            });
+        } else {
+          props
+          .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
+          .then((data) => {
+            console.log("showMeData from next API", data.data);
+            let secondArray = [];
+            secondArray = data?.data;      
+            previousAPIData = previousAPIData.concat(secondArray);
+            setRowData(formatGetPayload(previousAPIData, true));
+          })
+          .catch((e) => {
+            console.log("Data Input", e);
+          });
         }
       })
       .catch((e) => {
@@ -837,7 +850,6 @@ function DataInputComponent(props) {
     let todays = new Date();
     let cMonth = todays.getMonth();
     getPreviousQuarterData(monthsOfTheYear[cMonth]);
-
   }, []);
 
   const getPreviousQuarterData = (quarter) => {
@@ -855,13 +867,13 @@ function DataInputComponent(props) {
         var day1 = dataOpen.getDate().toString().padStart(2, "0");
         var month1 = (dataOpen.getMonth() + 1).toString().padStart(2, "0");
         var year1 = dataOpen.getFullYear().toString();
-        let openD =  month1 + "-" + day1 + "-" + year1;
+        let openD = month1 + "-" + day1 + "-" + year1;
 
         let dateCus = new Date(closingData);
         var day = dateCus.getDate().toString().padStart(2, "0");
         var month = (dateCus.getMonth() + 1).toString().padStart(2, "0");
         var year = dateCus.getFullYear().toString();
-        let complete =  month + "-" + day + "-" + year;
+        let complete = month + "-" + day + "-" + year;
         let today = new Date();
         let datessss =
           parseInt(today.getMonth() + 1) +
@@ -877,7 +889,7 @@ function DataInputComponent(props) {
         let tempToDayTime = tempToday.getTime();
         let tempClosingTime = tempClosing.getTime();
         if (tempToDayTime > tempClosingTime || tempToDayTime < tempOpenTime) {
-        //  setShouldDisableSaveButton(true);
+          setShouldDisableSaveButton(true);
         } else {
           setShouldDisableSaveButton(false);
         }
@@ -890,7 +902,7 @@ function DataInputComponent(props) {
   const handleNavigation = () => {
     navigate(`/dataReview?role=${userRole}`);
   };
-  
+
   return (
     <>
       <Container fluid>
@@ -955,7 +967,11 @@ function DataInputComponent(props) {
 
           <Col xs="auto">
             <Button
-              className={shouldDisableSaveButton ? 'btn-upload active-button' : 'btn-upload edit-header'}
+              className={
+                shouldDisableSaveButton
+                  ? "btn-upload active-button"
+                  : "btn-upload edit-header"
+              }
               disabled={shouldDisableSaveButton}
               onClick={() => {
                 handleSave();
@@ -1005,5 +1021,5 @@ export default connect(null, {
   retrieveAllData,
   updateSellOutData,
   retrieveInputCalenderData,
-  retrievePartnerByRole
+  retrievePartnerByRole,
 })(DataInputComponent);

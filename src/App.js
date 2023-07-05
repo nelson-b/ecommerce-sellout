@@ -61,7 +61,7 @@ function App() {
             />
             <Route
               path="/superApproverUser/home"
-              element={<HomeComponent role={roles.superApproverUser} />}
+              element={<HomeComponent role={roles.supervisor_approv_1_2} />}
             />
             <Route
               path="/admin/home"

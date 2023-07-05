@@ -28,7 +28,7 @@ function AdminOverview(props) {
               
         if(usrDetails.role_id === roles.admin.toUpperCase()) {
           console.log('admin home page is for role admin');
-        } else {
+        }else{
           navigate("/");
         }
       }
@@ -353,6 +353,12 @@ function AdminOverview(props) {
   };
 
   const onGridReady = useCallback((params) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    if(usrDetails){
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
+    
     fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
       .then((resp) => resp.json())
       .then((data) => setRowData(data));

@@ -24,7 +24,6 @@ function UserList(props) {
                   
   useEffect(() => {
         const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-        //if user not login then redirect to login page
         if(usrDetails){
           setUserEmail(usrDetails.email_id);
           setUserRoleData(usrDetails.role_id);
@@ -166,8 +165,13 @@ function UserList(props) {
 
 
   const onGridReady = useCallback((params) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+        if(usrDetails){
+          setUserEmail(usrDetails.email_id);
+          setUserRoleData(usrDetails.role_id);
+        }
     props
-      .retrieveAllNewListByRole(userRoleData == roles.admin ? '' : userRoleData)// for admin all users should be visible
+		.retrieveAllNewListByRole(usrDetails.role_id == roles.admin.toUpperCase() || usrDetails.role_id == roles.supervisor.toUpperCase() ||usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase() ? '' : usrDetails.role_id)// for admin all users should be visible
       .then((data) => {
         setRowData(data.filter((e) => e.status == "ACTIVE"));
       })
@@ -187,7 +191,9 @@ function UserList(props) {
           <MyMenu />
         </Row>
         <div>
-          {userRoleData === "admin" ? (
+      {  console.log('userROle::', userRoleData)}
+
+          {  userRoleData == roles.admin.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/admin/home">
                 <img
@@ -201,7 +207,7 @@ function UserList(props) {
                 &nbsp;User List
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRoleData === "superApproverUser" ? (
+          ) : userRoleData == roles.supervisor_approv_1_2.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img
@@ -215,7 +221,7 @@ function UserList(props) {
                 &nbsp;User List
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRoleData === "superUser" ? (
+          ) : userRoleData == roles.supervisor.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superUser">
                 <img
@@ -241,7 +247,7 @@ function UserList(props) {
             <div>
               <Row className="" style={{ float: "right" }}>
                 <Col xs="auto">
-                  {userRoleData == "admin" && (
+                  {userRoleData == roles.admin.toUpperCase() && (
                     <Button
                       size="md"
                       className="btn-overview save-header"

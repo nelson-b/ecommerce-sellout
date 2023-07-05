@@ -62,9 +62,9 @@ function PartnerComponent(props) {
   const location = useLocation();
   const partnerId = new URLSearchParams(location.search).get("id");
   const isHigherLevelUser =
-    userRoleData === roles.admin ||
-    userRoleData === roles.superUser ||
-    userRoleData === roles.superApproverUser;
+    userRoleData == roles.admin.toUpperCase() ||
+    userRoleData == roles.supervisor.toUpperCase() ||
+    userRoleData == roles.supervisor_approv_1_2.toUpperCase();
   console.log("isHigherLevelUser", isHigherLevelUser);
 
   const initialData = {
@@ -107,8 +107,12 @@ function PartnerComponent(props) {
   });
 
   useEffect(() => {
-    console.log("partnerId", partnerId);
-    console.log("props.module", props.module);
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+      //if user not login then redirect to login page
+      if(usrDetails){
+        setUserEmail(usrDetails.email_id);
+        setUserRoleData(usrDetails.role_id);
+      }
 
     //country api
     props
@@ -125,7 +129,6 @@ function PartnerComponent(props) {
     props
       .retrieveAllStaticData()
       .then((data) => {
-        console.log("retrieveAllStaticData", data);
         setStaticData(data.data);
       })
       .catch((e) => {
@@ -136,7 +139,6 @@ function PartnerComponent(props) {
     props
       .retrieveAllUserListData()
       .then((data) => {
-        console.log("retrieveAllUserListData", data);
         setUsrRoleData(data);
       })
       .catch((e) => {
@@ -395,9 +397,9 @@ function PartnerComponent(props) {
         modified_by: userEmail,
         last_modified_date: new Date().toUTCString(),
         status:
-          userRoleData == roles.admin ||
-          userRoleData == roles.superUser ||
-          userRoleData == roles.superApproverUser
+          userRoleData == roles.admin.toUpperCase() ||
+          userRoleData == roles.supervisor.toUpperCase() ||
+          userRoleData == roles.supervisor_approv_1_2.toUpperCase()
             ? status.active
             : status.pending,
         batch_upload_flag: false,
@@ -434,9 +436,9 @@ function PartnerComponent(props) {
                 console.log("createPartnerData", data);
                 //create user partner role config for higher level user
                 if (
-                  userRoleData === roles.superUser ||
-                  userRoleData === roles.superApproverUser ||
-                  userRoleData === roles.admin
+                  userRoleData == roles.supervisor.toUpperCase() ||
+                  userRoleData == roles.supervisor_approv_1_2.toUpperCase() ||
+                  userRoleData == roles.admin.toUpperCase()
                 ) {
                   //call get by id api
                   props
@@ -538,9 +540,9 @@ function PartnerComponent(props) {
           console.log("data", data);
           //update user partner role config for higher level user
           if (
-            userRoleData === roles.superUser ||
-            userRoleData === roles.superApproverUser ||
-            userRoleData === roles.admin
+            userRoleData == roles.supervisor.toUpperCase() ||
+            userRoleData == roles.supervisor_approv_1_2.toUpperCase() ||
+            userRoleData == roles.admin.toUpperCase()
           ) {
             saveUserPartnerConfigDetails(partnerId, formData, false);
           } else {
@@ -581,7 +583,7 @@ function PartnerComponent(props) {
       </Row>
       <Row>
         <Breadcrumb>
-          {userRoleData === "editor" && (
+          {userRoleData == roles.editor.toUpperCase() && (
             <Breadcrumb.Item href="/editor/home">
               <img
                 src={Home}
@@ -590,7 +592,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-          {userRoleData === "approve_1" && (
+          {userRoleData == roles.approve_1.toUpperCase() && (
             <Breadcrumb.Item href="/approver_1/home">
               <img
                 src={Home}
@@ -599,7 +601,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-          {userRoleData === "approver_2" && (
+          {userRoleData == roles.approver_2.toUpperCase() && (
             <Breadcrumb.Item href="/approver_2/home">
               <img
                 src={Home}
@@ -608,7 +610,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-          {userRoleData === "superApproverUser" && (
+          {userRoleData == roles.supervisor_approv_1_2.toUpperCase() && (
             <Breadcrumb.Item href="/superApproverUser/home">
               <img
                 src={Home}
@@ -617,7 +619,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-          {userRoleData === "superUser" && (
+          {userRoleData == roles.supervisor.toUpperCase() && (
             <Breadcrumb.Item href="/superUser">
               <img
                 src={Home}
@@ -626,7 +628,7 @@ function PartnerComponent(props) {
               />
             </Breadcrumb.Item>
           )}
-          {userRoleData === "admin" && (
+          {userRoleData == roles.admin.toUpperCase() && (
             <Breadcrumb.Item href="/admin/home">
               <img
                 src={Home}
@@ -1326,9 +1328,9 @@ function PartnerComponent(props) {
                         &nbsp;
                         <Form.Select
                           disabled={
-                            userRoleData === roles.editor ||
-                            userRoleData === roles.approver_2 ||
-                            userRoleData === roles.approve_1
+                            userRoleData == roles.editor.toUpperCase() ||
+                            userRoleData == roles.approver_2.toUpperCase() ||
+                            userRoleData == roles.approve_1.toUpperCase()
                               ? true
                               : false
                           }
@@ -1353,9 +1355,9 @@ function PartnerComponent(props) {
                               ))}
                         </Form.Select>
                         {errors.editor &&
-                          (userRoleData === roles.admin ||
-                            userRoleData === roles.superUser ||
-                            userRoleData === roles.superApproverUser) && (
+                          (userRoleData == roles.admin.toUpperCase() ||
+                            userRoleData == roles.supervisor.toUpperCase() ||
+                            userRoleData == roles.supervisor_approv_1_2.toUpperCase()) && (
                             <Form.Text className="text-danger">
                               {errors.editor.message}
                             </Form.Text>
@@ -1368,9 +1370,9 @@ function PartnerComponent(props) {
                         &nbsp;
                         <Form.Select
                           disabled={
-                            userRoleData === roles.editor ||
-                            userRoleData === roles.approver_2 ||
-                            userRoleData === roles.approve_1
+                            userRoleData == roles.editor.toUpperCase() ||
+                            userRoleData == roles.approver_2.toUpperCase() ||
+                            userRoleData == roles.approve_1.toUpperCase()
                           }
                           size="sm"
                           className="field-Prop"
@@ -1393,9 +1395,9 @@ function PartnerComponent(props) {
                               ))}
                         </Form.Select>
                         {errors.backupEditor &&
-                          (userRoleData === roles.admin ||
-                            userRoleData === roles.superUser ||
-                            userRoleData === roles.superApproverUser) && (
+                          (userRoleData == roles.admin.toUpperCase() ||
+                            userRoleData == roles.supervisor.toUpperCase() ||
+                            userRoleData == roles.supervisor_approv_1_2.toUpperCase()) && (
                             <Form.Text className="text-danger">
                               {errors.backupEditor.message}
                             </Form.Text>
@@ -1407,9 +1409,9 @@ function PartnerComponent(props) {
                         </Form.Label>
                         <Form.Select
                           disabled={
-                            userRoleData === roles.editor ||
-                            userRoleData === roles.approver_2 ||
-                            userRoleData === roles.approve_1
+                            userRoleData == roles.editor.toUpperCase() ||
+                            userRoleData == roles.approver_2.toUpperCase() ||
+                            userRoleData == roles.approve_1.toUpperCase()
                           }
                           size="sm"
                           className="field-Prop"
@@ -1432,9 +1434,9 @@ function PartnerComponent(props) {
                               ))}
                         </Form.Select>
                         {errors.approver1 &&
-                          (userRoleData === roles.admin ||
-                            userRoleData === roles.superUser ||
-                            userRoleData === roles.superApproverUser) && (
+                          (userRoleData == roles.admin.toUpperCase() ||
+                            userRoleData == roles.supervisor.toUpperCase() ||
+                            userRoleData == roles.supervisor_approv_1_2.toUpperCase()) && (
                             <Form.Text className="text-danger">
                               {errors.approver1.message}
                             </Form.Text>
@@ -1446,9 +1448,9 @@ function PartnerComponent(props) {
                         </Form.Label>
                         <Form.Select
                           disabled={
-                            userRoleData === roles.editor ||
-                            userRoleData === roles.approver_2 ||
-                            userRoleData === roles.approve_1
+                            userRoleData == roles.editor.toUpperCase() ||
+                            userRoleData == roles.approver_2.toUpperCase() ||
+                            userRoleData == roles.approve_1.toUpperCase()
                           }
                           size="sm"
                           className="field-Prop"
@@ -1471,9 +1473,9 @@ function PartnerComponent(props) {
                               ))}
                         </Form.Select>
                         {errors.approver2 &&
-                          (userRoleData === roles.admin ||
-                            userRoleData === roles.superUser ||
-                            userRoleData === roles.superApproverUser) && (
+                          (userRoleData == roles.admin.toUpperCase() ||
+                            userRoleData == roles.supervisor.toUpperCase() ||
+                            userRoleData == roles.supervisor_approv_1_2.toUpperCase()) && (
                             <Form.Text className="text-danger">
                               {errors.approver2.message}
                             </Form.Text>

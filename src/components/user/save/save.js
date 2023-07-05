@@ -50,11 +50,10 @@ function SaveUser(props) {
   
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    //if user not login then redirect to login page
     if(usrDetails){
       setUserEmail(usrDetails.email_id);
       setUserRoleData(usrDetails.role_id);
-      
+                      
       if(usrDetails.role_id === roles.admin.toUpperCase() ||
       usrDetails.role_id === roles.supervisor.toUpperCase() ||
       usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
@@ -71,27 +70,6 @@ function SaveUser(props) {
   const userRole = new URLSearchParams(location.search).get("role");
   const userEmailId = new URLSearchParams(location.search).get("id");
   const [partnerAccData, setPartnerAccData] = useState({});
-
-  let loginUserId = "";
-
-  if (userRole == roles.editor) {
-    loginUserId = "nelson@se.com";
-  }
-  if (userRole == roles.approve_1) {
-    loginUserId = "katie@se.com";
-  }
-  if (userRole == roles.approver_2) {
-    loginUserId = "katie@se.com";
-  }
-  if (userRole == roles.superUser) {
-    loginUserId = "marie@se.com";
-  }
-  if (userRole == roles.superApproverUser) {
-    loginUserId = "thomas@se.com";
-  }
-  if (userRole == roles.admin) {
-    loginUserId = "jean@se.com";
-  }
 
   const initialForm = {
     firstname: null,
@@ -224,6 +202,11 @@ function SaveUser(props) {
   };
 
   useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    if(usrDetails){
+      setUserEmail(usrDetails.email_id);
+      setUserRoleData(usrDetails.role_id);
+    }
     //country api
     props
       .retrieveAllCountryData() //i/p for test purpose
@@ -505,7 +488,7 @@ function SaveUser(props) {
       } else if (form.usrcountry.length === 0) {
         isInvalid = true;
         onValidate(true, x);
-      } else if (form.partnerAccNm.length === 0) {
+      } else if (form?.partnerAccNm?.length === 0) {
         isInvalid = true;
         onValidate(true, x);
       }
@@ -572,9 +555,9 @@ function SaveUser(props) {
       role_id: null,
       country_code: null,
       email_id: null,
-      created_by: loginUserId, //login user
+      created_by: userEmail, //login user
       created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
-      updated_by: loginUserId, //login user
+      updated_by: userEmail, //login user
       editor: null,
       backup_editor: null,
       approve_1: null,
@@ -606,10 +589,10 @@ function SaveUser(props) {
           case roles.approver_2.toUpperCase():
             payload.approver_2 = data.useremailid;
             break;
-          case roles.superUser.toUpperCase():
+          case roles.supervisor.toUpperCase():
             payload.supervisor = data.useremailid;
             break;
-          case roles.superApproverUser.toUpperCase():
+          case roles.supervisor_approv_1_2.toUpperCase():
             payload.supervisor_approv_1_2 = data.useremailid;
             break;
         }
@@ -658,8 +641,8 @@ function SaveUser(props) {
       role_id: form.userrole,
       first_name: form.firstname,
       last_name: form.lastname,
-      status: userRole == roles.admin ? status.active : status.pending, //only admin can directly create user
-      modified_by: loginUserId, //login user email id
+      status: userRole == roles.admin.toUpperCase() ? status.active : status.pending, //only admin can directly create user
+      modified_by: userEmail, //login user email id
       created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
       modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
       active_flag: "True",
@@ -735,7 +718,7 @@ function SaveUser(props) {
         <MyMenu role={props.role} />
       </Row>
       <Row>
-        {userRole === "superApproverUser" ? (
+        {userRole == roles.supervisor_approv_1_2.toUpperCase() ? (
           <Breadcrumb>
             <Breadcrumb.Item href="/superApproverUser/home">
               <img
@@ -749,7 +732,7 @@ function SaveUser(props) {
               &nbsp;{props.module} User
             </Breadcrumb.Item>
           </Breadcrumb>
-        ) : userRole === "admin" ? (
+        ) : userRole == roles.admin.toUpperCase() ? (
           <Breadcrumb>
             <Breadcrumb.Item href="/admin/home">
               <img
@@ -763,7 +746,7 @@ function SaveUser(props) {
               &nbsp;{props.module} User
             </Breadcrumb.Item>
           </Breadcrumb>
-        ) : userRole === "superUser" ? (
+        ) : userRole == roles.supervisor.toUpperCase() ? (
           <Breadcrumb>
             <Breadcrumb.Item href="/superUser">
               <img

@@ -127,6 +127,12 @@ function InputCalendar(props) {
           data["currmonth_opndt_" + uElement]) !== ""
       ) {
         let quarterNme = uElement;
+		let tempRoleID;
+		if(uElement[0] == 'Q'){
+		  tempRoleID = 'APPROVER';
+		} else {
+		  tempRoleID = 'EDITOR';
+		}
 
         if (
           quarterNme == "1" ||
@@ -145,7 +151,7 @@ function InputCalendar(props) {
         let finalObj = {
           year_val: year.toString(),
           month_quarter_val: quarterNme,
-          role_id: isQuarterData ? 'APPROVER' : 'EDITOR',
+          role_id: tempRoleID,
           opening_date: data["currmonth_opndt_" + uElement],
           closing_date: data["currmonth_closedt_" + uElement],
           created_date: today,
@@ -234,9 +240,10 @@ function InputCalendar(props) {
     let today = new Date();
     console.log(`quarter`, quarter);
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    
+
     let year = today.getFullYear();
 
+    let filter = ['EDITOR', 'APPROVER'];
     props
       .retrieveInputCalenderData(year, quarter, 'APPROVER')
       .then((data) => {

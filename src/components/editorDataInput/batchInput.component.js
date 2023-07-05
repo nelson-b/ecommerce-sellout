@@ -31,7 +31,8 @@ function BatchInputComponent({ savedData, props, userDetails }) {
         setUserEmail(usrDetails.email_id);
         setuserRole(usrDetails.role_id);
       
-        if(usrDetails.role_id === roles.editor.toUpperCase() || 
+        if(usrDetails.role_id === roles.editor.toUpperCase() ||
+          usrDetails.role_id === roles.backup_editor.toUpperCase() ||
           usrDetails.role_id === roles.approve_1.toUpperCase() ||
           usrDetails.role_id === roles.approver_2.toUpperCase() ||
           usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {

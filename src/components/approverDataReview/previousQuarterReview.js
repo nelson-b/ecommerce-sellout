@@ -74,17 +74,23 @@ function PartnerQuarterApprover(props) {
   const [message, setMessage] = useState(0);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
+
   const radios = [
     { name: "Reporting Currency", value: "1" },
     { name: "Euro", value: "2" },
   ];
 
   const handleValidate = (activeData) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
     props
       .createData(activeData)
       .then((data) => {
         props
-          .getQuarterData(userEmail, userRole, year, month)
+          .getQuarterData(usrDetails.email_id, usrDetails.role_id, year, month)
           .then((data) => {
             setRowData(data);
           })
@@ -117,9 +123,9 @@ function PartnerQuarterApprover(props) {
       approval_status:
         status1 == "REJECT"
           ? "3"
-          : userRole == "approve_1"
+          : userRole == roles.approve_1.toUpperCase()
           ? "1"
-          : userRole == "approver_2"
+          : userRole == roles.approver_2.toUpperCase()
           ? "2"
           : "5",
 
@@ -431,8 +437,13 @@ function PartnerQuarterApprover(props) {
   };
 
   useEffect(() => {
-
-    getPreviousData(userEmail, userRole, year, month);
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
+    getPreviousData(usrDetails.email_id, usrDetails.role_id, year, month);
 
   }, []);
 
@@ -462,11 +473,10 @@ function PartnerQuarterApprover(props) {
 
   const handleReviewNavigation = () => {
     if (
-      userRole === "superApproverUser" ||
-      userRole === "supervisor_approv_1_2"
+      userRole == roles.supervisor_approv_1_2.toUpperCase()
     ) {
       navigate("/superApproverUser/home");
-    } else if (userRole === "approve_1") {
+    } else if (userRole == roles.approve_1.toUpperCase()) {
       navigate("/approver_1/home");
     } else {
       navigate("/approver_2/home");
@@ -493,9 +503,9 @@ function PartnerQuarterApprover(props) {
          created_by: e.created_by,
          created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
          approval_status:
-           userRole == "approve_1"
+           userRole == roles.approve_1.toUpperCase()
              ? "1"
-             : userRole == "approver_2"
+             : userRole == roles.approver_2.toUpperCase()
              ? "2"
              : "5",
          editor_comment: e.editor_comment,
@@ -544,7 +554,7 @@ function PartnerQuarterApprover(props) {
           <MyMenu />
         </Row>
         <div>
-          {userRole === "approve_1" ? (
+          {userRole == roles.approve_1.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/approver_1/home">
                 <img
@@ -554,7 +564,7 @@ function PartnerQuarterApprover(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "approver_2" ? (
+          ) : userRole == roles.approver_2.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/approver_2/home">
                 <img
@@ -564,7 +574,7 @@ function PartnerQuarterApprover(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "superApproverUser" || "supervisor_approv_1_2" ? (
+          ) : userRole == roles.supervisor_approv_1_2.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img

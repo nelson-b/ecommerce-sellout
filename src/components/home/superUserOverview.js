@@ -29,11 +29,11 @@ function SuperUseOverview(props) {
   //------------------//
 
   const partnerDataNavigation = () => {
-    navigate(`/partner/list?role=${roles.superUser}`);
+    navigate(`/partner/list?role=${roles.supervisor}`);
   };
 
   const userNavigation = () => {
-    navigate(`/user/list?role=${roles.superUser}`);
+    navigate(`/user/list?role=${roles.supervisor}`);
   };
 
   return (
@@ -50,7 +50,7 @@ function SuperUseOverview(props) {
                 <Button
                   className="btn-data save-header"
                   onClick={() => {
-                    partnerDataNavigation(roles.superUser);
+                    partnerDataNavigation(roles.supervisor);
                   }}
                 >
                   Partner Data

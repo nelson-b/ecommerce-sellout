@@ -61,12 +61,12 @@ function HistoricalData(props) {
             
     useEffect(() => {
       const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-      //if user not login then redirect to login page
       if(usrDetails){
         setUserEmail(usrDetails.email_id);
         setuserRole(usrDetails.role_id);
               
         if(usrDetails.role_id === roles.editor.toUpperCase() ||
+          usrDetails.role_id === roles.backup_editor.toUpperCase() ||
           usrDetails.role_id === roles.approve_1.toUpperCase() ||
           usrDetails.role_id === roles.approver_2.toUpperCase() ||
           usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
@@ -353,6 +353,11 @@ function HistoricalData(props) {
   };
 
   useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    if(usrDetails){
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
     let thisYear = new Date().getFullYear();
     let id = 0;
 
@@ -365,7 +370,7 @@ function HistoricalData(props) {
     }
 
     setSessionValue(arrayForLast4YearsDropdown);
-    getHistoricalData(userEmail, selectedValue, userRole);
+    getHistoricalData(usrDetails.email_id, selectedValue, usrDetails.role_id);
   }, []);
 
   const getMonths = [];
@@ -688,7 +693,7 @@ function HistoricalData(props) {
         </Row>
 
         <div>
-          {userRole === "editor" ? (
+          {userRole == roles.editor.toUpperCase() ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/editor/home">
                 <img
@@ -704,7 +709,7 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "approve_1" ? (
+          ) : userRole == roles.approve_1.toUpperCase() ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/approver_1/home">
                 <img
@@ -718,7 +723,7 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "approver_2" ? (
+          ) : userRole == roles.approver_2.toUpperCase() ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/approver_2/home">
                 <img
@@ -732,7 +737,7 @@ function HistoricalData(props) {
                 &nbsp;Data Review
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "superApproverUser" || "supervisor_approv_1_2" ? (
+          ) : userRole == roles.supervisor_approv_1_2.toUpperCase() ? (
             <Breadcrumb style={{ marginBottom: "-30px" }}>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img

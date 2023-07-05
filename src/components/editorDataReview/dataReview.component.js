@@ -54,6 +54,7 @@ function DataReviewComponent(props) {
 
       if (
         usrDetails.role_id === roles.editor.toUpperCase() ||
+        usrDetails.role_id === roles.backup_editor.toUpperCase() ||
         usrDetails.role_id === roles.approve_1.toUpperCase() ||
         usrDetails.role_id === roles.approver_2.toUpperCase() ||
         usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()
@@ -195,15 +196,22 @@ function DataReviewComponent(props) {
   const year = new Date().getFullYear();
 
   const getQuarterReviewData = () => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
+
     let yearCurrent = new Date().getFullYear();
     props
-      .retrieveHistoricalData(userEmail, year, userRole)
+      .retrieveHistoricalData(usrDetails.email_id, year, usrDetails.role_id)
       .then((data) => {
         let final_arr = [];
         if (data.length) {
           let previousAPIData = data;
           props
-            .retrievePartnerByRole(userEmail, userRole)
+            .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
             .then((data) => {
               console.log("showMeData from next API", data.data);
               if (data.data.length) {
@@ -422,10 +430,12 @@ function DataReviewComponent(props) {
   };
 
   const getPreviousQuarterData = (quarter) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
     let today = new Date();
     let year = today.getFullYear();
     props
-      .retrieveInputCalenderData(year, quarter, userRole)
+      .retrieveInputCalenderData(year, quarter, usrDetails.role_id)
       .then((data) => {
         let closingData = data.CLOSING_DATE;
         let openingDate = data.OPENING_DATE;
@@ -467,10 +477,11 @@ function DataReviewComponent(props) {
 
   const getQuarterReviewDataPrevious = (currentYearArray, preYear) => {
     let final_arr_previous = [];
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
     let combinedArray = [];
     props
-      .retrieveHistoricalData(userEmail, preYear, userRole)
+      .retrieveHistoricalData(usrDetails.email_id, preYear, usrDetails.role_id)
       .then((data) => {
         data.map((item) => {
           let string_year_val = item.year_val.toString();
@@ -547,20 +558,17 @@ function DataReviewComponent(props) {
         });
 
         if (final_arr_previous.length) {
-          currentYearArray.forEach((elementCurrent) => {
-            final_arr_previous.forEach((elementPrevious) => {
-              if (elementCurrent.partner_id == elementPrevious.partner_id) {
-                let uniObj = {};
-
-                uniObj = elementCurrent;
-
-                uniObj.PreviousYearData = elementPrevious;
-
-                combinedArray.push(uniObj);
-              }
-            });
-          });
-
+			combinedArray = currentYearArray;
+			for(let i = 0; i< combinedArray.length; i++) {
+				for(let j = 0; j< final_arr_previous.length; j++) {
+				  if(combinedArray[i].partner_id == final_arr_previous[j].partner_id){
+					let uniObj = {};
+					uniObj = combinedArray[i];
+					uniObj.PreviousYearData = final_arr_previous[j];
+					combinedArray[i] = uniObj;
+				  }
+				}
+			}
           setReviewData(combinedArray);
         } else {
           setReviewData(currentYearArray);
@@ -573,6 +581,11 @@ function DataReviewComponent(props) {
   };
 
   useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
     console.log("Data review jbjd");
     getQuarterReviewData();
     let todays = new Date();
@@ -924,7 +937,7 @@ function DataReviewComponent(props) {
 
   const currentYear = String(currentDate.getFullYear()).slice(-2);
 
-  for (let i = 5; i > 0; i--) {
+  for (let i = 6; i > 0; i--) {
     let date = new Date(
       currentDate.getFullYear(),
 
@@ -1427,8 +1440,6 @@ function DataReviewComponent(props) {
         year_val: data[0].year_val,
         months: monthArray,
         trans_currency_code: data[0].trans_currency_code,
-        created_by: data[0].created_by,
-        created_date: data[0].created_date,
         created_by: userEmail,
         created_date: new Date().toUTCString(),
         approval_status: "0",
@@ -1597,16 +1608,7 @@ function DataReviewComponent(props) {
 
           <div>
             <Row className="mb-3" style={{ float: "right", marginTop: "20px" }}>
-              <Col xs="auto">
-                <Button
-                  className="btn-upload cancel-header"
-                  onClick={() => {
-                    handleDtaInputNavigation(userRole);
-                  }}
-                >
-                  Cancel
-                </Button>
-              </Col>
+              
 
               <Col xs="auto">
                 <Button

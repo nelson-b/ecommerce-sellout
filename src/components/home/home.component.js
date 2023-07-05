@@ -28,6 +28,7 @@ function Home(props) {
         console.log('editor home', usrDetails.role_id);
         console.log('roles.approver_2:', roles.editor.toUpperCase());
         if(usrDetails.role_id === roles.editor.toUpperCase() ||
+          usrDetails.role_id === roles.backup_editor.toUpperCase() ||
           usrDetails.role_id === roles.approve_1.toUpperCase() ||
           usrDetails.role_id === roles.approver_2.toUpperCase() ||
           usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()){
@@ -361,6 +362,11 @@ function Home(props) {
   };
 
   const onGridReady = useCallback((params) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    if(usrDetails){
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
     fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
       .then((resp) => resp.json())
       .then((data) => setRowData(data));
@@ -375,7 +381,7 @@ function Home(props) {
         <Row>
           <div>
             <Row className="mb-4" style={{ float: "right" }}>
-              {props.role === "superApproverUser" ? (
+              {props.role === "supervisor_approv_1_2" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"
@@ -389,7 +395,7 @@ function Home(props) {
               ) : (
                 ""
               )}
-              {props.role === "superApproverUser" ? (
+              {props.role === "supervisor_approv_1_2" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-approve save-header"
@@ -426,7 +432,7 @@ function Home(props) {
                 ""
               )}
 
-              {props.role === "superApproverUser" ? (
+              {props.role === "supervisor_approv_1_2" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-split save-header"
@@ -500,7 +506,7 @@ function Home(props) {
                 ""
               )}
 
-              {props.role === "superApproverUser" ? (
+              {props.role === "supervisor_approv_1_2" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-split save-header"
@@ -551,14 +557,14 @@ function Home(props) {
             <AgGridReact
               ref={gridRef}
               rowData={
-                props.role === "superApproverUser"
+                props.role === "supervisor_approv_1_2"
                   ? superOverview
                   : props.role === "approver"
                   ? approveOverview
                   : editorOverview
               }
               columnDefs={
-                props.role === "superApproverUser"
+                props.role === "supervisor_approv_1_2"
                   ? superColColDefs
                   : props.role === "approver"
                   ? approverColDefs

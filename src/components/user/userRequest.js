@@ -27,7 +27,7 @@ function UserRequestComponent(props) {
       .createUserProfileConfig(activeData)
       .then((data) => {
         props
-          .retrieveAllNewListByRole(screenRole == "admin" ? "" : screenRole)
+          .retrieveAllNewListByRole(screenRole == "ADMIN" ? "" : screenRole)
           .then((data) => {
             setRowData(data.filter((e) => e.status == "PENDING"));
           })
@@ -231,7 +231,7 @@ function UserRequestComponent(props) {
 
   const onGridReady = useCallback((params) => {
     props
-      .retrieveAllNewListByRole(screenRole == "admin" ? "" : screenRole)
+      .retrieveAllNewListByRole(screenRole == "ADMIN" ? "" : screenRole)
       .then((data) => {
         setRowData(data.filter((e) => e.status == "PENDING"));
       })

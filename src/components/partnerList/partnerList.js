@@ -31,7 +31,6 @@ function PartnerList(props) {
                   
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    //if user not login then redirect to login page
     if(usrDetails){
       setUserEmail(usrDetails.email_id);
       setUserRole(usrDetails.role_id);
@@ -44,9 +43,9 @@ function PartnerList(props) {
 
   const handlePartnerEdit = (params) => {
     if (
-      userRole === "superUser" ||
-      userRole === "admin" ||
-      userRole === "superApproverUser"
+      userRole == roles.supervisor.toUpperCase() ||
+      userRole == roles.admin.toUpperCase()||
+      userRole == roles.supervisor_approv_1_2.toUpperCase()
     ) {
       navigate(
         `/higerLevelUser/partner/update?id=${params.data.partner_id}&role=${userRole}`
@@ -60,9 +59,9 @@ function PartnerList(props) {
 
   const handleCreate = () => {
     if (
-      userRole === "superUser" ||
-      userRole === "admin" ||
-      userRole === "superApproverUser"
+      userRole == roles.supervisor.toUpperCase() ||
+      userRole == roles.admin.toUpperCase() ||
+      userRole == roles.supervisor_approv_1_2.toUpperCase()
     ) {
       navigate(`/higerLevelUser/partner/create?role=${userRole}`);
     } else {
@@ -290,7 +289,7 @@ function PartnerList(props) {
     },
     {
       headerName: "Editor",
-      field: "created_by",
+      field: "editor",
       width: 120,
       sortable: true,
       filter: true,
@@ -344,40 +343,46 @@ function PartnerList(props) {
 
 
   const onGridReady = useCallback((params) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    if(usrDetails){
+      setUserEmail(usrDetails.email_id);
+      setUserRole(usrDetails.role_id);
+    }
     let filterData = {
-      role: userRole,
-      userMail: userEmail,
+      role: usrDetails.role_id,
+      userMail: usrDetails.email_id,
     };
 
     let previousAPIData = [];
     props
       .retrievePartnerByRole(
-        userRole == roles.admin ||
-          userRole == roles.superUser ||
-          userRole == roles.superApproverUser
+        usrDetails.role_id == roles.admin.toUpperCase() ||
+          usrDetails.role_id == roles.supervisor.toUpperCase() ||
+          usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase()
           ? ""
           : filterData.userMail, 
-        userRole == roles.admin ||
-          userRole == roles.superUser ||
-          userRole == roles.superApproverUser
+        usrDetails.role_id == roles.admin.toUpperCase() ||
+          usrDetails.role_id == roles.supervisor.toUpperCase() ||
+          usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase()
           ? ""
           : filterData.role
       )
       .then((data) => {
         previousAPIData = data?.data;
-        let tempRole = userRole;
+        let tempRole = usrDetails.role_id;
         setRowData(data.data.filter((e) => e.status == "ACTIVE"));
           
-        if(userRole == roles.superUser) {
+        if(usrDetails.role_id == roles.supervisor.toUpperCase()) {
           tempRole = 'SUPERVISOR'
         }
-        if(userRole == roles.superApproverUser) {
+        if(usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase()) {
           tempRole = 'SUPERVISOR_APPROV_1_2'
         }
         // setRowData(data.data.filter((e) => e.status == "ACTIVE"));
       })
 
       .catch((e) => {
+        setRowData([])
         console.log("Partner list", e);
       });
   }, []);
@@ -389,7 +394,7 @@ function PartnerList(props) {
           <MyMenu />
         </Row>
         <div>
-          {userRole === "admin" ? (
+          {userRole == roles.admin.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/admin/home">
                 <img
@@ -399,7 +404,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "superApproverUser" ? (
+          ) : userRole == roles.supervisor_approv_1_2.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superApproverUser/home">
                 <img
@@ -409,7 +414,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "approve_1" ? (
+          ) : userRole == roles.approve_1.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/approver_1/home">
                 <img
@@ -419,7 +424,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "approver_2" ? (
+          ) : userRole == roles.approver_2.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/approver_2/home">
                 <img
@@ -429,7 +434,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "editor" ? (
+          ) : userRole == roles.editor.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/editor/home">
                 <img
@@ -439,7 +444,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "superUser" || userRole == "SUPERVISOR" ? (
+          ) :  userRole == roles.supervisor.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superUser">
                 <img
@@ -460,9 +465,9 @@ function PartnerList(props) {
                 Sell Out Partner List
               </div>
             </Col>
-            {userRole === "admin" ||
-            userRole === "superUser" ||
-            userRole === "superApproverUser" ? (
+            {userRole == roles.admin.toUpperCase() ||
+            userRole == roles.supervisor.toUpperCase() ||
+            userRole == roles.supervisor_approv_1_2.toUpperCase() ? (
               <Col xs="auto" className="partner-container">
                 <Button
                   size="md"

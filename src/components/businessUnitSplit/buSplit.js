@@ -46,7 +46,8 @@ function BusinessUnitSplit(props) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
     
-      if(usrDetails.role_id === roles.editor.toUpperCase() || 
+      if(usrDetails.role_id === roles.editor.toUpperCase() ||
+        usrDetails.role_id === roles.backup_editor.toUpperCase() || 
         usrDetails.role_id === roles.approve_1.toUpperCase() ||
         usrDetails.role_id === roles.approver_2.toUpperCase() ||
         usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
@@ -406,10 +407,16 @@ function BusinessUnitSplit(props) {
   let year = new Date().getFullYear();
 
   const onGridReady = useCallback((params) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if(usrDetails){
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
     props
       .retrieveBuSplitData(
-        userEmail,
-        userRole == "superApproverUser" ? "supervisor_approv_1_2" : userRole,
+        usrDetails.email_id,
+        usrDetails.role_id == "supervisor_approv_1_2" ? "supervisor_approv_1_2" : usrDetails.role_id,
         year
       )
       .then((data) => {
@@ -684,7 +691,7 @@ function BusinessUnitSplit(props) {
 
         <Row>
           <Stack direction="horizontal" gap={4}>
-            {userRole === "editor" ? (
+            {userRole == roles.editor.toUpperCase() ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/editor/home">
                   <img
@@ -694,7 +701,7 @@ function BusinessUnitSplit(props) {
                   />
                 </Breadcrumb.Item>
               </Breadcrumb>
-            ) : userRole === "approve_1" ? (
+            ) : userRole == roles.approve_1.toUpperCase() ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/approver_1/home">
                   <img
@@ -704,7 +711,7 @@ function BusinessUnitSplit(props) {
                   />
                 </Breadcrumb.Item>
               </Breadcrumb>
-            ) : userRole === "approver_2" ? (
+            ) : userRole == roles.approver_2.toUpperCase() ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/approver_2/home">
                   <img
@@ -714,8 +721,7 @@ function BusinessUnitSplit(props) {
                   />
                 </Breadcrumb.Item>
               </Breadcrumb>
-            ) : userRole === "superApproverUser" ||
-            userRole === "supervisor_approv_1_2" ? (
+            ) : userRole == roles.supervisor_approv_1_2.toUpperCase() ? (
               <Breadcrumb>
                 <Breadcrumb.Item href="/superApproverUser/home">
                   <img

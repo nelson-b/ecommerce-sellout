@@ -315,7 +315,7 @@ function DataReviewApprover(props) {
                   obj.ambition = "";
                   obj.approverComments = "";
                   obj.partner_id = item.partner_id;
-                  obj.year_val = item.year_val;
+                  obj.year_val = item.year_val?item.year_val:new Date().getFullYear();
                   obj.batch_upload_flag = item.batch_upload_flag;
                   if (item.months) {
                     item.months.map((each) => {
@@ -423,7 +423,7 @@ function DataReviewApprover(props) {
                   obj.ambition = "";
                   obj.approverComments = "";
                   obj.partner_id = item.partner_id;
-                  obj.year_val = item.year_val;
+                  obj.year_val = item.year_val?item.year_val:new Date().getFullYear();
                   obj.batch_upload_flag = item.batch_upload_flag;
                   item?.months.map((each) => {
                     if (each.month_val === "jan") {
@@ -484,6 +484,128 @@ function DataReviewApprover(props) {
             .catch((e) => {
               console.log("Data Input", e);
             });
+        } else {
+          props
+          .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
+          .then((data) => {
+            if (data.data.length) {
+              let previousAPIData = [];
+              let secondArray = [];
+              secondArray = data?.data;
+              previousAPIData = previousAPIData.concat(secondArray);
+              previousAPIData.map((item) => {
+                let string_year_val = item.year_val
+                  ? item.year_val.toString()
+                  : yearCurrent.toString();
+                let itemYear = string_year_val.slice(
+                  2,
+                  string_year_val.length
+                );
+                let obj = {};
+                obj.zone_val = item.zone_val;
+                obj.country_code = item.country_code;
+                obj.partner_account_name = item.partner_account_name;
+                obj.model_type = item.model_type;
+                obj.status = item.status;
+                obj.trans_currency_code = item.trans_currency_code;
+                obj["trans_currency_codeE"] = "EUR";
+                obj.SelloutCQ = "";
+                obj.systemComments = "";
+                obj.editorComments = item.editor_comment;
+                obj.YTD = "";
+                obj.YTD_Growth = "";
+                obj.ambition = "";
+                obj.approverComments = "";
+                obj.partner_id = item.partner_id;
+                obj.year_val = item.year_val?item.year_val:new Date().getFullYear();
+                obj.batch_upload_flag = item.batch_upload_flag;
+                if (item.months) {
+                  item.months.map((each) => {
+                    if (each.month_val === "jan") {
+                      obj["Jan" + itemYear] = each.sellout_local_currency;
+                      obj["Jan" + itemYear + "E"] = each.sellout;
+                    }
+                    if (each.month_val === "feb") {
+                      obj["Feb" + itemYear] = each.sellout_local_currency;
+                      obj["Feb" + itemYear + "E"] = each.sellout;
+                    }
+                    if (each.month_val === "mar") {
+                      obj["Mar" + itemYear] = each.sellout_local_currency;
+                      obj["Mar" + itemYear + "E"] = each.sellout;
+                    }
+                    if (each.month_val === "apr") {
+                      obj["Apr" + itemYear] = each.sellout_local_currency;
+                      obj["Apr" + itemYear + "E"] = each.sellout;
+                    }
+                    if (each.month_val === "may") {
+                      obj["May" + itemYear] = each.sellout_local_currency;
+                      obj["May" + itemYear + "E"] = each.sellout;
+                    }
+                    if (each.month_val === "jun") {
+                      obj["Jun" + itemYear] = each.sellout_local_currency;
+                      obj["Jun" + itemYear + "E"] = each.sellout;
+                    }
+                    if (each.month_val === "jul") {
+                      obj["Jul" + itemYear] = each.sellout_local_currency;
+                      obj["Jul" + itemYear + "E"] = each.sellout;
+                    }
+                    if (each.month_val === "aug") {
+                      obj["Aug" + itemYear] = each.sellout_local_currency;
+                      obj["Aug" + itemYear + "E"] = each.sellout;
+                    }
+                    if (each.month_val === "sep") {
+                      obj["Sep" + itemYear] = each.sellout_local_currency;
+                      obj["Sep" + itemYear + "E"] = each.sellout;
+                    }
+                    if (each.month_val === "oct") {
+                      obj["Oct" + itemYear] = each.sellout_local_currency;
+                      obj["Oct" + itemYear + "E"] = each.sellout;
+                    }
+                    if (each.month_val === "nov") {
+                      obj["Nov" + itemYear] = each.sellout_local_currency;
+                      obj["Nov" + itemYear + "E"] = each.sellout;
+                    }
+                    if (each.month_val === "dec") {
+                      obj["Dec" + itemYear] = each.sellout_local_currency;
+                      obj["Jan" + itemYear + "E"] = each.sellout;
+                    }
+                  });
+                } else {
+                  obj["Jan" + itemYear] = "";
+                  obj["Jan" + itemYear + "E"] = "";
+                  obj["Feb" + itemYear] = "";
+                  obj["Feb" + itemYear + "E"] = "";
+                  obj["Mar" + itemYear] = "";
+                  obj["Mar" + itemYear + "E"] = "";
+                  obj["Apr" + itemYear] = "";
+                  obj["Apr" + itemYear + "E"] = "";
+                  obj["May" + itemYear] = "";
+                  obj["May" + itemYear + "E"] = "";
+                  obj["Jun" + itemYear] = "";
+                  obj["Jun" + itemYear + "E"] = "";
+                  obj["Jul" + itemYear] = "";
+                  obj["Jul" + itemYear + "E"] = "";
+                  obj["Aug" + itemYear] = "";
+                  obj["Aug" + itemYear + "E"] = "";
+                  obj["Sep" + itemYear] = "";
+                  obj["Sep" + itemYear + "E"] = "";
+                  obj["Oct" + itemYear] = "";
+                  obj["Oct" + itemYear + "E"] = "";
+                  obj["Nov" + itemYear] = "";
+                  obj["Nov" + itemYear + "E"] = "";
+                  obj["Dec" + itemYear] = "";
+                  obj["Dec" + itemYear + "E"] = "";
+                }
+                final_arr.push(obj);
+              });
+              console.log('coming inside this::', final_arr);
+              let preYear = yearCurrent - 1;
+              getQuarterReviewDataPrevious(final_arr, preYear);
+            } 
+          })
+          .catch((e) => {
+            console.log("Data Input", e);
+          });
         }
         let preYear = yearCurrent - 1;
         getQuarterReviewDataPrevious(final_arr, preYear);
@@ -499,7 +621,7 @@ function DataReviewApprover(props) {
     let today = new Date();
     let year = today.getFullYear();
     props
-      .retrieveInputCalenderData(year, quarter, usrDetails.role_id)
+      .retrieveInputCalenderData(year, quarter, "APPROVER")
       .then((data) => {
         let closingData = data.CLOSING_DATE;
         let openingDate = data.OPENING_DATE;
@@ -628,16 +750,17 @@ function DataReviewApprover(props) {
         });
 
         if (final_arr_previous.length) {
-          currentYearArray.forEach((elementCurrent) => {
-            final_arr_previous.forEach((elementPrevious) => {
-              if (elementCurrent.partner_id == elementPrevious.partner_id) {
-                let uniObj = {};
-                uniObj = elementCurrent;
-                uniObj.PreviousYearData = elementPrevious;
-                combinedArray.push(uniObj);
-              }
-            });
-          });
+			combinedArray = currentYearArray;
+			for(let i = 0; i< combinedArray.length; i++) {
+				for(let j = 0; j< final_arr_previous.length; j++) {
+				  if(combinedArray[i].partner_id == final_arr_previous[j].partner_id){
+					let uniObj = {};
+					uniObj = combinedArray[i];
+					uniObj.PreviousYearData = final_arr_previous[j];
+					combinedArray[i] = uniObj;
+				  }
+				}
+			}		
           let newArrC = [];
           for (let j = 0; j < combinedArray.length; j++) {
             newArrC.push(combinedArray[j]);
@@ -659,7 +782,19 @@ function DataReviewApprover(props) {
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     getQuarterReviewData(usrDetails.email_id, year, usrDetails.role_id);
-    getPreviousQuarterData(getCurrentQuarter());
+	
+	let newDate = new Date().getMonth();
+	let currentQurterForAPI;
+	if(newDate <=3 ) {
+	  currentQurterForAPI = 'Q1';
+	} else if(newDate >3 && newDate <=6 ){
+	  currentQurterForAPI = 'Q2';
+	} else if(newDate >6 && newDate <=9) {
+	  currentQurterForAPI = 'Q3';
+	} else {
+	  currentQurterForAPI = 'Q4';
+	}
+	getPreviousQuarterData(currentQurterForAPI);
   }, []);
 
   const onBtShowYearColumn = useCallback((hisData, radio) => {
@@ -1716,7 +1851,7 @@ function DataReviewApprover(props) {
           partner_id: element.partner_id,
           partner_name: element.partner_account_name,
           country_code: element.country_code,
-          year_val: element.year_val.toString(),
+          year_val: element?.year_val?.toString(),
           months: monthArray,
           trans_currency_code: element.trans_currency_code,
           created_by: usrDetails.email_id,
@@ -1736,8 +1871,12 @@ function DataReviewApprover(props) {
       });
     } else {
       data.forEach(element => {
+        console.log('allCalMonths::', allCalMonths);
+        console.log('element::', element);
+        let currentYEar = new Date().getFullYear()
         let monthArray = [];
-        let itemYear = String(data[0].year_val).slice(-2);
+        let itemYear = String(data[0].year_val?data[0].year_val:currentYEar).slice(-2);
+        console.log('itemYear::', itemYear, data[0].year_val);
         allCalMonths.forEach((monthEle) => {
           const saveArray =
             radioValue == 1
@@ -1751,19 +1890,18 @@ function DataReviewApprover(props) {
             });
           }
         });
+        console.log('monthArray::', monthArray);
         let reqData = 
           {
             partner_id: element.partner_id,
             partner_name: element.partner_account_name,
             country_code: element.country_code,
-            year_val: element.year_val.toString(),
+            year_val: element?.year_val?.toString(),
             months: monthArray,
             trans_currency_code: element.trans_currency_code,
             created_by: usrDetails.email_id,
             created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
-            approval_status: validateKey
-              ? "2"
-              : element?.approval_status?.toString(),
+            approval_status: "1",
             editor_comment: element.editorComments,
             comments: element.approverComments,
             batch_upload_flag: element.batch_upload_flag.toString(),
@@ -1790,11 +1928,10 @@ function DataReviewApprover(props) {
 
   const handleReviewNavigation = () => {
     if (
-      userRole === "superApproverUser" ||
-      userRole === "supervisor_approv_1_2"
+      userRole == roles.supervisor_approv_1_2.toUpperCase()
     ) {
       navigate("/superApproverUser/home");
-    } else if (userRole === "approve_1") {
+    } else if (userRole == roles.approve_1.toUpperCase()) {
       navigate("/approver_1/home");
     } else {
       navigate("/approver_2/home");
@@ -1877,7 +2014,7 @@ function DataReviewApprover(props) {
         </Row>
 
         <div>
-          {userRole === "approve_1" ? (
+          {userRole == roles.approve_1.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/approver_1/home">
                 <img
@@ -1887,7 +2024,7 @@ function DataReviewApprover(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "approver_2" ? (
+          ) : userRole == roles.approver_2.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/approver_2/home">
                 <img
@@ -1897,7 +2034,7 @@ function DataReviewApprover(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) : userRole === "superApproverUser" ||
+          ) : userRole == roles.supervisor_approv_1_2.toUpperCase() ||
             "supervisor_approv_1_2" ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superApproverUser/home">
