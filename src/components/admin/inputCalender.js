@@ -243,7 +243,6 @@ function InputCalendar(props) {
 
     let year = today.getFullYear();
 
-    let filter = ['EDITOR', 'APPROVER'];
     props
       .retrieveInputCalenderData(year, quarter, 'APPROVER')
       .then((data) => {
