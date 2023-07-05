@@ -1491,34 +1491,36 @@ function DataReviewApprover(props) {
   };
 
   const getTotSellOutCurrQuatrCalc = (params) => {
-    const quat = getCurrentQuarter();
-    const quatMonths = getQuarterMonths(quat);
-    let year = new Date().getFullYear();
-    let selectedValueString = year.toString();
-    let choppedOffYear = selectedValueString.slice(
-      2,
-      selectedValueString.length
-    );
+    if(params.data){
+      const quat = getCurrentQuarter();
+      const quatMonths = getQuarterMonths(quat);
+      let year = new Date().getFullYear();
+      let selectedValueString = year.toString();
+      let choppedOffYear = selectedValueString.slice(
+        2,
+        selectedValueString.length
+      );
 
-    let customizedQuarterMonths = [];
-    quatMonths.forEach((element) => {
-      customizedQuarterMonths.push(element + choppedOffYear);
-    });
-    let tempTotal = 0;
-    customizedQuarterMonths.map((item) => {
-      if (item in params?.data) {
-        tempTotal += params?.data[item];
+      let customizedQuarterMonths = [];
+      quatMonths.forEach((element) => {
+        customizedQuarterMonths.push(element + choppedOffYear);
+      });
+      let tempTotal = 0;
+      customizedQuarterMonths.map((item) => {
+        if (item in params?.data) {
+          tempTotal += params?.data[item];
+        }
+      });
+
+      if (isNaN(tempTotal)) {
+        tempTotal = "";
       }
-    });
+      if (tempTotal == 0) {
+        tempTotal = "";
+      }
 
-    if (isNaN(tempTotal)) {
-      tempTotal = "";
+      return tempTotal;
     }
-    if (tempTotal == 0) {
-      tempTotal = "";
-    }
-
-    return tempTotal;
   };
 
   const getTotalYTDSellOutGrowthCalc = (params) => {
@@ -1847,6 +1849,7 @@ function DataReviewApprover(props) {
             });
           }
         });
+
         let objForUpdate = {
           partner_id: element.partner_id,
           partner_name: element.partner_account_name,
@@ -1867,6 +1870,7 @@ function DataReviewApprover(props) {
             .replace("T", " ")
             .slice(0, -5),
         };
+
         requestArray.push(objForUpdate);
       });
     } else {
@@ -1912,13 +1916,66 @@ function DataReviewApprover(props) {
           };
           requestArray.push(reqData);
       });
-
     }
 
     props
       .updateSellOutData(requestArray)
       .then((data) => {
-        // setReviewData(data);
+        setShowSuccessModal(true);
+      })
+      .catch((e) => {
+        console.log("Error", e);
+      });
+  }, []);
+
+  const handleSendForInvestgn = useCallback((data, selectedCell) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    
+    console.log('handleSendForInvestgn', data);
+    let requestArray = [];
+    
+    selectedCell.forEach((element) => {
+      console.log('element', element);
+      let monthArray = [];
+      let itemYear = String(data[0].year_val).slice(-2);
+      allCalMonths.forEach((monthEle) => {
+        const saveArray =
+          radioValue == 1
+            ? element[`${monthEle + itemYear}`]
+            : element[`${monthEle + itemYear}E`];
+        if (saveArray > 0) {
+          monthArray.push({
+            month: monthEle.toLowerCase(),
+            sellout_local_currency: saveArray,
+            trans_type: radioValue == 1 ? "ACT" : "EST",
+          });
+        }
+      });
+
+      let objForUpdate = {
+        partner_id: element.partner_id,
+        partner_name: element.partner_account_name,
+        country_code: element.country_code,
+        year_val: element?.year_val?.toString(),
+        months: monthArray,
+        trans_currency_code: element.trans_currency_code,
+        created_by: usrDetails.email_id,
+        created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
+        approval_status: "3",
+        editor_comment: element.editorComments,
+        comments: element.approverComments,
+        batch_upload_flag: element.batch_upload_flag.toString(),
+        approved_date: null,
+      };
+
+      requestArray.push(objForUpdate);
+    });
+    
+    console.log('requestArray', requestArray);
+
+    props
+      .updateSellOutData(requestArray)
+      .then((data) => {
         setShowSuccessModal(true);
       })
       .catch((e) => {
@@ -1938,15 +1995,16 @@ function DataReviewApprover(props) {
     }
   };
 
-  const handleInvestigation = () => {
-    alert(
-      message === 1
-        ? `${message} Partner Account Sent For Investigation `
-        : message > 1
-        ? `${message} Partners Account Sent For Investigation `
-        : ""
-    );
-  };
+  // const handleInvestigation = () => {
+
+  //   alert(
+  //     message === 1
+  //       ? `${message} Partner Account Sent For Investigation `
+  //       : message > 1
+  //       ? `${message} Partners Account Sent For Investigation `
+  //       : ""
+  //   );
+  // };
 
   const historicalDataNavigation = () => {
     navigate(`/historicalData?role=${userRole}`);
@@ -2213,7 +2271,7 @@ function DataReviewApprover(props) {
                       : "btn-invest edit-header"
                   }
                   disabled={shouldDisableSaveButton}
-                  onClick={(e) => handleInvestigation(message)}
+                  onClick={(e) => handleSendForInvestgn(reviewData, selectedCell)}
                 >
                   Send For Investigation
                 </Button>
