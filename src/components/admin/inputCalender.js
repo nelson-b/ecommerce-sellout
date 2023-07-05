@@ -234,10 +234,9 @@ function InputCalendar(props) {
     let today = new Date();
     console.log(`quarter`, quarter);
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-
+    
     let year = today.getFullYear();
 
-    let filter = ['EDITOR', 'APPROVER'];
     props
       .retrieveInputCalenderData(year, quarter, 'APPROVER')
       .then((data) => {
