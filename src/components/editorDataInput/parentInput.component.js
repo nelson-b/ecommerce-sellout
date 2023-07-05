@@ -164,6 +164,12 @@ function DataInputComponent(props) {
   };
 
   const postData = useCallback(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRoleData(usrDetails.role_id);
+    }
     setShowShouldUpdModal(false);
 
     let payload = [];
@@ -171,6 +177,7 @@ function DataInputComponent(props) {
     //iterate in the grid
 
     gridRef.current.api.forEachNode((rowNode, index) => {
+
       //api to save data
 
       let monthArray = [];
@@ -202,7 +209,7 @@ function DataInputComponent(props) {
         year_val: rowNode.data.Year ? String(rowNode.data.Year) : currentYear,
         months: monthArray,
         trans_currency_code: rowNode.data.Currency_Of_Reporting,
-        created_by: userEmail, //login user
+        created_by: usrDetails.email_id, //login user
         created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
         approval_status: "0",
         editor_comment: rowNode.data.Comment,
@@ -712,6 +719,13 @@ function DataInputComponent(props) {
 
   const formatGetPayload = useCallback((data, isManualInput) => {
     console.log("formatGetPayload::", data);
+    
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRoleData(usrDetails.role_id);
+    }
+
     let respPayload = [];
 
     data.forEach((row, index) => {
@@ -774,7 +788,7 @@ function DataInputComponent(props) {
         Dec_Estimated: row.months
           ? getTransTypeVal(row.months, allCalMonths[11])
           : "", //dec
-        created_by: row.created_by,
+        created_by: usrDetails.email_id,
         created_date: row.created_date,
         approved_by: row.approved_by,
         approved_date: row.approved_date,

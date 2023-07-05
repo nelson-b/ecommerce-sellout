@@ -1414,6 +1414,13 @@ function DataReviewComponent(props) {
   };
 
   const handleSave = useCallback((data) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
+
     console.log("data", data);
     let monthArray = [];
     let itemYear = String(data[0].year_val).slice(-2);
@@ -1440,7 +1447,7 @@ function DataReviewComponent(props) {
         year_val: data[0].year_val,
         months: monthArray,
         trans_currency_code: data[0].trans_currency_code,
-        created_by: userEmail,
+        created_by: usrDetails.email_id,
         created_date: new Date().toUTCString(),
         approval_status: "0",
         editor_comment: data[0].editorComments,
