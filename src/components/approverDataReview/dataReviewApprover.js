@@ -261,8 +261,6 @@ function DataReviewApprover(props) {
     return quarters[quarter] || [];
   };
 
-
-
   const year = new Date().getFullYear();
 
   const getQuarterReviewData = (userEmail, year, userRole) => {
@@ -274,341 +272,86 @@ function DataReviewApprover(props) {
       .then((data) => {
         let final_arr = [];
         if (data.length) {
-          let previousAPIData = data;
-          props
-            .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
-            .then((data) => {
-              if (data.data.length) {
-                let secondArray = [];
-                secondArray = data?.data;
-                for (let i = 0; i < previousAPIData.length; i++) {
-                  for (let j = 0; j < secondArray.length; j++) {
-                    if (
-                      previousAPIData[i].partner_id == secondArray[j].partner_id
-                    ) {
-                      secondArray.splice(j, 1);
-                    }
-                  }
-                }
-                previousAPIData = previousAPIData.concat(secondArray);
-                previousAPIData.map((item) => {
-                  let string_year_val = item.year_val
-                    ? item.year_val.toString()
-                    : yearCurrent.toString();
-                  let itemYear = string_year_val.slice(
-                    2,
-                    string_year_val.length
-                  );
-                  let obj = {};
-                  obj.zone_val = item.zone_val;
-                  obj.country_code = item.country_code;
-                  obj.partner_account_name = item.partner_account_name;
-                  obj.model_type = item.model_type;
-                  obj.status = item.status;
-                  obj.trans_currency_code = item.trans_currency_code;
-                  obj["trans_currency_codeE"] = "EUR";
-                  obj.SelloutCQ = "";
-                  obj.systemComments = "";
-                  obj.editorComments = item.editor_comment;
-                  obj.YTD = "";
-                  obj.YTD_Growth = "";
-                  obj.ambition = "";
-                  obj.approverComments = "";
-                  obj.partner_id = item.partner_id;
-                  obj.year_val = item.year_val?item.year_val:new Date().getFullYear();
-                  obj.batch_upload_flag = item.batch_upload_flag;
-                  if (item.months) {
-                    item.months.map((each) => {
-                      if (each.month_val === "jan") {
-                        obj["Jan" + itemYear] = each.sellout_local_currency;
-                        obj["Jan" + itemYear + "E"] = each.sellout;
-                      }
-                      if (each.month_val === "feb") {
-                        obj["Feb" + itemYear] = each.sellout_local_currency;
-                        obj["Feb" + itemYear + "E"] = each.sellout;
-                      }
-                      if (each.month_val === "mar") {
-                        obj["Mar" + itemYear] = each.sellout_local_currency;
-                        obj["Mar" + itemYear + "E"] = each.sellout;
-                      }
-                      if (each.month_val === "apr") {
-                        obj["Apr" + itemYear] = each.sellout_local_currency;
-                        obj["Apr" + itemYear + "E"] = each.sellout;
-                      }
-                      if (each.month_val === "may") {
-                        obj["May" + itemYear] = each.sellout_local_currency;
-                        obj["May" + itemYear + "E"] = each.sellout;
-                      }
-                      if (each.month_val === "jun") {
-                        obj["Jun" + itemYear] = each.sellout_local_currency;
-                        obj["Jun" + itemYear + "E"] = each.sellout;
-                      }
-                      if (each.month_val === "jul") {
-                        obj["Jul" + itemYear] = each.sellout_local_currency;
-                        obj["Jul" + itemYear + "E"] = each.sellout;
-                      }
-                      if (each.month_val === "aug") {
-                        obj["Aug" + itemYear] = each.sellout_local_currency;
-                        obj["Aug" + itemYear + "E"] = each.sellout;
-                      }
-                      if (each.month_val === "sep") {
-                        obj["Sep" + itemYear] = each.sellout_local_currency;
-                        obj["Sep" + itemYear + "E"] = each.sellout;
-                      }
-                      if (each.month_val === "oct") {
-                        obj["Oct" + itemYear] = each.sellout_local_currency;
-                        obj["Oct" + itemYear + "E"] = each.sellout;
-                      }
-                      if (each.month_val === "nov") {
-                        obj["Nov" + itemYear] = each.sellout_local_currency;
-                        obj["Nov" + itemYear + "E"] = each.sellout;
-                      }
-                      if (each.month_val === "dec") {
-                        obj["Dec" + itemYear] = each.sellout_local_currency;
-                        obj["Jan" + itemYear + "E"] = each.sellout;
-                      }
-                    });
-                  } else {
-                    obj["Jan" + itemYear] = "";
-                    obj["Jan" + itemYear + "E"] = "";
-                    obj["Feb" + itemYear] = "";
-                    obj["Feb" + itemYear + "E"] = "";
-                    obj["Mar" + itemYear] = "";
-                    obj["Mar" + itemYear + "E"] = "";
-                    obj["Apr" + itemYear] = "";
-                    obj["Apr" + itemYear + "E"] = "";
-                    obj["May" + itemYear] = "";
-                    obj["May" + itemYear + "E"] = "";
-                    obj["Jun" + itemYear] = "";
-                    obj["Jun" + itemYear + "E"] = "";
-                    obj["Jul" + itemYear] = "";
-                    obj["Jul" + itemYear + "E"] = "";
-                    obj["Aug" + itemYear] = "";
-                    obj["Aug" + itemYear + "E"] = "";
-                    obj["Sep" + itemYear] = "";
-                    obj["Sep" + itemYear + "E"] = "";
-                    obj["Oct" + itemYear] = "";
-                    obj["Oct" + itemYear + "E"] = "";
-                    obj["Nov" + itemYear] = "";
-                    obj["Nov" + itemYear + "E"] = "";
-                    obj["Dec" + itemYear] = "";
-                    obj["Dec" + itemYear + "E"] = "";
-                  }
-                  final_arr.push(obj);
-                });
-                let preYear = yearCurrent - 1;
-                getQuarterReviewDataPrevious(final_arr, preYear);
-              } else {
-                previousAPIData.map((item) => {
-                  let string_year_val = item.year_val
-                    ? item.year_val.toString()
-                    : yearCurrent.toString();
-                  let itemYear = string_year_val.slice(
-                    2,
-                    string_year_val.length
-                  );
-                  let obj = {};
-                  obj.zone_val = item.zone_val;
-                  obj.country_code = item.country_code;
-                  obj.partner_account_name = item.partner_account_name;
-                  obj.model_type = item.model_type;
-                  obj.status = item.status;
-                  obj.trans_currency_code = item.trans_currency_code;
-                  obj["trans_currency_codeE"] = "EUR";
-                  obj.SelloutCQ = "";
-                  obj.systemComments = "";
-                  obj.editorComments = item.editor_comment;
-                  obj.YTD = "";
-                  obj.YTD_Growth = "";
-                  obj.ambition = "";
-                  obj.approverComments = "";
-                  obj.partner_id = item.partner_id;
-                  obj.year_val = item.year_val?item.year_val:new Date().getFullYear();
-                  obj.batch_upload_flag = item.batch_upload_flag;
-                  item?.months.map((each) => {
-                    if (each.month_val === "jan") {
-                      obj["Jan" + itemYear] = each.sellout_local_currency;
-                      obj["Jan" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "feb") {
-                      obj["Feb" + itemYear] = each.sellout_local_currency;
-                      obj["Feb" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "mar") {
-                      obj["Mar" + itemYear] = each.sellout_local_currency;
-                      obj["Mar" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "apr") {
-                      obj["Apr" + itemYear] = each.sellout_local_currency;
-                      obj["Apr" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "may") {
-                      obj["May" + itemYear] = each.sellout_local_currency;
-                      obj["May" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "jun") {
-                      obj["Jun" + itemYear] = each.sellout_local_currency;
-                      obj["Jun" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "jul") {
-                      obj["Jul" + itemYear] = each.sellout_local_currency;
-                      obj["Jul" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "aug") {
-                      obj["Aug" + itemYear] = each.sellout_local_currency;
-                      obj["Aug" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "sep") {
-                      obj["Sep" + itemYear] = each.sellout_local_currency;
-                      obj["Sep" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "oct") {
-                      obj["Oct" + itemYear] = each.sellout_local_currency;
-                      obj["Oct" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "nov") {
-                      obj["Nov" + itemYear] = each.sellout_local_currency;
-                      obj["Nov" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "dec") {
-                      obj["Dec" + itemYear] = each.sellout_local_currency;
-                      obj["Jan" + itemYear + "E"] = each.sellout;
-                    }
-                  });
-                  final_arr.push(obj);
-                });
-                let preYear = yearCurrent - 1;
-                getQuarterReviewDataPrevious(final_arr, preYear);
+          data.map((item) => {
+            let string_year_val = item.year_val.toString();
+            let itemYear = string_year_val.slice(2, string_year_val.length);
+            let obj = {};
+            obj.zone_val = item.zone_val;
+            obj.country_code = item.country_code;
+            obj.partner_account_name = item.partner_account_name;
+            obj.model_type = item.model_type;
+            obj.status = item.status;
+            obj.trans_currency_code = item.trans_currency_code;
+            obj["trans_currency_codeE"] = "EUR";
+            obj.SelloutCQ = "";
+            obj.systemComments = "";
+            obj.editorComments = item.editor_comment;
+            obj.YTD = "";
+            obj.YTD_Growth = "";
+            obj.ambition = "";
+            obj.approverComments = item.comments;
+            obj.partner_id = item.partner_id;
+            obj.year_val = item.year_val;
+            obj.created_by = item.created_by;
+            obj.created_date = item.created_date;
+            obj.approval_status = item.approval_status;
+            obj.batch_upload_flag = item.batch_upload_flag;
+            item.months.map((each) => {
+              if (each.month_val === "jan") {
+                obj["Jan" + itemYear] = each.sellout_local_currency;
+                obj["Jan" + itemYear + "E"] = each.sellout;
               }
-            })
-            .catch((e) => {
-              console.log("Data Input", e);
+              if (each.month_val === "feb") {
+                obj["Feb" + itemYear] = each.sellout_local_currency;
+                obj["Feb" + itemYear + "E"] = each.sellout;
+              }
+              if (each.month_val === "mar") {
+                obj["Mar" + itemYear] = each.sellout_local_currency;
+                obj["Mar" + itemYear + "E"] = each.sellout;
+              }
+              if (each.month_val === "apr") {
+                obj["Apr" + itemYear] = each.sellout_local_currency;
+                obj["Apr" + itemYear + "E"] = each.sellout;
+              }
+              if (each.month_val === "may") {
+                obj["May" + itemYear] = each.sellout_local_currency;
+                obj["May" + itemYear + "E"] = each.sellout;
+              }
+              if (each.month_val === "jun") {
+                obj["Jun" + itemYear] = each.sellout_local_currency;
+                obj["Jun" + itemYear + "E"] = each.sellout;
+              }
+              if (each.month_val === "jul") {
+                obj["Jul" + itemYear] = each.sellout_local_currency;
+                obj["Jul" + itemYear + "E"] = each.sellout;
+              }
+              if (each.month_val === "aug") {
+                obj["Aug" + itemYear] = each.sellout_local_currency;
+                obj["Aug" + itemYear + "E"] = each.sellout;
+              }
+              if (each.month_val === "sep") {
+                obj["Sep" + itemYear] = each.sellout_local_currency;
+                obj["Sep" + itemYear + "E"] = each.sellout;
+              }
+              if (each.month_val === "oct") {
+                obj["Oct" + itemYear] = each.sellout_local_currency;
+                obj["Oct" + itemYear + "E"] = each.sellout;
+              }
+              if (each.month_val === "nov") {
+                obj["Nov" + itemYear] = each.sellout_local_currency;
+                obj["Nov" + itemYear + "E"] = each.sellout;
+              }
+              if (each.month_val === "dec") {
+                obj["Dec" + itemYear] = each.sellout_local_currency;
+                obj["Jan" + itemYear + "E"] = each.sellout;
+              }
             });
-        } else {
-          props
-          .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
-          .then((data) => {
-            if (data.data.length) {
-              let previousAPIData = [];
-              let secondArray = [];
-              secondArray = data?.data;
-              previousAPIData = previousAPIData.concat(secondArray);
-              previousAPIData.map((item) => {
-                let string_year_val = item.year_val
-                  ? item.year_val.toString()
-                  : yearCurrent.toString();
-                let itemYear = string_year_val.slice(
-                  2,
-                  string_year_val.length
-                );
-                let obj = {};
-                obj.zone_val = item.zone_val;
-                obj.country_code = item.country_code;
-                obj.partner_account_name = item.partner_account_name;
-                obj.model_type = item.model_type;
-                obj.status = item.status;
-                obj.trans_currency_code = item.trans_currency_code;
-                obj["trans_currency_codeE"] = "EUR";
-                obj.SelloutCQ = "";
-                obj.systemComments = "";
-                obj.editorComments = item.editor_comment;
-                obj.YTD = "";
-                obj.YTD_Growth = "";
-                obj.ambition = "";
-                obj.approverComments = "";
-                obj.partner_id = item.partner_id;
-                obj.year_val = item.year_val?item.year_val:new Date().getFullYear();
-                obj.batch_upload_flag = item.batch_upload_flag;
-                if (item.months) {
-                  item.months.map((each) => {
-                    if (each.month_val === "jan") {
-                      obj["Jan" + itemYear] = each.sellout_local_currency;
-                      obj["Jan" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "feb") {
-                      obj["Feb" + itemYear] = each.sellout_local_currency;
-                      obj["Feb" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "mar") {
-                      obj["Mar" + itemYear] = each.sellout_local_currency;
-                      obj["Mar" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "apr") {
-                      obj["Apr" + itemYear] = each.sellout_local_currency;
-                      obj["Apr" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "may") {
-                      obj["May" + itemYear] = each.sellout_local_currency;
-                      obj["May" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "jun") {
-                      obj["Jun" + itemYear] = each.sellout_local_currency;
-                      obj["Jun" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "jul") {
-                      obj["Jul" + itemYear] = each.sellout_local_currency;
-                      obj["Jul" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "aug") {
-                      obj["Aug" + itemYear] = each.sellout_local_currency;
-                      obj["Aug" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "sep") {
-                      obj["Sep" + itemYear] = each.sellout_local_currency;
-                      obj["Sep" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "oct") {
-                      obj["Oct" + itemYear] = each.sellout_local_currency;
-                      obj["Oct" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "nov") {
-                      obj["Nov" + itemYear] = each.sellout_local_currency;
-                      obj["Nov" + itemYear + "E"] = each.sellout;
-                    }
-                    if (each.month_val === "dec") {
-                      obj["Dec" + itemYear] = each.sellout_local_currency;
-                      obj["Jan" + itemYear + "E"] = each.sellout;
-                    }
-                  });
-                } else {
-                  obj["Jan" + itemYear] = "";
-                  obj["Jan" + itemYear + "E"] = "";
-                  obj["Feb" + itemYear] = "";
-                  obj["Feb" + itemYear + "E"] = "";
-                  obj["Mar" + itemYear] = "";
-                  obj["Mar" + itemYear + "E"] = "";
-                  obj["Apr" + itemYear] = "";
-                  obj["Apr" + itemYear + "E"] = "";
-                  obj["May" + itemYear] = "";
-                  obj["May" + itemYear + "E"] = "";
-                  obj["Jun" + itemYear] = "";
-                  obj["Jun" + itemYear + "E"] = "";
-                  obj["Jul" + itemYear] = "";
-                  obj["Jul" + itemYear + "E"] = "";
-                  obj["Aug" + itemYear] = "";
-                  obj["Aug" + itemYear + "E"] = "";
-                  obj["Sep" + itemYear] = "";
-                  obj["Sep" + itemYear + "E"] = "";
-                  obj["Oct" + itemYear] = "";
-                  obj["Oct" + itemYear + "E"] = "";
-                  obj["Nov" + itemYear] = "";
-                  obj["Nov" + itemYear + "E"] = "";
-                  obj["Dec" + itemYear] = "";
-                  obj["Dec" + itemYear + "E"] = "";
-                }
-                final_arr.push(obj);
-              });
-              console.log('coming inside this::', final_arr);
-              let preYear = yearCurrent - 1;
-              getQuarterReviewDataPrevious(final_arr, preYear);
-            } 
-          })
-          .catch((e) => {
-            console.log("Data Input", e);
+  
+            final_arr.push(obj);
           });
+          let preYear = yearCurrent - 1;
+          getQuarterReviewDataPrevious(final_arr, preYear);
         }
-        let preYear = yearCurrent - 1;
-        getQuarterReviewDataPrevious(final_arr, preYear);
       })
       .catch((e) => {
         console.log(e);
@@ -750,21 +493,24 @@ function DataReviewApprover(props) {
         });
 
         if (final_arr_previous.length) {
-			combinedArray = currentYearArray;
-			for(let i = 0; i< combinedArray.length; i++) {
-				for(let j = 0; j< final_arr_previous.length; j++) {
-				  if(combinedArray[i].partner_id == final_arr_previous[j].partner_id){
-					let uniObj = {};
-					uniObj = combinedArray[i];
-					uniObj.PreviousYearData = final_arr_previous[j];
-					combinedArray[i] = uniObj;
-				  }
-				}
-			}		
+          combinedArray = currentYearArray;
+          for (let i = 0; i < combinedArray.length; i++) {
+            for (let j = 0; j < final_arr_previous.length; j++) {
+              if (
+                combinedArray[i].partner_id == final_arr_previous[j].partner_id
+              ) {
+                let uniObj = {};
+                uniObj = combinedArray[i];
+                uniObj.PreviousYearData = final_arr_previous[j];
+                combinedArray[i] = uniObj;
+              }
+            }
+          }
           let newArrC = [];
           for (let j = 0; j < combinedArray.length; j++) {
             newArrC.push(combinedArray[j]);
           }
+
           setReviewData(newArrC);
         } else {
           let newArr = [];
@@ -782,19 +528,19 @@ function DataReviewApprover(props) {
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     getQuarterReviewData(usrDetails.email_id, year, usrDetails.role_id);
-	
-	let newDate = new Date().getMonth();
-	let currentQurterForAPI;
-	if(newDate <=3 ) {
-	  currentQurterForAPI = 'Q1';
-	} else if(newDate >3 && newDate <=6 ){
-	  currentQurterForAPI = 'Q2';
-	} else if(newDate >6 && newDate <=9) {
-	  currentQurterForAPI = 'Q3';
-	} else {
-	  currentQurterForAPI = 'Q4';
-	}
-	getPreviousQuarterData(currentQurterForAPI);
+
+    let newDate = new Date().getMonth();
+    let currentQurterForAPI;
+    if (newDate <= 3) {
+      currentQurterForAPI = "Q1";
+    } else if (newDate > 3 && newDate <= 6) {
+      currentQurterForAPI = "Q2";
+    } else if (newDate > 6 && newDate <= 9) {
+      currentQurterForAPI = "Q3";
+    } else {
+      currentQurterForAPI = "Q4";
+    }
+    getPreviousQuarterData(currentQurterForAPI);
   }, []);
 
   const onBtShowYearColumn = useCallback((hisData, radio) => {
@@ -1008,6 +754,7 @@ function DataReviewApprover(props) {
         columnGroupShow: "open",
 
         cellStyle: { "border-color": "#e2e2e2" },
+     
       },
 
       {
@@ -1491,6 +1238,8 @@ function DataReviewApprover(props) {
   };
 
   const getTotSellOutCurrQuatrCalc = (params) => {
+    let tempTotal = 0;  
+
     if(params.data){
       const quat = getCurrentQuarter();
       const quatMonths = getQuarterMonths(quat);
@@ -1505,7 +1254,7 @@ function DataReviewApprover(props) {
       quatMonths.forEach((element) => {
         customizedQuarterMonths.push(element + choppedOffYear);
       });
-      let tempTotal = 0;
+      
       customizedQuarterMonths.map((item) => {
         if (item in params?.data) {
           tempTotal += params?.data[item];
@@ -1518,9 +1267,8 @@ function DataReviewApprover(props) {
       if (tempTotal == 0) {
         tempTotal = "";
       }
-
-      return tempTotal;
     }
+    return tempTotal;
   };
 
   const getTotalYTDSellOutGrowthCalc = (params) => {
@@ -1555,6 +1303,11 @@ function DataReviewApprover(props) {
     return params.value.toFixed(2) + "%";
   };
 
+ const getTheMonthsValue = (params, param2, param3) => {
+    console.log('params::', params);
+    console.log('param2:', param2);
+    console.log('param3:', param3);
+  }
   const getYTDSelloutGrowthPercCalc = (params) => {
     let previousYearData = params?.data?.PreviousYearData;
 
@@ -1830,12 +1583,19 @@ function DataReviewApprover(props) {
 
   const handleSave = useCallback((data, validateKey, selectedCell) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-
+    //if user not login then redirect to login page
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
     let requestArray = [];
     if (validateKey == "1") {
+      console.log('what is data exactly::', selectedCell);
+
       selectedCell.forEach((element) => {
+        let currentYEar = new Date().getFullYear();
         let monthArray = [];
-        let itemYear = String(data[0].year_val).slice(-2);
+        let itemYear = String(element.year_val ? element.year_val : currentYEar).slice(-2);
         allCalMonths.forEach((monthEle) => {
           const saveArray =
             radioValue == 1
@@ -1849,7 +1609,19 @@ function DataReviewApprover(props) {
             });
           }
         });
-
+        let approvalStatus;
+        if (usrDetails.role_id == roles.approve_1.toUpperCase()) {
+          approvalStatus = "1";
+        }
+        if (usrDetails.role_id == roles.approver_2.toUpperCase()) {
+          approvalStatus = "2";
+        }
+        if (usrDetails.role_id == roles.supervisor.toUpperCase()) {
+          approvalStatus = "4";
+        }
+        if (usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase()) {
+          approvalStatus = "5";
+        }
         let objForUpdate = {
           partner_id: element.partner_id,
           partner_name: element.partner_account_name,
@@ -1859,9 +1631,7 @@ function DataReviewApprover(props) {
           trans_currency_code: element.trans_currency_code,
           created_by: usrDetails.email_id,
           created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
-          approval_status: validateKey
-            ? "2"
-            : element?.approval_status?.toString(),
+          approval_status: approvalStatus,
           editor_comment: element.editorComments,
           comments: element.approverComments,
           batch_upload_flag: element.batch_upload_flag.toString(),
@@ -1870,17 +1640,15 @@ function DataReviewApprover(props) {
             .replace("T", " ")
             .slice(0, -5),
         };
-
         requestArray.push(objForUpdate);
       });
     } else {
-      data.forEach(element => {
-        console.log('allCalMonths::', allCalMonths);
-        console.log('element::', element);
-        let currentYEar = new Date().getFullYear()
+      console.log('what is data exactly::', data);
+
+      data.forEach((element) => {
+        let currentYEar = new Date().getFullYear();
         let monthArray = [];
-        let itemYear = String(data[0].year_val?data[0].year_val:currentYEar).slice(-2);
-        console.log('itemYear::', itemYear, data[0].year_val);
+        let itemYear = String(data[0].year_val ? data[0].year_val : currentYEar).slice(-2);
         allCalMonths.forEach((monthEle) => {
           const saveArray =
             radioValue == 1
@@ -1894,33 +1662,55 @@ function DataReviewApprover(props) {
             });
           }
         });
-        console.log('monthArray::', monthArray);
-        let reqData = 
-          {
-            partner_id: element.partner_id,
-            partner_name: element.partner_account_name,
-            country_code: element.country_code,
-            year_val: element?.year_val?.toString(),
-            months: monthArray,
-            trans_currency_code: element.trans_currency_code,
-            created_by: usrDetails.email_id,
-            created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
-            approval_status: "1",
-            editor_comment: element.editorComments,
-            comments: element.approverComments,
-            batch_upload_flag: element.batch_upload_flag.toString(),
-            approved_date: new Date()
-              .toISOString()
-              .replace("T", " ")
-              .slice(0, -5),
-          };
-          requestArray.push(reqData);
+        // allCalMonths.forEach((monthEle) => {
+        //   let amount = 0;
+        //   let transType = "";
+        //   element?.months.forEach((eleInMonth) => {
+        //     if (eleInMonth.month_val == monthEle.toLowerCase()) {
+        //       if (radioValue == 1) {
+        //         amount = eleInMonth.sellout_local_currency;
+        //         transType = eleInMonth.trans_type;
+        //       } else {
+        //         amount = eleInMonth.sellout;
+        //         transType = eleInMonth.trans_type;
+        //       }
+        //     }
+        //   });
+        //   if (amount && amount > 0) {
+        //     monthArray.push({
+        //       month: monthEle.toLowerCase(),
+        //       sellout_local_currency: amount,
+        //       trans_type: transType,
+        //     });
+        //   }
+        // });
+        console.log("monthArray::", monthArray);
+        let reqData = {
+          partner_id: element.partner_id,
+          partner_name: element.partner_account_name,
+          country_code: element.country_code,
+          year_val: element?.year_val?.toString(),
+          months: monthArray,
+          trans_currency_code: element.trans_currency_code,
+          created_by: usrDetails.email_id,
+          created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
+          approval_status: element?.approval_status?.toString(),
+          editor_comment: element.editorComments,
+          comments: element.approverComments,
+          batch_upload_flag: element.batch_upload_flag.toString(),
+          approved_date: new Date()
+            .toISOString()
+            .replace("T", " ")
+            .slice(0, -5),
+        };
+        requestArray.push(reqData);
       });
     }
 
     props
       .updateSellOutData(requestArray)
       .then((data) => {
+        // setReviewData(data);
         setShowSuccessModal(true);
       })
       .catch((e) => {
@@ -1933,7 +1723,7 @@ function DataReviewApprover(props) {
     
     console.log('handleSendForInvestgn', data);
     let requestArray = [];
-    
+    console.log('selectedCell', selectedCell);
     selectedCell.forEach((element) => {
       console.log('element', element);
       let monthArray = [];
@@ -1946,12 +1736,14 @@ function DataReviewApprover(props) {
         if (saveArray > 0) {
           monthArray.push({
             month: monthEle.toLowerCase(),
-            sellout_local_currency: saveArray,
+            sellout_local_currency: saveArray ? saveArray: '0',
             trans_type: radioValue == 1 ? "ACT" : "EST",
           });
         }
       });
 
+      console.log('monthArray', monthArray);
+      
       let objForUpdate = {
         partner_id: element.partner_id,
         partner_name: element.partner_account_name,
@@ -1970,7 +1762,7 @@ function DataReviewApprover(props) {
 
       requestArray.push(objForUpdate);
     });
-    
+
     console.log('requestArray', requestArray);
 
     props
@@ -1984,9 +1776,7 @@ function DataReviewApprover(props) {
   }, []);
 
   const handleReviewNavigation = () => {
-    if (
-      userRole == roles.supervisor_approv_1_2.toUpperCase()
-    ) {
+    if (userRole == roles.supervisor_approv_1_2.toUpperCase()) {
       navigate("/superApproverUser/home");
     } else if (userRole == roles.approve_1.toUpperCase()) {
       navigate("/approver_1/home");
@@ -1995,16 +1785,15 @@ function DataReviewApprover(props) {
     }
   };
 
-  // const handleInvestigation = () => {
-
-  //   alert(
-  //     message === 1
-  //       ? `${message} Partner Account Sent For Investigation `
-  //       : message > 1
-  //       ? `${message} Partners Account Sent For Investigation `
-  //       : ""
-  //   );
-  // };
+  const handleInvestigation = () => {
+    alert(
+      message === 1
+        ? `${message} Partner Account Sent For Investigation `
+        : message > 1
+        ? `${message} Partners Account Sent For Investigation `
+        : ""
+    );
+  };
 
   const historicalDataNavigation = () => {
     navigate(`/historicalData?role=${userRole}`);
