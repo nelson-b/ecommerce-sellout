@@ -249,7 +249,7 @@ function DataReviewComponent(props) {
                   obj.YTD = "";
                   obj.YTD_Growth = "";
                   obj.ambition = "";
-                  obj.approverComments = "";
+                  obj.approverComments = item.comments;
                   obj.partner_id = item.partner_id;
                   obj.year_val = item.year_val;
                   obj.batch_upload_flag = item.batch_upload_flag;
@@ -357,7 +357,7 @@ function DataReviewComponent(props) {
                   obj.YTD = "";
                   obj.YTD_Growth = "";
                   obj.ambition = "";
-                  obj.approverComments = "";
+                  obj.approverComments = item.comments;
                   obj.partner_id = item.partner_id;
                   obj.year_val = item.year_val;
                   obj.batch_upload_flag = item.batch_upload_flag;
