@@ -850,6 +850,108 @@ function DataReviewComponent(props) {
     return params.value.toFixed(2) + "%";
   };
 
+const yTDSelloutCurrntYear = (params) => {
+    const d = new Date();
+    let months = d.getMonth();
+    let currentYear = d.getFullYear();
+    if (currentYear) {
+      months = 12;
+    }
+    let selectedValueString = currentYear.toString();
+    let choppedOffYear = selectedValueString.slice(
+      2,
+      selectedValueString.length
+    );
+    let customizedArrayOfMonths = [];
+    if (radioValue == 1) {
+      for (let i = 0; i < months; i++) {
+        customizedArrayOfMonths.push(monthsOfTheYear[i] + choppedOffYear);
+      }
+      let tempTotal = 0;
+
+      customizedArrayOfMonths.map((item) => {
+        if (item in params?.data) {
+          tempTotal += params?.data[item];
+       }
+      });
+
+      if (isNaN(tempTotal)) {
+        tempTotal = "";
+      }
+      if (tempTotal == 0) {
+        tempTotal = "";
+      }
+      return tempTotal;
+
+    } else {
+      for (let i = 0; i < months; i++) {
+        customizedArrayOfMonths.push(monthsOfTheYear[i] + choppedOffYear + "E");
+      }
+
+      let tempTotal = 0;
+      customizedArrayOfMonths.map((item) => {
+        if (item in params?.data) {
+          tempTotal += params?.data[item];
+        }
+      });
+
+      if (isNaN(tempTotal)) {
+        tempTotal = "";
+      }
+
+      if (tempTotal == 0) {
+        tempTotal = "";
+      }
+      return tempTotal;
+
+    }
+
+  };
+
+
+  
+  const yTDSelloutPreviousYear = (params) => {
+   // console.log('params::', params);
+    if (params?.data?.PreviousYearData) {
+      let previousData = params?.data?.PreviousYearData;
+      console.log('previousData::', previousData);
+    const d = new Date();
+    let currentYear = previousData.year_val.toString().slice(2);
+    console.log('currentYear:::', currentYear);
+    let previousYear = currentYear - 1;
+    let months = d.getMonth(); 
+    let total = 0;
+    for(let i=0; i< monthsOfTheYear.length; i++) {
+      if (radioValue == 1) {
+        let key = monthsOfTheYear[i]+currentYear;
+        console.log('key::', key);
+        if(previousData[key]) {
+          total = + previousData[key];
+        }
+      
+      } else {
+        let key = monthsOfTheYear[i]+currentYear+"E";
+        if(previousData[key] == null || previousData[key] == "") {
+          console.log('yes its null');
+          total = +0;
+        } else {
+          total = + previousData[key];
+        }
+      }
+    }
+    console.log('total:::', total);
+    if(total == 0) {
+      return ''
+    } else {
+      
+      return total
+    }
+  } else {
+    return ''
+  }
+  };
+
+
   const getYTDSelloutGrowthPercCalc = (params) => {
     let previousYearData = params.data.PreviousYearData;
 
@@ -926,8 +1028,9 @@ function DataReviewComponent(props) {
       var isEstimated = filterMonths[monthYrKey] === "true";
 
       if (isEstimated === true) return { backgroundColor: "#EEB265" };
+			return { borderColor: "#e2e2e2" }
     } else {
-      return { backgroundColor: "white", "border-color": "#e2e2e2" };
+      return { backgroundColor: "white", borderColor: "#e2e2e2"};
     }
   };
 
@@ -981,13 +1084,47 @@ function DataReviewComponent(props) {
             cellStyle: (params) => {
               return setIsEstimated(params, monthField);
             },
+			
           },
+		  
 
           {
             field: monthAEFlagField,
 
             hide: true,
           },
+
+		{
+          headerName: "YTD Sellout",
+          field: "YTD_Growth",
+          editable: false,
+          minWidth: 150,
+          wrapHeaderText: true,
+          aggFunc: "sum",
+          sortable: true,
+          suppressMenu: true,
+          valueGetter: (params) => {
+            return yTDSelloutCurrntYear(params);
+          },
+          cellStyle: { "border-color": "#e2e2e2" },
+        },
+
+        {
+          headerName: "YTD Sellout LY",
+          field: "YTD_Growth",
+          editable: false,
+          minWidth: 150,
+          wrapHeaderText: true,
+          aggFunc: "sum",
+          sortable: true,
+          suppressMenu: true,
+          valueGetter: (params) => {
+            return yTDSelloutPreviousYear(params);
+          },
+          cellStyle: { "border-color": "#e2e2e2" },
+        },
+
+
 
           {
             headerName: "YTD Sellout Growth",
@@ -1034,7 +1171,8 @@ function DataReviewComponent(props) {
               }
             },
           },
-
+      
+	  
           {
             headerName: "var. CM vs LM (value)",
 
@@ -1414,16 +1552,16 @@ function DataReviewComponent(props) {
   };
 
   const handleSave = useCallback((data) => {
-    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    //if user not login then redirect to login page
+	 const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
     }
-
-    console.log("data", data);
-    let monthArray = [];
-    let itemYear = String(data[0].year_val).slice(-2);
+    let requestArray = [];
+    data.forEach((element) => {
+      let currentYEar = new Date().getFullYear();
+      let monthArray = [];
+    let itemYear = String(currentYEar).slice(-2);
 
     allCalMonths.forEach((element) => {
       const saveArray =
@@ -1433,36 +1571,35 @@ function DataReviewComponent(props) {
       if (saveArray > 0) {
         monthArray.push({
           month: element.toLowerCase(),
-          sellout_local_currency: saveArray,
+          sellout_local_currency: saveArray.toString(),
           trans_type: "",
         });
       }
     });
-
-    let reqData = [
-      {
-        partner_id: data[0].partner_id,
-        partner_name: data[0].partner_account_name,
-        country_code: data[0].country_code,
-        year_val: data[0].year_val,
+      let reqData = {
+        partner_id: element.partner_id,
+        partner_name: element.partner_account_name,
+        country_code: element.country_code,
+        year_val: element.year_val?element.year_val.toString(): new Date().getFullYear().toString(),
         months: monthArray,
-        trans_currency_code: data[0].trans_currency_code,
+        trans_currency_code: element.trans_currency_code,
         created_by: usrDetails.email_id,
-        created_date: new Date().toUTCString(),
-        approval_status: "0",
-        editor_comment: data[0].editorComments,
-        comments: data[0].approverComments,
-        batch_upload_flag: data[0].batch_upload_flag,
-        approved_date: new Date().toISOString().replace("T", " ").slice(0, -5),
-      },
-    ];
-
-    console.log("reqData", JSON.stringify(reqData));
+        created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
+        approval_status: '0',
+        editor_comment: element.editorComments,
+        comments: element.approverComments,
+        batch_upload_flag: element.batch_upload_flag.toString(),
+        approved_date: new Date()
+          .toISOString()
+          .replace("T", " ")
+          .slice(0, -5),
+      };
+      requestArray.push(reqData);
+    });
 
     props
-      .updateSellOutData(reqData)
+      .updateSellOutData(requestArray)
       .then((data) => {
-        // setReviewData(data);
         setShowSuccessModal(true);
       })
       .catch((e) => {

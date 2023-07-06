@@ -1,5 +1,5 @@
 "use strict";
-
+import CancelMoodal from "../modal/cancelModal";
 import { AgGridReact } from "ag-grid-react";
 import { useNavigate } from "react-router-dom";
 import "ag-grid-community/styles/ag-grid.css";
@@ -59,8 +59,19 @@ function DataInputComponent(props) {
   const [rowData, setRowData] = useState(null);
 
   const location = useLocation();
-
   const userRole = new URLSearchParams(location.search).get("role");
+
+	const handleShowModal = () => {
+		setShowModal(true);
+	}
+
+	const handleCloseModal = () => {
+		setShowModal(false);
+	}
+
+	const handleConfirmModal = () => {
+		handleNavigation(userRole);
+	}
 
   const monthsOfTheYear = [
     "Jan",
@@ -164,12 +175,20 @@ function DataInputComponent(props) {
   };
 
   const postData = useCallback(() => {
-    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+	  
+	const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
     //if user not login then redirect to login page
+
     if (usrDetails) {
+
       setUserEmail(usrDetails.email_id);
+
       setuserRoleData(usrDetails.role_id);
-    }
+
+    }  
+	  
+	  
     setShowShouldUpdModal(false);
 
     let payload = [];
@@ -177,7 +196,6 @@ function DataInputComponent(props) {
     //iterate in the grid
 
     gridRef.current.api.forEachNode((rowNode, index) => {
-
       //api to save data
 
       let monthArray = [];
@@ -209,7 +227,7 @@ function DataInputComponent(props) {
         year_val: rowNode.data.Year ? String(rowNode.data.Year) : currentYear,
         months: monthArray,
         trans_currency_code: rowNode.data.Currency_Of_Reporting,
-        created_by: usrDetails.email_id, //login user
+        created_by: usrDetails.email_id,
         created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
         approval_status: "0",
         editor_comment: rowNode.data.Comment,
@@ -455,7 +473,7 @@ function DataInputComponent(props) {
 
     if (isEstimated == true) return { backgroundColor: "#EEB265" };
 
-    return { backgroundColor: "white" };
+    return { backgroundColor: "white", borderColor: "#e2e2e2"};
   };
 
   const currentDate = new Date();
@@ -528,7 +546,6 @@ function DataInputComponent(props) {
             },
 
             enableRangeSelection: true,
-			cellStyle: { "border-color": "#e2e2e2" },			
           },
 
           {
@@ -573,7 +590,6 @@ function DataInputComponent(props) {
           enableRangeSelection: true,
 
           suppressMenu: true,
-		  cellStyle: { "border-color": "#e2e2e2" },
         });
   }
 
@@ -718,14 +734,18 @@ function DataInputComponent(props) {
   };
 
   const formatGetPayload = useCallback((data, isManualInput) => {
-    console.log("formatGetPayload::", data);
-    
-    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    if (usrDetails) {
-      setUserEmail(usrDetails.email_id);
-      setuserRoleData(usrDetails.role_id);
-    }
+	  
+	const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
+    //if user not login then redirect to login page
+
+    if (usrDetails) {
+
+      setUserEmail(usrDetails.email_id);
+
+      setuserRoleData(usrDetails.role_id);
+	}
+    console.log("formatGetPayload::", data);
     let respPayload = [];
 
     data.forEach((row, index) => {
@@ -1014,16 +1034,29 @@ function DataInputComponent(props) {
               body={successmsg}
             />
           </Col>
-          <Col>
+ 
+		<Col>
             <Button
               className="btn-upload save-header"
-              onClick={() => {
-                handleNavigation(userRole);
-              }}
-            >
-              Next
+              onClick={
+                handleShowModal
+                // handleNavigation(userRole);
+              }
+            > Next
+
             </Button>
+
+            <CancelMoodal
+              show={showModal}
+              handleClose={handleCloseModal}
+              handleConfirm={handleConfirmModal}
+              body={"Make sure that values are saved, before navigating to the next page"}
+              button1={"Cancel"}
+              button2={"Confirm"}
+            />
           </Col>
+ 
+ 
         </Row>
       </Container>
     </>

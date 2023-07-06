@@ -20,28 +20,28 @@ function BatchInputComponent({ savedData, props, userDetails }) {
   const location = useLocation();
 
   const navigate = useNavigate();
-    //sso login func
-    const [userEmail, setUserEmail] = useState('');
-    const [userRole, setuserRole] = useState('');
-    
-    useEffect(() => {
-      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-      //if user not login then redirect to login page
-      if(usrDetails){
-        setUserEmail(usrDetails.email_id);
-        setuserRole(usrDetails.role_id);
-      
-        if(usrDetails.role_id === roles.editor.toUpperCase() ||
-          usrDetails.role_id === roles.backup_editor.toUpperCase() ||
-          usrDetails.role_id === roles.approve_1.toUpperCase() ||
-          usrDetails.role_id === roles.approver_2.toUpperCase() ||
-          usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
-        } else {
-          navigate("/");
-        }
+  //sso login func
+  const [userEmail, setUserEmail] = useState('');
+  const [userRole, setuserRole] = useState('');
+
+  useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+
+      if (usrDetails.role_id === roles.editor.toUpperCase() ||
+        usrDetails.role_id === roles.backup_editor.toUpperCase() ||
+        usrDetails.role_id === roles.approve_1.toUpperCase() ||
+        usrDetails.role_id === roles.approver_2.toUpperCase() ||
+        usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
+      } else {
+        navigate("/");
       }
-    }, []);
-    //------------------//
+    }
+  }, []);
+  //------------------//
 
   const {
     register,
@@ -134,7 +134,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Jan_Amount)) {
                 errorJson.push(
                   "There should be number for Jan month at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -142,7 +142,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Feb_Amount)) {
                 errorJson.push(
                   "There should be number for Feb month at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -150,7 +150,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Mar_Amount)) {
                 errorJson.push(
                   "There should be number for Mar month at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -158,7 +158,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Apr_Amount)) {
                 errorJson.push(
                   "There should be number at Apr at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -166,7 +166,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.May_Amount)) {
                 errorJson.push(
                   "There should be number at May at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -174,7 +174,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Jun_Amount)) {
                 errorJson.push(
                   "There should be number at Jun at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -182,7 +182,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Jul_Amount)) {
                 errorJson.push(
                   "There should be number at Jul at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -190,7 +190,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Aug_Amount)) {
                 errorJson.push(
                   "There should be number at Jul at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -198,7 +198,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Sep_Amount)) {
                 errorJson.push(
                   "There should be number at Jul at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -206,7 +206,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Oct_Amount)) {
                 errorJson.push(
                   "There should be number at Oct at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -214,7 +214,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Nov_Amount)) {
                 errorJson.push(
                   "There should be number at Nov at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -222,7 +222,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Dec_Amount)) {
                 errorJson.push(
                   "There should be number at Dec at partner : " +
-                    i["Partner Account Name"]
+                  i["Partner Account Name"]
                 );
               }
             }
@@ -314,35 +314,38 @@ function BatchInputComponent({ savedData, props, userDetails }) {
   };
 
   const readMeData = [
-    ["How to use this template"],
+    ["Overall guidance "],
     [
-      "1. Please verify the partner name, channel, Model and correct the values in case of any invalid data.",
+      "This template is to upload sell out value for the past 6 months and categorize whether the sell out values are estimates or actual values. ",
     ],
     [
-      "2. If the value mentioned as True means it is estimated value. If nothing mentioned, by Default values treated as actuals. ",
+      "You can upload several batches of data via the batch method. If sellout values are already in the system, you will overwrite them when loading a new value for these partners and months.",
     ],
-    [
-      "3. For each month, we have a flag field with suffix IsEstimated for each month (e.g Jan_IsEstimated) to indicate values as Actual or Estimate. ",
-    ],
-    [
-      "4. Zone, Country, Partner and Model fields are text fields. All alpha numeric characters are allowed (e.g A-Z, 1, 2, & % etc)",
-    ],
-    [
-      "5. Partner field should be unique for each record. It would be used as identifier for each record.",
-    ],
-    [
-      "6. Fill only the data from the previous 6 months to the current reporting month for the current academic year.",
-    ],
-    [
-      "7. All months field can have only numbers with precision of maximum 2 decimals allowed.",
-    ],
-    ["8. Please verify the values in each cell before the upload"],
+    
+    [" Do and don't on the sellout value columns "],
+    ["The sell out value columns are named (Jan_Amount, Feb_Amount…). "],
+    ["You need to input sell out value only (not sell in). Please see the training guide on how to calculate the sell out value. "],
+    ["Only the last 6 months sell out value can be updated. Previous year will be closed after December reporting period happening in January Y+1. To update previous periods, please liaise with the Admin Team and your Super User.  "],
+    ["The input is done in Kilo (with 2 decimals maximum if needed) and in currency of reporting (mentioned in the template under the “Currency_Of_Reporting”). "],
+    ["When downloading the template, you will see the current sell out value in the system. If you input a different sell out value in the template, it will be loaded into the system, and will replace the existing sell out value. "],
+    ["If you input a “0”, the existing value in the system will be replaced by a 0. "],
+    ["If you leave the cell empty/ blank, then the existing value in the system will remain (no update). "],
+
+    ["Do and don't on the “estimated” columns "],
+    ["You can use this template to define whether the sell out value is a estimate or the actual value (you might have to estimate the sell out value while waiting actual values from the partner). "],
+    ["The “estimated” columns are named (Jan_Estimated, Feb_Estimated…). "],
+    ["Please write “TRUE” if sellout is estimated, “FALSE” if sellout is actual "],
+    ["Leaving the cell empty/ blank will populate the field as “actual”. You can always change that later in the application "],
+
+    ["Do and don't on the partner account details "],
+    ["Don't change/ add/ remove partner account details in this template. The application will not recognize any changes, which will lead to an upload error. "],
+    ["If you need to update partner details (partner account name, status, currency of reporting), please go to the partner account section. "]
   ];
 
-  const getExactData =  (index, amount) => {
+  const getExactData = (index, amount) => {
     let today = new Date();
     let month = today.getMonth();
-    if(index < month) {
+    if (index < month) {
     } else {
       amount = '';
 
@@ -474,6 +477,21 @@ function BatchInputComponent({ savedData, props, userDetails }) {
     const sheet1 = xlsx.utils.aoa_to_sheet(readmeDataWithoutHeader);
 
     xlsx.utils.book_append_sheet(workbook, sheet1, "Read Me");
+
+    workbook.Sheets["Read Me"]["A1"].s = {
+      font: { bold: true, color: { rgb: "000000" }},
+      alignment: {horizontal: "center"},
+    };
+    workbook.Sheets["Read Me"]["A4"].s = {
+      font: { bold: true, color: { rgb: "000000" }},
+    };
+    workbook.Sheets["Read Me"]["A12"].s = {
+      font: { bold: true, color: { rgb: "000000" }},
+    };
+    workbook.Sheets["Read Me"]["A17"].s = {
+      font: { bold: true, color: { rgb: "000000" }},
+    };
+    sheet1["!cols"] = [{wch: 200}];
 
     const sheet2 = xlsx.utils.json_to_sheet(tempData);
 

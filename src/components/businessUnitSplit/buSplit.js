@@ -30,6 +30,7 @@ import {
   retrieveBuSplitData,
   retrivePartnerAccountName,
 } from "../../actions/buSplitAction.js";
+import { retrievePartnerByRole } from "../../actions/partneraction";
 
 function BusinessUnitSplit(props) {
   const location = useLocation();
@@ -420,30 +421,114 @@ function BusinessUnitSplit(props) {
         year
       )
       .then((data) => {
-        props
+        console.log('data::', data.data);
+        data?.data?.forEach(element => {
+          props
           .retrivePartnerAccountName(
-            data.data[0].partner_id,
-            data.data[0].country_code
+            element.partner_id,
+            element.country_code
           )
           .then((data1) => {
-            let obj = {};
-            obj = data.data[0];
-            obj.partner_account_name = data1.partner_account_name;
-            let sampleArray = [];
-            sampleArray.push(obj);
-            setRowData(sampleArray);
+            if(data1.length) {
+              let obj = {};
+              obj = element;
+              obj.partner_account_name = data1.partner_account_name;
+              let sampleArray = [];
+              sampleArray.push(obj);
+              setRowData(sampleArray);
+            } else {
+            //  setRowData(data.data);
+            }
           })
-
           .catch((e) => {
+          //  setRowData(data.data);
             console.log(e);
           });
-      })
-
-      .catch((e) => {
+        });
+        console.log('data?.data::', data?.data);
+        if (data?.data) {
+          let previousAPIData = data?.data;
+          props
+            .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
+            .then((data) => {
+              console.log("showMeData from next API", data.data);
+              let secondArray = [];
+              secondArray = setProperBUSplitData(data?.data);
+              for (let i = 0; i < previousAPIData.length; i++) {
+                for (let j = 0; j < secondArray.length; j++) {
+                  if (
+                    previousAPIData[i].partner_id == secondArray[j].partner_id
+                  ) {
+                    secondArray.splice(j, 1);
+                  }
+                }
+              }
+              previousAPIData = previousAPIData.concat(secondArray);
+              console.log('previousAPIData: here', previousAPIData);
+              setRowData(previousAPIData);
+             // setRowData(formatGetPayload(previousAPIData, true));
+            })
+            .catch((e) => {
+              setRowData(previousAPIData);
+              console.log("Data Input", e);
+            });
+        } else {
+          
+          props
+          .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
+          .then((data) => {
+            console.log("showMeData from next API", data.data);
+            let secondArray = [];
+            secondArray = secondArray = setProperBUSplitData(data?.data);
+            let previousAPIData = [];    
+            previousAPIData = previousAPIData.concat(secondArray);
+            setRowData(previousAPIData);
+           // setRowData(formatGetPayload(previousAPIData, true));
+          })
+          .catch((e) => {
+            setRowData([]);
+            console.log("Data Input", e);
+          });
+        }
+  
+      }).catch((e) => {
+        setRowData([]);
         console.log(e);
       });
   }, []);
 
+
+  const setProperBUSplitData = (dataInput) => {
+    const setArray = [
+      {attribute_name: 'bopp_type', attribute_val: 'PP', total: 0},
+      {attribute_name: 'bopp_type', attribute_val: 'DE', total: 0},
+      {attribute_name: 'bopp_type', attribute_val: 'IA', total: 0},
+      {attribute_name: 'bopp_type', attribute_val: 'SP', total: 0},
+      {attribute_name: 'bopp_type', attribute_val: 'H&D', total: 0}
+    ];
+let newCustomizedArray = [];
+
+    console.log('dataInput', dataInput);
+    dataInput?.forEach(element => {
+      let obj = {
+        active_flag: "True",
+        attributes: setArray,
+        country_code: element.country_code,
+        created_by: element.created_by,
+        created_date: element.created_date,
+        model_type: element.model_type,
+        modified_by: element.modified_by,
+        partner_id:element.partner_id,
+        quarter: '',
+        record_end_date: 'None',
+        record_start_date: 'None',
+        year_val: new Date().getFullYear(),
+        partner_account_name: element.partner_account_name
+      }
+      newCustomizedArray.push(obj);
+    });
+    return newCustomizedArray;
+  }
   const name = "John Bae";
 
   const successmsg = {
@@ -887,7 +972,7 @@ function BusinessUnitSplit(props) {
 
 export default connect(null, {
   retrieveBuSplitData,
-
+  retrievePartnerByRole,
   retrivePartnerAccountName,
 
   updateBuSplitData,
