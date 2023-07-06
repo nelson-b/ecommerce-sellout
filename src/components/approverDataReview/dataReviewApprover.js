@@ -184,36 +184,31 @@ function DataReviewApprover(props) {
 
       editable: false,
     },
-
     {
       headerName: "Partner Account Name",
       field: "partner_account_name",
-      rowGroup: true,
-
-      hide: true,
-
+      // rowGroup: true,
+      checkboxSelection: (params) => {
+        if(params.data) {
+          return true
+        } else {
+          return false
+        }
+      },
+      // hide: true,
       filter: true,
-
       pinned: "left",
-
       suppressSizeToFit: true,
-
       editable: false,
     },
-
     {
       headerName: "Currency of Reporting",
       field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
-
       pinned: "left",
-
       width: 140,
-
       editable: false,
-
       suppressMenu: true,
     },
-
     {
       headerName: "Status",
 
@@ -1826,18 +1821,20 @@ function DataReviewApprover(props) {
           gridRef.current.api.setRowNodeExpanded(node, true);
         }
       });
-    } else if (e.target.value === "Partner") {
-      gridRef.current.api.forEachNode((node) => {
-        if (
-          node.level === 0 ||
-          node.level === 1 ||
-          node.level === 2 ||
-          node.level === 3
-        ) {
-          gridRef.current.api.setRowNodeExpanded(node, true);
-        }
-      });
-    } else {
+    } 
+    // else if (e.target.value === "Partner") {
+    //   gridRef.current.api.forEachNode((node) => {
+    //     if (
+    //       node.level === 0 ||
+    //       node.level === 1 ||
+    //       node.level === 2 ||
+    //       node.level === 3
+    //     ) {
+    //       gridRef.current.api.setRowNodeExpanded(node, true);
+    //     }
+    //   });
+    // } 
+    else {
       gridRef.current.api.collapseAll();
     }
   }, []);
@@ -1989,16 +1986,10 @@ function DataReviewApprover(props) {
                   onChange={onExpandCol}
                 >
                   <option>Collapse all</option>
-
                   <option value="Zone">Zone</option>
-
-                  <option selected value="Country">
-                    Country
-                  </option>
-
+                  <option selected value="Country">Country</option>
                   <option value="Model">Model</option>
-
-                  <option value="Partner">Partner</option>
+                  {/* <option value="Partner">Partner</option> */}
                 </Form.Select>
               </Col>
             </Row>
