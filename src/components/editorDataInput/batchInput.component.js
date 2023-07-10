@@ -228,6 +228,25 @@ function BatchInputComponent({ savedData, props, userDetails }) {
             }
           });
 
+ 		  const currentYear = new Date().getFullYear();
+          json.forEach((rowNode) => {
+
+            if (rowNode.Year != currentYear && rowNode.Year !== "" && rowNode.Year !== undefined && rowNode.Year !== null) {
+
+              errorJson.push(
+
+                `Invalid year value. Please enter the current year for partner: ${rowNode["Partner_Account_Name"]}`
+
+              );
+
+              return;
+
+            }
+
+          })
+
+
+
           if (errorJson.length > 0) {
             setFileError(errorJson);
             setShowErrorModal(true);

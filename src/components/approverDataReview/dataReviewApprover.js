@@ -30,6 +30,8 @@ import footerTotalReview from "./../editorDataReview/footerTotalReview";
 import AlertModal from "../modal/alertModel";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
+import updated from "../../images/updated.png";
+import rejected from "../../images/rejected.png";
 import Home from "../../images/home-icon.png";
 import "../approverDataReview/dataReviewApprover.css";
 import { useLocation } from "react-router-dom";
@@ -87,37 +89,7 @@ function DataReviewApprover(props) {
   const [isYearColumnVisible, setIsYearColumnVisible] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [shouldDisableSaveButton, setShouldDisableSaveButton] = useState(false);
-  const someData = [
-    {
-      zone_val: "US",
-      year_val: 2022,
-      trans_currency_codeE: "EUR",
-      trans_currency_code: "USD",
-      systemComments: "hello",
-      status: "ACTIVE",
-      partner_id: "NAM-US-00283",
-      partner_account_name: "Taj Mahal USA",
-      model_type: "E1 - Dist",
-      editorComments: "hello editor comment",
-      country_code: "USA",
-      batch_upload_flag: false,
-      approverComments: "hello approver comment",
-      ambition: "ambition",
-      YTD_Growth: "",
-      YTD: "",
-      SelloutCQ: "",
-      May23E: null,
-      May23: 72,
-      Mar23E: null,
-      Mar23: 22,
-      Jun23E: null,
-      Jun23: 33,
-      Feb23E: null,
-      Feb23: 23,
-      Apr23E: null,
-      Apr23: 56,
-    },
-  ];
+
   const radios = [
     { name: "Reporting Currency", value: "1" },
     { name: "Euro", value: "2" },
@@ -184,31 +156,45 @@ function DataReviewApprover(props) {
 
       editable: false,
     },
+
     {
       headerName: "Partner Account Name",
       field: "partner_account_name",
-      // rowGroup: true,
-      checkboxSelection: (params) => {
+      //rowGroup: true,
+	  
+	  
+	  checkboxSelection: (params) => {
         if(params.data) {
           return true
         } else {
           return false
         }
       },
-      // hide: true,
+
+      //hide: true,
+
       filter: true,
+
       pinned: "left",
+
       suppressSizeToFit: true,
+
       editable: false,
     },
+
     {
       headerName: "Currency of Reporting",
       field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
+
       pinned: "left",
+
       width: 140,
+
       editable: false,
+
       suppressMenu: true,
     },
+
     {
       headerName: "Status",
 
@@ -232,6 +218,10 @@ function DataReviewApprover(props) {
             {Status === "Closed" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )}
+			
+			{Status === "REJECT" && (
+              <img src={rejected} alt="rejected" style={{ width: "80px" }} />
+            )}
           </div>
         );
       },
@@ -244,6 +234,21 @@ function DataReviewApprover(props) {
     const quarter = Math.ceil(month / 3);
     return `Q${quarter}`;
   };
+
+  const getCurrentQuarter2 = () => {
+    let dateSample = new Date().getMonth();
+    let currentQuarter = 1;
+    if (dateSample <= 3) {
+      currentQuarter = 'Q1';
+    } else if (dateSample <= 6 && dateSample > 3) {
+      currentQuarter = 'Q2';
+    } else if (dateSample <= 9 && dateSample > 6) {
+      currentQuarter = 'Q3';
+    } else {
+      currentQuarter = 'Q4';
+    }
+    return currentQuarter
+  }
 
   const getQuarterMonths = (quarter) => {
     const quarters = {
@@ -576,89 +581,53 @@ function DataReviewApprover(props) {
       {
         headerName: "Zone",
         field: "zone_val",
-
         rowGroup: true,
-
         hide: true,
       },
-
       {
         headerName: "Country",
-
         field: "country_code",
-
         rowGroup: true,
-
         hide: true,
-
         filter: true,
-
         pinned: "left",
-
         suppressSizeToFit: true,
-
         editable: false,
       },
-
       {
         headerName: "Model",
-
         field: "model_type",
-
         rowGroup: true,
-
         hide: true,
-
         filter: true,
-
         pinned: "left",
-
         suppressSizeToFit: true,
-
         editable: false,
       },
-
       {
         headerName: "Partner Account Name",
-
         field: "partner_account_name",
-
         rowGroup: true,
-
         hide: true,
-
         filter: true,
-
         pinned: "left",
-
         suppressSizeToFit: true,
-
         editable: false,
       },
-
       {
         headerName: "Currency of Reporting",
-        field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
+        field: radio == 1 ? "trans_currency_code" : "trans_currency_codeE",
         pinned: "left",
-
         width: 140,
-
         editable: false,
-
         suppressMenu: true,
       },
-
       {
         headerName: "Status",
-
         field: "status",
-
         pinned: "left",
-
         width: 110,
-
         suppressMenu: true,
-
         cellRenderer: (params) => {
           const Status = params.value;
 
@@ -671,6 +640,10 @@ function DataReviewApprover(props) {
               {Status === "Closed" && (
                 <img src={closed} alt="closed" style={{ width: "80px" }} />
               )}
+			  
+			 {Status === "REJECT" && (
+              <img src={rejected} alt="rejected" style={{ width: "80px" }} />
+            )}			  
             </div>
           );
         },
@@ -754,23 +727,17 @@ function DataReviewApprover(props) {
 
       {
         headerName: "Sellout value Current Quarter",
-
         field: "SelloutCQ",
-
         editable: false,
-
         minWidth: 150,
-
         wrapHeaderText: true,
-
         aggFunc: "sum",
-
         sortable: true,
-
         suppressMenu: true,
-
         cellStyle: { "border-color": "#e2e2e2" },
-
+        valueFormatter: (params) => {
+          return getValueFormatter2(params);
+        },
         valueGetter: (params) => {
           return getTotSellOutCurrQuatrCalc(params);
         },
@@ -778,74 +745,53 @@ function DataReviewApprover(props) {
 
       {
         headerName: "YTD Sellout Value",
-
         field: "YTD",
-
         editable: false,
-
         minWidth: 140,
-
         wrapHeaderText: true,
-
         aggFunc: "sum",
-
         sortable: true,
-
         suppressMenu: true,
-
         cellStyle: { "border-color": "#e2e2e2" },
-
+        valueFormatter: (params) => {
+          return getValueFormatter2(params);
+        },
         valueGetter: (params) => {
           return getTotalYTDSellOutGrowthCalc(params);
         },
       },
 
-      // {
-      //   headerName: "YTD Sellout Growth",
-
-      //   field: "YTD_Growth",
-
-      //   editable: false,
-
-      //   minWidth: 150,
-
-      //   wrapHeaderText: true,
-
-      //   aggFunc: "sum",
-
-      //   sortable: true,
-
-      //   suppressMenu: true,
-
-      //   valueFormatter: (params) => {
-      //     return callThisFunction(params);
-      //    },
-
-      //   valueGetter: (params) => {
-      //     return getYTDSelloutGrowthPercCalc(params);
-      //   },
-
-      //   cellStyle: function (params) {
-      //     if (params.value < "0") {
-      //       return {
-      //         color: "#ff0000",
-
-      //         fontWeight: "bold",
-
-      //         "border-color": "#e2e2e2",
-      //       };
-      //     } else {
-      //       return {
-      //         color: "#009530",
-
-      //         fontWeight: "bold",
-
-      //         "border-color": "#e2e2e2",
-      //       };
-      //     }
-      //   },
-      // },
-
+      {
+        headerName: "YTD Sellout Growth",
+        field: "YTD_Growth",
+        editable: false,
+        minWidth: 150,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        valueFormatter: (params) => {
+          return callThisFunction(params);
+         },
+        valueGetter: (params) => {
+          return getYTDSelloutGrowthPercCalc(params);
+        },
+        cellStyle: function (params) {
+          if (params.value < "0") {
+            return {
+              color: "#ff0000",
+              fontWeight: "bold",
+              "border-color": "#e2e2e2",
+            };
+          } else {
+            return {
+              color: "#009530",
+              fontWeight: "bold",
+              "border-color": "#e2e2e2",
+            };
+          }
+        },
+      },
       {
         headerName: "Ambition Data",
 
@@ -1019,9 +965,7 @@ function DataReviewApprover(props) {
         headerName: "Status",
 
         field: "status",
-
         pinned: "left",
-
         width: 110,
 
         suppressMenu: true,
@@ -1038,6 +982,13 @@ function DataReviewApprover(props) {
               {Status === "Closed" && (
                 <img src={closed} alt="closed" style={{ width: "80px" }} />
               )}
+
+			{Status === "REJECT" && (
+
+              <img src={rejected} alt="rejected" style={{ width: "80px" }} />
+
+            )}
+
             </div>
           );
         },
@@ -1045,25 +996,19 @@ function DataReviewApprover(props) {
 
       {
         headerName: "Sellout value Current Quarter",
-
         field: "SelloutCQ",
-
         editable: false,
-
         minWidth: 150,
-
         wrapHeaderText: true,
-
         aggFunc: "sum",
-
         sortable: true,
-
         suppressMenu: true,
-
         cellStyle: { "border-color": "#e2e2e2" },
-
         valueGetter: (params) => {
           return getTotSellOutCurrQuatrCalc(params);
+        },
+        valueFormatter: (params) => {
+          return getValueFormatter2(params);
         },
       },
 
@@ -1085,58 +1030,45 @@ function DataReviewApprover(props) {
         suppressMenu: true,
 
         cellStyle: { "border-color": "#e2e2e2" },
-
+        valueFormatter: (params) => {
+          return getValueFormatter2(params);
+        },
         valueGetter: (params) => {
           return getTotalYTDSellOutGrowthCalc(params);
         },
       },
 
-      // {
-      //   headerName: "YTD Sellout Growth",
-
-      //   field: "YTD_Growth",
-
-      //   editable: false,
-
-      //   minWidth: 150,
-
-      //   wrapHeaderText: true,
-
-      //   aggFunc: "sum",
-
-      //   sortable: true,
-
-      //   suppressMenu: true,
-
-      //   valueFormatter: (params) => {
-      //     return callThisFunction(params);
-      //    },
-
-      //   valueGetter: (params) => {
-      //     return getYTDSelloutGrowthPercCalc(params);
-      //   },
-
-      //   cellStyle: function (params) {
-      //     if (params.value < "0") {
-      //       return {
-      //         color: "#ff0000",
-
-      //         fontWeight: "bold",
-
-      //         "border-color": "#e2e2e2",
-      //       };
-      //     } else {
-      //       return {
-      //         color: "#009530",
-
-      //         fontWeight: "bold",
-
-      //         "border-color": "#e2e2e2",
-      //       };
-      //     }
-      //   },
-      // },
-
+      {
+        headerName: "YTD Sellout Growth",
+        field: "YTD_Growth",
+        editable: false,
+        minWidth: 150,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        valueFormatter: (params) => {
+          return callThisFunction(params);
+         },
+        valueGetter: (params) => {
+          return getYTDSelloutGrowthPercCalc(params);
+        },
+        cellStyle: function (params) {
+          if (params.value < "0") {
+            return {
+              color: "#ff0000",
+              fontWeight: "bold",
+              "border-color": "#e2e2e2",
+            };
+          } else {
+            return {
+              color: "#009530",
+              fontWeight: "bold",
+              "border-color": "#e2e2e2",
+            };
+          }
+        },
+      },
       {
         headerName: "Ambition Data",
 
@@ -1236,7 +1168,7 @@ function DataReviewApprover(props) {
     let tempTotal = 0;  
 
     if(params.data){
-      const quat = getCurrentQuarter();
+      const quat = getCurrentQuarter2();
       const quatMonths = getQuarterMonths(quat);
       let year = new Date().getFullYear();
       let selectedValueString = year.toString();
@@ -1246,16 +1178,24 @@ function DataReviewApprover(props) {
       );
 
       let customizedQuarterMonths = [];
-      quatMonths.forEach((element) => {
-        customizedQuarterMonths.push(element + choppedOffYear);
-      });
-      
+      console.log("RADIOOOOOO::", radioValue);
+ if(radioValue == 1) {
+  quatMonths.forEach((element) => {
+    customizedQuarterMonths.push(element + choppedOffYear);
+  });
+ } else {
+  quatMonths.forEach((element) => {
+    customizedQuarterMonths.push(element + choppedOffYear+'E');
+  });
+ }
+      console.log('customizedQuarterMonths::', customizedQuarterMonths);
+      console.log('params?.data:::', params?.data);
       customizedQuarterMonths.map((item) => {
         if (item in params?.data) {
-          tempTotal += params?.data[item];
+          tempTotal = tempTotal + params?.data[item];
         }
       });
-
+console.log('tempTotal:::', tempTotal);
       if (isNaN(tempTotal)) {
         tempTotal = "";
       }
@@ -1275,13 +1215,20 @@ function DataReviewApprover(props) {
         selectedValueString.length
       );
       let customizedQuarterMonths = [];
-      monthsOfTheYear.forEach((element) => {
-        customizedQuarterMonths.push(element + choppedOffYear);
-      });
+      if(radioValue == 1) {
+        monthsOfTheYear.forEach((element) => {
+          customizedQuarterMonths.push(element + choppedOffYear);
+        });
+      }else {
+        monthsOfTheYear.forEach((element) => {
+          customizedQuarterMonths.push(element + choppedOffYear+'E');
+        });
+      }
+    
       let tempTotal = 0;
       customizedQuarterMonths.map((item) => {
         if (item in params?.data) {
-          tempTotal += params?.data[item];
+          tempTotal = tempTotal + params?.data[item];
         }
       });
       if (isNaN(tempTotal)) {
@@ -1295,14 +1242,29 @@ function DataReviewApprover(props) {
   };
 
   const callThisFunction = (params) => {
-    return params.value.toFixed(2) + "%";
+    if(params.value) {
+      return params.value.toFixed(2) + "%";
+    } else {
+      return ''
+    }
   };
 
- const getTheMonthsValue = (params, param2, param3) => {
-    console.log('params::', params);
-    console.log('param2:', param2);
-    console.log('param3:', param3);
-  }
+  const getValueFormatter = (params) => {
+    if(params.value) {
+      return params.value.toFixed(2) + "%";
+    } else {
+      return ''
+    }
+  };
+
+  const getValueFormatter2 = (params) => {
+    if(params.value) {
+      return params.value.toFixed(2);
+    } else {
+      return ''
+    }
+  };
+
   const getYTDSelloutGrowthPercCalc = (params) => {
     let previousYearData = params?.data?.PreviousYearData;
 
@@ -1341,23 +1303,17 @@ function DataReviewApprover(props) {
   columnDefs.push(
     {
       headerName: "Sellout value Current Quarter",
-
       field: "SelloutCQ",
-
       editable: false,
-
       minWidth: 150,
-
       wrapHeaderText: true,
-
       aggFunc: "sum",
-
       sortable: true,
-
       suppressMenu: true,
-
       cellStyle: { "border-color": "#e2e2e2" },
-
+      valueFormatter: (params) => {
+        return getValueFormatter2(params);
+      },
       valueGetter: (params) => {
         return getTotSellOutCurrQuatrCalc(params);
       },
@@ -1365,134 +1321,85 @@ function DataReviewApprover(props) {
 
     {
       headerName: "YTD Sellout Value",
-
       field: "YTD",
-
       editable: false,
-
       minWidth: 140,
-
       wrapHeaderText: true,
-
       aggFunc: "sum",
-
       sortable: true,
-
       suppressMenu: true,
-
       cellStyle: { "border-color": "#e2e2e2" },
-
+      valueFormatter: (params) => {
+        return getValueFormatter2(params);
+      },
       valueGetter: (params) => {
         return getTotalYTDSellOutGrowthCalc(params);
       },
     },
-
-    // {
-    //   headerName: "YTD Sellout Growth",
-
-    //   field: "YTD_Growth",
-
-    //   editable: false,
-
-    //   minWidth: 150,
-
-    //   wrapHeaderText: true,
-
-    //   aggFunc: "sum",
-
-    //   sortable: true,
-
-    //   suppressMenu: true,
-
-    //   valueFormatter: (params) => {
-    //     return callThisFunction(params);
-    //    },
-
-    //   valueGetter: (params) => {
-    //     return getYTDSelloutGrowthPercCalc(params);
-    //   },
-
-    //   cellStyle: function (params) {
-    //     if (params.value < "0") {
-    //       return {
-    //         color: "#ff0000",
-
-    //         fontWeight: "bold",
-
-    //         "border-color": "#e2e2e2",
-    //       };
-    //     } else {
-    //       return {
-    //         color: "#009530",
-
-    //         fontWeight: "bold",
-
-    //         "border-color": "#e2e2e2",
-    //       };
-    //     }
-    //   },
-    // },
-
+    {
+      headerName: "YTD Sellout Growth",
+      field: "YTD_Growth",
+      editable: false,
+      minWidth: 150,
+      wrapHeaderText: true,
+      aggFunc: "sum",
+      sortable: true,
+      suppressMenu: true,
+      valueFormatter: (params) => {
+        return callThisFunction(params);
+       },
+      valueGetter: (params) => {
+        return getYTDSelloutGrowthPercCalc(params);
+      },
+      cellStyle: function (params) {
+        if (params.value < "0") {
+          return {
+            color: "#ff0000",
+            fontWeight: "bold",
+            "border-color": "#e2e2e2",
+          };
+        } else {
+          return {
+            color: "#009530",
+            fontWeight: "bold",
+            "border-color": "#e2e2e2",
+          };
+        }
+      },
+    },
     {
       headerName: "Ambition Data",
-
       field: "ambition",
-
       editable: false,
-
       minWidth: 120,
-
       wrapHeaderText: true,
-
       aggFunc: "sum",
-
       sortable: true,
-
       suppressMenu: true,
-
       cellStyle: { "border-color": "#e2e2e2" },
     },
-
     {
       headerName: "System Comments",
-
       field: "systemComments",
-
       editable: false,
-
       wrapHeaderText: true,
-
       minWidth: 140,
-
       aggFunc: "sum",
-
       sortable: true,
-
       suppressMenu: true,
-
       cellStyle: { "border-color": "#e2e2e2" },
     },
-
     {
       headerName: "Editor Comments",
-
       field: "editorComments",
-
       editable: false,
-
       wrapHeaderText: true,
-
       minWidth: 140,
-
       aggFunc: "sum",
-
       sortable: true,
-
       suppressMenu: true,
-
       cellStyle: { "border-color": "#e2e2e2" },
     },
-
     {
       headerName: "Approver Comments",
       field: "approverComments",
@@ -1822,19 +1729,20 @@ function DataReviewApprover(props) {
         }
       });
     } 
-    // else if (e.target.value === "Partner") {
-    //   gridRef.current.api.forEachNode((node) => {
-    //     if (
-    //       node.level === 0 ||
-    //       node.level === 1 ||
-    //       node.level === 2 ||
-    //       node.level === 3
-    //     ) {
-    //       gridRef.current.api.setRowNodeExpanded(node, true);
-    //     }
-    //   });
-    // } 
-    else {
+	/*
+	else if (e.target.value === "Partner") {
+      gridRef.current.api.forEachNode((node) => {
+        if (
+          node.level === 0 ||
+          node.level === 1 ||
+          node.level === 2 ||
+          node.level === 3
+        ) {
+          gridRef.current.api.setRowNodeExpanded(node, true);
+        }
+      });
+    } */
+	else {
       gridRef.current.api.collapseAll();
     }
   }, []);
@@ -1908,9 +1816,7 @@ function DataReviewApprover(props) {
                   }`}
                   onClick={() => {
                     onBtShowYearColumn(reviewData, radioValue);
-                    setTimeout(() => {
-                      onBtShowYearColumn(reviewData, radioValue);
-                    }, 10);
+                
                   }}
                 >
                   Show
@@ -1986,10 +1892,16 @@ function DataReviewApprover(props) {
                   onChange={onExpandCol}
                 >
                   <option>Collapse all</option>
+
                   <option value="Zone">Zone</option>
-                  <option selected value="Country">Country</option>
+
+                  <option selected value="Country">
+                    Country
+                  </option>
+
                   <option value="Model">Model</option>
-                  {/* <option value="Partner">Partner</option> */}
+
+                 // <option value="Partner">Partner</option>
                 </Form.Select>
               </Col>
             </Row>

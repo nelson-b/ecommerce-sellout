@@ -376,6 +376,9 @@ function PartnerComponent(props) {
     }
     if (data.partner_id === "" || data.partner_id == undefined) {
       console.log("Calling create api");
+	  
+
+	  
       let reqData = {
         platform_name: data.platform_name,
         country_code: data.country_code,
@@ -483,6 +486,11 @@ function PartnerComponent(props) {
     } else {
       console.log("Calling update api");
 
+		let statusCustom = data.partner_status;
+		if(userRoleData == roles.editor.toUpperCase() ||userRoleData ==  roles.approve_1.toUpperCase() ||userRoleData == roles.approver_2.toUpperCase()){
+			statusCustom = "PENDING";
+		}
+
       let reqData = {
         partner_id: data.partner_id,
         platform_name: data.platform_name, //
@@ -507,7 +515,7 @@ function PartnerComponent(props) {
         created_date: new Date().toUTCString(),
         modified_by: userEmail,
         last_modified_date: new Date().toUTCString(),
-        status: data.partner_status,
+        status: statusCustom,
         batch_upload_flag: false,
         active_flag: "False",
       };

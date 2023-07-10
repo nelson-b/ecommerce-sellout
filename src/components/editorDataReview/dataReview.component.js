@@ -29,6 +29,8 @@ import dataEuro from "../../data/dataReviewEuro.json";
 import footerTotalReview from "./footerTotalReview";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
+import updated from "../../images/updated.png";
+import rejected from "../../images/rejected.png";
 import Home from "../../images/home-icon.png";
 import { useLocation } from "react-router-dom";
 import { retrieveHistoricalData } from "../../actions/selloutaction";
@@ -59,9 +61,7 @@ function DataReviewComponent(props) {
         usrDetails.role_id === roles.approver_2.toUpperCase() ||
         usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()
       ) {
-        console.log(
-          "data review screen for editor/approve_1/approver_2/supervisor_approv_1_2"
-        );
+      
       } else {
         navigate("/");
       }
@@ -131,8 +131,9 @@ function DataReviewComponent(props) {
     {
       headerName: "Partner Account Name",
       field: "partner_account_name",
-      rowGroup: true,
-      hide: true,
+      //rowGroup: true,
+      //hide: true,
+	  width: 250,
       filter: true,
       pinned: "left",
       suppressSizeToFit: true,
@@ -162,6 +163,10 @@ function DataReviewComponent(props) {
 
             {Status === "Closed" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
+            )}
+			
+			 {Status === "REJECT" && (
+              <img src={rejected} alt="rejected" style={{ width: "80px" }} />
             )}
           </div>
         );
@@ -213,7 +218,6 @@ function DataReviewComponent(props) {
           props
             .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
             .then((data) => {
-              console.log("showMeData from next API", data.data);
               if (data.data.length) {
                 let secondArray = [];
                 secondArray = data?.data;
@@ -249,7 +253,7 @@ function DataReviewComponent(props) {
                   obj.YTD = "";
                   obj.YTD_Growth = "";
                   obj.ambition = "";
-                  obj.approverComments = item.comments;
+				  obj.approverComments = item.comments;
                   obj.partner_id = item.partner_id;
                   obj.year_val = item.year_val;
                   obj.batch_upload_flag = item.batch_upload_flag;
@@ -586,7 +590,6 @@ function DataReviewComponent(props) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
     }
-    console.log("Data review jbjd");
     getQuarterReviewData();
     let todays = new Date();
     let cMonth = todays.getMonth();
@@ -619,40 +622,31 @@ function DataReviewComponent(props) {
 
   const getCMLMValues = (params) => {
     const currentDate = new Date();
-
     const currentMonth = currentDate.getMonth();
-
     let date = new Date(
       currentDate.getFullYear(),
-
       currentDate.getMonth(),
-
       1
     );
 
     const currMonthName = allCalMonths[date.getMonth() - 1];
-
     const lastMonthName = allCalMonths[date.getMonth() - 2];
-
     const year = String(date.getFullYear()).slice(-2);
 
-    const currmonthField = currMonthName + year;
-
-    const lastmonthField = lastMonthName + year;
-
+    let currmonthField = currMonthName + year;
+    let lastmonthField = lastMonthName + year;
+    if (radioValue == 1) {
+      currmonthField = currMonthName + year;
+       lastmonthField = lastMonthName + year;
+    
     if (params.data) {
       var filterCurrMonths = Object.keys(params.data)
-
         .filter((key) => [currmonthField].includes(key))
-
         .reduce((obj, key) => {
           obj[key] = params.data[key];
-
           return obj;
         }, {});
-
       var filterLastMonths = Object.keys(params.data)
-
         .filter((key) => [lastmonthField].includes(key))
 
         .reduce((obj, key) => {
@@ -663,11 +657,36 @@ function DataReviewComponent(props) {
 
       let ret = {
         CurrentMonth: filterCurrMonths[currmonthField],
-
         LastMonth: filterLastMonths[lastmonthField],
       };
-
       return ret;
+    } 
+    } else {
+      currmonthField = currMonthName + year+'E';
+       lastmonthField = lastMonthName + year+'E';
+    
+    if (params.data) {
+      var filterCurrMonths = Object.keys(params.data)
+        .filter((key) => [currmonthField].includes(key))
+        .reduce((obj, key) => {
+          obj[key] = params.data[key];
+          return obj;
+        }, {});
+      var filterLastMonths = Object.keys(params.data)
+        .filter((key) => [lastmonthField].includes(key))
+
+        .reduce((obj, key) => {
+          obj[key] = params.data[key];
+
+          return obj;
+        }, {});
+
+      let ret = {
+        CurrentMonth: filterCurrMonths[currmonthField],
+        LastMonth: filterLastMonths[lastmonthField],
+      };
+      return ret;
+    } 
     }
 
     return undefined;
@@ -731,12 +750,12 @@ function DataReviewComponent(props) {
     return "";
   };
 
+
   const setVarCMvsLMCalcPerc = (params) => {
     let resp = getCMLMValues(params);
-
     if (resp != undefined) {
       if (resp.LastMonth != 0) {
-        return Math.round(
+        return (
           ((resp.CurrentMonth - resp.LastMonth) / resp.LastMonth) * 100
         );
       }
@@ -751,30 +770,60 @@ function DataReviewComponent(props) {
     let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const currMonthName = allCalMonths[date.getMonth() - 1];
     const curryear = String(date.getFullYear()).slice(-2);
-    const currmonthCYField = currMonthName + curryear;
-    const currmonthLYField = currMonthName + (curryear - 1);
-    if (params.data?.PreviousYearData) {
-      var filterCurrMonthCY = Object.keys(params.data)
-        .filter((key) => [currmonthCYField].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = params.data[key];
-          return obj;
-        }, {});
+    let currmonthCYField = currMonthName + curryear;
+    let currmonthLYField = currMonthName + (curryear - 1);
+    if(radioValue == 1) {
+   
 
-      var filterCurrMonthLY = Object.keys(params.data.PreviousYearData)
-        .filter((key) => [currmonthLYField].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = params.data.PreviousYearData[key];
-
-          return obj;
-        }, {});
-
-      let ret = {
-        CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
-        CurrentMonthLY: filterCurrMonthLY[currmonthLYField],
-      };
-      return ret;
+      if (params.data?.PreviousYearData) {
+        var filterCurrMonthCY = Object.keys(params.data)
+          .filter((key) => [currmonthCYField].includes(key))
+          .reduce((obj, key) => {
+            obj[key] = params.data[key];
+            return obj;
+          }, {});
+  
+        var filterCurrMonthLY = Object.keys(params.data.PreviousYearData)
+          .filter((key) => [currmonthLYField].includes(key))
+          .reduce((obj, key) => {
+            obj[key] = params.data.PreviousYearData[key];
+  
+            return obj;
+          }, {});
+  
+        let ret = {
+          CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
+          CurrentMonthLY: filterCurrMonthLY[currmonthLYField],
+        };
+        return ret;
+      }
+    } else {
+      currmonthCYField = currmonthCYField;
+      currmonthLYField = currmonthLYField+'E';
+      if (params.data?.PreviousYearData) {
+        var filterCurrMonthCY = Object.keys(params.data)
+          .filter((key) => [currmonthCYField].includes(key))
+          .reduce((obj, key) => {
+            obj[key] = params.data[key];
+            return obj;
+          }, {});
+  
+        var filterCurrMonthLY = Object.keys(params.data.PreviousYearData)
+          .filter((key) => [currmonthLYField].includes(key))
+          .reduce((obj, key) => {
+            obj[key] = params.data.PreviousYearData[key];
+  
+            return obj;
+          }, {});
+  
+        let ret = {
+          CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
+          CurrentMonthLY: filterCurrMonthLY[currmonthLYField],
+        };
+        return ret;
+      }
     }
+
 
     return undefined;
   };
@@ -793,15 +842,25 @@ function DataReviewComponent(props) {
     let resp = getCMLYValuesWithYear(params);
 
     if (resp != undefined) {
-      if (resp.CurrentMonthLY != 0) {
-        return Math.round(
-          ((resp.CurrentMonthCY - resp.CurrentMonthLY) / resp.CurrentMonthLY) *
-            100
-        );
+      if (resp.CurrentMonthLY != 0 && resp.CurrentMonthLY !=undefined) {
+        if(resp.CurrentMonthCY) {
+          // do nothing
+        } else {
+          resp.CurrentMonthCY = 0
+        }
+        if(resp.CurrentMonthLY) {
+          // do nothing
+        } else {
+          resp.CurrentMonthLY = 0
+        }
+        let aaa = resp.CurrentMonthCY - resp.CurrentMonthLY;
+        let bbb = aaa /resp.CurrentMonthLY;
+        let ccc = bbb * 100;
+        return ccc;        
       }
     }
 
-    return 0;
+    return '';
   };
 
   const getRowStyle = (params) => {
@@ -812,14 +871,9 @@ function DataReviewComponent(props) {
 
   const getTotalYTDSellOutGrowthCalc = (params) => {
     let year = new Date().getFullYear();
-
     let selectedValueString = year.toString();
-
     let choppedOffYear = selectedValueString.slice(
-      2,
-
-      selectedValueString.length
-    );
+      2,selectedValueString.length);
 
     let customizedYearMonths = [];
 
@@ -847,7 +901,19 @@ function DataReviewComponent(props) {
   };
 
   const getValueFormatter = (params) => {
-    return params.value.toFixed(2) + "%";
+    if(params.value) {
+      return params.value.toFixed(2) + "%";
+    } else {
+      return ''
+    }
+  };
+
+  const getValueFormatter2 = (params) => {
+    if(params.value) {
+      return params.value.toFixed(2);
+    } else {
+      return ''
+    }
   };
 
 const yTDSelloutCurrntYear = (params) => {
@@ -868,13 +934,11 @@ const yTDSelloutCurrntYear = (params) => {
         customizedArrayOfMonths.push(monthsOfTheYear[i] + choppedOffYear);
       }
       let tempTotal = 0;
-
       customizedArrayOfMonths.map((item) => {
         if (item in params?.data) {
-          tempTotal += params?.data[item];
+          tempTotal = tempTotal + params?.data[item];
        }
       });
-
       if (isNaN(tempTotal)) {
         tempTotal = "";
       }
@@ -882,19 +946,16 @@ const yTDSelloutCurrntYear = (params) => {
         tempTotal = "";
       }
       return tempTotal;
-
     } else {
       for (let i = 0; i < months; i++) {
         customizedArrayOfMonths.push(monthsOfTheYear[i] + choppedOffYear + "E");
       }
-
       let tempTotal = 0;
       customizedArrayOfMonths.map((item) => {
         if (item in params?.data) {
-          tempTotal += params?.data[item];
+          tempTotal = tempTotal+params?.data[item];
         }
       });
-
       if (isNaN(tempTotal)) {
         tempTotal = "";
       }
@@ -911,39 +972,31 @@ const yTDSelloutCurrntYear = (params) => {
 
   
   const yTDSelloutPreviousYear = (params) => {
-   // console.log('params::', params);
     if (params?.data?.PreviousYearData) {
       let previousData = params?.data?.PreviousYearData;
-      console.log('previousData::', previousData);
     const d = new Date();
     let currentYear = previousData.year_val.toString().slice(2);
-    console.log('currentYear:::', currentYear);
     let previousYear = currentYear - 1;
     let months = d.getMonth(); 
     let total = 0;
     for(let i=0; i< monthsOfTheYear.length; i++) {
       if (radioValue == 1) {
         let key = monthsOfTheYear[i]+currentYear;
-        console.log('key::', key);
         if(previousData[key]) {
-          total = + previousData[key];
+          total = total+ previousData[key];
         }
       
       } else {
         let key = monthsOfTheYear[i]+currentYear+"E";
-        if(previousData[key] == null || previousData[key] == "") {
-          console.log('yes its null');
-          total = +0;
-        } else {
-          total = + previousData[key];
+        if(previousData[key]) {
+          total = total+ previousData[key];
         }
       }
+      
     }
-    console.log('total:::', total);
     if(total == 0) {
       return ''
     } else {
-      
       return total
     }
   } else {
@@ -960,7 +1013,7 @@ const yTDSelloutCurrntYear = (params) => {
     if (previousYearData) {
       let percentageOfGrowth = 0;
 
-      let totalOfCurrentYearGrowth = getTotalYTDSellOutGrowthCalc(params);
+      let totalOfCurrentYearGrowth = yTDSelloutCurrntYear(params);
 
       let yearCustom = previousYearData.year_val;
 
@@ -981,10 +1034,9 @@ const yTDSelloutCurrntYear = (params) => {
 
       customizedYearMonths.map((item) => {
         if (item in previousYearData) {
-          tempTotalPreviousYear += previousYearData[item];
+          tempTotalPreviousYear = tempTotalPreviousYear+ previousYearData[item];
         }
       });
-
       if (tempTotalPreviousYear > 0 && totalOfCurrentYearGrowth > 0) {
         let tempTotalDiff = totalOfCurrentYearGrowth - tempTotalPreviousYear;
 
@@ -1002,6 +1054,11 @@ const yTDSelloutCurrntYear = (params) => {
   };
 
   const getPreviousYearMonthVal = (params, monthsYearPrev) => {
+    if(radioValue == 1) {
+      monthsYearPrev = monthsYearPrev;
+    } else {
+      monthsYearPrev = monthsYearPrev+'E';
+    }
     if (params.data.PreviousYearData) {
       if (monthsYearPrev in params.data.PreviousYearData) {
         return params.data.PreviousYearData[monthsYearPrev];
@@ -1065,7 +1122,6 @@ const yTDSelloutCurrntYear = (params) => {
       ? columnDefs.push(
           {
             headerName: monthHeader,
-
             field: radioValue == 1 ? monthField : monthField + "E",
             editable: false,
 
@@ -1106,6 +1162,9 @@ const yTDSelloutCurrntYear = (params) => {
           valueGetter: (params) => {
             return yTDSelloutCurrntYear(params);
           },
+          valueFormatter: (params) => {
+            return getValueFormatter2(params);
+          },
           cellStyle: { "border-color": "#e2e2e2" },
         },
 
@@ -1121,11 +1180,11 @@ const yTDSelloutCurrntYear = (params) => {
           valueGetter: (params) => {
             return yTDSelloutPreviousYear(params);
           },
+          valueFormatter: (params) => {
+            return getValueFormatter2(params);
+          },
           cellStyle: { "border-color": "#e2e2e2" },
         },
-
-
-
           {
             headerName: "YTD Sellout Growth",
 
@@ -1239,7 +1298,7 @@ const yTDSelloutCurrntYear = (params) => {
             },
 
             valueFormatter: (params) => {
-              return params.value + "%";
+              return getValueFormatter(params);
             },
 
             cellStyle: function (params) {
@@ -1262,23 +1321,14 @@ const yTDSelloutCurrntYear = (params) => {
       : columnDefs.push({
           headerName: monthHeader,
           field: radioValue == 1 ? monthField : monthField + "E",
-
           editable: false,
-
           sortable: true,
-
           filter: "agNumberColumnFilter",
-
           aggFunc: "sum",
-
           singleClickEdit: true,
-
           minWidth: 100,
-
           suppressMenu: true,
-
           valueParser: (params) => Number(params.newValue),
-
           cellStyle: (params) => {
             return setIsEstimated(params, monthField);
           },
@@ -1364,7 +1414,9 @@ const yTDSelloutCurrntYear = (params) => {
           valueGetter: (params) => {
             return setVarCMvsLYCalc(params);
           },
-
+          valueFormatter: (params) => {
+            return getValueFormatter2(params);
+          },
           cellStyle: function (params) {
             if (params.value >= 0) {
               return {
@@ -1384,31 +1436,20 @@ const yTDSelloutCurrntYear = (params) => {
 
         {
           headerName: "var. CM vs LY (%)",
-
           field: "PreVMvsLM",
-
           minWidth: 120,
-
           editable: false,
-
           singleClickEdit: true,
-
           aggFunc: "sum",
-
           filter: "agNumberColumnFilter",
-
           sortable: true,
-
           suppressMenu: true,
-
           valueGetter: (params) => {
             return setVarCMvsLYCalcPerc(params);
           },
-
           valueFormatter: (params) => {
-            return params.value + "%";
+            return getValueFormatter(params);
           },
-
           cellStyle: function (params) {
             if (params.value >= 0) {
               return {
@@ -1458,83 +1499,47 @@ const yTDSelloutCurrntYear = (params) => {
   columnDefs.push(
     {
       headerName: "Ambition Data",
-
       field: "ambition",
-
       editable: false,
-
       singleClickEdit: true,
-
       minWidth: 200,
-
       aggFunc: "sum",
-
       sortable: true,
-
       suppressMenu: true,
-
       cellStyle: { "border-color": "#e2e2e2" },
     },
-
     {
       headerName: "System Comments",
-
       field: "systemComments",
-
       editable: false,
-
       singleClickEdit: true,
-
       minWidth: 200,
-
       aggFunc: "sum",
-
       sortable: true,
-
       suppressMenu: true,
-
       cellStyle: { "border-color": "#e2e2e2" },
     },
-
     {
       headerName: "Editor Comments",
-
       field: "editorComments",
-
       editable: true,
-
       singleClickEdit: true,
-
       minWidth: 200,
-
       aggFunc: "sum",
-
       sortable: true,
-
       suppressMenu: true,
-
       cellStyle: { "border-color": "#e2e2e2" },
-
       cellClassRules: { "cursor-pointer": () => true },
     },
-
     {
       headerName: "Approver Comments",
-
       field: "approverComments",
-
       editable: false,
-
       singleClickEdit: true,
-
       minWidth: 200,
-
       aggFunc: "sum",
-
       sortable: true,
-
       suppressMenu: true,
-
       cellStyle: { "border-color": "#e2e2e2" },
     }
   );
@@ -1563,19 +1568,19 @@ const yTDSelloutCurrntYear = (params) => {
       let monthArray = [];
     let itemYear = String(currentYEar).slice(-2);
 
-    allCalMonths.forEach((element) => {
-      const saveArray =
-        radioValue == 1
-          ? data[0][`${element + itemYear}`]
-          : data[0][`${element + itemYear}E`];
-      if (saveArray > 0) {
-        monthArray.push({
-          month: element.toLowerCase(),
-          sellout_local_currency: saveArray.toString(),
-          trans_type: "",
-        });
-      }
-    });
+	allCalMonths.forEach((monthsEle) => {
+        const saveArray =
+          radioValue == 1
+            ? element[`${monthsEle + itemYear}`]
+            : element[`${monthsEle + itemYear}E`];
+        if (saveArray > 0) {
+          monthArray.push({
+            month: monthsEle.toLowerCase(),
+            sellout_local_currency: saveArray.toString(),
+            trans_type: "",
+          });
+        }
+      });
       let reqData = {
         partner_id: element.partner_id,
         partner_name: element.partner_account_name,

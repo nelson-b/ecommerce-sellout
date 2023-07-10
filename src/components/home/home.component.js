@@ -469,7 +469,7 @@ function Home(props) {
                 ""
               )}
 
-              {props.role === "superApproverUser" ? (
+              {props.role === "supervisor_approv_1_2" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"

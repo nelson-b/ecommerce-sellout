@@ -13,6 +13,8 @@ import MyMenu from "../menu/menu.component.js";
 import "ag-grid-enterprise";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
+import updated from "../../images/updated.png";
+import rejected from "../../images/rejected.png";
 import Home from "../../images/home-icon.png";
 import AlertModal from "../modal/alertModel";
 import { useLocation } from "react-router-dom";
@@ -424,6 +426,10 @@ function DataInputComponent(props) {
             {Status === "ClOSED" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )}
+			{Status === "REJECT" && (
+              <img src={rejected} alt="rejected" style={{ width: "80px" }} />
+            )}
+			
           </div>
         );
       },

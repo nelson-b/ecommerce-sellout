@@ -866,7 +866,9 @@ function SaveUser(props) {
                     name="userrole"
                     title="User Role"
                     value={form.userrole} // staticData
-                    isDisabled={props.module === "Update"}
+					isDisabled={
+                      props.module === "Update" && userRoleData !== roles.admin.toUpperCase()
+                    }
                     options={staticData.filter(
                       (data) => data.category === "role_id"
                     )}

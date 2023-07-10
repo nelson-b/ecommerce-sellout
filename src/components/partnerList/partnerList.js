@@ -10,6 +10,8 @@ import { AgGridReact } from "ag-grid-react";
 import active from "../../images/active.png";
 import closed from "../../images/closed.png";
 import Pending from "../../images/pending.png";
+import updated from "../../images/updated.png";
+import rejected from "../../images/rejected.png";
 import partnerEdit from "../../images/edit-icon.png";
 import Home from "../../images/home-icon.png";
 import "../partnerList/partnerList.css";
@@ -168,9 +170,13 @@ function PartnerList(props) {
             {Status === "CLOSED" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )}
-            {/* {Status === "Pending" && (
-              <img src={Pending} alt="Pending" style={{ width: "80px" }} />
-            )} */}
+           {
+			   Status === "REJECT" && (
+
+              <img src={rejected} alt="rejected" style={{ width: "80px" }} />
+
+            )
+			}
           </div>
         );
       },
@@ -370,7 +376,7 @@ function PartnerList(props) {
       .then((data) => {
         previousAPIData = data?.data;
         let tempRole = usrDetails.role_id;
-        setRowData(data.data.filter((e) => e.status == "ACTIVE"));
+        setRowData(data.data.filter((e) => e.status == "ACTIVE" || "REJECT"));
           
         if(usrDetails.role_id == roles.supervisor.toUpperCase()) {
           tempRole = 'SUPERVISOR'
