@@ -3,7 +3,8 @@ import upArrow from "./../../images/upArrow.png";
 import downArrow from "./../../images/downArrow.png";
 import calender from "./../../images/calender.png";
 
-function PerformanceOverview() {
+function PerformanceOverview({ selloutAccuracy }) {
+
   return (
     <Container fluid>
       <Row>
@@ -35,7 +36,7 @@ function PerformanceOverview() {
                 <Card.Title className="card-header">
                   Sell out Accuracy
                 </Card.Title>
-                <Card.Text className="card-body-header">82%
+                <Card.Text className="card-body-header"> {selloutAccuracy.sellout_accuracy}
                 <img src={downArrow} alt="Arrow" style={{ height: "20px",width: "20px", margin: "10px 0px 0px 7px" }} />
                 </Card.Text>
               </Card.Body>
@@ -49,11 +50,11 @@ function PerformanceOverview() {
                 <Card.Body>
                 <Card.Title></Card.Title>
                 <Card.Text>
-                  <Row className="number-header">2<Row className="task-header">request pending for Approval</Row></Row>
+                  <Row className="number-header">{selloutAccuracy.total_partners_pending_approval}<Row className="task-header">request pending for Approval</Row></Row>
                 </Card.Text>
 
                 <Card.Text className="task-header">
-                <Row className="number-header">1<Row className="task-header">request needs additional information</Row></Row>
+                <Row className="number-header">{selloutAccuracy.total_partners_rejected}<Row className="task-header">request needs additional information</Row></Row>
                 </Card.Text>
               </Card.Body>
               </Col>

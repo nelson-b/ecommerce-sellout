@@ -45,8 +45,10 @@ function DataInputComponent(props) {
       setUserEmail(usrDetails.email_id);
       setuserRoleData(usrDetails.role_id);
 
-      if (usrDetails.role_id === roles.editor.toUpperCase() ||
-          usrDetails.role_id === roles.backup_editor.toUpperCase()) {
+      if (
+        usrDetails.role_id === roles.editor.toUpperCase() ||
+        usrDetails.role_id === roles.backup_editor.toUpperCase()
+      ) {
         console.log("input screen for editor role");
       } else {
         navigate("/");
@@ -63,17 +65,17 @@ function DataInputComponent(props) {
   const location = useLocation();
   const userRole = new URLSearchParams(location.search).get("role");
 
-	const handleShowModal = () => {
-		setShowModal(true);
-	}
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
 
-	const handleCloseModal = () => {
-		setShowModal(false);
-	}
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
-	const handleConfirmModal = () => {
-		handleNavigation(userRole);
-	}
+  const handleConfirmModal = () => {
+    handleNavigation(userRole);
+  };
 
   const monthsOfTheYear = [
     "Jan",
@@ -177,20 +179,16 @@ function DataInputComponent(props) {
   };
 
   const postData = useCallback(() => {
-	  
-	const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
     //if user not login then redirect to login page
 
     if (usrDetails) {
-
       setUserEmail(usrDetails.email_id);
 
       setuserRoleData(usrDetails.role_id);
+    }
 
-    }  
-	  
-	  
     setShowShouldUpdModal(false);
 
     let payload = [];
@@ -212,7 +210,7 @@ function DataInputComponent(props) {
           amount = 0;
         }
 
-        if (rowNode.data[`${element}_Amount`] > 0) {
+        if (rowNode.data[`${element}_Amount`] >= 0) {
           monthArray.push({
             month: element.toLowerCase(),
             sellout_local_currency: String(amount),
@@ -295,7 +293,9 @@ function DataInputComponent(props) {
       cellClass: "no-border",
 
       editable: false,
-      minWidth: 70, suppressMenu: true, suppressSizeToFit: true, width: 70,
+
+	  minWidth: 70, suppressMenu: true, suppressSizeToFit: true, width: 70,
+	  
     },
 
     {
@@ -335,10 +335,11 @@ function DataInputComponent(props) {
 
       pinned: "left",
 
+	  minWidth: 180, suppressMenu: true, suppressSizeToFit: true, width: 180,
+
       suppressSizeToFit: true,
 
       editable: false,
-      minWidth: 180, suppressMenu: true, suppressSizeToFit: true, width: 180,
     },
 
     {
@@ -406,6 +407,7 @@ function DataInputComponent(props) {
 
       cellRenderer: (params) => {
         const Status = params.value;
+
         return (
           <div>
             {Status === "ACTIVE" && (
@@ -414,8 +416,11 @@ function DataInputComponent(props) {
             {Status === "ClOSED" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )}
-			      {Status === "REJECT" && (
+            {Status === "REJECT" && (
               <img src={rejected} alt="rejected" style={{ width: "80px" }} />
+            )}
+            {Status === "EDITED" && (
+              <img src={updated} alt="updated" style={{ width: "80px" }} />
             )}
           </div>
         );
@@ -435,7 +440,7 @@ function DataInputComponent(props) {
 
       editable: true,
 
-      minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
+	    minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
 
       suppressSizeToFit: true,
 
@@ -466,7 +471,7 @@ function DataInputComponent(props) {
 
     if (isEstimated == true) return { backgroundColor: "#EEB265" };
 
-    return { backgroundColor: "white", borderColor: "#e2e2e2"};
+    return { backgroundColor: "white", borderColor: "#e2e2e2" };
   };
 
   const currentDate = new Date();
@@ -707,7 +712,7 @@ function DataInputComponent(props) {
 
     if (filterData.length > 0 && filterData != undefined) {
       return filterData[0].sellout_local_currency == 0
-        ? ""
+        ? 0
         : filterData[0].sellout_local_currency;
     } else {
       return "";
@@ -727,17 +732,15 @@ function DataInputComponent(props) {
   };
 
   const formatGetPayload = useCallback((data, isManualInput) => {
-	  
-	const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
     //if user not login then redirect to login page
 
     if (usrDetails) {
-
       setUserEmail(usrDetails.email_id);
 
       setuserRoleData(usrDetails.role_id);
-	}
+    }
     console.log("formatGetPayload::", data);
     let respPayload = [];
 
@@ -858,17 +861,17 @@ function DataInputComponent(props) {
             });
         } else {
           props
-          .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
-          .then((data) => {
-            console.log("showMeData from next API", data.data);
-            let secondArray = [];
-            secondArray = data?.data;      
-            previousAPIData = previousAPIData.concat(secondArray);
-            setRowData(formatGetPayload(previousAPIData, true));
-          })
-          .catch((e) => {
-            console.log("Data Input", e);
-          });
+            .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
+            .then((data) => {
+              console.log("showMeData from next API", data.data);
+              let secondArray = [];
+              secondArray = data?.data;
+              previousAPIData = previousAPIData.concat(secondArray);
+              setRowData(formatGetPayload(previousAPIData, true));
+            })
+            .catch((e) => {
+              console.log("Data Input", e);
+            });
         }
       })
       .catch((e) => {
@@ -1027,29 +1030,30 @@ function DataInputComponent(props) {
               body={successmsg}
             />
           </Col>
- 
-		<Col>
+
+          <Col>
             <Button
               className="btn-upload save-header"
               onClick={
                 handleShowModal
                 // handleNavigation(userRole);
               }
-            > Next
-
+            >
+              {" "}
+              Next
             </Button>
 
             <CancelMoodal
               show={showModal}
               handleClose={handleCloseModal}
               handleConfirm={handleConfirmModal}
-              body={"Make sure that values are saved, before navigating to the next page"}
+              body={
+                "Make sure that values are saved, before navigating to the next page"
+              }
               button1={"Cancel"}
               button2={"Confirm"}
             />
           </Col>
- 
- 
         </Row>
       </Container>
     </>

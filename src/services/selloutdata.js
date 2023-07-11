@@ -11,6 +11,12 @@ class SellOutDataService {
     return http.get(isSuperApproverUser);
   }
 
+  getDashboardData(mail, role, year, month) {
+    return http.get(
+      `/ecomm-sellout-dev-lamda-createpartner/get-dashboard?email_id=${mail}&role_id=${role}&year=${year}&month=${month}`
+    );
+  }
+
   getAll() {
     return http.get("/getAll");
   }

@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState, useRef, useEffect } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -41,7 +47,7 @@ import { connect } from "react-redux";
 
 import {
   retrievePartnerByRole,
-  updatePartner
+  updatePartner,
 } from "../../actions/partneraction";
 
 function PartnerRequestList(props) {
@@ -50,24 +56,27 @@ function PartnerRequestList(props) {
   const navigate = useNavigate();
 
   //sso login func
-  const [userEmail, setUserEmail] = useState('');
-  const [userRole, setuserRole] = useState('');
-                
+  const [userEmail, setUserEmail] = useState("");
+  const [userRole, setuserRole] = useState("");
+
   useEffect(() => {
-      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-      if(usrDetails){
-        setUserEmail(usrDetails.email_id);
-        setuserRole(usrDetails.role_id);
-                  
-        if(usrDetails.role_id === roles.admin.toUpperCase() ||
-          usrDetails.role_id === roles.supervisor.toUpperCase() ||
-          usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()
-        ) {
-          console.log('Partner request page for role admin/supervisor/supervisor_approv_1_2');
-        } else{
-          navigate("/");
-        }
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+
+      if (
+        usrDetails.role_id === roles.admin.toUpperCase() ||
+        usrDetails.role_id === roles.supervisor.toUpperCase() ||
+        usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()
+      ) {
+        console.log(
+          "Partner request page for role admin/supervisor/supervisor_approv_1_2"
+        );
+      } else {
+        navigate("/");
       }
+    }
   }, []);
   //------------------//
 
@@ -135,7 +144,10 @@ function PartnerRequestList(props) {
 
         return (
           <div>
-            {Status.toUpperCase() === "PENDING" && (
+            {Status === "PENDING" && (
+              <img src={Pending} alt="Pending" style={{ width: "80px" }} />
+            )}
+            {Status === "EDITED" && (
               <img src={Pending} alt="Pending" style={{ width: "80px" }} />
             )}
           </div>
@@ -515,7 +527,7 @@ function PartnerRequestList(props) {
       e2_playbook_type: data.e2_playbook_type,
       bopp_type: data.bopp_type,
       gtm_type: data.gtm_type,
-      created_by: data.created_by?data.created_by:userEmail,
+      created_by: data.created_by ? data.created_by : userEmail,
       created_date: new Date().toUTCString(),
       modified_by: userEmail,
       last_modified_date: new Date().toUTCString(),
@@ -524,7 +536,7 @@ function PartnerRequestList(props) {
       active_flag: "False",
     };
     return formatData;
-  }
+  };
 
   const handleReject = () => {
     const selectedRows = rowsSelectedForUpdation;
@@ -543,26 +555,23 @@ function PartnerRequestList(props) {
             props
               .retrievePartnerByRole(
                 userRole == roles.admin.toUpperCase() ||
-                userRole == roles.supervisor.toUpperCase() ||
-                userRole == roles.supervisor_approv_1_2.toUpperCase()
-                ? ""
-                : filterData.userMail,
+                  userRole == roles.supervisor.toUpperCase() ||
+                  userRole == roles.supervisor_approv_1_2.toUpperCase()
+                  ? ""
+                  : filterData.userMail,
 
                 userRole == roles.admin.toUpperCase() ||
-                userRole == roles.supervisor.toUpperCase() ||
-                userRole == roles.supervisor_approv_1_2.toUpperCase()
-                ? ""
-                : filterData.role
+                  userRole == roles.supervisor.toUpperCase() ||
+                  userRole == roles.supervisor_approv_1_2.toUpperCase()
+                  ? ""
+                  : filterData.role
               )
               .then((data) => {
-                setRowData(
-                  data.data.filter((e) => e.status.toUpperCase() == status.pending)
-                );
+                setRowData(data.data.filter((e) => e.status == "PENDING" || e.status == "EDITED"));
               })
               .catch((e) => {
                 console.log(e);
-                setRowData([])
-
+                setRowData([]);
               });
           })
 
@@ -605,11 +614,13 @@ function PartnerRequestList(props) {
 
               .then((data) => {
                 setRowData(
-                  data.data.filter((e) => e.status.toUpperCase() == status.pending)
+                  data.data.filter(
+                    (e) => e.status.toUpperCase() == status.pending
+                  )
                 );
               })
               .catch((e) => {
-                setRowData([])
+                setRowData([]);
 
                 console.log(e);
               });
@@ -624,10 +635,10 @@ function PartnerRequestList(props) {
 
   const onGridReady = useCallback((params) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-      if(usrDetails){
-        setUserEmail(usrDetails.email_id);
-        setuserRole(usrDetails.role_id);
-      }
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
     let filterData = {
       role: usrDetails.role_id,
       userMail: usrDetails.email_id,
@@ -648,14 +659,12 @@ function PartnerRequestList(props) {
       )
 
       .then((data) => {
-        setRowData(
-          data.data.filter((e) => e.status.toUpperCase() == "PENDING")
-        );
+        setRowData(data.data.filter((e) => e.status == "PENDING" || e.status == "EDITED"));
       })
 
       .catch((e) => {
         console.log(e);
-        setRowData([])
+        setRowData([]);
       });
   }, []);
 
@@ -783,5 +792,5 @@ function PartnerRequestList(props) {
 
 export default connect(null, {
   retrievePartnerByRole,
-  updatePartner
+  updatePartner,
 })(PartnerRequestList);

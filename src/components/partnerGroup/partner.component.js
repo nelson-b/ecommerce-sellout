@@ -46,16 +46,16 @@ function PartnerComponent(props) {
   const navigate = useNavigate();
 
   //sso login func
-  const [userEmail, setUserEmail] = useState('');
-  const [userRoleData, setUserRoleData] = useState('');
-                
+  const [userEmail, setUserEmail] = useState("");
+  const [userRoleData, setUserRoleData] = useState("");
+
   useEffect(() => {
-      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-      //if user not login then redirect to login page
-      if(usrDetails){
-        setUserEmail(usrDetails.email_id);
-        setUserRoleData(usrDetails.role_id);
-      }
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setUserRoleData(usrDetails.role_id);
+    }
   }, []);
   //------------------//
 
@@ -97,7 +97,6 @@ function PartnerComponent(props) {
   const {
     register,
     handleSubmit,
-    clearErrors,
     setValue,
     formState: { errors },
   } = useForm({
@@ -108,11 +107,11 @@ function PartnerComponent(props) {
 
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-      //if user not login then redirect to login page
-      if(usrDetails){
-        setUserEmail(usrDetails.email_id);
-        setUserRoleData(usrDetails.role_id);
-      }
+    //if user not login then redirect to login page
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setUserRoleData(usrDetails.role_id);
+    }
 
     //country api
     props
@@ -343,10 +342,10 @@ function PartnerComponent(props) {
       .createUserPartnerRoleConfig(reqUserPartConfData)
       .then((data) => {
         console.log("createUserPartnerRoleConfig", data);
-        if(isCreateScreen) {
-          setSuccessRet(['Partner has been created successfully'])
+        if (isCreateScreen) {
+          setSuccessRet(["Partner has been created successfully"]);
         } else {
-          setSuccessRet(['Partner has been updated successfully'])
+          setSuccessRet(["Partner has been updated successfully"]);
         }
         setShowSuccessModal(true);
         setShowErrorModal(false);
@@ -376,9 +375,7 @@ function PartnerComponent(props) {
     }
     if (data.partner_id === "" || data.partner_id == undefined) {
       console.log("Calling create api");
-	  
 
-	  
       let reqData = {
         platform_name: data.platform_name,
         country_code: data.country_code,
@@ -466,7 +463,7 @@ function PartnerComponent(props) {
                       console.log(e);
                     });
                 } else {
-                  setSuccessRet(['Partner has been created successfully'])
+                  setSuccessRet(["Partner has been created successfully"]);
                   setShowSuccessModal(true);
                   setShowErrorModal(false);
                   document.getElementById("partner-form").reset();
@@ -484,13 +481,14 @@ function PartnerComponent(props) {
           console.log(e);
         });
     } else {
-      console.log("Calling update api");
-
-		let statusCustom = data.partner_status;
-		if(userRoleData == roles.editor.toUpperCase() ||userRoleData ==  roles.approve_1.toUpperCase() ||userRoleData == roles.approver_2.toUpperCase()){
-			statusCustom = "PENDING";
-		}
-
+      let statusCustom = data.partner_status;
+      if (
+        userRoleData == roles.editor.toUpperCase() ||
+        userRoleData == roles.approve_1.toUpperCase() ||
+        userRoleData == roles.approver_2.toUpperCase()
+      ) {
+        statusCustom = "EDITED";
+      }
       let reqData = {
         partner_id: data.partner_id,
         platform_name: data.platform_name, //
@@ -554,7 +552,7 @@ function PartnerComponent(props) {
           ) {
             saveUserPartnerConfigDetails(partnerId, formData, false);
           } else {
-            setSuccessRet(['Partner has been updated successfully'])
+            setSuccessRet(["Partner has been updated successfully"]);
             setShowSuccessModal(true);
             setShowErrorModal(false);
           }
@@ -579,10 +577,6 @@ function PartnerComponent(props) {
     navigate(`/partner/list?role=${userRoleData}`);
   };
 
-  const updateForm = useCallback((e) => {
-    console.log("updateForm", e);
-    console.log("updateForm", partnerData);
-  }, []);
 
   return (
     <Container fluid>
@@ -687,11 +681,7 @@ function PartnerComponent(props) {
                         defaultValue={partnerData.platform_name}
                         {...(props.module === "Create" && {
                           ...register("platform_name", {
-                            required: "Platform name is required",
-                            pattern: {
-                              value: /^[a-zA-Z ]*$/i,
-                              message: "Platform name can have only alphabets",
-                            },
+                            required: "Platform name is required"
                           }),
                         })}
                       />
@@ -808,11 +798,7 @@ function PartnerComponent(props) {
                         defaultValue={partnerData.reseller_name}
                         type="text"
                         {...register("reseller_name", {
-                          required: "Reseller name is required",
-                          pattern: {
-                            value: /^[a-zA-Z ]*$/i,
-                            message: "Reseller name can have only alphabets",
-                          },
+                          required: "Reseller name is required"
                         })}
                       />
                       {errors.reseller_name && (
@@ -1365,7 +1351,8 @@ function PartnerComponent(props) {
                         {errors.editor &&
                           (userRoleData == roles.admin.toUpperCase() ||
                             userRoleData == roles.supervisor.toUpperCase() ||
-                            userRoleData == roles.supervisor_approv_1_2.toUpperCase()) && (
+                            userRoleData ==
+                              roles.supervisor_approv_1_2.toUpperCase()) && (
                             <Form.Text className="text-danger">
                               {errors.editor.message}
                             </Form.Text>
@@ -1405,7 +1392,8 @@ function PartnerComponent(props) {
                         {errors.backupEditor &&
                           (userRoleData == roles.admin.toUpperCase() ||
                             userRoleData == roles.supervisor.toUpperCase() ||
-                            userRoleData == roles.supervisor_approv_1_2.toUpperCase()) && (
+                            userRoleData ==
+                              roles.supervisor_approv_1_2.toUpperCase()) && (
                             <Form.Text className="text-danger">
                               {errors.backupEditor.message}
                             </Form.Text>
@@ -1444,7 +1432,8 @@ function PartnerComponent(props) {
                         {errors.approver1 &&
                           (userRoleData == roles.admin.toUpperCase() ||
                             userRoleData == roles.supervisor.toUpperCase() ||
-                            userRoleData == roles.supervisor_approv_1_2.toUpperCase()) && (
+                            userRoleData ==
+                              roles.supervisor_approv_1_2.toUpperCase()) && (
                             <Form.Text className="text-danger">
                               {errors.approver1.message}
                             </Form.Text>
@@ -1483,7 +1472,8 @@ function PartnerComponent(props) {
                         {errors.approver2 &&
                           (userRoleData == roles.admin.toUpperCase() ||
                             userRoleData == roles.supervisor.toUpperCase() ||
-                            userRoleData == roles.supervisor_approv_1_2.toUpperCase()) && (
+                            userRoleData ==
+                              roles.supervisor_approv_1_2.toUpperCase()) && (
                             <Form.Text className="text-danger">
                               {errors.approver2.message}
                             </Form.Text>
@@ -1496,14 +1486,26 @@ function PartnerComponent(props) {
             )}
             <Row className="mb-3" style={{ float: "right", marginTop: "10px" }}>
               <Col xs="auto">
-                <Button
-                  className="btn-upload cancel-header"
-                  onClick={() => {
-                    handlePartnerCancel(userRoleData);
-                  }}
-                >
-                  Cancel
-                </Button>
+                {props.module === "Create" && (
+                  <Button
+                    className="btn-upload cancel-header"
+                    onClick={() => {
+                      handlePartnerCancel(userRoleData);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                )}
+                {props.module === "Update" && (
+                  <Button
+                    className="btn-upload cancel-header"
+                    onClick={() => {
+                      handlePartnerCancel(userRoleData);
+                    }}
+                  >
+                    Go Back
+                  </Button>
+                )}
               </Col>
               <Col xs="auto">
                 <Button className="btn-upload save-header" type="submit">

@@ -161,13 +161,12 @@ function DataReviewApprover(props) {
       headerName: "Partner Account Name",
       field: "partner_account_name",
       //rowGroup: true,
-	  
-	  
-	  checkboxSelection: (params) => {
-        if(params.data) {
-          return true
+
+      checkboxSelection: (params) => {
+        if (params.data) {
+          return true;
         } else {
-          return false
+          return false;
         }
       },
 
@@ -180,7 +179,7 @@ function DataReviewApprover(props) {
       suppressSizeToFit: true,
 
       editable: false,
-      minWidth: 180, suppressMenu: true, suppressSizeToFit: true, width: 180,
+	  minWidth: 180, suppressMenu: true, suppressSizeToFit: true, width: 180,
     },
 
     {
@@ -219,9 +218,12 @@ function DataReviewApprover(props) {
             {Status === "Closed" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )}
-			
-			{Status === "REJECT" && (
+
+            {Status === "REJECT" && (
               <img src={rejected} alt="rejected" style={{ width: "80px" }} />
+            )}
+            {Status === "EDITED" && (
+              <img src={updated} alt="updated" style={{ width: "80px" }} />
             )}
           </div>
         );
@@ -240,16 +242,16 @@ function DataReviewApprover(props) {
     let dateSample = new Date().getMonth();
     let currentQuarter = 1;
     if (dateSample <= 3) {
-      currentQuarter = 'Q1';
+      currentQuarter = "Q1";
     } else if (dateSample <= 6 && dateSample > 3) {
-      currentQuarter = 'Q2';
+      currentQuarter = "Q2";
     } else if (dateSample <= 9 && dateSample > 6) {
-      currentQuarter = 'Q3';
+      currentQuarter = "Q3";
     } else {
-      currentQuarter = 'Q4';
+      currentQuarter = "Q4";
     }
-    return currentQuarter
-  }
+    return currentQuarter;
+  };
 
   const getQuarterMonths = (quarter) => {
     const quarters = {
@@ -347,7 +349,7 @@ function DataReviewApprover(props) {
                 obj["Jan" + itemYear + "E"] = each.sellout;
               }
             });
-  
+
             final_arr.push(obj);
           });
           let preYear = yearCurrent - 1;
@@ -440,53 +442,57 @@ function DataReviewApprover(props) {
           obj.approval_status = item.approval_status;
           obj.batch_upload_flag = item.batch_upload_flag;
           item.months.map((each) => {
+            let amountRounded = String(each.sellout_local_currency);
+            let floatedAmount = parseFloat(amountRounded).toFixed(2);
+            let amountRoundedEuro = String(each.sellout);
+            let floatedAmountEuro = parseFloat(amountRoundedEuro).toFixed(2);
             if (each.month_val === "jan") {
-              obj["Jan" + itemYear] = each.sellout_local_currency;
-              obj["Jan" + itemYear + "E"] = each.sellout;
+              obj["Jan" + itemYear] = floatedAmount;
+              obj["Jan" + itemYear + "E"] = floatedAmountEuro;
             }
             if (each.month_val === "feb") {
-              obj["Feb" + itemYear] = each.sellout_local_currency;
-              obj["Feb" + itemYear + "E"] = each.sellout;
+              obj["Feb" + itemYear] = floatedAmount;
+              obj["Feb" + itemYear + "E"] = floatedAmountEuro;
             }
             if (each.month_val === "mar") {
-              obj["Mar" + itemYear] = each.sellout_local_currency;
-              obj["Mar" + itemYear + "E"] = each.sellout;
+              obj["Mar" + itemYear] = floatedAmount;
+              obj["Mar" + itemYear + "E"] = floatedAmountEuro;
             }
             if (each.month_val === "apr") {
-              obj["Apr" + itemYear] = each.sellout_local_currency;
-              obj["Apr" + itemYear + "E"] = each.sellout;
+              obj["Apr" + itemYear] = floatedAmount;
+              obj["Apr" + itemYear + "E"] = floatedAmountEuro;
             }
             if (each.month_val === "may") {
-              obj["May" + itemYear] = each.sellout_local_currency;
-              obj["May" + itemYear + "E"] = each.sellout;
+              obj["May" + itemYear] = floatedAmount;
+              obj["May" + itemYear + "E"] = floatedAmountEuro;
             }
             if (each.month_val === "jun") {
-              obj["Jun" + itemYear] = each.sellout_local_currency;
-              obj["Jun" + itemYear + "E"] = each.sellout;
+              obj["Jun" + itemYear] = floatedAmount;
+              obj["Jun" + itemYear + "E"] = floatedAmountEuro;
             }
             if (each.month_val === "jul") {
-              obj["Jul" + itemYear] = each.sellout_local_currency;
-              obj["Jul" + itemYear + "E"] = each.sellout;
+              obj["Jul" + itemYear] = floatedAmount;
+              obj["Jul" + itemYear + "E"] = floatedAmountEuro;
             }
             if (each.month_val === "aug") {
-              obj["Aug" + itemYear] = each.sellout_local_currency;
-              obj["Aug" + itemYear + "E"] = each.sellout;
+              obj["Aug" + itemYear] = floatedAmount;
+              obj["Aug" + itemYear + "E"] = floatedAmountEuro;
             }
             if (each.month_val === "sep") {
-              obj["Sep" + itemYear] = each.sellout_local_currency;
-              obj["Sep" + itemYear + "E"] = each.sellout;
+              obj["Sep" + itemYear] = floatedAmount;
+              obj["Sep" + itemYear + "E"] = floatedAmountEuro;
             }
             if (each.month_val === "oct") {
-              obj["Oct" + itemYear] = each.sellout_local_currency;
-              obj["Oct" + itemYear + "E"] = each.sellout;
+              obj["Oct" + itemYear] = floatedAmount;
+              obj["Oct" + itemYear + "E"] = floatedAmountEuro;
             }
             if (each.month_val === "nov") {
-              obj["Nov" + itemYear] = each.sellout_local_currency;
-              obj["Nov" + itemYear + "E"] = each.sellout;
+              obj["Nov" + itemYear] = floatedAmount;
+              obj["Nov" + itemYear + "E"] = floatedAmountEuro;
             }
             if (each.month_val === "dec") {
-              obj["Dec" + itemYear] = each.sellout_local_currency;
-              obj["Jan" + itemYear + "E"] = each.sellout;
+              obj["Dec" + itemYear] = floatedAmount;
+              obj["Jan" + itemYear + "E"] = floatedAmountEuro;
             }
           });
 
@@ -637,14 +643,15 @@ function DataReviewApprover(props) {
               {Status === "ACTIVE" && (
                 <img src={active} alt="active" style={{ width: "80px" }} />
               )}
-
               {Status === "Closed" && (
                 <img src={closed} alt="closed" style={{ width: "80px" }} />
               )}
-			  
-			 {Status === "REJECT" && (
-              <img src={rejected} alt="rejected" style={{ width: "80px" }} />
-            )}			  
+              {Status === "REJECT" && (
+                <img src={rejected} alt="rejected" style={{ width: "80px" }} />
+              )}
+              {Status === "EDITED" && (
+                <img src={updated} alt="updated" style={{ width: "80px" }} />
+              )}
             </div>
           );
         },
@@ -673,6 +680,9 @@ function DataReviewApprover(props) {
         columnGroupShow: "open",
 
         cellStyle: { "border-color": "#e2e2e2" },
+        valueFormatter: (params) => {
+          return getValueFormatter2(params);
+        },
       },
 
       {
@@ -698,6 +708,9 @@ function DataReviewApprover(props) {
         columnGroupShow: "open",
 
         cellStyle: { "border-color": "#e2e2e2" },
+        valueFormatter: (params) => {
+          return getValueFormatter2(params);
+        },
       },
 
       {
@@ -723,7 +736,9 @@ function DataReviewApprover(props) {
         columnGroupShow: "open",
 
         cellStyle: { "border-color": "#e2e2e2" },
-     
+        valueFormatter: (params) => {
+          return getValueFormatter2(params);
+        },
       },
 
       {
@@ -761,6 +776,23 @@ function DataReviewApprover(props) {
           return getTotalYTDSellOutGrowthCalc(params);
         },
       },
+      {
+        headerName: "YTD Sellout LY",
+        field: "YTD_Growth",
+        editable: false,
+        minWidth: 150,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        valueGetter: (params) => {
+          return yTDSelloutPreviousYear(params);
+        },
+        valueFormatter: (params) => {
+          return getValueFormatter2(params);
+        },
+        cellStyle: { "border-color": "#e2e2e2" },
+      },
 
       {
         headerName: "YTD Sellout Growth",
@@ -773,7 +805,7 @@ function DataReviewApprover(props) {
         suppressMenu: true,
         valueFormatter: (params) => {
           return callThisFunction(params);
-         },
+        },
         valueGetter: (params) => {
           return getYTDSelloutGrowthPercCalc(params);
         },
@@ -979,17 +1011,15 @@ function DataReviewApprover(props) {
               {Status === "ACTIVE" && (
                 <img src={active} alt="active" style={{ width: "80px" }} />
               )}
-
               {Status === "Closed" && (
                 <img src={closed} alt="closed" style={{ width: "80px" }} />
               )}
-
-			{Status === "REJECT" && (
-
-              <img src={rejected} alt="rejected" style={{ width: "80px" }} />
-
-            )}
-
+              {Status === "REJECT" && (
+                <img src={rejected} alt="rejected" style={{ width: "80px" }} />
+              )}
+              {Status === "EDITED" && (
+                <img src={updated} alt="updated" style={{ width: "80px" }} />
+              )}
             </div>
           );
         },
@@ -1038,6 +1068,23 @@ function DataReviewApprover(props) {
           return getTotalYTDSellOutGrowthCalc(params);
         },
       },
+      {
+        headerName: "YTD Sellout LY",
+        field: "YTD_Growth",
+        editable: false,
+        minWidth: 150,
+        wrapHeaderText: true,
+        aggFunc: "sum",
+        sortable: true,
+        suppressMenu: true,
+        valueGetter: (params) => {
+          return yTDSelloutPreviousYear(params);
+        },
+        valueFormatter: (params) => {
+          return getValueFormatter2(params);
+        },
+        cellStyle: { "border-color": "#e2e2e2" },
+      },
 
       {
         headerName: "YTD Sellout Growth",
@@ -1050,7 +1097,7 @@ function DataReviewApprover(props) {
         suppressMenu: true,
         valueFormatter: (params) => {
           return callThisFunction(params);
-         },
+        },
         valueGetter: (params) => {
           return getYTDSelloutGrowthPercCalc(params);
         },
@@ -1166,9 +1213,9 @@ function DataReviewApprover(props) {
   };
 
   const getTotSellOutCurrQuatrCalc = (params) => {
-    let tempTotal = 0;  
+    let tempTotal = 0;
 
-    if(params.data){
+    if (params.data) {
       const quat = getCurrentQuarter2();
       const quatMonths = getQuarterMonths(quat);
       let year = new Date().getFullYear();
@@ -1179,24 +1226,21 @@ function DataReviewApprover(props) {
       );
 
       let customizedQuarterMonths = [];
-      console.log("RADIOOOOOO::", radioValue);
- if(radioValue == 1) {
-  quatMonths.forEach((element) => {
-    customizedQuarterMonths.push(element + choppedOffYear);
-  });
- } else {
-  quatMonths.forEach((element) => {
-    customizedQuarterMonths.push(element + choppedOffYear+'E');
-  });
- }
-      console.log('customizedQuarterMonths::', customizedQuarterMonths);
-      console.log('params?.data:::', params?.data);
+      if (radioValue == 1) {
+        quatMonths.forEach((element) => {
+          customizedQuarterMonths.push(element + choppedOffYear);
+        });
+      } else {
+        quatMonths.forEach((element) => {
+          customizedQuarterMonths.push(element + choppedOffYear + "E");
+        });
+      }
+
       customizedQuarterMonths.map((item) => {
         if (item in params?.data) {
           tempTotal = tempTotal + params?.data[item];
         }
       });
-console.log('tempTotal:::', tempTotal);
       if (isNaN(tempTotal)) {
         tempTotal = "";
       }
@@ -1216,16 +1260,16 @@ console.log('tempTotal:::', tempTotal);
         selectedValueString.length
       );
       let customizedQuarterMonths = [];
-      if(radioValue == 1) {
+      if (radioValue == 1) {
         monthsOfTheYear.forEach((element) => {
           customizedQuarterMonths.push(element + choppedOffYear);
         });
-      }else {
+      } else {
         monthsOfTheYear.forEach((element) => {
-          customizedQuarterMonths.push(element + choppedOffYear+'E');
+          customizedQuarterMonths.push(element + choppedOffYear + "E");
         });
       }
-    
+
       let tempTotal = 0;
       customizedQuarterMonths.map((item) => {
         if (item in params?.data) {
@@ -1243,26 +1287,59 @@ console.log('tempTotal:::', tempTotal);
   };
 
   const callThisFunction = (params) => {
-    if(params.value) {
+    if (params.value) {
       return params.value.toFixed(2) + "%";
     } else {
-      return ''
+      return "";
     }
   };
 
   const getValueFormatter = (params) => {
-    if(params.value) {
+    if (params.value) {
       return params.value.toFixed(2) + "%";
     } else {
-      return ''
+      return "";
+    }
+  };
+
+  const yTDSelloutPreviousYear = (params) => {
+    if (params?.data?.PreviousYearData) {
+      let previousData = params?.data?.PreviousYearData;
+      const d = new Date();
+      let currentYear = previousData.year_val.toString().slice(2);
+      let previousYear = currentYear - 1;
+      let months = d.getMonth();
+      let total = 0;
+      for (let i = 0; i < monthsOfTheYear.length; i++) {
+        if (radioValue == 1) {
+          let key = monthsOfTheYear[i] + currentYear;
+          if (previousData[key]) {
+            total = total + Number(previousData[key]);
+          }
+        } else {
+          let key = monthsOfTheYear[i] + currentYear + "E";
+          if (previousData[key]) {
+            total = total + Number(previousData[key]);
+          }
+        }
+      }
+      if (total == 0) {
+        return "";
+      } else {
+        return total;
+      }
+    } else {
+      return "";
     }
   };
 
   const getValueFormatter2 = (params) => {
-    if(params.value) {
+    if (params.value) {
       return params.value.toFixed(2);
+    } else if (params.value == 0 || params.value == "0") {
+      return params.value;
     } else {
-      return ''
+      return "";
     }
   };
 
@@ -1338,6 +1415,23 @@ console.log('tempTotal:::', tempTotal);
       },
     },
     {
+      headerName: "YTD Sellout LY",
+      field: "YTD_Growth",
+      editable: false,
+      minWidth: 150,
+      wrapHeaderText: true,
+      aggFunc: "sum",
+      sortable: true,
+      suppressMenu: true,
+      valueGetter: (params) => {
+        return yTDSelloutPreviousYear(params);
+      },
+      valueFormatter: (params) => {
+        return getValueFormatter2(params);
+      },
+      cellStyle: { "border-color": "#e2e2e2" },
+    },
+    {
       headerName: "YTD Sellout Growth",
       field: "YTD_Growth",
       editable: false,
@@ -1348,7 +1442,7 @@ console.log('tempTotal:::', tempTotal);
       suppressMenu: true,
       valueFormatter: (params) => {
         return callThisFunction(params);
-       },
+      },
       valueGetter: (params) => {
         return getYTDSelloutGrowthPercCalc(params);
       },
@@ -1429,7 +1523,7 @@ console.log('tempTotal:::', tempTotal);
       },
 
       flex: 1,
-
+	  minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
       resizable: true,
 
       filter: true,
@@ -1439,13 +1533,11 @@ console.log('tempTotal:::', tempTotal);
       suppressSizeToFit: true,
 
       suppressMenuHide: true,
-      minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
     };
   }, []);
 
   const autoGroupColumnDef = useMemo(() => {
     return {
-      minWidth: 140, suppressMenu: true, suppressSizeToFit: true, width: 140,
       filterValueGetter: (params) => {
         if (params.node) {
           var colGettingGrouped = params.colDef.showRowGroup + "";
@@ -1455,7 +1547,7 @@ console.log('tempTotal:::', tempTotal);
       },
 
       pinned: "left",
-
+	  minWidth: 140, suppressMenu: true, suppressSizeToFit: true, width: 140,
       cellRenderer: "agGroupCellRenderer",
 
       cellRendererParams: {
@@ -1493,12 +1585,12 @@ console.log('tempTotal:::', tempTotal);
     }
     let requestArray = [];
     if (validateKey == "1") {
-      console.log('what is data exactly::', selectedCell);
-
       selectedCell.forEach((element) => {
         let currentYEar = new Date().getFullYear();
         let monthArray = [];
-        let itemYear = String(element.year_val ? element.year_val : currentYEar).slice(-2);
+        let itemYear = String(
+          element.year_val ? element.year_val : currentYEar
+        ).slice(-2);
         allCalMonths.forEach((monthEle) => {
           const saveArray =
             radioValue == 1
@@ -1546,12 +1638,12 @@ console.log('tempTotal:::', tempTotal);
         requestArray.push(objForUpdate);
       });
     } else {
-      console.log('what is data exactly::', data);
-
       data.forEach((element) => {
         let currentYEar = new Date().getFullYear();
         let monthArray = [];
-        let itemYear = String(data[0].year_val ? data[0].year_val : currentYEar).slice(-2);
+        let itemYear = String(
+          data[0].year_val ? data[0].year_val : currentYEar
+        ).slice(-2);
         allCalMonths.forEach((monthEle) => {
           const saveArray =
             radioValue == 1
@@ -1565,29 +1657,7 @@ console.log('tempTotal:::', tempTotal);
             });
           }
         });
-        // allCalMonths.forEach((monthEle) => {
-        //   let amount = 0;
-        //   let transType = "";
-        //   element?.months.forEach((eleInMonth) => {
-        //     if (eleInMonth.month_val == monthEle.toLowerCase()) {
-        //       if (radioValue == 1) {
-        //         amount = eleInMonth.sellout_local_currency;
-        //         transType = eleInMonth.trans_type;
-        //       } else {
-        //         amount = eleInMonth.sellout;
-        //         transType = eleInMonth.trans_type;
-        //       }
-        //     }
-        //   });
-        //   if (amount && amount > 0) {
-        //     monthArray.push({
-        //       month: monthEle.toLowerCase(),
-        //       sellout_local_currency: amount,
-        //       trans_type: transType,
-        //     });
-        //   }
-        // });
-        console.log("monthArray::", monthArray);
+     
         let reqData = {
           partner_id: element.partner_id,
           partner_name: element.partner_account_name,
@@ -1623,12 +1693,9 @@ console.log('tempTotal:::', tempTotal);
 
   const handleSendForInvestgn = useCallback((data, selectedCell) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    
-    console.log('handleSendForInvestgn', data);
+
     let requestArray = [];
-    console.log('selectedCell', selectedCell);
     selectedCell.forEach((element) => {
-      console.log('element', element);
       let monthArray = [];
       let itemYear = String(data[0].year_val).slice(-2);
       allCalMonths.forEach((monthEle) => {
@@ -1639,14 +1706,12 @@ console.log('tempTotal:::', tempTotal);
         if (saveArray > 0) {
           monthArray.push({
             month: monthEle.toLowerCase(),
-            sellout_local_currency: saveArray ? saveArray: '0',
+            sellout_local_currency: saveArray ? saveArray : "0",
             trans_type: radioValue == 1 ? "ACT" : "EST",
           });
         }
       });
 
-      console.log('monthArray', monthArray);
-      
       let objForUpdate = {
         partner_id: element.partner_id,
         partner_name: element.partner_account_name,
@@ -1665,9 +1730,6 @@ console.log('tempTotal:::', tempTotal);
 
       requestArray.push(objForUpdate);
     });
-
-    console.log('requestArray', requestArray);
-
     props
       .updateSellOutData(requestArray)
       .then((data) => {
@@ -1729,8 +1791,8 @@ console.log('tempTotal:::', tempTotal);
           gridRef.current.api.setRowNodeExpanded(node, true);
         }
       });
-    } 
-	/*
+    } else {
+      /*
 	else if (e.target.value === "Partner") {
       gridRef.current.api.forEachNode((node) => {
         if (
@@ -1743,7 +1805,6 @@ console.log('tempTotal:::', tempTotal);
         }
       });
     } */
-	else {
       gridRef.current.api.collapseAll();
     }
   }, []);
@@ -1817,7 +1878,9 @@ console.log('tempTotal:::', tempTotal);
                   }`}
                   onClick={() => {
                     onBtShowYearColumn(reviewData, radioValue);
-                
+                    setTimeout(() => {
+                      onBtShowYearColumn(reviewData, radioValue);
+                    }, 10);
                   }}
                 >
                   Show
@@ -1893,13 +1956,10 @@ console.log('tempTotal:::', tempTotal);
                   onChange={onExpandCol}
                 >
                   <option>Collapse all</option>
-
                   <option value="Zone">Zone</option>
-
                   <option selected value="Country">
                     Country
                   </option>
-
                   <option value="Model">Model</option>
                 </Form.Select>
               </Col>
@@ -1962,7 +2022,9 @@ console.log('tempTotal:::', tempTotal);
                       : "btn-invest edit-header"
                   }
                   disabled={shouldDisableSaveButton}
-                  onClick={(e) => handleSendForInvestgn(reviewData, selectedCell)}
+                  onClick={(e) =>
+                    handleSendForInvestgn(reviewData, selectedCell)
+                  }
                 >
                   Send For Investigation
                 </Button>

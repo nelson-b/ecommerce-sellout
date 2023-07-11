@@ -28,12 +28,12 @@ function PartnerList(props) {
   const navigate = useNavigate();
 
   //sso login func
-  const [userEmail, setUserEmail] = useState('');
-  const [userRole, setUserRole] = useState('');
-                  
+  const [userEmail, setUserEmail] = useState("");
+  const [userRole, setUserRole] = useState("");
+
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    if(usrDetails){
+    if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setUserRole(usrDetails.role_id);
     }
@@ -46,16 +46,14 @@ function PartnerList(props) {
   const handlePartnerEdit = (params) => {
     if (
       userRole == roles.supervisor.toUpperCase() ||
-      userRole == roles.admin.toUpperCase()||
+      userRole == roles.admin.toUpperCase() ||
       userRole == roles.supervisor_approv_1_2.toUpperCase()
     ) {
       navigate(
         `/higerLevelUser/partner/update?id=${params.data.partner_id}&role=${userRole}`
       );
     } else {
-      navigate(
-        `/partner/update?id=${params.data.partner_id}&role=${userRole}`
-      );
+      navigate(`/partner/update?id=${params.data.partner_id}&role=${userRole}`);
     }
   };
 
@@ -170,13 +168,12 @@ function PartnerList(props) {
             {Status === "CLOSED" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )}
-           {
-			   Status === "REJECT" && (
-
+            {Status === "REJECT" && (
               <img src={rejected} alt="rejected" style={{ width: "80px" }} />
-
-            )
-			}
+            )}
+            {Status === "EDITED" && (
+              <img src={updated} alt="updated" style={{ width: "80px" }} />
+            )}
           </div>
         );
       },
@@ -346,11 +343,9 @@ function PartnerList(props) {
     []
   );
 
-
-
   const onGridReady = useCallback((params) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    if(usrDetails){
+    if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setUserRole(usrDetails.role_id);
     }
@@ -366,7 +361,7 @@ function PartnerList(props) {
           usrDetails.role_id == roles.supervisor.toUpperCase() ||
           usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase()
           ? ""
-          : filterData.userMail, 
+          : filterData.userMail,
         usrDetails.role_id == roles.admin.toUpperCase() ||
           usrDetails.role_id == roles.supervisor.toUpperCase() ||
           usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase()
@@ -376,19 +371,20 @@ function PartnerList(props) {
       .then((data) => {
         previousAPIData = data?.data;
         let tempRole = usrDetails.role_id;
-        setRowData(data.data.filter((e) => e.status == "ACTIVE" || "REJECT"));
-          
-        if(usrDetails.role_id == roles.supervisor.toUpperCase()) {
-          tempRole = 'SUPERVISOR'
+        setRowData(data.data.filter((e) => e.status == "PENDING" || e.status == "EDITED" || e.status == "ACTIVE"));
+
+
+        if (usrDetails.role_id == roles.supervisor.toUpperCase()) {
+          tempRole = "SUPERVISOR";
         }
-        if(usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase()) {
-          tempRole = 'SUPERVISOR_APPROV_1_2'
+        if (usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase()) {
+          tempRole = "SUPERVISOR_APPROV_1_2";
         }
         // setRowData(data.data.filter((e) => e.status == "ACTIVE"));
       })
 
       .catch((e) => {
-        setRowData([])
+        setRowData([]);
         console.log("Partner list", e);
       });
   }, []);
@@ -450,7 +446,7 @@ function PartnerList(props) {
                 />
               </Breadcrumb.Item>
             </Breadcrumb>
-          ) :  userRole == roles.supervisor.toUpperCase() ? (
+          ) : userRole == roles.supervisor.toUpperCase() ? (
             <Breadcrumb>
               <Breadcrumb.Item href="/superUser">
                 <img

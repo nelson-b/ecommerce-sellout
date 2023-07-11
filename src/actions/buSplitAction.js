@@ -1,9 +1,9 @@
 import { RETRIEVE_BU_SPLIT_DATA, UPDATE_BU_SPLIT_DATA, GET_PARTNER_NAME } from "./type";
 import BuSplitServices from "../services/buSplitServices";
   
-  export const retrieveBuSplitData = (user, id, year) => async (dispatch) => {
+  export const retrieveBuSplitData = (user, id, year, quarter) => async (dispatch) => {
     try {
-      const res = await BuSplitServices.getBuSplit(user, id, year);
+      const res = await BuSplitServices.getBuSplit(user, id, year, quarter);
   
       dispatch({
         type: RETRIEVE_BU_SPLIT_DATA,

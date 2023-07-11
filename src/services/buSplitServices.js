@@ -2,9 +2,9 @@ import http from "../http-common";
 
 class BuSplitServices {
 
-  getBuSplit(user, id, year) {
+  getBuSplit(user, id, year, quarter) {
     return http.get(
-      `/ecomm-sellout-dev-lamda-createpartner/get_sellout_bu_split?fetch=by_user&user=${user}&role_id=${id}&year_val=${year}`
+      `/ecomm-sellout-dev-lamda-createpartner/get_sellout_bu_split?fetch=by_user&user=${user}&role_id=${id}&year_val=${year}&quarter=${quarter}`
     );
   }
 

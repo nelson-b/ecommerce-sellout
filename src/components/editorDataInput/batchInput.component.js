@@ -258,19 +258,23 @@ function BatchInputComponent({ savedData, props, userDetails }) {
 
             // //iterate in the grid
             json.forEach((rowNode, index) => {
+              console.log('rowNode:: bhsbhsbhs', rowNode);
               //api to save data
               let monthArray = [];
               //12 months loop
               allCalMonths.forEach((element) => {
-                if (rowNode[`${element}_Amount`] > 0) {
-                  monthArray.push({
-                    month: element.toLowerCase(),
-                    sellout_local_currency: String(
-                      rowNode[`${element}_Amount`]
-                    ),
-                    trans_type:
-                      rowNode[`${element}_Estimated`] == true ? "EST" : "ACT",
-                  });
+                if (rowNode[`${element}_Amount`] >= 0) {
+                  if( rowNode[`${element}_Amount`] !== ''){
+                    console.log('cominginside thisblock', rowNode[`${element}_Amount`]);
+                    let amountRounded = String(rowNode[`${element}_Amount`]);
+                    monthArray.push({
+                      month: element.toLowerCase(),
+                      sellout_local_currency: parseFloat(amountRounded).toFixed(2),
+                      trans_type:
+                        rowNode[`${element}_Estimated`] == true ? "EST" : "ACT",
+                    });
+                  }
+     
                 }
               });
 
@@ -298,6 +302,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
             props
               .createData(payload)
               .then((data) => {
+                
                 document.getElementById("sellout-editor-input").reset();
                 setFileError([]);
                 setShowErrorModal(false);

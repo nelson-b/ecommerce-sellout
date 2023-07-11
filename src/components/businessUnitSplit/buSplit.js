@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { getUIDateFormat, getAPIDateFormatWithTime } from "../../helper/helper";
 
 import {
   Button,
@@ -86,31 +87,47 @@ function BusinessUnitSplit(props) {
   };
 
   const handleSave = useCallback((data) => {
-    let reqData = {
-      country_code: data[0].country_code,
-      partner_id: data[0].partner_id,
-      model_type: data[0].model_type,
-      year_val: data[0].year_val,
-      quarter: data[0].quarter,
-      attributes: data[0].attributes,
-      created_by: data[0].created_by?data[0].created_by:userEmail,
-      created_date: data[0].created_date,
-      modified_by: data[0].modified_by?data[0].modified_by:userEmail,
-      modified_date: data[0].modified_date,
-      active_flag: data[0].active_flag,
-    };
-
-    let apiData = 0;
-
-    reqData.attributes.forEach((e) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if(usrDetails){
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
+    let shouldCallAPI = true;
+let postDateArray = [];
+    data.forEach(element => {
+      let reqData = {
+        country_code: element.country_code,
+        partner_id: element.partner_id,
+        model_type: element.model_type,
+        year_val: element.year_val,
+        quarter: 'Q3',
+        attributes: element.attributes,
+        created_by: element.created_by?element.created_by:usrDetails.email_id,
+        created_date: element.created_date,
+        modified_by: usrDetails.email_id,
+        modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+        active_flag: element.active_flag,
+      };
+      let apiData = 0;
+      element.attributes.forEach((e) => {
       apiData = apiData + e.total;
     });
+    if(apiData == 100) {
+      postDateArray.push(reqData);
+    } else {
+      shouldCallAPI = false;
+      return
+    }
+    });
 
-    if (apiData == 100) {
+
+
+    if (shouldCallAPI) {
       props
-        .updateBuSplitData(reqData)
+        .updateBuSplitData(postDateArray)
         .then((data) => {
-          if (data?.data?.attributes?.length) {
+          if (data.data.length) {
             setShowSuccessModal(true);
           }
         })
@@ -122,6 +139,21 @@ function BusinessUnitSplit(props) {
       setShowErrorModal(true);
     }
   }, []);
+
+  const getCurrentQuarter2 = () => {
+    let dateSample = new Date().getMonth();
+    let currentQuarter = 1;
+    if (dateSample <= 3) {
+      currentQuarter = "Q1";
+    } else if (dateSample <= 6 && dateSample > 3) {
+      currentQuarter = "Q2";
+    } else if (dateSample <= 9 && dateSample > 6) {
+      currentQuarter = "Q3";
+    } else {
+      currentQuarter = "Q4";
+    }
+    return currentQuarter;
+  };
 
   const handleUpload = useCallback((data) => {
     let reqData = {
@@ -205,6 +237,22 @@ function BusinessUnitSplit(props) {
     },
   ];
 
+  const getInShapePlease = (data) =>{
+    let newArray = [];
+
+    if(data.length) {
+      data.forEach(element => {
+        if(element.attributes) {
+          element.attributes.forEach(attElement => {
+            let obj = {};
+            obj = attElement;
+            obj.partner_id = element.partner_id;
+            attElement = obj;
+          });
+        }
+      });
+    }
+  }
   const sumTotal = (params) => {
     let total = 0;
 
@@ -235,7 +283,6 @@ function BusinessUnitSplit(props) {
       field: "partner_id",
       hide: true,
     },
-
     {
       headerName: "Country",
 
@@ -337,7 +384,10 @@ function BusinessUnitSplit(props) {
         valueParser: (params) => Number(params.newValue),
         valueGetter: (params) => {
           const attribute = params.data.attributes.find(
-            (attr) => attr.attribute_val == splitHeader
+            (attr) => attr.attribute_val == splitHeader 
+            &&
+            attr?.partner_id == params.data.partner_id
+
           );
           return attribute ? attribute.total : null;
         },
@@ -414,44 +464,21 @@ function BusinessUnitSplit(props) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
     }
+    let quarter= getCurrentQuarter2();
     props
       .retrieveBuSplitData(
         usrDetails.email_id,
         usrDetails.role_id == "supervisor_approv_1_2" ? "supervisor_approv_1_2" : usrDetails.role_id,
-        year
+        year,
+        quarter
       )
       .then((data) => {
-        console.log('data::', data.data);
-        data?.data?.forEach(element => {
-          props
-          .retrivePartnerAccountName(
-            element.partner_id,
-            element.country_code
-          )
-          .then((data1) => {
-            if(data1.length) {
-              let obj = {};
-              obj = element;
-              obj.partner_account_name = data1.partner_account_name;
-              let sampleArray = [];
-              sampleArray.push(obj);
-              setRowData(sampleArray);
-            } else {
-            //  setRowData(data.data);
-            }
-          })
-          .catch((e) => {
-          //  setRowData(data.data);
-            console.log(e);
-          });
-        });
-        console.log('data?.data::', data?.data);
+        getInShapePlease(data?.data);
         if (data?.data) {
           let previousAPIData = data?.data;
           props
             .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
             .then((data) => {
-              console.log("showMeData from next API", data.data);
               let secondArray = [];
               secondArray = setProperBUSplitData(data?.data);
               for (let i = 0; i < previousAPIData.length; i++) {
@@ -464,9 +491,7 @@ function BusinessUnitSplit(props) {
                 }
               }
               previousAPIData = previousAPIData.concat(secondArray);
-              console.log('previousAPIData: here', previousAPIData);
               setRowData(previousAPIData);
-             // setRowData(formatGetPayload(previousAPIData, true));
             })
             .catch((e) => {
               setRowData(previousAPIData);
@@ -477,19 +502,18 @@ function BusinessUnitSplit(props) {
           props
           .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
           .then((data) => {
-            console.log("showMeData from next API", data.data);
             let secondArray = [];
             secondArray = secondArray = setProperBUSplitData(data?.data);
             let previousAPIData = [];    
             previousAPIData = previousAPIData.concat(secondArray);
             setRowData(previousAPIData);
-           // setRowData(formatGetPayload(previousAPIData, true));
           })
           .catch((e) => {
             setRowData([]);
             console.log("Data Input", e);
           });
         }
+     
   
       }).catch((e) => {
         setRowData([]);
@@ -499,36 +523,36 @@ function BusinessUnitSplit(props) {
 
 
   const setProperBUSplitData = (dataInput) => {
-    const setArray = [
-      {attribute_name: 'bopp_type', attribute_val: 'PP', total: 0},
-      {attribute_name: 'bopp_type', attribute_val: 'DE', total: 0},
-      {attribute_name: 'bopp_type', attribute_val: 'IA', total: 0},
-      {attribute_name: 'bopp_type', attribute_val: 'SP', total: 0},
-      {attribute_name: 'bopp_type', attribute_val: 'H&D', total: 0}
-    ];
-let newCustomizedArray = [];
 
-    console.log('dataInput', dataInput);
-    dataInput?.forEach(element => {
-      let obj = {
-        active_flag: "True",
-        attributes: setArray,
-        country_code: element.country_code,
-        created_by: element.created_by,
-        created_date: element.created_date,
-        model_type: element.model_type,
-        modified_by: element.modified_by,
-        partner_id:element.partner_id,
-        quarter: '',
-        record_end_date: 'None',
-        record_start_date: 'None',
-        year_val: new Date().getFullYear(),
-        partner_account_name: element.partner_account_name
+    let newCustomizedArray = [];
+        dataInput?.forEach(element => {
+          const setArray = [
+            {attribute_name: 'bopp_type', attribute_val: 'PP', total: 0, partner_id: element.partner_id},
+            {attribute_name: 'bopp_type', attribute_val: 'DE', total: 0, partner_id: element.partner_id},
+            {attribute_name: 'bopp_type', attribute_val: 'IA', total: 0, partner_id: element.partner_id},
+            {attribute_name: 'bopp_type', attribute_val: 'SP', total: 0, partner_id: element.partner_id},
+            {attribute_name: 'bopp_type', attribute_val: 'H&D', total: 0, partner_id: element.partner_id}
+          ];
+          let obj = {
+            active_flag: "True",
+            attributes: setArray,
+            country_code: element.country_code,
+            created_by: element.created_by,
+            created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+            model_type: element.model_type,
+            modified_by: element.modified_by,
+            modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+            partner_id:element.partner_id,
+            quarter: getCurrentQuarter2(),
+            record_end_date: 'None',
+            record_start_date: 'None',
+            year_val: new Date().getFullYear(),
+            partner_account_name: element.partner_account_name
+          }
+          newCustomizedArray.push(obj);
+        });
+        return newCustomizedArray;
       }
-      newCustomizedArray.push(obj);
-    });
-    return newCustomizedArray;
-  }
   const name = "John Bae";
 
   const successmsg = {
