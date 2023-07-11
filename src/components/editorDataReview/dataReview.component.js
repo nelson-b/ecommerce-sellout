@@ -131,9 +131,7 @@ function DataReviewComponent(props) {
     {
       headerName: "Partner Account Name",
       field: "partner_account_name",
-      //rowGroup: true,
-      //hide: true,
-	  width: 250,
+      minWidth: 180, suppressMenu: true, suppressSizeToFit: true, width: 180,
       filter: true,
       pinned: "left",
       suppressSizeToFit: true,
@@ -143,7 +141,6 @@ function DataReviewComponent(props) {
       headerName: "Currency of Reporting",
       field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
       pinned: "left",
-      width: 140,
       editable: false,
       suppressMenu: true,
     },
@@ -151,7 +148,6 @@ function DataReviewComponent(props) {
       headerName: "Status",
       field: "status",
       pinned: "left",
-      width: 110,
       suppressMenu: true,
       cellRenderer: (params) => {
         const Status = params.value;
@@ -195,6 +191,7 @@ function DataReviewComponent(props) {
       sortable: true,
 
       suppressSizeToFit: true,
+      minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
     };
   }, []);
 
@@ -598,7 +595,7 @@ function DataReviewComponent(props) {
 
   const autoGroupColumnDef = useMemo(() => {
     return {
-      width: 170,
+      minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
 
       filterValueGetter: (params) => {
         if (params.node) {
@@ -621,143 +618,148 @@ function DataReviewComponent(props) {
   }, []);
 
   const getCMLMValues = (params) => {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    let date = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1
-    );
+    if(params.data){
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      let date = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
+      );
 
-    const currMonthName = allCalMonths[date.getMonth() - 1];
-    const lastMonthName = allCalMonths[date.getMonth() - 2];
-    const year = String(date.getFullYear()).slice(-2);
+      const currMonthName = allCalMonths[date.getMonth() - 1];
+      const lastMonthName = allCalMonths[date.getMonth() - 2];
+      const year = String(date.getFullYear()).slice(-2);
 
-    let currmonthField = currMonthName + year;
-    let lastmonthField = lastMonthName + year;
-    if (radioValue == 1) {
-      currmonthField = currMonthName + year;
-       lastmonthField = lastMonthName + year;
-    
-    if (params.data) {
-      var filterCurrMonths = Object.keys(params.data)
-        .filter((key) => [currmonthField].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = params.data[key];
-          return obj;
-        }, {});
-      var filterLastMonths = Object.keys(params.data)
-        .filter((key) => [lastmonthField].includes(key))
+      let currmonthField = currMonthName + year;
+      let lastmonthField = lastMonthName + year;
+      if (radioValue == 1) {
+        currmonthField = currMonthName + year;
+        lastmonthField = lastMonthName + year;
+      
+      if (params.data) {
+        var filterCurrMonths = Object.keys(params.data)
+          .filter((key) => [currmonthField].includes(key))
+          .reduce((obj, key) => {
+            obj[key] = params.data[key];
+            return obj;
+          }, {});
+        var filterLastMonths = Object.keys(params.data)
+          .filter((key) => [lastmonthField].includes(key))
 
-        .reduce((obj, key) => {
-          obj[key] = params.data[key];
+          .reduce((obj, key) => {
+            obj[key] = params.data[key];
 
-          return obj;
-        }, {});
+            return obj;
+          }, {});
 
-      let ret = {
-        CurrentMonth: filterCurrMonths[currmonthField],
-        LastMonth: filterLastMonths[lastmonthField],
-      };
-      return ret;
-    } 
-    } else {
-      currmonthField = currMonthName + year+'E';
-       lastmonthField = lastMonthName + year+'E';
-    
-    if (params.data) {
-      var filterCurrMonths = Object.keys(params.data)
-        .filter((key) => [currmonthField].includes(key))
-        .reduce((obj, key) => {
-          obj[key] = params.data[key];
-          return obj;
-        }, {});
-      var filterLastMonths = Object.keys(params.data)
-        .filter((key) => [lastmonthField].includes(key))
+        let ret = {
+          CurrentMonth: filterCurrMonths[currmonthField],
+          LastMonth: filterLastMonths[lastmonthField],
+        };
+        return ret;
+      } 
+      } else {
+        currmonthField = currMonthName + year+'E';
+        lastmonthField = lastMonthName + year+'E';
+      
+      if (params.data) {
+        var filterCurrMonths = Object.keys(params.data)
+          .filter((key) => [currmonthField].includes(key))
+          .reduce((obj, key) => {
+            obj[key] = params.data[key];
+            return obj;
+          }, {});
+        var filterLastMonths = Object.keys(params.data)
+          .filter((key) => [lastmonthField].includes(key))
 
-        .reduce((obj, key) => {
-          obj[key] = params.data[key];
+          .reduce((obj, key) => {
+            obj[key] = params.data[key];
 
-          return obj;
-        }, {});
+            return obj;
+          }, {});
 
-      let ret = {
-        CurrentMonth: filterCurrMonths[currmonthField],
-        LastMonth: filterLastMonths[lastmonthField],
-      };
-      return ret;
-    } 
+        let ret = {
+          CurrentMonth: filterCurrMonths[currmonthField],
+          LastMonth: filterLastMonths[lastmonthField],
+        };
+        return ret;
+      } 
+      }
     }
-
     return undefined;
   };
 
   const getCMLYValues = (params) => {
-    const currentDate = new Date();
+    if(params.data){
+      const currentDate = new Date();
 
-    const currentMonth = currentDate.getMonth();
+      const currentMonth = currentDate.getMonth();
 
-    let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
-    const currMonthName = allCalMonths[date.getMonth() - 1];
+      const currMonthName = allCalMonths[date.getMonth() - 1];
 
-    const curryear = String(date.getFullYear()).slice(-2);
+      const curryear = String(date.getFullYear()).slice(-2);
 
-    const currmonthCYField = currMonthName + curryear;
+      const currmonthCYField = currMonthName + curryear;
 
-    const currmonthLYField = currMonthName + (curryear - 1);
+      const currmonthLYField = currMonthName + (curryear - 1);
 
-    if (params.data) {
-      var filterCurrMonthCY = Object.keys(params.data)
+      if (params.data) {
+        var filterCurrMonthCY = Object.keys(params.data)
 
-        .filter((key) => [currmonthCYField].includes(key))
+          .filter((key) => [currmonthCYField].includes(key))
 
-        .reduce((obj, key) => {
-          obj[key] = params.data[key];
+          .reduce((obj, key) => {
+            obj[key] = params.data[key];
 
-          return obj;
-        }, {});
+            return obj;
+          }, {});
 
-      var filterCurrMonthLY = Object.keys(params.data)
+        var filterCurrMonthLY = Object.keys(params.data)
 
-        .filter((key) => [currmonthLYField].includes(key))
+          .filter((key) => [currmonthLYField].includes(key))
 
-        .reduce((obj, key) => {
-          obj[key] = params.data[key];
+          .reduce((obj, key) => {
+            obj[key] = params.data[key];
 
-          return obj;
-        }, {});
+            return obj;
+          }, {});
 
-      let ret = {
-        CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
+        let ret = {
+          CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
 
-        CurrentMonthLY: filterCurrMonthLY[currmonthLYField],
-      };
+          CurrentMonthLY: filterCurrMonthLY[currmonthLYField],
+        };
 
-      return ret;
+        return ret;
+      }
     }
-
     return undefined;
   };
 
   const setVarCMvsLMCalc = (params) => {
-    let resp = getCMLMValues(params);
+    if(params.data){
+      let resp = getCMLMValues(params);
 
-    if (resp != undefined) {
-      return resp.CurrentMonth - resp.LastMonth;
+      if (resp != undefined) {
+        return resp.CurrentMonth - resp.LastMonth;
+      }
     }
-
     return "";
   };
 
 
   const setVarCMvsLMCalcPerc = (params) => {
-    let resp = getCMLMValues(params);
-    if (resp != undefined) {
-      if (resp.LastMonth != 0) {
-        return (
-          ((resp.CurrentMonth - resp.LastMonth) / resp.LastMonth) * 100
-        );
+    if(params.data){
+      let resp = getCMLMValues(params);
+      if (resp != undefined) {
+        if (resp.LastMonth != 0) {
+          return (
+            ((resp.CurrentMonth - resp.LastMonth) / resp.LastMonth) * 100
+          );
+        }
       }
     }
 
@@ -765,101 +767,101 @@ function DataReviewComponent(props) {
   };
 
   const getCMLYValuesWithYear = (params) => {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const currMonthName = allCalMonths[date.getMonth() - 1];
-    const curryear = String(date.getFullYear()).slice(-2);
-    let currmonthCYField = currMonthName + curryear;
-    let currmonthLYField = currMonthName + (curryear - 1);
-    if(radioValue == 1) {
-   
-
-      if (params.data?.PreviousYearData) {
-        var filterCurrMonthCY = Object.keys(params.data)
-          .filter((key) => [currmonthCYField].includes(key))
-          .reduce((obj, key) => {
-            obj[key] = params.data[key];
-            return obj;
-          }, {});
-  
-        var filterCurrMonthLY = Object.keys(params.data.PreviousYearData)
-          .filter((key) => [currmonthLYField].includes(key))
-          .reduce((obj, key) => {
-            obj[key] = params.data.PreviousYearData[key];
-  
-            return obj;
-          }, {});
-  
-        let ret = {
-          CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
-          CurrentMonthLY: filterCurrMonthLY[currmonthLYField],
-        };
-        return ret;
-      }
-    } else {
-      currmonthCYField = currmonthCYField;
-      currmonthLYField = currmonthLYField+'E';
-      if (params.data?.PreviousYearData) {
-        var filterCurrMonthCY = Object.keys(params.data)
-          .filter((key) => [currmonthCYField].includes(key))
-          .reduce((obj, key) => {
-            obj[key] = params.data[key];
-            return obj;
-          }, {});
-  
-        var filterCurrMonthLY = Object.keys(params.data.PreviousYearData)
-          .filter((key) => [currmonthLYField].includes(key))
-          .reduce((obj, key) => {
-            obj[key] = params.data.PreviousYearData[key];
-  
-            return obj;
-          }, {});
-  
-        let ret = {
-          CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
-          CurrentMonthLY: filterCurrMonthLY[currmonthLYField],
-        };
-        return ret;
+    if(params.data){
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      const currMonthName = allCalMonths[date.getMonth() - 1];
+      const curryear = String(date.getFullYear()).slice(-2);
+      let currmonthCYField = currMonthName + curryear;
+      let currmonthLYField = currMonthName + (curryear - 1);
+      if(radioValue == 1) {
+        if (params.data?.PreviousYearData) {
+          var filterCurrMonthCY = Object.keys(params.data)
+            .filter((key) => [currmonthCYField].includes(key))
+            .reduce((obj, key) => {
+              obj[key] = params.data[key];
+              return obj;
+            }, {});
+    
+          var filterCurrMonthLY = Object.keys(params.data.PreviousYearData)
+            .filter((key) => [currmonthLYField].includes(key))
+            .reduce((obj, key) => {
+              obj[key] = params.data.PreviousYearData[key];
+    
+              return obj;
+            }, {});
+    
+          let ret = {
+            CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
+            CurrentMonthLY: filterCurrMonthLY[currmonthLYField],
+          };
+          return ret;
+        }
+      } else {
+        currmonthCYField = currmonthCYField;
+        currmonthLYField = currmonthLYField+'E';
+        if (params.data?.PreviousYearData) {
+          var filterCurrMonthCY = Object.keys(params.data)
+            .filter((key) => [currmonthCYField].includes(key))
+            .reduce((obj, key) => {
+              obj[key] = params.data[key];
+              return obj;
+            }, {});
+    
+          var filterCurrMonthLY = Object.keys(params.data.PreviousYearData)
+            .filter((key) => [currmonthLYField].includes(key))
+            .reduce((obj, key) => {
+              obj[key] = params.data.PreviousYearData[key];
+    
+              return obj;
+            }, {});
+    
+          let ret = {
+            CurrentMonthCY: filterCurrMonthCY[currmonthCYField],
+            CurrentMonthLY: filterCurrMonthLY[currmonthLYField],
+          };
+          return ret;
+        }
       }
     }
-
-
     return undefined;
   };
 
   const setVarCMvsLYCalc = (params) => {
-    let resp = getCMLYValuesWithYear(params);
+    if(params.data){
+      let resp = getCMLYValuesWithYear(params);
 
-    if (resp != undefined) {
-      return resp.CurrentMonthCY - resp.CurrentMonthLY;
+      if (resp != undefined) {
+        return resp.CurrentMonthCY - resp.CurrentMonthLY;
+      }
     }
-
     return 0;
   };
 
   const setVarCMvsLYCalcPerc = (params) => {
-    let resp = getCMLYValuesWithYear(params);
+    if(params.data){
+      let resp = getCMLYValuesWithYear(params);
 
-    if (resp != undefined) {
-      if (resp.CurrentMonthLY != 0 && resp.CurrentMonthLY !=undefined) {
-        if(resp.CurrentMonthCY) {
-          // do nothing
-        } else {
-          resp.CurrentMonthCY = 0
+      if (resp != undefined) {
+        if (resp.CurrentMonthLY != 0 && resp.CurrentMonthLY !=undefined) {
+          if(resp.CurrentMonthCY) {
+            // do nothing
+          } else {
+            resp.CurrentMonthCY = 0
+          }
+          if(resp.CurrentMonthLY) {
+            // do nothing
+          } else {
+            resp.CurrentMonthLY = 0
+          }
+          let aaa = resp.CurrentMonthCY - resp.CurrentMonthLY;
+          let bbb = aaa /resp.CurrentMonthLY;
+          let ccc = bbb * 100;
+          return ccc;        
         }
-        if(resp.CurrentMonthLY) {
-          // do nothing
-        } else {
-          resp.CurrentMonthLY = 0
-        }
-        let aaa = resp.CurrentMonthCY - resp.CurrentMonthLY;
-        let bbb = aaa /resp.CurrentMonthLY;
-        let ccc = bbb * 100;
-        return ccc;        
       }
     }
-
     return '';
   };
 
@@ -870,33 +872,33 @@ function DataReviewComponent(props) {
   };
 
   const getTotalYTDSellOutGrowthCalc = (params) => {
-    let year = new Date().getFullYear();
-    let selectedValueString = year.toString();
-    let choppedOffYear = selectedValueString.slice(
-      2,selectedValueString.length);
-
-    let customizedYearMonths = [];
-
-    monthsOfTheYear.forEach((element) => {
-      customizedYearMonths.push(element + choppedOffYear);
-    });
-
     let tempTotal = 0;
+    if(params.data){
+      let year = new Date().getFullYear();
+      let selectedValueString = year.toString();
+      let choppedOffYear = selectedValueString.slice(
+        2,selectedValueString.length);
 
-    customizedYearMonths.map((item) => {
-      if (item in params?.data) {
-        tempTotal += params?.data[item];
+      let customizedYearMonths = [];
+
+      monthsOfTheYear.forEach((element) => {
+        customizedYearMonths.push(element + choppedOffYear);
+      });
+
+      customizedYearMonths.map((item) => {
+        if (item in params?.data) {
+          tempTotal += params?.data[item];
+        }
+      });
+
+      if (isNaN(tempTotal)) {
+        tempTotal = "";
       }
-    });
 
-    if (isNaN(tempTotal)) {
-      tempTotal = "";
+      if (tempTotal == 0) {
+        tempTotal = "";
+      }
     }
-
-    if (tempTotal == 0) {
-      tempTotal = "";
-    }
-
     return tempTotal;
   };
 
@@ -914,157 +916,159 @@ function DataReviewComponent(props) {
     } else {
       return ''
     }
-  };
+};
 
 const yTDSelloutCurrntYear = (params) => {
-    const d = new Date();
-    let months = d.getMonth();
-    let currentYear = d.getFullYear();
-    if (currentYear) {
-      months = 12;
-    }
-    let selectedValueString = currentYear.toString();
-    let choppedOffYear = selectedValueString.slice(
-      2,
-      selectedValueString.length
-    );
-    let customizedArrayOfMonths = [];
-    if (radioValue == 1) {
-      for (let i = 0; i < months; i++) {
-        customizedArrayOfMonths.push(monthsOfTheYear[i] + choppedOffYear);
+  let tempTotal = 0;
+    if(params.data){
+      const d = new Date();
+      let months = d.getMonth();
+      let currentYear = d.getFullYear();
+      if (currentYear) {
+        months = 12;
       }
-      let tempTotal = 0;
-      customizedArrayOfMonths.map((item) => {
-        if (item in params?.data) {
-          tempTotal = tempTotal + params?.data[item];
-       }
-      });
-      if (isNaN(tempTotal)) {
-        tempTotal = "";
-      }
-      if (tempTotal == 0) {
-        tempTotal = "";
-      }
-      return tempTotal;
-    } else {
-      for (let i = 0; i < months; i++) {
-        customizedArrayOfMonths.push(monthsOfTheYear[i] + choppedOffYear + "E");
-      }
-      let tempTotal = 0;
-      customizedArrayOfMonths.map((item) => {
-        if (item in params?.data) {
-          tempTotal = tempTotal+params?.data[item];
-        }
-      });
-      if (isNaN(tempTotal)) {
-        tempTotal = "";
-      }
-
-      if (tempTotal == 0) {
-        tempTotal = "";
-      }
-      return tempTotal;
-
-    }
-
-  };
-
-
-  
-  const yTDSelloutPreviousYear = (params) => {
-    if (params?.data?.PreviousYearData) {
-      let previousData = params?.data?.PreviousYearData;
-    const d = new Date();
-    let currentYear = previousData.year_val.toString().slice(2);
-    let previousYear = currentYear - 1;
-    let months = d.getMonth(); 
-    let total = 0;
-    for(let i=0; i< monthsOfTheYear.length; i++) {
-      if (radioValue == 1) {
-        let key = monthsOfTheYear[i]+currentYear;
-        if(previousData[key]) {
-          total = total+ previousData[key];
-        }
-      
-      } else {
-        let key = monthsOfTheYear[i]+currentYear+"E";
-        if(previousData[key]) {
-          total = total+ previousData[key];
-        }
-      }
-      
-    }
-    if(total == 0) {
-      return ''
-    } else {
-      return total
-    }
-  } else {
-    return ''
-  }
-  };
-
-
-  const getYTDSelloutGrowthPercCalc = (params) => {
-    let previousYearData = params.data.PreviousYearData;
-
-    let currentYearData = params.data;
-
-    if (previousYearData) {
-      let percentageOfGrowth = 0;
-
-      let totalOfCurrentYearGrowth = yTDSelloutCurrntYear(params);
-
-      let yearCustom = previousYearData.year_val;
-
-      let selectedValueString = yearCustom.toString();
-
+      let selectedValueString = currentYear.toString();
       let choppedOffYear = selectedValueString.slice(
         2,
         selectedValueString.length
       );
-
-      let customizedYearMonths = [];
-
-      monthsOfTheYear.forEach((element) => {
-        customizedYearMonths.push(element + choppedOffYear);
-      });
-
-      let tempTotalPreviousYear = 0;
-
-      customizedYearMonths.map((item) => {
-        if (item in previousYearData) {
-          tempTotalPreviousYear = tempTotalPreviousYear+ previousYearData[item];
+      let customizedArrayOfMonths = [];
+      if (radioValue == 1) {
+        for (let i = 0; i < months; i++) {
+          customizedArrayOfMonths.push(monthsOfTheYear[i] + choppedOffYear);
         }
-      });
-      if (tempTotalPreviousYear > 0 && totalOfCurrentYearGrowth > 0) {
-        let tempTotalDiff = totalOfCurrentYearGrowth - tempTotalPreviousYear;
 
-        let tempDivision = tempTotalDiff / tempTotalPreviousYear;
-
-        percentageOfGrowth = tempDivision * 100;
-
-        return percentageOfGrowth;
+        customizedArrayOfMonths.map((item) => {
+          if (item in params?.data) {
+            tempTotal = tempTotal + params?.data[item];
+        }
+        });
+        if (isNaN(tempTotal)) {
+          tempTotal = "";
+        }
+        if (tempTotal == 0) {
+          tempTotal = "";
+        }
+        return tempTotal;
       } else {
-        return percentageOfGrowth;
+        for (let i = 0; i < months; i++) {
+          customizedArrayOfMonths.push(monthsOfTheYear[i] + choppedOffYear + "E");
+        }
+        let tempTotal = 0;
+        customizedArrayOfMonths.map((item) => {
+          if (item in params?.data) {
+            tempTotal = tempTotal+params?.data[item];
+          }
+        });
+        if (isNaN(tempTotal)) {
+          tempTotal = "";
+        }
+
+        if (tempTotal == 0) {
+          tempTotal = "";
+        }
+        return tempTotal;
+      }
+    }
+  };
+  
+  const yTDSelloutPreviousYear = (params) => {
+    if (params?.data?.PreviousYearData) {
+      let previousData = params?.data?.PreviousYearData;
+      const d = new Date();
+      let currentYear = previousData.year_val.toString().slice(2);
+      let previousYear = currentYear - 1;
+      let months = d.getMonth(); 
+      let total = 0;
+      for(let i=0; i< monthsOfTheYear.length; i++) {
+        if (radioValue == 1) {
+          let key = monthsOfTheYear[i]+currentYear;
+          if(previousData[key]) {
+            total = total+ previousData[key];
+          }
+        
+        } else {
+          let key = monthsOfTheYear[i]+currentYear+"E";
+          if(previousData[key]) {
+            total = total+ previousData[key];
+          }
+        }
+        
+      }
+      if(total == 0) {
+        return ''
+      } else {
+        return total
       }
     } else {
-      return 0;
+      return ''
+    }
+  };
+
+  const getYTDSelloutGrowthPercCalc = (params) => {
+    if(params.data){
+      let previousYearData = params.data.PreviousYearData;
+
+      let currentYearData = params.data;
+
+      if (previousYearData) {
+        let percentageOfGrowth = 0;
+
+        let totalOfCurrentYearGrowth = yTDSelloutCurrntYear(params);
+
+        let yearCustom = previousYearData.year_val;
+
+        let selectedValueString = yearCustom.toString();
+
+        let choppedOffYear = selectedValueString.slice(
+          2,
+          selectedValueString.length
+        );
+
+        let customizedYearMonths = [];
+
+        monthsOfTheYear.forEach((element) => {
+          customizedYearMonths.push(element + choppedOffYear);
+        });
+
+        let tempTotalPreviousYear = 0;
+
+        customizedYearMonths.map((item) => {
+          if (item in previousYearData) {
+            tempTotalPreviousYear = tempTotalPreviousYear+ previousYearData[item];
+          }
+        });
+        if (tempTotalPreviousYear > 0 && totalOfCurrentYearGrowth > 0) {
+          let tempTotalDiff = totalOfCurrentYearGrowth - tempTotalPreviousYear;
+
+          let tempDivision = tempTotalDiff / tempTotalPreviousYear;
+
+          percentageOfGrowth = tempDivision * 100;
+
+          return percentageOfGrowth;
+        } else {
+          return percentageOfGrowth;
+        }
+      } else {
+        return 0;
+      }
     }
   };
 
   const getPreviousYearMonthVal = (params, monthsYearPrev) => {
-    if(radioValue == 1) {
-      monthsYearPrev = monthsYearPrev;
-    } else {
-      monthsYearPrev = monthsYearPrev+'E';
-    }
-    if (params.data.PreviousYearData) {
-      if (monthsYearPrev in params.data.PreviousYearData) {
-        return params.data.PreviousYearData[monthsYearPrev];
+    if(params.data){
+      if(radioValue == 1) {
+        monthsYearPrev = monthsYearPrev;
+      } else {
+        monthsYearPrev = monthsYearPrev+'E';
       }
-    } else {
-      return "";
+      if (params.data.PreviousYearData) {
+        if (monthsYearPrev in params.data.PreviousYearData) {
+          return params.data.PreviousYearData[monthsYearPrev];
+        }
+      } else {
+        return "";
+      }
     }
   };
 

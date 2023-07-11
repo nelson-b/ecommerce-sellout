@@ -295,8 +295,7 @@ function DataInputComponent(props) {
       cellClass: "no-border",
 
       editable: false,
-
-      width: 100,
+      minWidth: 70, suppressMenu: true, suppressSizeToFit: true, width: 70,
     },
 
     {
@@ -311,8 +310,6 @@ function DataInputComponent(props) {
       pinned: "left",
 
       suppressNavigable: true,
-
-      width: 140,
 
       suppressSizeToFit: true,
 
@@ -338,11 +335,10 @@ function DataInputComponent(props) {
 
       pinned: "left",
 
-      width: 270,
-
       suppressSizeToFit: true,
 
       editable: false,
+      minWidth: 180, suppressMenu: true, suppressSizeToFit: true, width: 180,
     },
 
     {
@@ -380,8 +376,6 @@ function DataInputComponent(props) {
 
       pinned: "left",
 
-      width: 120,
-
       suppressSizeToFit: true,
 
       editable: false,
@@ -391,8 +385,6 @@ function DataInputComponent(props) {
       headerName: "Currency of Reporting",
 
       field: "Currency_Of_Reporting",
-
-      width: 140,
 
       editable: false,
 
@@ -406,8 +398,6 @@ function DataInputComponent(props) {
 
       field: "Status",
 
-      width: 110,
-
       pinned: "left",
 
       editable: false,
@@ -416,20 +406,17 @@ function DataInputComponent(props) {
 
       cellRenderer: (params) => {
         const Status = params.value;
-
         return (
           <div>
             {Status === "ACTIVE" && (
               <img src={active} alt="active" style={{ width: "80px" }} />
             )}
-
             {Status === "ClOSED" && (
               <img src={closed} alt="closed" style={{ width: "80px" }} />
             )}
-			{Status === "REJECT" && (
+			      {Status === "REJECT" && (
               <img src={rejected} alt="rejected" style={{ width: "80px" }} />
             )}
-			
           </div>
         );
       },
@@ -448,7 +435,7 @@ function DataInputComponent(props) {
 
       editable: true,
 
-      minWidth: 50,
+      minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
 
       suppressSizeToFit: true,
 

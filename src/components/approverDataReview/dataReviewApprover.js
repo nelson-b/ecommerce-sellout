@@ -180,6 +180,7 @@ function DataReviewApprover(props) {
       suppressSizeToFit: true,
 
       editable: false,
+      minWidth: 180, suppressMenu: true, suppressSizeToFit: true, width: 180,
     },
 
     {
@@ -188,7 +189,7 @@ function DataReviewApprover(props) {
 
       pinned: "left",
 
-      width: 140,
+      //width: 140,
 
       editable: false,
 
@@ -202,7 +203,7 @@ function DataReviewApprover(props) {
 
       pinned: "left",
 
-      width: 110,
+      //width: 110,
 
       suppressMenu: true,
 
@@ -954,7 +955,7 @@ function DataReviewApprover(props) {
 
         pinned: "left",
 
-        width: 140,
+        //width: 140,
 
         editable: false,
 
@@ -966,7 +967,7 @@ function DataReviewApprover(props) {
 
         field: "status",
         pinned: "left",
-        width: 110,
+        //width: 110,
 
         suppressMenu: true,
 
@@ -1438,13 +1439,13 @@ console.log('tempTotal:::', tempTotal);
       suppressSizeToFit: true,
 
       suppressMenuHide: true,
+      minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
     };
   }, []);
 
   const autoGroupColumnDef = useMemo(() => {
     return {
-      width: 180,
-
+      minWidth: 140, suppressMenu: true, suppressSizeToFit: true, width: 140,
       filterValueGetter: (params) => {
         if (params.node) {
           var colGettingGrouped = params.colDef.showRowGroup + "";
@@ -1900,8 +1901,6 @@ console.log('tempTotal:::', tempTotal);
                   </option>
 
                   <option value="Model">Model</option>
-
-                 // <option value="Partner">Partner</option>
                 </Form.Select>
               </Col>
             </Row>

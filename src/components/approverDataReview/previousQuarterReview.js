@@ -207,7 +207,7 @@ function PartnerQuarterApprover(props) {
       field: "zone_val",
       headerName: "Zone",
       filter: true,
-      width: 140,
+      width: 130,
       pinned: "left",
       suppressSizeToFit: true,
 
@@ -245,7 +245,7 @@ function PartnerQuarterApprover(props) {
 
       pinned: "left",
 
-      width: 170,
+      width: 200,
 
       suppressSizeToFit: true,
     },
