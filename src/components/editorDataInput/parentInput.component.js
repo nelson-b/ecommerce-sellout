@@ -294,7 +294,7 @@ function DataInputComponent(props) {
 
       editable: false,
 
-	  minWidth: 70, suppressMenu: true, suppressSizeToFit: true, width: 70,
+	    suppressSizeToFit: true, width: 90,
 	  
     },
 
@@ -316,6 +316,7 @@ function DataInputComponent(props) {
       cellClass: "no-border",
 
       editable: false,
+      width: 110,
     },
 
     {
@@ -335,7 +336,7 @@ function DataInputComponent(props) {
 
       pinned: "left",
 
-	  minWidth: 180, suppressMenu: true, suppressSizeToFit: true, width: 180,
+	    suppressSizeToFit: true, width: 200,
 
       suppressSizeToFit: true,
 
@@ -380,6 +381,7 @@ function DataInputComponent(props) {
       suppressSizeToFit: true,
 
       editable: false,
+      width: 100,
     },
 
     {
@@ -390,8 +392,6 @@ function DataInputComponent(props) {
       editable: false,
 
       pinned: "left",
-
-      suppressMenu: true,
     },
 
     {
@@ -402,9 +402,7 @@ function DataInputComponent(props) {
       pinned: "left",
 
       editable: false,
-
-      suppressMenu: true,
-
+      suppressSizeToFit: true, width: 100,
       cellRenderer: (params) => {
         const Status = params.value;
 
@@ -440,7 +438,7 @@ function DataInputComponent(props) {
 
       editable: true,
 
-	    minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
+	    suppressSizeToFit: true, width: 120,
 
       suppressSizeToFit: true,
 

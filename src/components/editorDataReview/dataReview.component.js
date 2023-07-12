@@ -129,7 +129,7 @@ function DataReviewComponent(props) {
     {
       headerName: "Partner Account Name",
       field: "partner_account_name",
-      minWidth: 180, suppressMenu: true, suppressSizeToFit: true, width: 180,
+      suppressSizeToFit: true, width: 200,
       filter: true,
       pinned: "left",
       suppressSizeToFit: true,
@@ -140,13 +140,12 @@ function DataReviewComponent(props) {
       field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
       pinned: "left",
       editable: false,
-      suppressMenu: true,
     },
     {
       headerName: "Status",
       field: "status",
       pinned: "left",
-      suppressMenu: true,
+      suppressSizeToFit: true, width: 100,
       cellRenderer: (params) => {
         const Status = params.value;
         return (
@@ -191,7 +190,7 @@ function DataReviewComponent(props) {
 
       suppressSizeToFit: true,
 	  
-	  minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
+	    suppressSizeToFit: true, width: 120,
     };
   }, []);
 
@@ -597,7 +596,7 @@ function DataReviewComponent(props) {
 
   const autoGroupColumnDef = useMemo(() => {
     return {
-	  minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
+	  suppressSizeToFit: true, width: 110,
 	  
       filterValueGetter: (params) => {
         if (params.node) {

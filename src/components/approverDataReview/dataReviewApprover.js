@@ -160,7 +160,6 @@ function DataReviewApprover(props) {
     {
       headerName: "Partner Account Name",
       field: "partner_account_name",
-      //rowGroup: true,
 
       checkboxSelection: (params) => {
         if (params.data) {
@@ -170,8 +169,6 @@ function DataReviewApprover(props) {
         }
       },
 
-      //hide: true,
-
       filter: true,
 
       pinned: "left",
@@ -179,7 +176,7 @@ function DataReviewApprover(props) {
       suppressSizeToFit: true,
 
       editable: false,
-	  minWidth: 180, suppressMenu: true, suppressSizeToFit: true, width: 180,
+	    suppressSizeToFit: true, width: 200,
     },
 
     {
@@ -188,11 +185,7 @@ function DataReviewApprover(props) {
 
       pinned: "left",
 
-      //width: 140,
-
       editable: false,
-
-      suppressMenu: true,
     },
 
     {
@@ -201,11 +194,7 @@ function DataReviewApprover(props) {
       field: "status",
 
       pinned: "left",
-
-      //width: 110,
-
-      suppressMenu: true,
-
+      minWidth: 100, suppressSizeToFit: true, width: 100,
       cellRenderer: (params) => {
         const Status = params.value;
 
@@ -979,6 +968,7 @@ function DataReviewApprover(props) {
         suppressSizeToFit: true,
 
         editable: false,
+
       },
 
       {
@@ -987,11 +977,7 @@ function DataReviewApprover(props) {
 
         pinned: "left",
 
-        //width: 140,
-
-        editable: false,
-
-        suppressMenu: true,
+        editable: false
       },
 
       {
@@ -1523,7 +1509,7 @@ function DataReviewApprover(props) {
       },
 
       flex: 1,
-	  minWidth: 100, suppressMenu: true, suppressSizeToFit: true, width: 100,
+	    width: 120,
       resizable: true,
 
       filter: true,
@@ -1531,8 +1517,6 @@ function DataReviewApprover(props) {
       sortable: true,
 
       suppressSizeToFit: true,
-
-      suppressMenuHide: true,
     };
   }, []);
 
@@ -1547,7 +1531,7 @@ function DataReviewApprover(props) {
       },
 
       pinned: "left",
-	  minWidth: 140, suppressMenu: true, suppressSizeToFit: true, width: 140,
+	    suppressSizeToFit: true, width: 120,
       cellRenderer: "agGroupCellRenderer",
 
       cellRendererParams: {
@@ -1792,19 +1776,6 @@ function DataReviewApprover(props) {
         }
       });
     } else {
-      /*
-	else if (e.target.value === "Partner") {
-      gridRef.current.api.forEachNode((node) => {
-        if (
-          node.level === 0 ||
-          node.level === 1 ||
-          node.level === 2 ||
-          node.level === 3
-        ) {
-          gridRef.current.api.setRowNodeExpanded(node, true);
-        }
-      });
-    } */
       gridRef.current.api.collapseAll();
     }
   }, []);
