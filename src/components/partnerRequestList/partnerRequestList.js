@@ -615,7 +615,7 @@ function PartnerRequestList(props) {
               .then((data) => {
                 setRowData(
                   data.data.filter(
-                    (e) => e.status.toUpperCase() == status.pending
+                    (e) => e.status == "PENDING" || e.status == "EDITED"
                   )
                 );
               })

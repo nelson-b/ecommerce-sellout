@@ -174,6 +174,9 @@ function PartnerList(props) {
             {Status === "EDITED" && (
               <img src={updated} alt="updated" style={{ width: "80px" }} />
             )}
+            {Status === "PENDING" && (
+              <img src={Pending} alt="Pending" style={{ width: "80px" }} />
+            )}
           </div>
         );
       },
@@ -371,8 +374,15 @@ function PartnerList(props) {
       .then((data) => {
         previousAPIData = data?.data;
         let tempRole = usrDetails.role_id;
-        setRowData(data.data.filter((e) => e.status == "PENDING" || e.status == "EDITED" || e.status == "ACTIVE"));
-
+        setRowData(
+          data.data.filter(
+            (e) =>
+              e.status == "PENDING" ||
+              e.status == "EDITED" ||
+              e.status == "ACTIVE" ||
+              e.status == "REJECT"
+          )
+        );
 
         if (usrDetails.role_id == roles.supervisor.toUpperCase()) {
           tempRole = "SUPERVISOR";

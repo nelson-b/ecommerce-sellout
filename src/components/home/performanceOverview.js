@@ -24,7 +24,7 @@ function PerformanceOverview({ selloutAccuracy }) {
                 <Card.Title className="card-header">
                   YTD Performance Vs Target
                 </Card.Title>
-                <Card.Text className="card-body-header">6%
+                <Card.Text className="card-body-header">{selloutAccuracy.ytd_performance_vs_target}
                 <img src={upArrow} alt="Arrow" style={{ height: "20px",width: "20px", margin: "10px 0px 0px 7px"}} />
                 </Card.Text>
               </Card.Body>

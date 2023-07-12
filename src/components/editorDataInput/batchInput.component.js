@@ -269,7 +269,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
                     let amountRounded = String(rowNode[`${element}_Amount`]);
                     monthArray.push({
                       month: element.toLowerCase(),
-                      sellout_local_currency: parseFloat(amountRounded).toFixed(2),
+                      sellout_local_currency: parseFloat(amountRounded).toFixed(),
                       trans_type:
                         rowNode[`${element}_Estimated`] == true ? "EST" : "ACT",
                     });

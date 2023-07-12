@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState, useRef, useEffect } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 import { connect } from "react-redux";
 import MyMenu from "../menu/menu.component.js";
 import { Container, Row, Col, Button } from "react-bootstrap";
@@ -12,14 +18,14 @@ import superOverview from "../../data/superOverview.json";
 import footerTotalReview from "../editorDataReview/footerTotalReview";
 import { roles, user_login_info } from "../constant.js";
 import { retrieveDashoboardData } from "../../actions/selloutaction.js";
+import { allCalMonths, quarters } from "../constant";
 
 function Home(props) {
   const gridRef = useRef();
   const navigate = useNavigate();
   //sso login func
-  const [userEmail, setUserEmail] = useState('');
-  const [userRole, setuserRole] = useState('');
-
+  const [userEmail, setUserEmail] = useState("");
+  const [userRole, setuserRole] = useState("");
 
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
@@ -27,13 +33,14 @@ function Home(props) {
     if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
-      if (usrDetails.role_id === roles.editor.toUpperCase() ||
+      if (
+        usrDetails.role_id === roles.editor.toUpperCase() ||
         usrDetails.role_id === roles.backup_editor.toUpperCase() ||
         usrDetails.role_id === roles.approve_1.toUpperCase() ||
         usrDetails.role_id === roles.approver_2.toUpperCase() ||
-        usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
-      }
-      else {
+        usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()
+      ) {
+      } else {
         navigate("/");
       }
     }
@@ -72,15 +79,15 @@ function Home(props) {
   };
 
   const goToGym = (params) => {
-    if(params?.data) {
-      let getValue = params?.data['sellout_growth_vs_last_year'];
-      let splitVal = getValue.split('%');
+    if (params?.data) {
+      let getValue = params?.data["sellout_growth_vs_last_year"];
+      let splitVal = getValue.split("%");
       let onlyNumber = Number(splitVal[0]);
-      return onlyNumber
+      return onlyNumber;
     } else {
-      return ''
+      return "";
     }
-  }
+  };
 
   const getValueFormatter = (params) => {
     if (params.value) {
@@ -92,62 +99,23 @@ function Home(props) {
 
   const calcSellOutCurrYTDvsLYYTD = (params) => {
     if (params.data != undefined) {
-      params.data['sellout_growth_vs_last_year'] = Math.round((
-        (params.data['sum_sellout'] - params.data.LY_YTD_Sellout_Value_In_K_EUR)
-        / params.data.LY_YTD_Sellout_Value_In_K_EUR) * 100);
+      params.data["sellout_growth_vs_last_year"] = Math.round(
+        ((params.data["sum_sellout"] -
+          params.data.LY_YTD_Sellout_Value_In_K_EUR) /
+          params.data.LY_YTD_Sellout_Value_In_K_EUR) *
+          100
+      );
 
       return params.data["Sellout Growth Vs Last Year"];
+    } else {
+      return Math.round(
+        ((params.node.aggData["YTD Sellout Value (In K EUR)"] -
+          params.node.aggData.LY_YTD_Sellout_Value_In_K_EUR) /
+          params.node.aggData.LY_YTD_Sellout_Value_In_K_EUR) *
+          100
+      );
     }
-    else {
-      return Math.round((
-        (params.node.aggData["YTD Sellout Value (In K EUR)"] - params.node.aggData.LY_YTD_Sellout_Value_In_K_EUR)
-        / params.node.aggData.LY_YTD_Sellout_Value_In_K_EUR) * 100);
-    }
-  }
-
-  const editorRowData = [{
-    sellout_accuracy: 0.998084976153105,
-    response_data: [
-      {
-        country_name: "Cambodia",
-        country_code: "KHM",
-        models: [
-          {
-            model_type: "E1 - Dist",
-            partners_account_to_complete: 10,
-            rejected_partners_account: 6,
-            sum_sellout: 47.309999999999995,
-          },
-          {
-            model_type: "E2 - ET",
-            partners_account_to_complete: 10,
-            rejected_partners_account: 6,
-            sum_sellout: 0,
-          }
-        ],
-        total: 47.419999999999995
-      },
-      {
-        country_name: "Canada",
-        country_code: "CAN",
-        models: [
-          {
-            model_type: "E1 - Dist",
-            partners_account_to_complete: 10,
-            rejected_partners_account: 6,
-            sum_sellout: 47.309999999999995,
-          },
-          {
-            model_type: "E2 - ET",
-            partners_account_to_complete: 10,
-            rejected_partners_account: 6,
-            sum_sellout: 0,
-          }
-        ],
-        total: 47.419999999999995
-      }
-    ]
-  }]
+  };
 
   const editorColDefs = [
     {
@@ -163,7 +131,7 @@ function Home(props) {
           headerName: "Modal",
           field: "model_type",
         },
-      ]
+      ],
     },
     {
       headerName: "YTD Sellout Value (In K EUR)",
@@ -172,7 +140,7 @@ function Home(props) {
       aggFunc: "sum",
       minWidth: 160,
       cellClass: "grid-cell-centered",
-      cellStyle: { 'borderRightColor': '#e2e2e2' },
+      cellStyle: { borderRightColor: "#e2e2e2" },
     },
     {
       headerName: "Sellout Growth Vs Last Year",
@@ -183,9 +151,17 @@ function Home(props) {
       cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold", 'borderRightColor': '#e2e2e2' };
+          return {
+            color: "#ff0000",
+            fontWeight: "bold",
+            borderRightColor: "#e2e2e2",
+          };
         } else if (params.value > "0") {
-          return { color: "#009530", fontWeight: "bold", 'borderRightColor': '#e2e2e2' };
+          return {
+            color: "#009530",
+            fontWeight: "bold",
+            borderRightColor: "#e2e2e2",
+          };
         } else {
           return null;
         }
@@ -206,11 +182,23 @@ function Home(props) {
       cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
-          return { color: "#e47f00", fontWeight: "bold", 'borderRightColor': '#e2e2e2' };
+          return {
+            color: "#e47f00",
+            fontWeight: "bold",
+            borderRightColor: "#e2e2e2",
+          };
         } else if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold", 'borderRightColor': '#e2e2e2' };
+          return {
+            color: "#ff0000",
+            fontWeight: "bold",
+            borderRightColor: "#e2e2e2",
+          };
         } else if (params.value == 0) {
-          return { color: "#009530", fontWeight: "bold", 'borderRightColor': '#e2e2e2' };
+          return {
+            color: "#009530",
+            fontWeight: "bold",
+            borderRightColor: "#e2e2e2",
+          };
         } else {
           return null;
         }
@@ -234,7 +222,7 @@ function Home(props) {
           return null;
         }
       },
-    }
+    },
   ];
 
   const approverColDefs = [
@@ -251,10 +239,10 @@ function Home(props) {
         },
         {
           headerName: "Modal",
-           field: "model_type",
+          field: "model_type",
           // rowGroup: true,
-          // hide: true,   
-        }
+          // hide: true,
+        },
       ],
     },
     {
@@ -275,9 +263,17 @@ function Home(props) {
       cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold", 'borderRightColor': '#e2e2e2' };
+          return {
+            color: "#ff0000",
+            fontWeight: "bold",
+            borderRightColor: "#e2e2e2",
+          };
         } else if (params.value > "0") {
-          return { color: "#009530", fontWeight: "bold", 'borderRightColor': '#e2e2e2' };
+          return {
+            color: "#009530",
+            fontWeight: "bold",
+            borderRightColor: "#e2e2e2",
+          };
         } else {
           return null;
         }
@@ -292,11 +288,23 @@ function Home(props) {
       cellClass: "grid-cell-centered",
       cellStyle: function (params) {
         if (params.value > "0") {
-          return { color: "#e47f00", fontWeight: "bold", 'borderRightColor': '#e2e2e2' };
+          return {
+            color: "#e47f00",
+            fontWeight: "bold",
+            borderRightColor: "#e2e2e2",
+          };
         } else if (params.value < "0") {
-          return { color: "#ff0000", fontWeight: "bold", 'borderRightColor': '#e2e2e2' };
+          return {
+            color: "#ff0000",
+            fontWeight: "bold",
+            borderRightColor: "#e2e2e2",
+          };
         } else if (params.value == 0) {
-          return { color: "#009530", fontWeight: "bold", 'borderRightColor': '#e2e2e2' };
+          return {
+            color: "#009530",
+            fontWeight: "bold",
+            borderRightColor: "#e2e2e2",
+          };
         } else {
           return null;
         }
@@ -320,7 +328,6 @@ function Home(props) {
           return null;
         }
       },
-
     },
   ];
 
@@ -333,13 +340,13 @@ function Home(props) {
       resizable: true,
       flex: 1,
       minWidth: 150,
-      cellStyle: { 'borderRightColor': '#e2e2e2' },
+      cellStyle: { borderRightColor: "#e2e2e2" },
     };
   }, []);
 
   const defaultExcelExportParams = useMemo(() => {
     return {
-       headerName: "Country",
+      headerName: "Country",
       allColumns: true,
       cellRendererParams: {
         suppressCount: true,
@@ -355,7 +362,16 @@ function Home(props) {
   };
 
   let year = new Date().getFullYear();
-  let month = "jan"
+
+  const currentDate = new Date();
+  const currentMonthIndex = currentDate.getMonth();
+  const previousMonthIndex = (currentMonthIndex + 11) % 12;
+  const previousMonth = allCalMonths[previousMonthIndex];
+  const monthArray = [previousMonth];
+
+  const currentQuarter = Math.floor((currentDate.getMonth() + 3) / 3);
+  const previousQuarter = currentQuarter - 1 === 0 ? 4 : currentQuarter - 1;
+  const previousQuarterMonths = quarters[`Q${previousQuarter}`];
 
   const onGridReady = useCallback((params) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
@@ -363,34 +379,47 @@ function Home(props) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
     }
+    let dashboard = [];
+    if (usrDetails.role_id === roles.editor.toUpperCase()) {
+      dashboard = monthArray;
+    } else {
+      dashboard = previousQuarterMonths;
+    }
     props
-      .retrieveDashoboardData(usrDetails.email_id, usrDetails.role_id, year, month)
+      .retrieveDashoboardData(
+        usrDetails.email_id,
+        usrDetails.role_id,
+        year,
+        dashboard
+      )
       .then((data) => {
         let customizedArrayForGrid = [];
-        if(data.response_data.length>0) {
+        if (data.response_data.length > 0) {
           setSelloutAccuracy(data);
 
-          for(let i = 0; i< data.response_data.length; i++){
+          for (let i = 0; i < data.response_data.length; i++) {
             let elementArray = data.response_data[i];
-            elementArray?.models.forEach(eleFModelForMod => {
+            elementArray?.models.forEach((eleFModelForMod) => {
               let obj = {
                 country_name: elementArray.country_name,
-                model_type:eleFModelForMod.model_type,
+                model_type: eleFModelForMod.model_type,
                 sum_sellout: eleFModelForMod.sum_sellout,
-                sellout_growth_vs_last_year: eleFModelForMod.sellout_growth_vs_last_year,
-                partners_account_to_complete: eleFModelForMod.partners_account_to_complete,
-                rejected_partners_account: eleFModelForMod.rejected_partners_account,
-                partner_accounts_completed_approver: eleFModelForMod.partner_accounts_completed_approver
-              }
+                sellout_growth_vs_last_year:
+                  eleFModelForMod.sellout_growth_vs_last_year,
+                partners_account_to_complete:
+                  eleFModelForMod.partners_account_to_complete,
+                rejected_partners_account:
+                  eleFModelForMod.rejected_partners_account,
+                partner_accounts_completed_approver:
+                  eleFModelForMod.partner_accounts_completed_approver,
+              };
               customizedArrayForGrid.push(obj);
             });
-         
           }
-           setRowData(customizedArrayForGrid);
+          setRowData(customizedArrayForGrid);
         } else {
           setRowData([]);
         }
-       
       })
       .catch((e) => {
         console.log(e);
@@ -431,7 +460,7 @@ function Home(props) {
                     Previous Data Approval
                   </Button>
                 </Col>
-              ) : (props.role === "approve_1" || props.role === "approver_2") ? (
+              ) : props.role === "approve_1" || props.role === "approver_2" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"
@@ -468,7 +497,7 @@ function Home(props) {
                     BU Split
                   </Button>
                 </Col>
-              ) : (props.role === "approve_1" || props.role === "approver_2") ? (
+              ) : props.role === "approve_1" || props.role === "approver_2" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-approve save-header"
@@ -505,7 +534,7 @@ function Home(props) {
                     Partner Data
                   </Button>
                 </Col>
-              ) : (props.role === "approve_1" || props.role === "approver_2") ? (
+              ) : props.role === "approve_1" || props.role === "approver_2" ? (
                 <Col xs="auto">
                   <Button
                     className="btn-data save-header"
@@ -542,7 +571,7 @@ function Home(props) {
                     User Data
                   </Button>
                 </Col>
-              ) : (props.role === "approve_1" || props.role === "approver_2") ? (
+              ) : props.role === "approve_1" || props.role === "approver_2" ? (
                 <Col>
                   <Button
                     className="btn-data save-header"
@@ -585,15 +614,15 @@ function Home(props) {
                 props.role === "supervisor_approv_1_2"
                   ? rowData
                   : props.role === "approve_1" || props.role === "approver_2"
-                    ? rowData
-                    : rowData
+                  ? rowData
+                  : rowData
               }
               columnDefs={
                 props.role === "supervisor_approv_1_2"
                   ? editorColDefs
                   : props.role === "approve_1" || props.role === "approver_2"
-                    ? approverColDefs
-                    : editorColDefs
+                  ? approverColDefs
+                  : editorColDefs
               }
               defaultColDef={defaultColDef}
               autoGroupColumnDef={defaultExcelExportParams}

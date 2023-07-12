@@ -97,6 +97,7 @@ function PartnerComponent(props) {
   const {
     register,
     handleSubmit,
+    clearErrors,
     setValue,
     formState: { errors },
   } = useForm({
@@ -317,7 +318,55 @@ function PartnerComponent(props) {
     reqData,
     isCreateScreen
   ) => {
+    
+    // let reqUserPartConfData = {
+    //   partner_id: partner_id,
+    //   role_id: userRoleData,
+    //   country_code: reqData.country_code,
+    //   email_id: userEmail, //login user email
+    //   created_by: userEmail, //login user email
+    //   created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+    //   updated_by: userEmail, //login user email
+    //   editor: reqData.editor? reqData.editor :"",
+    //   backup_editor: reqData.backupEditor?reqData.backupEditor : "", 
+    //   approve_1: reqData.approver1?reqData.approver1: "",
+    //   approver_2: reqData.approver2?reqData.approver2: "",
+    //   supervisor: "", //super usr
+    //   supervisor_approv_1_2: "", //super approver usr
+    // };
+
+    let obj = {};
+    if(userRoleData == 'EDITOR') {
+      obj.editor= userEmail;
+      obj.backup_editor = '';
+      obj.approve_1 = '';
+      obj.approver_2 = '';
+    }
+   else if(userRoleData == 'APPROVE_1') {
+      obj.editor= '';
+      obj.backup_editor = '';
+      obj.approve_1 = userEmail;
+      obj.approver_2 = '';
+    }
+   else if(userRoleData == 'APPROVER_2') {
+      obj.editor= '';
+      obj.backup_editor = '';
+      obj.approve_1 = '';
+      obj.approver_2 = userEmail;
+    }
+   else if(userRoleData == 'BACKUP_EDITOR') {
+      obj.editor= '';
+      obj.backup_editor = userEmail;
+      obj.approve_1 = '';
+      obj.approver_2 = '';
+    } else {
+      obj.editor= reqData.editor;
+      obj.backup_editor = reqData.backupEditor;
+      obj.approve_1 = reqData.approver1;
+      obj.approver_2 = reqData.approver2;
+    }
     let reqUserPartConfData = {
+      ...obj,
       partner_id: partner_id,
       role_id: userRoleData,
       country_code: reqData.country_code,
@@ -325,10 +374,6 @@ function PartnerComponent(props) {
       created_by: userEmail, //login user email
       created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
       updated_by: userEmail, //login user email
-      editor: reqData.editor,
-      backup_editor: reqData.backupEditor,
-      approve_1: reqData.approver1,
-      approver_2: reqData.approver2,
       supervisor: "", //super usr
       supervisor_approv_1_2: "", //super approver usr
     };
@@ -438,7 +483,10 @@ function PartnerComponent(props) {
                 if (
                   userRoleData == roles.supervisor.toUpperCase() ||
                   userRoleData == roles.supervisor_approv_1_2.toUpperCase() ||
-                  userRoleData == roles.admin.toUpperCase()
+                  userRoleData == roles.admin.toUpperCase() ||
+                  userRoleData == roles.editor.toUpperCase()||  
+                  userRoleData == roles.approve_1.toUpperCase() || 
+                  userRoleData == roles.approver_2.toUpperCase()
                 ) {
                   //call get by id api
                   props
@@ -577,6 +625,10 @@ function PartnerComponent(props) {
     navigate(`/partner/list?role=${userRoleData}`);
   };
 
+  const updateForm = useCallback((e) => {
+    console.log("updateForm", e);
+    console.log("updateForm", partnerData);
+  }, []);
 
   return (
     <Container fluid>

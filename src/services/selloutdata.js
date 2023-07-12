@@ -13,7 +13,7 @@ class SellOutDataService {
 
   getDashboardData(mail, role, year, month) {
     return http.get(
-      `/ecomm-sellout-dev-lamda-createpartner/get-dashboard?email_id=${mail}&role_id=${role}&year=${year}&month=${month}`
+      `/ecomm-sellout-dev-lamda-createpartner/get-dashboard?email_id=${mail}&role_id=${role}&year=${year}&month=${JSON.stringify(month)}`
     );
   }
 

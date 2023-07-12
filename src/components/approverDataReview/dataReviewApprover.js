@@ -138,25 +138,16 @@ function DataReviewApprover(props) {
       suppressSizeToFit: true,
       editable: false,
     },
-
     {
       headerName: "Model",
-
       field: "model_type",
-
       rowGroup: true,
-
       hide: true,
-
       filter: true,
-
       pinned: "left",
-
       suppressSizeToFit: true,
-
       editable: false,
     },
-
     {
       headerName: "Partner Account Name",
       field: "partner_account_name",
@@ -170,11 +161,8 @@ function DataReviewApprover(props) {
       },
 
       filter: true,
-
       pinned: "left",
-
       suppressSizeToFit: true,
-
       editable: false,
 	    suppressSizeToFit: true, width: 200,
     },
@@ -182,7 +170,6 @@ function DataReviewApprover(props) {
     {
       headerName: "Currency of Reporting",
       field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
-
       pinned: "left",
 
       editable: false,
@@ -288,6 +275,7 @@ function DataReviewApprover(props) {
             obj.created_date = item.created_date;
             obj.approval_status = item.approval_status;
             obj.batch_upload_flag = item.batch_upload_flag;
+            
             item.months.map((each) => {
               if (each.month_val === "jan") {
                 obj["Jan" + itemYear] = each.sellout_local_currency;
@@ -432,9 +420,9 @@ function DataReviewApprover(props) {
           obj.batch_upload_flag = item.batch_upload_flag;
           item.months.map((each) => {
             let amountRounded = String(each.sellout_local_currency);
-            let floatedAmount = parseFloat(amountRounded).toFixed(2);
+            let floatedAmount = parseFloat(amountRounded).toFixed();
             let amountRoundedEuro = String(each.sellout);
-            let floatedAmountEuro = parseFloat(amountRoundedEuro).toFixed(2);
+            let floatedAmountEuro = parseFloat(amountRoundedEuro).toFixed();
             if (each.month_val === "jan") {
               obj["Jan" + itemYear] = floatedAmount;
               obj["Jan" + itemYear + "E"] = floatedAmountEuro;
@@ -506,14 +494,13 @@ function DataReviewApprover(props) {
           for (let j = 0; j < combinedArray.length; j++) {
             newArrC.push(combinedArray[j]);
           }
-
-          setReviewData(newArrC);
+          setReviewData(newArrC.filter((e) => e.status == "EDITED" || e.status == "ACTIVE" || e.status == "REJECT"));
         } else {
           let newArr = [];
           for (let i = 0; i < currentYearArray.length; i++) {
             newArr.push(currentYearArray[i]);
           }
-          setReviewData(newArr);
+          setReviewData(newArr.filter((e) => e.status == "EDITED" || e.status == "ACTIVE" || e.status == "REJECT"));
         }
       })
       .catch((e) => {
@@ -908,87 +895,53 @@ function DataReviewApprover(props) {
     gridRef.current.api.setColumnDefs([
       {
         headerName: "Zone",
-
         field: "zone_val",
-
         rowGroup: true,
-
         hide: true,
       },
-
       {
         headerName: "Country",
-
         field: "country_code",
-
         rowGroup: true,
-
         hide: true,
-
         filter: true,
-
         pinned: "left",
-
         suppressSizeToFit: true,
-
-        editable: false,
+        editable: false, 
       },
-
       {
         headerName: "Model",
-
         field: "model_type",
-
         rowGroup: true,
-
         hide: true,
-
         filter: true,
-
         pinned: "left",
-
         suppressSizeToFit: true,
-
-        editable: false,
+        editable: false, 
       },
-
       {
         headerName: "Partner Account Name",
-
         field: "partner_account_name",
-
         rowGroup: true,
-
         hide: true,
-
         filter: true,
-
         pinned: "left",
-
         suppressSizeToFit: true,
-
         editable: false,
-
       },
-
       {
         headerName: "Currency of Reporting",
         field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
-
         pinned: "left",
 
         editable: false
       },
-
       {
         headerName: "Status",
-
         field: "status",
         pinned: "left",
-        //width: 110,
 
         suppressMenu: true,
-
         cellRenderer: (params) => {
           const Status = params.value;
 
@@ -1246,14 +1199,15 @@ function DataReviewApprover(props) {
         selectedValueString.length
       );
       let customizedQuarterMonths = [];
+      let currentMonth = new Date().getMonth();
       if (radioValue == 1) {
-        monthsOfTheYear.forEach((element) => {
-          customizedQuarterMonths.push(element + choppedOffYear);
-        });
+        for(let i = 0; i< currentMonth; i++) {
+          customizedQuarterMonths.push(monthsOfTheYear[i] + choppedOffYear);
+        }
       } else {
-        monthsOfTheYear.forEach((element) => {
-          customizedQuarterMonths.push(element + choppedOffYear + "E");
-        });
+        for(let i = 0; i< currentMonth; i++) {
+          customizedQuarterMonths.push(monthsOfTheYear[i] + choppedOffYear+'E');
+        }
       }
 
       let tempTotal = 0;
@@ -1296,7 +1250,7 @@ function DataReviewApprover(props) {
       let previousYear = currentYear - 1;
       let months = d.getMonth();
       let total = 0;
-      for (let i = 0; i < monthsOfTheYear.length; i++) {
+      for (let i = 0; i < months; i++) {
         if (radioValue == 1) {
           let key = monthsOfTheYear[i] + currentYear;
           if (previousData[key]) {
@@ -1321,7 +1275,7 @@ function DataReviewApprover(props) {
 
   const getValueFormatter2 = (params) => {
     if (params.value) {
-      return params.value.toFixed(2);
+      return params.value.toFixed();
     } else if (params.value == 0 || params.value == "0") {
       return params.value;
     } else {
@@ -1337,18 +1291,22 @@ function DataReviewApprover(props) {
       let totalOfCurrentYearGrowth = getTotalYTDSellOutGrowthCalc(params);
       let yearCustom = previousYearData.year_val;
       let selectedValueString = yearCustom.toString();
-      let choppedOffYear = selectedValueString.slice(
-        2,
-        selectedValueString.length
-      );
+      let choppedOffYear = selectedValueString.slice(2,selectedValueString.length);
       let customizedYearMonths = [];
-      monthsOfTheYear.forEach((element) => {
-        customizedYearMonths.push(element + choppedOffYear);
-      });
+      let currentMonth = new Date().getMonth();
+      if (radioValue == 1) {
+        for(let i = 0; i< currentMonth; i++) {
+          customizedYearMonths.push(monthsOfTheYear[i] + choppedOffYear);
+        }
+      } else {
+        for(let i = 0; i< currentMonth; i++) {
+          customizedYearMonths.push(monthsOfTheYear[i] + choppedOffYear+'E');
+        }
+      }
       let tempTotalPreviousYear = 0;
       customizedYearMonths.map((item) => {
         if (item in previousYearData) {
-          tempTotalPreviousYear += previousYearData[item];
+          tempTotalPreviousYear = tempTotalPreviousYear + Number(previousYearData[item]);
         }
       });
       if (tempTotalPreviousYear > 0 && totalOfCurrentYearGrowth > 0) {
@@ -1533,21 +1491,16 @@ function DataReviewApprover(props) {
       pinned: "left",
 	    suppressSizeToFit: true, width: 120,
       cellRenderer: "agGroupCellRenderer",
-
       cellRendererParams: {
         suppressCount: true,
-
         checkbox: true,
-
         checkboxSelection: true,
-
         innerRenderer: footerTotalReview,
       },
-
       cellRendererParams: {
         checkbox: true,
+        disabled: true
       },
-
       headerCheckboxSelection: true,
 
       headerCheckboxSelectionCurrentPageOnly: true,
@@ -1641,7 +1594,7 @@ function DataReviewApprover(props) {
             });
           }
         });
-     
+
         let reqData = {
           partner_id: element.partner_id,
           partner_name: element.partner_account_name,
@@ -1750,7 +1703,24 @@ function DataReviewApprover(props) {
 
   const getRowStyle = (params) => {
     if (params.node.aggData) {
-      return { fontWeight: "bold" };
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
+    let userRole = usrDetails.role_id;
+    if(params?.data) {
+      if(userRole === roles.approve_1.toUpperCase()) {
+        if (params.data.approval_status == 1 || params.data.approval_status == '1' || params.data.approval_status == 2 || params.data.approval_status == '2') {
+          return { fontWeight: "bold", opacity: "0.4", pointerEvents : "none" };
+        } 
+        
+      } else if(userRole === roles.approver_2.toUpperCase()) {
+        if (params.data.approval_status == 2 || params.data.approval_status == '2') {
+          return { fontWeight: "bold", opacity: "0.4", pointerEvents : "none" };
+        } 
+      } else {
+        return { fontWeight: "bold"};
+
+      }
+    }
     }
   };
 
@@ -1943,7 +1913,7 @@ function DataReviewApprover(props) {
           style={{ height: 320, marginTop: "10px" }}
         >
           <AgGridReact
-            ref={gridRef}
+            ref={gridRef}         
             rowData={reviewData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}

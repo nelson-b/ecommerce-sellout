@@ -181,18 +181,12 @@ function DataInputComponent(props) {
   const postData = useCallback(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
-    //if user not login then redirect to login page
-
     if (usrDetails) {
       setUserEmail(usrDetails.email_id);
-
       setuserRoleData(usrDetails.role_id);
     }
-
     setShowShouldUpdModal(false);
-
     let payload = [];
-
     //iterate in the grid
 
     gridRef.current.api.forEachNode((rowNode, index) => {
@@ -500,7 +494,7 @@ function DataInputComponent(props) {
     // to make sure user entered number only
 
     const checkNumericValue = (params) => {
-      const newValInt = Number(params.newValue.toFixed(2));
+      const newValInt = Number(params.newValue.toFixed());
 
       const valueChanged = params.data[monthField] !== newValInt;
 
@@ -852,7 +846,8 @@ function DataInputComponent(props) {
                 }
               }
               previousAPIData = previousAPIData.concat(secondArray);
-              setRowData(formatGetPayload(previousAPIData, true));
+              let newData = formatGetPayload(previousAPIData, true);
+              setRowData(newData.filter((e) => e.Status == "EDITED" || e.Status == "ACTIVE" || e.Status == "REJECT"));
             })
             .catch((e) => {
               console.log("Data Input", e);
@@ -865,7 +860,8 @@ function DataInputComponent(props) {
               let secondArray = [];
               secondArray = data?.data;
               previousAPIData = previousAPIData.concat(secondArray);
-              setRowData(formatGetPayload(previousAPIData, true));
+              let newData = formatGetPayload(previousAPIData, true);
+              setRowData(newData.filter((e) => e.Status == "EDITED" || e.Status == "ACTIVE" || e.Status == "REJECT"));
             })
             .catch((e) => {
               console.log("Data Input", e);

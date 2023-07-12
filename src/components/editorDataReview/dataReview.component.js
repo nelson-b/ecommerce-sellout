@@ -252,6 +252,7 @@ function DataReviewComponent(props) {
                   obj.approverComments = item.comments;
                   obj.partner_id = item.partner_id;
                   obj.year_val = item.year_val;
+                  obj.approval_status = item.approval_status;
                   obj.batch_upload_flag = item.batch_upload_flag;
                   if (item.months) {
                     item.months.map((each) => {
@@ -571,9 +572,11 @@ function DataReviewComponent(props) {
               }
             }
           }
-          setReviewData(combinedArray);
+          setReviewData(combinedArray.filter((e) => e.status == "EDITED" || e.status == "ACTIVE" || e.status == "REJECT"));
         } else {
-          setReviewData(currentYearArray);
+          setReviewData(currentYearArray.filter((e) => e.status == "EDITED" || e.status == "ACTIVE" || e.status == "REJECT"));
+
+ 
         }
       })
 
@@ -834,7 +837,7 @@ function DataReviewComponent(props) {
 
   const setVarCMvsLYCalcPerc = (params) => {
     if(params.data){
-	let resp = getCMLYValuesWithYear(params);
+	  let resp = getCMLYValuesWithYear(params);
 
     if (resp != undefined) {
       if (resp.CurrentMonthLY != 0 && resp.CurrentMonthLY != undefined) {
@@ -859,13 +862,19 @@ function DataReviewComponent(props) {
   };
 
   const getRowStyle = (params) => {
-    if (params.node.aggData) {
-      return { fontWeight: "bold" };
+    if(params?.data) {
+        console.log('params?.data:', params?.data);
+        if (params.data.approval_status == 3 ||params.data.approval_status == '3') {
+          return { fontWeight: "bold", color: "red" };
+
+      } else {
+        return { fontWeight: "bold"};
+      }
     }
   };
 
   const getTotalYTDSellOutGrowthCalc = (params) => {
-    let tempTotal = 0;
+  let tempTotal = 0;
 	if(params.data){
 	let year = new Date().getFullYear();
     let selectedValueString = year.toString();
@@ -908,7 +917,7 @@ function DataReviewComponent(props) {
 
   const getValueFormatter2 = (params) => {
     if (params.value) {
-      return params.value.toFixed(2);
+      return params.value.toFixed();
     } else if(params.value == 0 || params.value == '0') {
       return params.value;
     } else {
@@ -922,9 +931,9 @@ function DataReviewComponent(props) {
     const d = new Date();
     let months = d.getMonth();
     let currentYear = d.getFullYear();
-    if (currentYear) {
-      months = 12;
-    }
+    // if (currentYear) {
+    //   months = 12;
+    // }
     let selectedValueString = currentYear.toString();
     let choppedOffYear = selectedValueString.slice(
       2,
@@ -963,7 +972,7 @@ function DataReviewComponent(props) {
       if (tempTotal == 0) {
         tempTotal = "";
       }
-	}
+	  }
       return tempTotal;
     }
   };
@@ -1003,9 +1012,6 @@ function DataReviewComponent(props) {
     if(params.data){
 
     let previousYearData = params.data.PreviousYearData;
-
-    let currentYearData = params.data;
-
     if (previousYearData) {
       let percentageOfGrowth = 0;
 
@@ -1020,14 +1026,20 @@ function DataReviewComponent(props) {
         selectedValueString.length
       );
 
+      let months = new Date().getMonth();
+
       let customizedYearMonths = [];
-
-      monthsOfTheYear.forEach((element) => {
-        customizedYearMonths.push(element + choppedOffYear);
-      });
-
+      if (radioValue == 1) {
+        for (let i = 0; i < months; i++) {
+          customizedYearMonths.push(monthsOfTheYear[i] + choppedOffYear);
+        }
+   
+      } else {
+        for (let i = 0; i < months; i++) {
+          customizedYearMonths.push(monthsOfTheYear[i] + choppedOffYear + "E");
+        }
+      }
       let tempTotalPreviousYear = 0;
-
       customizedYearMonths.map((item) => {
         if (item in previousYearData) {
           tempTotalPreviousYear =
@@ -1036,11 +1048,8 @@ function DataReviewComponent(props) {
       });
       if (tempTotalPreviousYear > 0 && totalOfCurrentYearGrowth > 0) {
         let tempTotalDiff = totalOfCurrentYearGrowth - tempTotalPreviousYear;
-
         let tempDivision = tempTotalDiff / tempTotalPreviousYear;
-
         percentageOfGrowth = tempDivision * 100;
-
         return percentageOfGrowth;
       } else {
         return percentageOfGrowth;

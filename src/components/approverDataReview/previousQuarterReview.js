@@ -207,7 +207,7 @@ function PartnerQuarterApprover(props) {
       field: "zone_val",
       headerName: "Zone",
       filter: true,
-      width: 130,
+      width: 140,
       pinned: "left",
       suppressSizeToFit: true,
 
@@ -245,7 +245,7 @@ function PartnerQuarterApprover(props) {
 
       pinned: "left",
 
-      width: 200,
+      width: 170,
 
       suppressSizeToFit: true,
     },
@@ -321,7 +321,7 @@ function PartnerQuarterApprover(props) {
     {
       headerName: "Change in Value",
 
-      field: "changeValue",
+      field: "change_in_value",
 
       minWidth: 90,
 
@@ -339,7 +339,7 @@ function PartnerQuarterApprover(props) {
     {
       headerName: "Change In %",
 
-      field: "change_per",
+      field: "change_in_percentage",
 
       minWidth: 90,
 
@@ -357,7 +357,7 @@ function PartnerQuarterApprover(props) {
     {
       headerName: "Modified By",
 
-      field: "userChange",
+      field: "modified_by",
 
       editable: false,
 
