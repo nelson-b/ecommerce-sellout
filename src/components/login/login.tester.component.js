@@ -19,7 +19,7 @@ import { connect } from "react-redux";
 import { retrieveStaticDataByAttrName } from "../../actions/staticDataAction";
 import { retrieveByEmailId } from "../../actions/userAction";
 import { redirectUrl, signInLink, tokenExpiryMinusAttr } from "../../config";
-import { api_ret_client_id, client_id, roles, user_login_info } from "../constant";
+import { api_ret_client_id, client_id, roles, status, user_login_info } from "../constant";
 import AlertModal from "../modal/alertModel";
 import Cookies from "js-cookie";
 
@@ -81,6 +81,7 @@ function TesterLogin(props) {
   const loginNavigation = (data) => {
     props.retrieveByEmailId(data.username)
         .then((data) => {
+          data = data.filter(data => data.status === status.active.toUpperCase());
           console.log('retrieveByEmailId', data);
           if(data.length > 0){
           setShowErrorModal(false);
