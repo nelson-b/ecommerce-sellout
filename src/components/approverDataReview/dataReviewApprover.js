@@ -590,12 +590,20 @@ function DataReviewApprover(props) {
       {
         headerName: "Partner Account Name",
         field: "partner_account_name",
-        rowGroup: true,
-        hide: true,
+  
+        checkboxSelection: (params) => {
+          if (params.data) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+  
         filter: true,
         pinned: "left",
         suppressSizeToFit: true,
         editable: false,
+        suppressSizeToFit: true, width: 200,
       },
       {
         headerName: "Currency of Reporting",
@@ -922,12 +930,20 @@ function DataReviewApprover(props) {
       {
         headerName: "Partner Account Name",
         field: "partner_account_name",
-        rowGroup: true,
-        hide: true,
+  
+        checkboxSelection: (params) => {
+          if (params.data) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+  
         filter: true,
         pinned: "left",
         suppressSizeToFit: true,
         editable: false,
+        suppressSizeToFit: true, width: 200,
       },
       {
         headerName: "Currency of Reporting",

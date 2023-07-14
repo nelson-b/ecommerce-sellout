@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { retrieveAllNewListByRole } from "../../../actions/userAction.js";
 import userEditIcon from "../../../images/edit-icon.png";
-import { roles, user_login_info } from "../../constant.js";
+import { roles, status, user_login_info } from "../../constant.js";
 
 function UserList(props) {
   const navigate = useNavigate();
@@ -173,7 +173,7 @@ function UserList(props) {
     props
 		.retrieveAllNewListByRole(usrDetails.role_id == roles.admin.toUpperCase() || usrDetails.role_id == roles.supervisor.toUpperCase() ||usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase() ? '' : usrDetails.role_id)// for admin all users should be visible
       .then((data) => {
-        setRowData(data.filter((e) => e.status == "ACTIVE"));
+        setRowData(data.filter((e) => e.status == status.active || e.status == status.disabled));
       })
       .catch((e) => {
         console.log(e);

@@ -81,6 +81,7 @@ function SaveUser(props) {
     modelType: [],
     usrcountry: [],
     partnerAccNm: [],
+    isDisabled: null
   };
 
   const [form, setForm] = useState(initialForm);
@@ -169,6 +170,7 @@ function SaveUser(props) {
   const [optionPartnerSelected, setOptionPartnerSelected] = useState([]);
   const [countryData, setCountryData] = useState([]);
   const [partnerDrpData, setPartnerDrpData] = useState([]);
+  const [isDisabledUser, setisDisabledUser] = useState([]);
   const [staticData, setStaticData] = useState([]);
 
   const convertMultiSelectDrpToInputData = (data) => {
@@ -286,6 +288,7 @@ function SaveUser(props) {
               usrcountry: convertInputDataToMultiSelectDrp(
                 respData.country_code
               ),
+              isDisabled: respData.status === status.active.toUpperCase()
             };
 
             console.log("prefillForm", prefillForm);
@@ -418,6 +421,16 @@ function SaveUser(props) {
         console.log(e);
       });
   };
+
+  const handleIsDisabledChkChange = (selected) => {
+    let name = "isDisabled";
+    console.log('handleIsDisabledChkChange', selected);
+    setisDisabledUser(selected.target.checked);
+    setForm((prev) => ({
+      ...prev,
+      [name]: selected.target.checked,
+    }));
+  }
 
   const onHandleSelectChange = useCallback((value, name) => {
     console.log("onHandleSelectChange", value, name);
@@ -617,7 +630,9 @@ function SaveUser(props) {
     if (!isError) {
       setShowSuccessModal(true);
       setShowErrorModal(false);
-      resetForm();
+      if(props.module === "Create"){
+        resetForm();
+      }
     }
   };
 
@@ -634,6 +649,16 @@ function SaveUser(props) {
       postForm();
     }
   };
+  
+  //inactive set only by admin to block sso login, by default it should be active/pending 
+  const getUserStatusUpdate = (isDisabled) => {
+    console.log('getUserStatusUpdate', isDisabled);
+    if(isDisabled == null || userRoleData !== roles.admin.toUpperCase()){
+      return userRole === roles.admin.toUpperCase() ? status.active : status.pending;
+    } else {
+      return isDisabled === true ? status.active : status.disabled;
+    }
+  }
 
   const postForm = () => {
     let userData = {
@@ -641,7 +666,7 @@ function SaveUser(props) {
       role_id: form.userrole,
       first_name: form.firstname,
       last_name: form.lastname,
-      status: userRole == roles.admin.toUpperCase() ? status.active : status.pending, //only admin can directly create user
+      status: getUserStatusUpdate(form.isDisabled), //only admin can directly create user
       modified_by: userEmail, //login user email id
       created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
       modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
@@ -826,18 +851,6 @@ function SaveUser(props) {
                   <Form.Label size="sm" htmlFor="useremailid">
                     User email ID
                   </Form.Label>
-                  &nbsp;
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={tooltip(
-                      "Enter name to search or select from dropdown"
-                    )}
-                  >
-                    <span>
-                      <BiHelpCircle />
-                    </span>
-                  </OverlayTrigger>
-                  <br />
                   <input
                     type="text"
                     name="useremailid"
@@ -866,7 +879,7 @@ function SaveUser(props) {
                     name="userrole"
                     title="User Role"
                     value={form.userrole} // staticData
-					isDisabled={
+					          isDisabled={
                       props.module === "Update" && userRoleData !== roles.admin.toUpperCase()
                     }
                     options={staticData.filter(
@@ -1031,6 +1044,28 @@ function SaveUser(props) {
                     )}
                 </Col>
               </Row>
+              <br />
+              {props.module == "Update" && userRoleData == roles.admin.toUpperCase() && (
+              <Row className="username-header">
+                <Col className="col-3">
+                  <Form.Label size="sm" htmlFor="isDisabledUsr">
+                  <Form.Check
+                    size="sm"
+                    reverse
+                    type={'switch'}
+                    name="frmisDisabled"
+                    label={`Allow SSO login`}
+                    id={`isDisabledUsr`}
+                    value={form.isDisabled}
+                    checked={form.isDisabled}
+                    onChange={(item) => {
+                      handleIsDisabledChkChange(item);
+                    }}
+                  />
+                  </Form.Label>
+                </Col>
+              </Row>
+              )}
             </Card>
             <div>
               <Row className="mb-3" style={{ float: "right", padding: "20px" }}>
