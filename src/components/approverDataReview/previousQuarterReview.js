@@ -45,6 +45,8 @@ function PartnerQuarterApprover(props) {
   const [userRole, setuserRole] = useState("");
 
   const [validateAll, setValidateAll] = useState([]);
+  const [selectedCell, setSelectedCell] = useState([]);
+
 
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
@@ -321,8 +323,10 @@ function PartnerQuarterApprover(props) {
     {
       headerName: "Change in Value",
 
-      field: "change_in_value",
-
+      field: radioValue == 1
+      ? "change_in_value"
+      : "change_in_value_local_currency",
+     
       minWidth: 90,
 
       editable: false,
@@ -339,8 +343,9 @@ function PartnerQuarterApprover(props) {
     {
       headerName: "Change In %",
 
-      field: "change_in_percentage",
-
+      field: radioValue == 1
+      ? "change_in_percentage"
+      : "change_in_percentage_local_currency",
       minWidth: 90,
 
       editable: false,
@@ -467,6 +472,7 @@ function PartnerQuarterApprover(props) {
 
   const handleCheckboxClick = (params) => {
     const selectedRows = params.api.getSelectedRows();
+    setSelectedCell(selectedRows);
     setValidateAll(selectedRows);
     setMessage(selectedRows?.length);
   };
@@ -518,6 +524,7 @@ function PartnerQuarterApprover(props) {
        .createData(reqData)
        .then((data) => {
          // setReviewData(data);
+         setMessage(0);
          setShowSuccessModal(true);
        })
        .catch((e) => {
@@ -537,15 +544,66 @@ function PartnerQuarterApprover(props) {
     setShowSuccessModal(false);
   };
 
-  const handleInvestigation = (params) => {
-    alert(
-      message === 1
-        ? `${message} Partner Account Sent For Investigation `
-        : message > 1
-        ? `${message} Partners Account Sent For Investigation `
-        : ""
-    );
-  };
+  const handleInvestigation = useCallback((data, selectedCell) => {
+    return
+    console.log('data:::', selectedCell);
+    // alert(
+    //   message === 1
+    //     ? `${message} Partner Account Sent For Investigation `
+    //     : message > 1
+    //     ? `${message} Partners Account Sent For Investigation `
+    //     : ""
+    // );
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
+    let requestArray = [];
+    selectedCell.forEach((element) => {
+      let monthArray = [];
+      let itemYear = String(data[0].year_val).slice(-2);
+      let monthTill = new Date().getMonth();
+      for(let i=0; i< monthTill; i++) {
+        let monthEle = allCalMonths[i];
+        const saveArray =
+        radioValue == 1
+          ? element[`${monthEle + itemYear}`]
+          : element[`${monthEle + itemYear}E`];
+      
+        monthArray.push({
+          month: monthEle.toLowerCase(),
+          sellout_local_currency: saveArray,
+          trans_type: "",
+        });
+      }
+      let objForUpdate = {
+        partner_id: element.partner_id,
+        partner_name: element.partner_account_name,
+        country_code: element.country_code,
+        year_val: itemYear,
+        months: monthArray,
+        trans_currency_code: element.trans_currency_code,
+        created_by: usrDetails.email_id,
+        created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
+        approval_status: "3",
+        editor_comment: element.editorComments,
+        comments: element.approverComments,
+        batch_upload_flag: element.batch_upload_flag.toString(),
+        approved_date: null,
+        opening_date : '',
+        closing_date: ''
+      };
+      requestArray.push(objForUpdate);
+    });
+    props
+    .updateSellOutData(requestArray)
+    .then((data) => {
+      // const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+      // getQuarterReviewData(usrDetails.email_id, year, usrDetails.role_id);
+      setShowSuccessModal(true);
+    })
+    .catch((e) => {
+      console.log("Error", e);
+    });
+  }, []);
 
   return (
     <>
@@ -620,7 +678,7 @@ function PartnerQuarterApprover(props) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 320, marginTop: "10px" }}
+          style={{ height: 400, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}
@@ -661,7 +719,7 @@ function PartnerQuarterApprover(props) {
               <Col xs="auto">
                 <Button
                   className="btn-invest edit-header"
-                  onClick={(e) => handleInvestigation(message)}
+                  onClick={(e) => handleInvestigation(rowData, selectedCell)}
                 >
                   Send For Investigation
                 </Button>

@@ -77,6 +77,9 @@ function DataReviewComponent(props) {
   const [reviewData, setReviewData] = useState([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [shouldDisableSaveButton, setShouldDisableSaveButton] = useState(false);
+  const [openingDate, setOpeningDate] = useState('');
+  const [closingDate, setClosinggDate] = useState('');
+
 
   const radios = [
     { name: "Reporting Currency", value: "1" },
@@ -432,7 +435,7 @@ function DataReviewComponent(props) {
 
   const getPreviousQuarterData = (quarter) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-
+console.log('usrDetails.role_id:::', usrDetails.role_id);
     let today = new Date();
     let year = today.getFullYear();
     props
@@ -440,6 +443,8 @@ function DataReviewComponent(props) {
       .then((data) => {
         let closingData = data.CLOSING_DATE;
         let openingDate = data.OPENING_DATE;
+        setOpeningDate(openingDate);
+        setClosinggDate(closingData);
         let dataOpen = new Date(openingDate);
         var day1 = dataOpen.getDate().toString().padStart(2, "0");
         var month1 = (dataOpen.getMonth() + 1).toString().padStart(2, "0");
@@ -889,6 +894,7 @@ function DataReviewComponent(props) {
       customizedYearMonths.push(element + choppedOffYear);
     });
 
+    let tempTotal = 0;
 
     customizedYearMonths.map((item) => {
       if (item in params?.data) {
@@ -926,7 +932,7 @@ function DataReviewComponent(props) {
   };
 
   const yTDSelloutCurrntYear = (params) => {
-      let tempTotal = 0;
+    let tempTotal = 0;
     if(params.data){
     const d = new Date();
     let months = d.getMonth();
@@ -1134,17 +1140,11 @@ function DataReviewComponent(props) {
             headerName: monthHeader,
             field: radioValue == 1 ? monthField : monthField + "E",
             editable: false,
-
             singleClickEdit: true,
-
-            minWidth: 100,
-
+            minWidth: 90,
             aggFunc: "sum",
-
             sortable: true,
-
             suppressMenu: true,
-
             valueParser: (params) => Number(params.newValue),
             cellStyle: (params) => {
               return setIsEstimated(params, monthField);
@@ -1163,7 +1163,7 @@ function DataReviewComponent(props) {
             headerName: "YTD Sellout",
             field: "YTD_Growth",
             editable: false,
-            minWidth: 150,
+            minWidth: 120,
             wrapHeaderText: true,
             aggFunc: "sum",
             sortable: true,
@@ -1181,7 +1181,7 @@ function DataReviewComponent(props) {
             headerName: "YTD Sellout LY",
             field: "YTD_Growth",
             editable: false,
-            minWidth: 150,
+            minWidth: 130,
             wrapHeaderText: true,
             aggFunc: "sum",
             sortable: true,
@@ -1336,7 +1336,7 @@ function DataReviewComponent(props) {
           filter: "agNumberColumnFilter",
           aggFunc: "sum",
           singleClickEdit: true,
-          minWidth: 100,
+          minWidth: 90,
           suppressMenu: true,
           valueParser: (params) => Number(params.newValue),
           cellStyle: (params) => {
@@ -1380,7 +1380,7 @@ function DataReviewComponent(props) {
 
           singleClickEdit: true,
 
-          minWidth: 100,
+          minWidth: 90,
 
           aggFunc: "sum",
 
@@ -1412,7 +1412,7 @@ function DataReviewComponent(props) {
 
           field: "PreVMValue",
 
-          minWidth: 120,
+          minWidth: 110,
 
           editable: false,
 
@@ -1452,7 +1452,7 @@ function DataReviewComponent(props) {
         {
           headerName: "var. CM vs LY (%)",
           field: "PreVMvsLM",
-          minWidth: 120,
+          minWidth: 110,
           editable: false,
           singleClickEdit: true,
           aggFunc: "sum",
@@ -1500,7 +1500,7 @@ function DataReviewComponent(props) {
 
         singleClickEdit: true,
 
-        minWidth: 100,
+        minWidth: 90,
 
         valueParser: (params) => Number(params.newValue),
         valueGetter: (params) => {
@@ -1520,7 +1520,7 @@ function DataReviewComponent(props) {
       field: "ambition",
       editable: false,
       singleClickEdit: true,
-      minWidth: 200,
+      minWidth: 150,
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
@@ -1574,7 +1574,8 @@ function DataReviewComponent(props) {
     navigate(`/historicalData?role=${userRole}`);
   };
 
-  const handleSave = useCallback((data) => {
+  const handleSave = useCallback((data, closingDates, openingDates) => {
+    console.log('opening and closing date::', openingDate, closingDate);
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     if (usrDetails) {
       setUserEmail(usrDetails.email_id);
@@ -1599,6 +1600,7 @@ function DataReviewComponent(props) {
           });
         }
       });
+
       let reqData = {
         partner_id: element.partner_id,
         partner_name: element.partner_account_name,
@@ -1615,6 +1617,8 @@ function DataReviewComponent(props) {
         comments: element.approverComments,
         batch_upload_flag: element.batch_upload_flag.toString(),
         approved_date: new Date().toISOString().replace("T", " ").slice(0, -5),
+        opening_date : openingDates,
+        closing_date: closingDates
       };
       requestArray.push(reqData);
     });
@@ -1751,7 +1755,7 @@ function DataReviewComponent(props) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 350, marginTop: "10px" }}
+          style={{ height: 400, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}
@@ -1800,7 +1804,7 @@ function DataReviewComponent(props) {
                       : "btn-upload save-header"
                   }
                   disabled={shouldDisableSaveButton}
-                  onClick={(e) => handleSave(reviewData)}
+                  onClick={(e) => handleSave(reviewData, closingDate, openingDate)}
                 >
                   Save
                 </Button>

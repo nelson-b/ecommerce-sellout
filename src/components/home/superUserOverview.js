@@ -4,11 +4,15 @@ import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import calender from "./../../images/calender.png";
 import { roles, user_login_info } from "../../components/constant.js";
+import { connect } from "react-redux";
+import { retrieveDashoboardData } from "../../actions/selloutaction.js";
+import { allCalMonths } from "../constant";
 
 function SuperUseOverview(props) {
   const navigate = useNavigate();
 
   //sso login func
+  const [rowData, setRowData] = useState([]);
   const [userEmail, setUserEmail] = useState('');
   const [userRole, setuserRole] = useState('');
               
@@ -24,6 +28,28 @@ function SuperUseOverview(props) {
       }else{
         navigate("/");
       }
+
+      let year = new Date().getFullYear();
+
+      const currentDate = new Date();
+      const currentMonthIndex = currentDate.getMonth();
+      const previousMonthIndex = (currentMonthIndex + 11) % 12;
+      const previousMonth = allCalMonths[previousMonthIndex];
+      const monthArray = [previousMonth];
+
+      props
+      .retrieveDashoboardData(
+        usrDetails.email_id,
+        usrDetails.role_id,
+        year,
+        monthArray
+      )
+      .then((data) => {
+        setRowData(data);     
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     }
   }, []);
   //------------------//
@@ -94,7 +120,7 @@ function SuperUseOverview(props) {
                 <Card.Title></Card.Title>
                 <Card.Text>
                   <Row className="number-header">
-                    2
+                    {rowData.total_partners_pending_approval}
                     <Row className="task-header">
                       request pending for Approval
                     </Row>
@@ -103,7 +129,7 @@ function SuperUseOverview(props) {
 
                 <Card.Text className="task-header">
                   <Row className="number-header">
-                    1
+                    {rowData.total_partners_rejected}
                     <Row className="task-header">
                       request needs additional information
                     </Row>
@@ -118,4 +144,6 @@ function SuperUseOverview(props) {
   );
 }
 
-export default SuperUseOverview;
+export default connect(null, {
+  retrieveDashoboardData,
+})(SuperUseOverview);

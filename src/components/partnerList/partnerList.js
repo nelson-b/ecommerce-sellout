@@ -510,7 +510,7 @@ function PartnerList(props) {
         <>
           <div
             className="ag-theme-alpine ag-grid-table"
-            style={{ height: 350, margin: "7px 0px 0px 0px" }}
+            style={{ height: 400, margin: "7px 0px 0px 0px" }}
           >
             <AgGridReact
               className="ag-theme-alpine"

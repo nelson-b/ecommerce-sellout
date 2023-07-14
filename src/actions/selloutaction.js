@@ -5,7 +5,8 @@ import {
   DELETE_SELLOUTDATA,
   DELETE_ALL_SELLOUTDATA,
   RETRIEVE_HISTORICAL_DATA,
-  RETRIEVE_DASHBOARD_DATA
+  RETRIEVE_DASHBOARD_DATA,
+  RETRIEVE_ADMIN_DASHBOARD_DATA
 } from "./type";
 
 import SellOutDataService from "../services/selloutdata";
@@ -105,6 +106,26 @@ export const retrieveDashoboardData =
 
       dispatch({
         type: RETRIEVE_DASHBOARD_DATA,
+        payload: res.data,
+      });
+
+      return Promise.resolve(res.data);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  };
+
+export const getAdminDashoboardData =
+  (approverMonth, editorMonth) => async (dispatch) => {
+    try {
+      const res = await SellOutDataService.getAdminOverviewData(
+        approverMonth,
+        editorMonth
+      );
+
+      dispatch({
+        type: RETRIEVE_ADMIN_DASHBOARD_DATA,
+
         payload: res.data,
       });
 

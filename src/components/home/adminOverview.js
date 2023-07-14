@@ -10,32 +10,36 @@ import approvalOneOverview from "../../data/approverOneOverview.json";
 import approvalTwoOverview from "../../data/approverTwoOverview.json";
 import "../home/home.component.css";
 import { roles, user_login_info } from "../constant";
+import { getAdminDashoboardData } from "../../actions/selloutaction";
+import { allCalMonths, quarters } from "../constant";
 
 function AdminOverview(props) {
   const gridRef = useRef();
   const navigate = useNavigate();
 
-    //sso login func
-    const [userEmail, setUserEmail] = useState('');
-    const [userRole, setuserRole] = useState('');
-            
-    useEffect(() => {
-      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-      //if user not login then redirect to login page
-      if(usrDetails){
-        setUserEmail(usrDetails.email_id);
-        setuserRole(usrDetails.role_id);
-              
-        if(usrDetails.role_id === roles.admin.toUpperCase()) {
-          console.log('admin home page is for role admin');
-        }else{
-          navigate("/");
-        }
-      }
-    }, []);
-    //------------------//
+  //sso login func
+  const [userEmail, setUserEmail] = useState('');
+  const [userRole, setuserRole] = useState('');
 
-  const [rowData, setRowData] = useState();
+  useEffect(() => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    //if user not login then redirect to login page
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+
+      if (usrDetails.role_id === roles.admin.toUpperCase()) {
+        console.log('admin home page is for role admin');
+      } else {
+        navigate("/");
+      }
+    }
+  }, []);
+  //------------------//
+
+  const [rowData, setRowData] = useState([]);
+  const [approverOne, setApproverOne] = useState([]);
+  const [approverTwo, setApproverTwo] = useState([]);
 
   const ChildMessageRenderer = (props) => {
     const invokeNotify = () => {
@@ -80,7 +84,7 @@ function AdminOverview(props) {
   const adminDef = [
     {
       headerName: "Data Input",
-      field: "data_input",
+      field: "email_id",
       width: 120,
       suppressSizeToFit: true,
       editable: false,
@@ -101,21 +105,21 @@ function AdminOverview(props) {
     },
     {
       headerName: "Country",
-      field: "country",
+      field: "country_name",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       width: 120,
     },
     {
       headerName: "Model",
-      field: "Model",
+      field: "model_type",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       width: 100,
     },
     {
       headerName: "Number of Partner Account Associated",
-      field: "partner_account_associate",
+      field: "associated_partners",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       minWidth: 170,
@@ -124,7 +128,7 @@ function AdminOverview(props) {
     },
     {
       headerName: "Number of Partner Account Filled in",
-      field: "partner_account_id",
+      field: "partners_filled_in_count",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       minWidth: 160,
@@ -133,7 +137,7 @@ function AdminOverview(props) {
     },
     {
       headerName: "Remaining Accounts To Fill in",
-      field: "reamaining_account",
+      field: "remaining_accounts_to_fill_in",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       minWidth: 160,
@@ -166,7 +170,7 @@ function AdminOverview(props) {
   const approverOneDef = [
     {
       headerName: "1st Approval Stage",
-      field: "approval_stage1",
+      field: "email_id",
       minWidth: 180,
       suppressSizeToFit: true,
       editable: false,
@@ -187,21 +191,21 @@ function AdminOverview(props) {
     },
     {
       headerName: "Country",
-      field: "country",
+      field: "country_name",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       width: 120,
     },
     {
       headerName: "Model",
-      field: "Model",
+      field: "model_type",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       width: 100,
     },
     {
       headerName: "Number of Partner Account Associated",
-      field: "partner_account_associate",
+      field: "associated_partners",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       minWidth: 170,
@@ -210,7 +214,7 @@ function AdminOverview(props) {
     },
     {
       headerName: "Number of Partner Account Validated",
-      field: "partner_account_validate",
+      field: "partners_filled_in_count",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       minWidth: 160,
@@ -219,7 +223,7 @@ function AdminOverview(props) {
     },
     {
       headerName: "Remaining Accounts To Validate",
-      field: "reamaining_account_Validate",
+      field: "remaining_accounts_to_fill_in",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       minWidth: 170,
@@ -251,7 +255,7 @@ function AdminOverview(props) {
   const approverTwoDef = [
     {
       headerName: "2nd Approval Stage",
-      field: "approval_stage2",
+      field: "email_id",
       minWidth: 180,
       suppressSizeToFit: true,
       editable: false,
@@ -272,21 +276,21 @@ function AdminOverview(props) {
     },
     {
       headerName: "Country",
-      field: "country",
+      field: "country_name",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       width: 120,
     },
     {
       headerName: "Model",
-      field: "Model",
+      field: "model_type",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       width: 100,
     },
     {
       headerName: "Number of Partner Account Associated",
-      field: "partner_account_associate",
+      field: "associated_partners",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       minWidth: 170,
@@ -295,7 +299,7 @@ function AdminOverview(props) {
     },
     {
       headerName: "Number of Partner Account Validated",
-      field: "partner_account_validate",
+      field: "partners_filled_in_count",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       minWidth: 160,
@@ -304,7 +308,7 @@ function AdminOverview(props) {
     },
     {
       headerName: "Remaining Accounts To Validate",
-      field: "reamaining_account_Validate",
+      field: "remaining_accounts_to_fill_in",
       spanHeaderHeight: true,
       suppressSizeToFit: true,
       minWidth: 170,
@@ -354,14 +358,130 @@ function AdminOverview(props) {
 
   const onGridReady = useCallback((params) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    if(usrDetails){
+    if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
     }
-    
-    fetch("https://www.ag-grid.com/example-assets/olympic-winners.json")
-      .then((resp) => resp.json())
-      .then((data) => setRowData(data));
+  }, []);
+
+  const editorRowata = useCallback(() => {
+    const currentDate = new Date();
+    const currentMonthIndex = currentDate.getMonth();
+    const previousMonthIndex = (currentMonthIndex + 11) % 12;
+    const previousMonth = allCalMonths[previousMonthIndex];
+    const editorMonth = [previousMonth];
+
+    const currentQuarter = Math.floor((currentDate.getMonth() + 3) / 3);
+    const previousQuarter = currentQuarter - 1 === 0 ? 4 : currentQuarter - 1;
+    const approverMonth = quarters[`Q${previousQuarter}`];
+    props
+      .getAdminDashoboardData(approverMonth, editorMonth)
+      .then((data) => {
+        let customizedArrayForGrid = [];
+
+          for (let i = 0; i < data.editor.length; i++) {
+            let elementArray = data.editor[i];
+            elementArray?.countries?.forEach((eleForCountry) => {
+              eleForCountry?.models?.forEach((eleForModal) => {
+                let obj = {
+                  email_id: elementArray.email_id,
+                  ops: elementArray.ops,
+                  zone: elementArray.zone,
+                  country_name: eleForCountry.country_name,
+                  model_type: eleForModal.model_type,
+                  associated_partners: eleForModal.associated_partners,
+                  partners_filled_in_count: eleForModal.partners_filled_in_count,
+                  remaining_accounts_to_fill_in: eleForModal.remaining_accounts_to_fill_in
+                };
+                customizedArrayForGrid.push(obj);
+              });
+            });
+          }
+          setRowData(customizedArrayForGrid);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  const approverOneData = useCallback(() => {
+    const currentDate = new Date();
+    const currentMonthIndex = currentDate.getMonth();
+    const previousMonthIndex = (currentMonthIndex + 11) % 12;
+    const previousMonth = allCalMonths[previousMonthIndex];
+    const editorMonth = [previousMonth];
+
+    const currentQuarter = Math.floor((currentDate.getMonth() + 3) / 3);
+    const previousQuarter = currentQuarter - 1 === 0 ? 4 : currentQuarter - 1;
+    const approverMonth = quarters[`Q${previousQuarter}`];
+    props
+      .getAdminDashoboardData(approverMonth, editorMonth)
+      .then((data) => {
+        let customizedArrayForGrid = [];
+
+          for (let i = 0; i < data.approve_1.length; i++) {
+            let elementArray = data.approve_1[i];
+            elementArray?.countries?.forEach((eleForCountry) => {
+              eleForCountry?.models?.forEach((eleForModal) => {
+                let obj = {
+                  email_id: elementArray.email_id,
+                  ops: elementArray.ops,
+                  zone: elementArray.zone,
+                  country_name: eleForCountry.country_name,
+                  model_type: eleForModal.model_type,
+                  associated_partners: eleForModal.associated_partners,
+                  partners_filled_in_count: eleForModal.partners_filled_in_count,
+                  remaining_accounts_to_fill_in: eleForModal.remaining_accounts_to_fill_in
+                };
+                customizedArrayForGrid.push(obj);
+              });
+            });
+          }
+          setApproverOne(customizedArrayForGrid);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  const approverTwoData = useCallback(() => {
+    const currentDate = new Date();
+    const currentMonthIndex = currentDate.getMonth();
+    const previousMonthIndex = (currentMonthIndex + 11) % 12;
+    const previousMonth = allCalMonths[previousMonthIndex];
+    const editorMonth = [previousMonth];
+
+    const currentQuarter = Math.floor((currentDate.getMonth() + 3) / 3);
+    const previousQuarter = currentQuarter - 1 === 0 ? 4 : currentQuarter - 1;
+    const approverMonth = quarters[`Q${previousQuarter}`];
+    props
+      .getAdminDashoboardData(approverMonth, editorMonth)
+      .then((data) => {
+        let customizedArrayForGrid = [];
+       
+          for (let i = 0; i < data.approver_2.length; i++) {
+            let elementArray = data.approver_2[i];
+            elementArray?.countries?.forEach((eleForCountry) => {
+              eleForCountry?.models?.forEach((eleForModal) => {
+                let obj = {
+                  email_id: elementArray.email_id,
+                  ops: elementArray.ops,
+                  zone: elementArray.zone,
+                  country_name: eleForCountry.country_name,
+                  model_type: eleForModal.model_type,
+                  associated_partners: eleForModal.associated_partners,
+                  partners_filled_in_count: eleForModal.partners_filled_in_count,
+                  remaining_accounts_to_fill_in: eleForModal.remaining_accounts_to_fill_in
+                };
+                customizedArrayForGrid.push(obj);
+              });
+            });
+          }
+          setApproverTwo(customizedArrayForGrid);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, []);
 
   const partnerDataNavigation = (props) => {
@@ -380,7 +500,7 @@ function AdminOverview(props) {
     <>
       <Container fluid>
         <Row>
-          <MyMenu/>
+          <MyMenu />
         </Row>
         <Row>
           <div>
@@ -407,7 +527,7 @@ function AdminOverview(props) {
               </Col>
               <Col xs="auto">
                 <Button className="btn-data save-header"
-                onClick={navigateInpCal}>Input Calendar</Button>
+                  onClick={navigateInpCal}>Input Calendar</Button>
               </Col>
             </Row>
           </div>
@@ -420,12 +540,12 @@ function AdminOverview(props) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={adminOverview}
+            rowData={rowData}
             columnDefs={adminDef}
             defaultColDef={defaultColDef}
             animateRows={true}
             getRowStyle={getRowStyle}
-            onGridReady={onGridReady}
+            onGridReady={editorRowata}
             suppressMenuHide={true}
           ></AgGridReact>
         </Row>
@@ -436,12 +556,12 @@ function AdminOverview(props) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={approvalOneOverview}
+            rowData={approverOne}
             columnDefs={approverOneDef}
             defaultColDef={defaultColDef}
             animateRows={true}
             getRowStyle={getRowStyle}
-            onGridReady={onGridReady}
+            onGridReady={approverOneData}
             suppressMenuHide={true}
           ></AgGridReact>
         </Row>
@@ -452,12 +572,12 @@ function AdminOverview(props) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={approvalTwoOverview}
+            rowData={approverTwo}
             columnDefs={approverTwoDef}
             defaultColDef={defaultColDef}
             animateRows={true}
             getRowStyle={getRowStyle}
-            onGridReady={onGridReady}
+            onGridReady={approverTwoData}
             suppressMenuHide={true}
           ></AgGridReact>
         </Row>
@@ -466,4 +586,6 @@ function AdminOverview(props) {
   );
 }
 
-export default AdminOverview;
+export default connect(null, {
+  getAdminDashoboardData,
+})(AdminOverview);

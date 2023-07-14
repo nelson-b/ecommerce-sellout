@@ -41,13 +41,14 @@ import AlertModal from "../../modal/alertModel.js";
 import { roles, status, user_login_info } from "../../constant.js";
 import { getAPIDateFormatWithTime } from "../../../helper/helper.js";
 import { userRoleOptions } from "../optionsData.js";
+import DataReviewService from '../../../services/dataReviewServices.js';
 
 function SaveUser(props) {
   const navigate = useNavigate();
 
   const [userEmail, setUserEmail] = useState('');
   const [userRoleData, setUserRoleData] = useState('');
-  
+  var specialArray = [];
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     if(usrDetails){
@@ -87,7 +88,6 @@ function SaveUser(props) {
   const [form, setForm] = useState(initialForm);
 
   const onValidate = (value, name) => {
-    console.log("onValidate", value, name);
     setError((prev) => ({
       ...prev,
       [name]: { ...prev[name], errorMsg: value },
@@ -170,6 +170,7 @@ function SaveUser(props) {
   const [optionPartnerSelected, setOptionPartnerSelected] = useState([]);
   const [countryData, setCountryData] = useState([]);
   const [partnerDrpData, setPartnerDrpData] = useState([]);
+  const [totalPartnerData, setTotalPartnerData] = useState([]);
   const [isDisabledUser, setisDisabledUser] = useState([]);
   const [staticData, setStaticData] = useState([]);
 
@@ -203,6 +204,29 @@ function SaveUser(props) {
     return outputData;
   };
 
+  const convertInputDataToMultiSelectDrpOnlyForCountry = (data) => {
+    
+    let outputData = [];
+    let countryList = DataReviewService.getValueForCountryFunc();
+    if (data) {
+      let inputData = data.split(",");
+      inputData.forEach((row) => {
+        let countrySpecificName;
+        countryList.forEach(element => {
+        
+          if(element.value == row) {
+            countrySpecificName = element.label
+          }
+        });
+        outputData = outputData.concat({
+          value: row,
+          label: countrySpecificName,
+        });
+      });
+    }
+    return outputData;
+  };
+
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     if(usrDetails){
@@ -213,7 +237,6 @@ function SaveUser(props) {
     props
       .retrieveAllCountryData() //i/p for test purpose
       .then((data) => {
-        console.log("retrieveAllCountryData", data);
         let countryOptions = [];
         data.data.forEach((countryData) => {
           countryOptions = countryOptions.concat({
@@ -223,6 +246,7 @@ function SaveUser(props) {
         });
         //set data
         setCountryData(countryOptions);
+        DataReviewService.setValueForCountryFunc(countryOptions)
       })
       .catch((e) => {
         console.log("retrieveAllCountryData", e);
@@ -233,14 +257,24 @@ function SaveUser(props) {
       .retrieveAllPartnerData()
       .then((data) => {
         let partnerOptions = [];
+        let partnerOptionsTotal = [];
+       // specialArray = data.data;
+       
         data.data.forEach((partnerData) => {
           partnerOptions = partnerOptions.concat({
             value: partnerData.partner_id,
             label: partnerData.partner_account_name,
+            country_code: partnerData.country_code
+          });
+          partnerOptionsTotal = partnerOptionsTotal.concat({
+            value: partnerData.partner_id,
+            label: partnerData.partner_account_name,
+            country_code: partnerData.country_code
           });
         });
         //set data
-        setPartnerDrpData(partnerOptions);
+       // setPartnerDrpData(partnerOptions);
+        DataReviewService.setValueForPartnerFunc(partnerOptionsTotal);
       })
       .catch((e) => {
         console.log(e);
@@ -250,7 +284,6 @@ function SaveUser(props) {
     props
       .retrieveAllStaticData()
       .then((data) => {
-        console.log("retrieveAllStaticData", data);
         let staticAllOptions = [];
         data.data.forEach((row) => {
           staticAllOptions = staticAllOptions.concat({
@@ -271,11 +304,9 @@ function SaveUser(props) {
         props
           .retrieveByEmailId(userEmailId)
           .then((data) => {
-            console.log("retrieveByEmailId", data, userEmailId);
             const respData = data.filter(
               (data) => data.email_id === userEmailId
             )[0];
-            console.log("filter data", respData);
             //format to form
             let prefillForm = {
               firstname: respData.first_name,
@@ -285,25 +316,25 @@ function SaveUser(props) {
               userops: respData.ops_val,
               usrzone: respData.zone_val,
               modelType: convertInputDataToMultiSelectDrp(respData.model_val),
-              usrcountry: convertInputDataToMultiSelectDrp(
+              usrcountry: convertInputDataToMultiSelectDrpOnlyForCountry(
                 respData.country_code
               ),
               isDisabled: respData.status === status.active.toUpperCase()
             };
 
-            console.log("prefillForm", prefillForm);
             //set state of form
             setForm(prefillForm);
-            console.log(
-              "convertInputDataToMultiSelectDrp",
-              convertInputDataToMultiSelectDrp("model 1,model 2")
-            );
             setOptionModelSelected(
               convertInputDataToMultiSelectDrp(respData.model_val)
             );
-            setOptionCountrySelected(
-              convertInputDataToMultiSelectDrp(respData.country_code)
-            );
+            setTimeout(() => {
+              setOptionCountrySelected(
+                convertInputDataToMultiSelectDrpOnlyForCountry(
+                  respData.country_code
+                )
+              );
+            }, 2000);
+        
             //prefill partner drop down
             props
               .retrieveUserRoleConfigByEmailIdRoleId(
@@ -316,33 +347,26 @@ function SaveUser(props) {
                     data.EMAIL_ID === prefillForm.useremailid &&
                     data.ROLE_ID === prefillForm.userrole
                 );
-                console.log("filterData", filterData);
                 let partnerData = [];
                 filterData.forEach((rows, index) => {
-                  console.log("partnerDrpData", partnerDrpData);
                   props
                     .retrievePartnerByRole(
                       prefillForm.useremailid,
                       prefillForm.userrole
                     )
                     .then((data) => {
-                      console.log("retrievePartnerByRole", data);
                       let filterData = data.data.filter(
                         (data) => data.partner_id == rows.PARTNER_ID
                       );
-                      console.log("partnerData", filterData);
                       let partnerDataIndv = {
                         value: rows.PARTNER_ID,
                         label: filterData[0].partner_account_name, //partner_account_name.label
                       };
-                      console.log("partnerDataIndv", partnerDataIndv);
                       partnerData = partnerData.concat(partnerDataIndv);
-                      console.log("partnerData", partnerData);
                       let name = "partnerAccNm";
                       handlePartnerChange(partnerData);
                     })
                     .catch((e) => {
-                      console.log("Partner list", e);
                     });
                 });
               });
@@ -359,9 +383,10 @@ function SaveUser(props) {
   }, []);
 
   const handleCountryChange = (selected) => {
+    let partnerList = [];
+    partnerList = DataReviewService.getValueForPartnerFunc();
     let name = "usrcountry";
     setOptionCountrySelected(selected);
-    console.log("optionSelected", optionCountrySelected);
     setForm((prev) => ({
       ...prev,
       [name]: selected,
@@ -372,6 +397,26 @@ function SaveUser(props) {
     } else {
       onValidate(false, name);
     }
+    let countryOptions = [];
+    selected.forEach((selectedCountry) => {
+      partnerList.forEach(partnerEle => {
+        if(selectedCountry.value == partnerEle.country_code) {
+          countryOptions.push(partnerEle)
+        }
+      });
+    });
+    let partnerOptions = [];   
+    countryOptions.forEach((partnerData) => {
+      partnerOptions = partnerOptions.concat({
+        value: partnerData.value,
+        label: partnerData.label,
+        country_code: partnerData.country_code
+      });
+    });
+    setPartnerDrpData(partnerOptions);
+    //set data
+  //  setCountryData(countryOptions);
+
   };
 
   const handleModelChange = (selected) => {
@@ -390,7 +435,6 @@ function SaveUser(props) {
   };
 
   const handlePartnerChange = (selected) => {
-    console.log("handlePartnerChange", selected[0]?.value);
     let name = "partnerAccNm";
     setOptionPartnerSelected(selected);
     setForm((prev) => ({
@@ -433,7 +477,6 @@ function SaveUser(props) {
   }
 
   const onHandleSelectChange = useCallback((value, name) => {
-    console.log("onHandleSelectChange", value, name);
     setForm((prev) => ({
       ...prev,
       [name]: value,
@@ -445,7 +488,6 @@ function SaveUser(props) {
     let textNames = ["firstname", "lastname", "useremailid"];
 
     textNames.forEach((row, index) => {
-      console.log("resetForm name", row);
       setForm((prev) => ({
         ...prev,
         [row]: "",
@@ -455,9 +497,7 @@ function SaveUser(props) {
     //reset single select fields
     let singleSelectNames = ["userrole", "userops", "usrzone"];
     singleSelectNames.forEach((row, index) => {
-      console.log("resetForm name", row);
       onHandleSelectChange(null, row);
-      console.log("form", form);
     });
 
     //reset multiselect fields
@@ -465,13 +505,11 @@ function SaveUser(props) {
     handleModelChange([]);
     handleCountryChange([]);
 
-    console.log("resetForm", form);
   };
 
   const onHandleTextChange = useCallback((event) => {
     let value = event.target.value;
     let name = event.target.name;
-    console.log("onHandleSelectChange", name, value);
     setForm((prev) => ({
       ...prev,
       [name]: value,
@@ -486,7 +524,6 @@ function SaveUser(props) {
 
   const validateForm = () => {
     let isInvalid = false;
-    console.log("error", error);
     Object.keys(error).forEach((x) => {
       const errObj = error[x];
 
@@ -562,7 +599,18 @@ function SaveUser(props) {
     content: errorRet,
   };
 
+  const getPartnerCountryCode = (partnerID) => {
+   let listOfPartner = DataReviewService.getValueForPartnerFunc();
+   console.log('listOfPartner::::', listOfPartner);
+   listOfPartner.forEach(element => {
+    if(element.value == partnerID) {
+      return element.country_code
+    }
+   });
+  }
+
   const upsertUserProfile = (data) => {
+    console.log('upsertUserpfoile', data);
     let payload = {
       partner_id: null,
       role_id: null,
@@ -583,10 +631,10 @@ function SaveUser(props) {
 
     if (data.partnerAccNm) {
       console.log("data.partnerAccNm", data.partnerAccNm);
-      data.partnerAccNm.forEach((row) => {
+      data.partnerAccNm.forEach( (row)  => {
         payload.partner_id = row.value; //partner id from multiselect drp
         payload.role_id = data.userrole;
-        payload.country_code = "CHN";
+        payload.country_code =  row.country_code;
         payload.email_id = data.useremailid;
 
         switch (data.userrole.toUpperCase()) {
@@ -610,11 +658,9 @@ function SaveUser(props) {
             break;
         }
 
-        console.log("input createUserPartnerRoleConfig", payload);
         props
           .createUserPartnerRoleConfig(payload)
           .then((data) => {
-            console.log("createUserPartnerRoleConfig o/p", data);
           })
           .catch((e) => {
             isError = true;
@@ -638,12 +684,10 @@ function SaveUser(props) {
 
   const handleSubmit = () => {
     const isValid = validateForm();
-    console.log("isValid", isValid);
     if (!isValid) {
       setShowErrorModal(true)
       return false;
     }
-    console.log("Data:", form);
     //api call
     if (isValid) {
       postForm();
@@ -683,8 +727,28 @@ function SaveUser(props) {
       props
         .createUserProfileConfig(userData)
         .then((data) => {
-          console.log("createUserProfileConfig input", data);
-          upsertUserProfile(form);
+let newOne = form;
+console.log('form that will go to Upsert:::', newOne);
+let accountDetails = newOne.partnerAccNm;
+let listOfPartner = DataReviewService.getValueForPartnerFunc();
+let newAccountArray = [];
+accountDetails.forEach(element => {
+ 
+  listOfPartner.forEach(elementPartner => {
+   if(element.value == elementPartner.value) {
+    let obj = {
+      value: element.value,
+      label: element.label,
+      country_code: elementPartner.country_code
+    }
+    newAccountArray.push(obj);
+   }
+  });
+});
+newOne.partnerAccNm = newAccountArray;
+
+
+          upsertUserProfile(newOne);
         })
 
         .catch((e) => {
@@ -710,7 +774,6 @@ function SaveUser(props) {
           props
             .createUserProfileConfig(userData)
             .then((data) => {
-              console.log("createUserProfileConfig input", data);
               upsertUserProfile(form);
             })
 
@@ -988,7 +1051,7 @@ function SaveUser(props) {
                     value={optionCountrySelected}
                     inputId="usrcountry"
                     name="usrcountry"
-                    onChange={handleCountryChange}
+                    onChange={handleCountryChange }
                   />
                   {error.usrcountry.errorMsg && (
                     <span className="text-danger">

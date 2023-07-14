@@ -733,7 +733,7 @@ function PartnerRequestList(props) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 335, marginTop: "10px" }}
+          style={{ height: 400, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}

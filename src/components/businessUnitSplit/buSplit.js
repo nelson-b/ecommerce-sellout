@@ -40,16 +40,16 @@ function BusinessUnitSplit(props) {
   //sso login func
   const [userEmail, setUserEmail] = useState('');
   const [userRole, setuserRole] = useState('');
-    
+
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     //if user not login then redirect to login page
-    if(usrDetails){
+    if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
-    
-      if(usrDetails.role_id === roles.editor.toUpperCase() ||
-        usrDetails.role_id === roles.backup_editor.toUpperCase() || 
+
+      if (usrDetails.role_id === roles.editor.toUpperCase() ||
+        usrDetails.role_id === roles.backup_editor.toUpperCase() ||
         usrDetails.role_id === roles.approve_1.toUpperCase() ||
         usrDetails.role_id === roles.approver_2.toUpperCase() ||
         usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
@@ -63,6 +63,8 @@ function BusinessUnitSplit(props) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showNumberErrorModal, setShowNumberErrorModal] = useState(false);
+
   const [fileData, setFileData] = useState([]);
   const [showShouldUpdModal, setShowShouldUpdModal] = useState(false);
   const [errorBtnDisable, setErrorBtnDisable] = useState(false);
@@ -82,6 +84,8 @@ function BusinessUnitSplit(props) {
   });
 
   const [rowData, setRowData] = useState([]);
+  const [valuesData, setValuesDate] = useState([]);
+
   const handleClearClick = () => {
     window.location.reload();
   };
@@ -89,54 +93,67 @@ function BusinessUnitSplit(props) {
   const handleSave = useCallback((data) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     //if user not login then redirect to login page
-    if(usrDetails){
+    if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
     }
-    let shouldCallAPI = true;
-let postDateArray = [];
-    data.forEach(element => {
-      let reqData = {
-        country_code: element.country_code,
-        partner_id: element.partner_id,
-        model_type: element.model_type,
-        year_val: element.year_val,
-        quarter: 'Q3',
-        attributes: element.attributes,
-        created_by: element.created_by?element.created_by:usrDetails.email_id,
-        created_date: element.created_date,
-        modified_by: usrDetails.email_id,
-        modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
-        active_flag: element.active_flag,
-      };
-      let apiData = 0;
+    let hasNegativeValues = false;
+
+    data.forEach((element) => {
       element.attributes.forEach((e) => {
-      apiData = apiData + e.total;
+        if (e.total < 0) {
+          hasNegativeValues = true;
+          return;
+        }
+      });
     });
-    if(apiData == 100) {
-      postDateArray.push(reqData);
+
+    if (hasNegativeValues) {
+      setShowNumberErrorModal(true);
     } else {
-      shouldCallAPI = false;
-      return
-    }
-    });
+      let shouldCallAPI = true;
+      let postDateArray = [];
 
-
-
-    if (shouldCallAPI) {
-      props
-        .updateBuSplitData(postDateArray)
-        .then((data) => {
-          if (data.data.length) {
-            setShowSuccessModal(true);
-          }
-        })
-
-        .catch((e) => {
-          console.log("Error", e);
+      data.forEach(element => {
+        let reqData = {
+          country_code: element.country_code,
+          partner_id: element.partner_id,
+          model_type: element.model_type,
+          year_val: element.year_val,
+          quarter: element.quarter,
+          attributes: element.attributes,
+          created_by: element.created_by ? element.created_by : usrDetails.email_id,
+          created_date: element.created_date,
+          modified_by: usrDetails.email_id,
+          modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+          active_flag: "True",
+        };
+        let apiData = 0;
+        element.attributes.forEach((e) => {
+          apiData = apiData + e.total;
         });
-    } else {
-      setShowErrorModal(true);
+        if (apiData == 100) {
+          postDateArray.push(reqData);
+        } else {
+          shouldCallAPI = false;
+          return;
+        }
+      });
+
+      if (shouldCallAPI == true) {
+        props
+          .updateBuSplitData(postDateArray)
+          .then((data) => {
+            if (data.data.length) {
+              setShowSuccessModal(true); // Show success message
+            }
+          })
+          .catch((e) => {
+            console.log("Error", e);
+          });
+      } else {
+        setShowErrorModal(true);
+      }
     }
   }, []);
 
@@ -156,40 +173,55 @@ let postDateArray = [];
   };
 
   const handleUpload = useCallback((data) => {
-    let reqData = {
-      country_code: data[0].Country,
-      model_type: data[0].Model,
-      quarter: data[0].Quarter,
-      attributes: [
-        { attribute_name: "bopp_type", attribute_val: "SP", total: data[0].SP },
-        {
-          attribute_name: "bopp_type",
-          attribute_val: "H&D",
-          total: data[0]["H&D"],
-        },
-        { attribute_name: "bopp_type", attribute_val: "PP", total: data[0].PP },
-        { attribute_name: "bopp_type", attribute_val: "DE", total: data[0].DE },
-        { attribute_name: "bopp_type", attribute_val: "IA", total: data[0].IA },
-      ],
-      partner_id: "CHN-CN-00072",
-      year_val: new Date().getFullYear(),
-      created_by: userEmail,
-      created_date: new Date().toUTCString(),
-      modified_by: userEmail,
-      modified_date: new Date().toUTCString(),
-      active_flag: "false",
-    };
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    if (usrDetails) {
+      setUserEmail(usrDetails.email_id);
+      setuserRole(usrDetails.role_id);
+    }
 
-    if (data[0].Total == 100) {
+    let postDateArray = [];
+    data.forEach(element => {
+      let reqData = {
+        country_code: element.Country,
+        model_type: element.Model,
+        quarter: element.Quarter,
+        attributes: [
+          { attribute_name: "bopp_type", attribute_val: "SP", total: element.SP },
+          {
+            attribute_name: "bopp_type",
+            attribute_val: "H&D",
+            total: element["H&D"],
+          },
+          { attribute_name: "bopp_type", attribute_val: "PP", total: element.PP },
+          { attribute_name: "bopp_type", attribute_val: "DE", total: element.DE },
+          { attribute_name: "bopp_type", attribute_val: "IA", total: element.IA },
+        ],
+        partner_id: element.Partner_id,
+        year_val: new Date().getFullYear(),
+        created_by: usrDetails.email_id,
+        created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+        modified_by: usrDetails.email_id,
+        modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+        active_flag: "True",
+      };
+      postDateArray.push(reqData);
+    })
+
+    let totalValid = true;
+    postDateArray.forEach(reqData => {
+      if (reqData.attributes.reduce((sum, attr) => sum + attr.total, 0) !== 100) {
+        totalValid = false;
+      }
+    });
+
+    if (totalValid) {
       props
-        .updateBuSplitData(reqData)
+        .updateBuSplitData(postDateArray)
         .then((data) => {
-          if (data?.data?.attributes?.length) {
-            setShowSuccessModal(true);
-            onGridReady([]);
+          if (data?.data?.length) {
+            buSplitUploadRefresh();
           }
         })
-
         .catch((e) => {
           console.log("Error", e);
         });
@@ -198,51 +230,78 @@ let postDateArray = [];
     }
   }, []);
 
+  const buSplitUploadRefresh = () => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
+    let quarter = getCurrentQuarter2();
+    props
+      .retrieveBuSplitData(
+        usrDetails.email_id,
+        usrDetails.role_id == "supervisor_approv_1_2" ? "supervisor_approv_1_2" : usrDetails.role_id,
+        year,
+        quarter
+      )
+      .then((data) => {
+        getInShapePlease(data?.data);
+        if (data?.data) {
+          let previousAPIData = data?.data;
+          props
+            .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
+            .then((data) => {
+              let secondArray = [];
+              secondArray = setProperBUSplitData(data?.data);
+              for (let i = 0; i < previousAPIData.length; i++) {
+                for (let j = 0; j < secondArray.length; j++) {
+                  if (
+                    previousAPIData[i].partner_id == secondArray[j].partner_id
+                  ) {
+                    secondArray.splice(j, 1);
+                  }
+                }
+              }
+              previousAPIData = previousAPIData.concat(secondArray);
+              setRowData(previousAPIData);
+              setShowSuccessModal(true);
+              console.log('previousAPIData', previousAPIData)
+            })
+            .catch((e) => {
+              setRowData(previousAPIData);
+              setShowSuccessModal(true);
+              console.log("Data Input", e);
+            });
+        } else {
+
+          props
+            .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
+            .then((data) => {
+              let secondArray = [];
+              secondArray = secondArray = setProperBUSplitData(data?.data);
+              let previousAPIData = [];
+              previousAPIData = previousAPIData.concat(secondArray);
+              setRowData(previousAPIData);
+              setShowSuccessModal(true);
+            })
+            .catch((e) => {
+              setRowData([]);
+              console.log("Data Input", e);
+            });
+        }
+
+
+      }).catch((e) => {
+        setRowData([]);
+        console.log(e);
+      });
+  }
+
   const gridRef = useRef(null);
 
-  const buSplitData = [
-    {
-      partner_id: "Ahlsell",
-      country_code: "Finland",
-      Partner_Account_Name: "Ahlsell ELKO SWE",
-      model_type: "E1",
-      quarter: "Q2",
-      attributes: [
-        {
-          attribute_name: "bopp_type",
-          attribute_val: "SP",
-          total: 25,
-        },
-        {
-          attribute_name: "bopp_type",
-          attribute_val: "H&D",
-          total: 25,
-        },
-        {
-          attribute_name: "bopp_type",
-          attribute_val: "PP",
-          total: 20,
-        },
-        {
-          attribute_name: "bopp_type",
-          attribute_val: "DE",
-          total: 15,
-        },
-        {
-          attribute_name: "bopp_type",
-          attribute_val: "IA",
-          total: 15,
-        },
-      ],
-    },
-  ];
-
-  const getInShapePlease = (data) =>{
+  const getInShapePlease = (data) => {
     let newArray = [];
 
-    if(data.length) {
+    if (data.length) {
       data.forEach(element => {
-        if(element.attributes) {
+        if (element.attributes) {
           element.attributes.forEach(attElement => {
             let obj = {};
             obj = attElement;
@@ -280,10 +339,6 @@ let postDateArray = [];
 
   const columnDefs = [
     {
-      field: "partner_id",
-      hide: true,
-    },
-    {
       headerName: "Country",
 
       field: "country_code",
@@ -304,7 +359,10 @@ let postDateArray = [];
 
       editable: false,
     },
-
+    {
+      field: "partner_id",
+      hide: true,
+    },
     {
       headerName: "Partner Account Name",
 
@@ -384,9 +442,9 @@ let postDateArray = [];
         valueParser: (params) => Number(params.newValue),
         valueGetter: (params) => {
           const attribute = params.data.attributes.find(
-            (attr) => attr.attribute_val == splitHeader 
-            &&
-            attr?.partner_id == params.data.partner_id
+            (attr) => attr.attribute_val == splitHeader
+              &&
+              attr?.partner_id == params.data.partner_id
 
           );
           return attribute ? attribute.total : null;
@@ -454,17 +512,16 @@ let postDateArray = [];
     []
   );
 
-
   let year = new Date().getFullYear();
 
   const onGridReady = useCallback((params) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     //if user not login then redirect to login page
-    if(usrDetails){
+    if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
     }
-    let quarter= getCurrentQuarter2();
+    let quarter = getCurrentQuarter2();
     props
       .retrieveBuSplitData(
         usrDetails.email_id,
@@ -473,6 +530,7 @@ let postDateArray = [];
         quarter
       )
       .then((data) => {
+        setValuesDate(data)
         getInShapePlease(data?.data);
         if (data?.data) {
           let previousAPIData = data?.data;
@@ -498,62 +556,60 @@ let postDateArray = [];
               console.log("Data Input", e);
             });
         } else {
-          
+
           props
-          .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
-          .then((data) => {
-            let secondArray = [];
-            secondArray = secondArray = setProperBUSplitData(data?.data);
-            let previousAPIData = [];    
-            previousAPIData = previousAPIData.concat(secondArray);
-            setRowData(previousAPIData);
-          })
-          .catch((e) => {
-            setRowData([]);
-            console.log("Data Input", e);
-          });
+            .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
+            .then((data) => {
+              let secondArray = [];
+              secondArray = secondArray = setProperBUSplitData(data?.data);
+              let previousAPIData = [];
+              previousAPIData = previousAPIData.concat(secondArray);
+              setRowData(previousAPIData);
+            })
+            .catch((e) => {
+              setRowData([]);
+              console.log("Data Input", e);
+            });
         }
-     
-  
+
+
       }).catch((e) => {
         setRowData([]);
         console.log(e);
       });
   }, []);
 
-
   const setProperBUSplitData = (dataInput) => {
 
     let newCustomizedArray = [];
-        dataInput?.forEach(element => {
-          const setArray = [
-            {attribute_name: 'bopp_type', attribute_val: 'PP', total: 0, partner_id: element.partner_id},
-            {attribute_name: 'bopp_type', attribute_val: 'DE', total: 0, partner_id: element.partner_id},
-            {attribute_name: 'bopp_type', attribute_val: 'IA', total: 0, partner_id: element.partner_id},
-            {attribute_name: 'bopp_type', attribute_val: 'SP', total: 0, partner_id: element.partner_id},
-            {attribute_name: 'bopp_type', attribute_val: 'H&D', total: 0, partner_id: element.partner_id}
-          ];
-          let obj = {
-            active_flag: "True",
-            attributes: setArray,
-            country_code: element.country_code,
-            created_by: element.created_by,
-            created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
-            model_type: element.model_type,
-            modified_by: element.modified_by,
-            modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
-            partner_id:element.partner_id,
-            quarter: getCurrentQuarter2(),
-            record_end_date: 'None',
-            record_start_date: 'None',
-            year_val: new Date().getFullYear(),
-            partner_account_name: element.partner_account_name
-          }
-          newCustomizedArray.push(obj);
-        });
-        return newCustomizedArray;
+    dataInput?.forEach(element => {
+      const setArray = [
+        { attribute_name: 'bopp_type', attribute_val: 'PP', total: 0, partner_id: element.partner_id },
+        { attribute_name: 'bopp_type', attribute_val: 'DE', total: 0, partner_id: element.partner_id },
+        { attribute_name: 'bopp_type', attribute_val: 'IA', total: 0, partner_id: element.partner_id },
+        { attribute_name: 'bopp_type', attribute_val: 'SP', total: 0, partner_id: element.partner_id },
+        { attribute_name: 'bopp_type', attribute_val: 'H&D', total: 0, partner_id: element.partner_id }
+      ];
+      let obj = {
+        active_flag: "True",
+        attributes: setArray,
+        country_code: element.country_code,
+        created_by: element.created_by,
+        created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+        model_type: element.model_type,
+        modified_by: element.modified_by,
+        modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
+        partner_id: element.partner_id,
+        quarter: getCurrentQuarter2(),
+        record_end_date: 'None',
+        record_start_date: 'None',
+        year_val: new Date().getFullYear(),
+        partner_account_name: element.partner_account_name
       }
-  const name = "John Bae";
+      newCustomizedArray.push(obj);
+    });
+    return newCustomizedArray;
+  }
 
   const successmsg = {
     headerLabel: "Success....",
@@ -566,6 +622,13 @@ let postDateArray = [];
     headerLabel: "Error....",
     variant: "danger",
     header: "Please recitify and retry",
+    content: errorData,
+  };
+
+  const errorNumbermsg = {
+    headerLabel: "Error....",
+    variant: "danger",
+    header: "Negative values are not allowed",
     content: errorData,
   };
 
@@ -585,6 +648,10 @@ let postDateArray = [];
 
   const handleCloseErrorModal = () => {
     setShowErrorModal(false);
+  };
+
+  const handleNumberErrorModal = () => {
+    setShowNumberErrorModal(false);
   };
 
   const handleCloseShouldUpdModal = () => {
@@ -703,7 +770,7 @@ let postDateArray = [];
             const splitData = e.SP + e["H&D"] + e.PP + e.DE + e.IA;
             if (splitData > 100) {
               errorJson.push(
-                `Total should not be greater than or less than 100% for - ${e.Partner_Account_Name} partner`
+                `Total should not be greater than or less than 100% for - ${e["Partner Account Name"]} partner`
               );
             }
           });
@@ -717,8 +784,8 @@ let postDateArray = [];
           } else {
             setErrorData([]);
             handleUpload(json);
-            setShowErrorModal(false);
-            setShowSuccessModal(true);
+            // setShowErrorModal(false);
+            // setShowSuccessModal(true);
             setSelectedFile(null);
           }
 
@@ -787,9 +854,20 @@ let postDateArray = [];
     const params = {
       fileName: "Sell out BuSplit Data.xlsx",
       sheetName: "BuSplit Data",
+      allColumns: true,
     };
     gridRef.current.api.exportDataAsExcel(params);
   }, []);
+
+  const modifiedDate = new Date(valuesData.modified_date);
+  const formattedDate = modifiedDate.toLocaleString("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "UTC",
+  });
 
   return (
     <>
@@ -845,10 +923,10 @@ let postDateArray = [];
             )}
 
             <div className="mt-0 ms-auto">
-              <Row className="edited-header">Edited By: {name}</Row>
+              <Row className="edited-header">Edited By: {valuesData.modified_by}</Row>
 
               <Col className="edited-header">
-                LAST UPDATE: 16/05/2022 14:26 UTC{" "}
+                Last Updete: {formattedDate} UTC
               </Col>
             </div>
           </Stack>
@@ -983,6 +1061,12 @@ let postDateArray = [];
                     show={showErrorModal}
                     handleClose={handleCloseErrorModal}
                     body={errormsg}
+                  />
+
+                  <AlertModel
+                    show={showNumberErrorModal}
+                    handleClose={handleNumberErrorModal}
+                    body={errorNumbermsg}
                   />
                 </Col>
               </Row>

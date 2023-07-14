@@ -53,7 +53,8 @@ function DataReviewApprover(props) {
   //sso login func
   const [userEmail, setUserEmail] = useState("");
   const [userRole, setuserRole] = useState("");
-
+  const [openingDate, setOpeningDate] = useState('');
+  const [closingDate, setClosinggDate] = useState('');
   const [selectedCell, setSelectedCell] = useState([]);
 
   useEffect(() => {
@@ -159,7 +160,6 @@ function DataReviewApprover(props) {
           return false;
         }
       },
-
       filter: true,
       pinned: "left",
       suppressSizeToFit: true,
@@ -348,7 +348,8 @@ function DataReviewApprover(props) {
       .then((data) => {
         let closingData = data.CLOSING_DATE;
         let openingDate = data.OPENING_DATE;
-
+        setOpeningDate(openingDate);
+        setClosinggDate(closingData);
         let dataOpen = new Date(openingDate);
         var day1 = dataOpen.getDate().toString().padStart(2, "0");
         var month1 = (dataOpen.getMonth() + 1).toString().padStart(2, "0");
@@ -598,7 +599,6 @@ function DataReviewApprover(props) {
             return false;
           }
         },
-  
         filter: true,
         pinned: "left",
         suppressSizeToFit: true,
@@ -653,7 +653,7 @@ function DataReviewApprover(props) {
 
         sortable: true,
 
-        minWidth: 100,
+        minWidth: 90,
 
         aggFunc: "sum",
 
@@ -663,7 +663,7 @@ function DataReviewApprover(props) {
 
         columnGroupShow: "open",
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
@@ -691,7 +691,7 @@ function DataReviewApprover(props) {
 
         columnGroupShow: "open",
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
@@ -709,7 +709,7 @@ function DataReviewApprover(props) {
 
         sortable: true,
 
-        minWidth: 100,
+        minWidth: 90,
 
         aggFunc: "sum",
 
@@ -719,7 +719,7 @@ function DataReviewApprover(props) {
 
         columnGroupShow: "open",
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
@@ -734,7 +734,7 @@ function DataReviewApprover(props) {
         aggFunc: "sum",
         sortable: true,
         suppressMenu: true,
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
@@ -752,7 +752,7 @@ function DataReviewApprover(props) {
         aggFunc: "sum",
         sortable: true,
         suppressMenu: true,
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
@@ -775,7 +775,7 @@ function DataReviewApprover(props) {
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
       },
 
       {
@@ -798,13 +798,13 @@ function DataReviewApprover(props) {
             return {
               color: "#ff0000",
               fontWeight: "bold",
-              "border-color": "#e2e2e2",
+              "borderColor": "#e2e2e2",
             };
           } else {
             return {
               color: "#009530",
               fontWeight: "bold",
-              "border-color": "#e2e2e2",
+              "borderColor": "#e2e2e2",
             };
           }
         },
@@ -826,7 +826,7 @@ function DataReviewApprover(props) {
 
         suppressMenu: true,
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
       },
 
       {
@@ -846,7 +846,7 @@ function DataReviewApprover(props) {
 
         suppressMenu: true,
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
       },
 
       {
@@ -866,7 +866,7 @@ function DataReviewApprover(props) {
 
         suppressMenu: true,
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
       },
 
       {
@@ -888,7 +888,7 @@ function DataReviewApprover(props) {
 
         singleClickEdit: true,
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
 
         cellClassRules: { "cursor-pointer": () => true },
       },
@@ -989,7 +989,7 @@ function DataReviewApprover(props) {
         aggFunc: "sum",
         sortable: true,
         suppressMenu: true,
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
         valueGetter: (params) => {
           return getTotSellOutCurrQuatrCalc(params);
         },
@@ -1015,7 +1015,7 @@ function DataReviewApprover(props) {
 
         suppressMenu: true,
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
@@ -1027,7 +1027,7 @@ function DataReviewApprover(props) {
         headerName: "YTD Sellout LY",
         field: "YTD_Growth",
         editable: false,
-        minWidth: 150,
+        minWidth: 120,
         wrapHeaderText: true,
         aggFunc: "sum",
         sortable: true,
@@ -1038,7 +1038,7 @@ function DataReviewApprover(props) {
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
       },
 
       {
@@ -1061,13 +1061,13 @@ function DataReviewApprover(props) {
             return {
               color: "#ff0000",
               fontWeight: "bold",
-              "border-color": "#e2e2e2",
+              "borderColor": "#e2e2e2",
             };
           } else {
             return {
               color: "#009530",
               fontWeight: "bold",
-              "border-color": "#e2e2e2",
+              "borderColor": "#e2e2e2",
             };
           }
         },
@@ -1089,7 +1089,7 @@ function DataReviewApprover(props) {
 
         suppressMenu: true,
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
       },
 
       {
@@ -1107,7 +1107,7 @@ function DataReviewApprover(props) {
 
         suppressMenu: true,
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
       },
 
       {
@@ -1123,7 +1123,7 @@ function DataReviewApprover(props) {
 
         suppressMenu: true,
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
       },
 
       {
@@ -1140,7 +1140,7 @@ function DataReviewApprover(props) {
 
         singleClickEdit: true,
 
-        cellStyle: { "border-color": "#e2e2e2" },
+        cellStyle: { "borderColor": "#e2e2e2" },
 
         cellClassRules: { "cursor-pointer": () => true },
       },
@@ -1348,7 +1348,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return getValueFormatter2(params);
       },
@@ -1366,7 +1366,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       valueFormatter: (params) => {
         return getValueFormatter2(params);
       },
@@ -1378,7 +1378,7 @@ function DataReviewApprover(props) {
       headerName: "YTD Sellout LY",
       field: "YTD_Growth",
       editable: false,
-      minWidth: 150,
+      minWidth: 120,
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
@@ -1389,7 +1389,7 @@ function DataReviewApprover(props) {
       valueFormatter: (params) => {
         return getValueFormatter2(params);
       },
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
     },
     {
       headerName: "YTD Sellout Growth",
@@ -1411,13 +1411,13 @@ function DataReviewApprover(props) {
           return {
             color: "#ff0000",
             fontWeight: "bold",
-            "border-color": "#e2e2e2",
+            "borderColor": "#e2e2e2",
           };
         } else {
           return {
             color: "#009530",
             fontWeight: "bold",
-            "border-color": "#e2e2e2",
+            "borderColor": "#e2e2e2",
           };
         }
       },
@@ -1431,7 +1431,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
     },
     {
       headerName: "System Comments",
@@ -1442,7 +1442,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
     },
     {
       headerName: "Editor Comments",
@@ -1453,7 +1453,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
     },
     {
       headerName: "Approver Comments",
@@ -1465,7 +1465,7 @@ function DataReviewApprover(props) {
       sortable: true,
       suppressMenu: true,
       singleClickEdit: true,
-      cellStyle: { "border-color": "#e2e2e2" },
+      cellStyle: { "borderColor": "#e2e2e2" },
       cellClassRules: { "cursor-pointer": () => true },
     }
   );
@@ -1529,7 +1529,7 @@ function DataReviewApprover(props) {
     setMessage(selectedRows?.length);
   };
 
-  const handleSave = useCallback((data, validateKey, selectedCell) => {
+  const handleSave = useCallback((data, validateKey, selectedCell, closingDates, openingDates) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     //if user not login then redirect to login page
     if (usrDetails) {
@@ -1544,19 +1544,21 @@ function DataReviewApprover(props) {
         let itemYear = String(
           element.year_val ? element.year_val : currentYEar
         ).slice(-2);
-        allCalMonths.forEach((monthEle) => {
+        let monthTill = new Date().getMonth()
+        for(let i=0; i< monthTill; i++) {
+          let monthEle = allCalMonths[i];
           const saveArray =
-            radioValue == 1
-              ? element[`${monthEle + itemYear}`]
-              : element[`${monthEle + itemYear}E`];
-          if (saveArray > 0) {
-            monthArray.push({
-              month: monthEle.toLowerCase(),
-              sellout_local_currency: saveArray,
-              trans_type: "",
-            });
-          }
-        });
+          radioValue == 1
+            ? element[`${monthEle + itemYear}`]
+            : element[`${monthEle + itemYear}E`];
+        
+          monthArray.push({
+            month: monthEle.toLowerCase(),
+            sellout_local_currency: saveArray,
+            trans_type: "",
+          });
+        }
+
         let approvalStatus;
         if (usrDetails.role_id == roles.approve_1.toUpperCase()) {
           approvalStatus = "1";
@@ -1587,6 +1589,8 @@ function DataReviewApprover(props) {
             .toISOString()
             .replace("T", " ")
             .slice(0, -5),
+            opening_date : openingDates,
+            closing_date: closingDates
         };
         requestArray.push(objForUpdate);
       });
@@ -1597,19 +1601,33 @@ function DataReviewApprover(props) {
         let itemYear = String(
           data[0].year_val ? data[0].year_val : currentYEar
         ).slice(-2);
-        allCalMonths.forEach((monthEle) => {
+        let monthTill = new Date().getMonth();
+        for(let i=0; i< monthTill; i++) {
+          let monthEle = allCalMonths[i];
           const saveArray =
-            radioValue == 1
-              ? element[`${monthEle + itemYear}`]
-              : element[`${monthEle + itemYear}E`];
-          if (saveArray > 0) {
-            monthArray.push({
-              month: monthEle.toLowerCase(),
-              sellout_local_currency: saveArray,
-              trans_type: "",
-            });
-          }
-        });
+          radioValue == 1
+            ? element[`${monthEle + itemYear}`]
+            : element[`${monthEle + itemYear}E`];
+        
+          monthArray.push({
+            month: monthEle.toLowerCase(),
+            sellout_local_currency: saveArray,
+            trans_type: "",
+          });
+        }
+        // allCalMonths.forEach((monthEle) => {
+        //   const saveArray =
+        //     radioValue == 1
+        //       ? element[`${monthEle + itemYear}`]
+        //       : element[`${monthEle + itemYear}E`];
+        //   if (saveArray > 0) {
+        //     monthArray.push({
+        //       month: monthEle.toLowerCase(),
+        //       sellout_local_currency: saveArray,
+        //       trans_type: "",
+        //     });
+        //   }
+        // });
 
         let reqData = {
           partner_id: element.partner_id,
@@ -1628,6 +1646,8 @@ function DataReviewApprover(props) {
             .toISOString()
             .replace("T", " ")
             .slice(0, -5),
+            opening_date : openingDates,
+            closing_date: closingDates
         };
         requestArray.push(reqData);
       });
@@ -1637,6 +1657,9 @@ function DataReviewApprover(props) {
       .updateSellOutData(requestArray)
       .then((data) => {
         // setReviewData(data);
+        const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+        setMessage(0);
+        getQuarterReviewData(usrDetails.email_id, year, usrDetails.role_id);
         setShowSuccessModal(true);
       })
       .catch((e) => {
@@ -1644,27 +1667,27 @@ function DataReviewApprover(props) {
       });
   }, []);
 
-  const handleSendForInvestgn = useCallback((data, selectedCell) => {
+  const handleSendForInvestgn = useCallback((data, selectedCell, closingDates, openingDates) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
     let requestArray = [];
     selectedCell.forEach((element) => {
       let monthArray = [];
       let itemYear = String(data[0].year_val).slice(-2);
-      allCalMonths.forEach((monthEle) => {
+      let monthTill = new Date().getMonth();
+      for(let i=0; i< monthTill; i++) {
+        let monthEle = allCalMonths[i];
         const saveArray =
-          radioValue == 1
-            ? element[`${monthEle + itemYear}`]
-            : element[`${monthEle + itemYear}E`];
-        if (saveArray > 0) {
-          monthArray.push({
-            month: monthEle.toLowerCase(),
-            sellout_local_currency: saveArray ? saveArray : "0",
-            trans_type: radioValue == 1 ? "ACT" : "EST",
-          });
-        }
-      });
-
+        radioValue == 1
+          ? element[`${monthEle + itemYear}`]
+          : element[`${monthEle + itemYear}E`];
+      
+        monthArray.push({
+          month: monthEle.toLowerCase(),
+          sellout_local_currency: saveArray,
+          trans_type: "",
+        });
+      }
       let objForUpdate = {
         partner_id: element.partner_id,
         partner_name: element.partner_account_name,
@@ -1679,6 +1702,8 @@ function DataReviewApprover(props) {
         comments: element.approverComments,
         batch_upload_flag: element.batch_upload_flag.toString(),
         approved_date: null,
+        opening_date : openingDates,
+        closing_date: closingDates
       };
 
       requestArray.push(objForUpdate);
@@ -1686,6 +1711,9 @@ function DataReviewApprover(props) {
     props
       .updateSellOutData(requestArray)
       .then((data) => {
+        const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+        setMessage(0);
+        getQuarterReviewData(usrDetails.email_id, year, usrDetails.role_id);
         setShowSuccessModal(true);
       })
       .catch((e) => {
@@ -1718,7 +1746,6 @@ function DataReviewApprover(props) {
   };
 
   const getRowStyle = (params) => {
-    if (params.node.aggData) {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
     let userRole = usrDetails.role_id;
@@ -1732,11 +1759,9 @@ function DataReviewApprover(props) {
         if (params.data.approval_status == 2 || params.data.approval_status == '2') {
           return { fontWeight: "bold", opacity: "0.4", pointerEvents : "none" };
         } 
-      } else {
-        return { fontWeight: "bold"};
-
       }
-    }
+    } else if (params.node.aggData) {
+      return { fontWeight: "bold"};
     }
   };
 
@@ -1926,7 +1951,7 @@ function DataReviewApprover(props) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 320, marginTop: "10px" }}
+          style={{ height: 400, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}         
@@ -1980,7 +2005,7 @@ function DataReviewApprover(props) {
                   }
                   disabled={shouldDisableSaveButton}
                   onClick={(e) =>
-                    handleSendForInvestgn(reviewData, selectedCell)
+                    handleSendForInvestgn(reviewData, selectedCell, closingDate, openingDate)
                   }
                 >
                   Send For Investigation
@@ -1995,7 +2020,7 @@ function DataReviewApprover(props) {
                       : "btn-upload edit-header"
                   }
                   disabled={shouldDisableSaveButton}
-                  onClick={(e) => handleSave(reviewData, 0, selectedCell)}
+                  onClick={(e) => handleSave(reviewData, 0, selectedCell, closingDate, openingDate)}
                 >
                   Save
                 </Button>
@@ -2015,7 +2040,7 @@ function DataReviewApprover(props) {
                   }
                   disabled={shouldDisableSaveButton}
                   onClick={() => {
-                    handleSave(reviewData, 1, selectedCell);
+                    handleSave(reviewData, 1, selectedCell, closingDate, openingDate);
                   }}
                 >
                   Validate

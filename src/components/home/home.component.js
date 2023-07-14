@@ -19,6 +19,7 @@ import footerTotalReview from "../editorDataReview/footerTotalReview";
 import { roles, user_login_info } from "../constant.js";
 import { retrieveDashoboardData } from "../../actions/selloutaction.js";
 import { allCalMonths, quarters } from "../constant";
+import { retrieveInputCalenderData } from "../../actions/inputCalenderAction.js";
 
 function Home(props) {
   const gridRef = useRef();
@@ -26,7 +27,22 @@ function Home(props) {
   //sso login func
   const [userEmail, setUserEmail] = useState("");
   const [userRole, setuserRole] = useState("");
-
+  const [openingDatePrepared, setOpeningDate] = useState("");
+  const [closingDatePrepared, setClosinggDate] = useState("");
+  const monthsOfTheYear = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     //if user not login then redirect to login page
@@ -373,12 +389,99 @@ function Home(props) {
   const previousQuarter = currentQuarter - 1 === 0 ? 4 : currentQuarter - 1;
   const previousQuarterMonths = quarters[`Q${previousQuarter}`];
 
+  const getProperDate = (dates) => {
+    let onlyYEar = dates.slice(0, 4);
+
+    let dt = dates;
+    let dat = new Date(dt);
+    let arr = dat.toString().substring(4, 10).split(" ");
+    switch (arr[1]) {
+      case 1:
+        arr[1] += "st";
+        break;
+      case 2:
+        arr[1] += "nd";
+        break;
+      case 3:
+        arr[1] += "rd";
+        break;
+      case 21:
+        arr[1] += "st";
+        break;
+      case 22:
+        arr[1] += "nd";
+        break;
+      case 23:
+        arr[1] += "rd";
+        break;
+      case 31:
+        arr[1] += "st";
+        break;
+      default:
+        arr[1] += "th";
+        break;
+    }
+    let newOnesss = arr[1] + " " + arr[0] + " " + onlyYEar;
+    return newOnesss;
+  };
+
+  const getPreviousQuarterData = (quarter) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
+    let today = new Date();
+    let year = today.getFullYear();
+    let roleToPassInParam;
+
+    if (usrDetails.role_id === roles.editor.toUpperCase()) {
+      roleToPassInParam = "EDITOR";
+    } else {
+      roleToPassInParam = "APPROVER";
+    }
+    props
+      .retrieveInputCalenderData(year, quarter, roleToPassInParam)
+      .then((data) => {
+        let closingData = data.CLOSING_DATE;
+        let openingDate = data.OPENING_DATE;
+        console.log("newonenewonenewone::", closingData.slice(0, 4));
+
+        let getOpeningDate = getProperDate(openingDate);
+        let getClosingDate = getProperDate(closingData);
+        setOpeningDate(getOpeningDate);
+        setClosinggDate(getClosingDate);
+        console.log("prepared date format::", getOpeningDate, getClosingDate);
+      })
+      .catch((e) => {
+        console.log("Partner list", e);
+      });
+  };
+
   const onGridReady = useCallback((params) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
     }
+    let newDate = new Date().getMonth();
+    let currentQurterForAPI;
+    if (newDate <= 3) {
+      currentQurterForAPI = "Q1";
+    } else if (newDate > 3 && newDate <= 6) {
+      currentQurterForAPI = "Q2";
+    } else if (newDate > 6 && newDate <= 9) {
+      currentQurterForAPI = "Q3";
+    } else {
+      currentQurterForAPI = "Q4";
+    }
+    let dataToPassInParams;
+    if (usrDetails.role_id === roles.editor.toUpperCase()) {
+      let todays = new Date();
+      let cMonth = todays.getMonth();
+      dataToPassInParams = monthsOfTheYear[cMonth];
+    } else {
+      dataToPassInParams = currentQurterForAPI;
+    }
+
+    getPreviousQuarterData(dataToPassInParams);
     let dashboard = [];
     if (usrDetails.role_id === roles.editor.toUpperCase()) {
       dashboard = monthArray;
@@ -643,12 +746,12 @@ function Home(props) {
         <Row className="bottom-container">
           <Col className="window-container">
             <div className="window-header">
-              Sell Out Data Input Window Is Open Till 20th May 18:00 UTC
+              Sell Out Data Input Window Is Open from {openingDatePrepared}
             </div>
           </Col>
           <Col>
             <div className="window-header">
-              Sell Out Data Input Window Will be Closed by 25th May 18:00 UTC
+              Sell Out Data Input Window Will be Closed by {closingDatePrepared}
             </div>
           </Col>
         </Row>
@@ -659,4 +762,5 @@ function Home(props) {
 
 export default connect(null, {
   retrieveDashoboardData,
+  retrieveInputCalenderData,
 })(Home);

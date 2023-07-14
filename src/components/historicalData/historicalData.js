@@ -800,7 +800,7 @@ function HistoricalData(props) {
 
         <Row
           className="ag-theme-alpine ag-grid-table"
-          style={{ height: 320, marginTop: "10px" }}
+          style={{ height: 400, marginTop: "10px" }}
         >
           <AgGridReact
             ref={gridRef}

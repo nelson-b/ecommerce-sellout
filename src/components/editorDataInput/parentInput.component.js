@@ -57,14 +57,12 @@ function DataInputComponent(props) {
   }, []);
   //------------------//
   const [showModal, setShowModal] = useState(false);
-
   const [shouldDisableSaveButton, setShouldDisableSaveButton] = useState(false);
-
   const [rowData, setRowData] = useState(null);
-
+  const [openingDate, setOpeningDate] = useState('');
+  const [closingDate, setClosinggDate] = useState('');
   const location = useLocation();
   const userRole = new URLSearchParams(location.search).get("role");
-
   const handleShowModal = () => {
     setShowModal(true);
   };
@@ -130,7 +128,7 @@ function DataInputComponent(props) {
     ],
   };
 
-  const handleSave = (e) => {
+  const handleSave = ( closingDates, openingDates) => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     const currentYear = String(currentDate.getFullYear()).slice(-2);
@@ -141,7 +139,7 @@ function DataInputComponent(props) {
 
     //post data
 
-    postData();
+    postData(closingDates, openingDates);
   };
 
   const [fileError, setFileError] = useState([]);
@@ -178,32 +176,22 @@ function DataInputComponent(props) {
     content: [],
   };
 
-  const postData = useCallback(() => {
+  const postData = useCallback((closingDates, openingDates) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-
     if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setuserRoleData(usrDetails.role_id);
     }
     setShowShouldUpdModal(false);
     let payload = [];
-    //iterate in the grid
-
     gridRef.current.api.forEachNode((rowNode, index) => {
-      //api to save data
-
       let monthArray = [];
-
       allCalMonths.forEach((element) => {
         let amount = rowNode.data[`${element}_Amount`];
-
-        console.log("amount::", amount);
-
         if (amount) {
         } else {
           amount = 0;
         }
-
         if (rowNode.data[`${element}_Amount`] >= 0) {
           monthArray.push({
             month: element.toLowerCase(),
@@ -228,6 +216,8 @@ function DataInputComponent(props) {
         comments: "waiting for approver",
         batch_upload_flag: rowNode.data.batch_upload_flag,
         approved_date: new Date().toISOString().replace("T", " ").slice(0, -5),
+        opening_date : openingDates,
+        closing_date: closingDates
       };
 
       if (formatPayload.months.length > 0) {
@@ -523,7 +513,7 @@ function DataInputComponent(props) {
 
             singleClickEdit: true,
 
-            minWidth: 100,
+            minWidth: 90,
 
             suppressMenu: true,
 
@@ -886,7 +876,8 @@ function DataInputComponent(props) {
       .then((data) => {
         let closingData = data.CLOSING_DATE;
         let openingDate = data.OPENING_DATE;
-
+        setOpeningDate(openingDate);
+        setClosinggDate(closingData);
         let dataOpen = new Date(openingDate);
         var day1 = dataOpen.getDate().toString().padStart(2, "0");
         var month1 = (dataOpen.getMonth() + 1).toString().padStart(2, "0");
@@ -961,7 +952,7 @@ function DataInputComponent(props) {
           </Col>
         </Row>
 
-        <Row className="ag-theme-alpine" style={{ height: 300 }}>
+        <Row className="ag-theme-alpine" style={{ height: 400 }}>
           <AgGridReact
             ref={gridRef}
             rowData={rowData}
@@ -998,7 +989,7 @@ function DataInputComponent(props) {
               }
               disabled={shouldDisableSaveButton}
               onClick={() => {
-                handleSave();
+                handleSave(closingDate, openingDate);
               }}
             >
               Save
