@@ -693,7 +693,7 @@ function DataReviewComponent(props) {
               }
             }
           }
-          setReviewData(
+          setRowData(
             combinedArray.filter(
               (e) =>
                 e.status == "EDITED" ||
@@ -702,7 +702,7 @@ function DataReviewComponent(props) {
             )
           );
         } else {
-          setReviewData(
+          setRowData(
             currentYearArray.filter(
               (e) =>
                 e.status == "EDITED" ||
@@ -754,7 +754,8 @@ function DataReviewComponent(props) {
     };
   }, []);
 
-  const getCMLMValues = (params) => {
+  const getCMLMValues = (data) => {
+    console.log('getCMLMValues', getCMLMValues);
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -769,18 +770,18 @@ function DataReviewComponent(props) {
       currmonthField = currMonthName + year;
       lastmonthField = lastMonthName + year;
 
-      if (params.data) {
-        var filterCurrMonths = Object.keys(params.data)
+      if (data) {
+        var filterCurrMonths = Object.keys(data)
           .filter((key) => [currmonthField].includes(key))
           .reduce((obj, key) => {
-            obj[key] = params.data[key];
+            obj[key] = data[key];
             return obj;
           }, {});
-        var filterLastMonths = Object.keys(params.data)
+        var filterLastMonths = Object.keys(data)
           .filter((key) => [lastmonthField].includes(key))
 
           .reduce((obj, key) => {
-            obj[key] = params.data[key];
+            obj[key] = data[key];
 
             return obj;
           }, {});
@@ -795,18 +796,18 @@ function DataReviewComponent(props) {
       currmonthField = currMonthName + year + "E";
       lastmonthField = lastMonthName + year + "E";
 
-      if (params.data) {
-        var filterCurrMonths = Object.keys(params.data)
+      if (data) {
+        var filterCurrMonths = Object.keys(data)
           .filter((key) => [currmonthField].includes(key))
           .reduce((obj, key) => {
-            obj[key] = params.data[key];
+            obj[key] = data[key];
             return obj;
           }, {});
-        var filterLastMonths = Object.keys(params.data)
+        var filterLastMonths = Object.keys(data)
           .filter((key) => [lastmonthField].includes(key))
 
           .reduce((obj, key) => {
-            obj[key] = params.data[key];
+            obj[key] = data[key];
 
             return obj;
           }, {});
@@ -871,7 +872,7 @@ function DataReviewComponent(props) {
   };
 
   const setVarCMvsLMCalc = (params) => {
-    let resp = getCMLMValues(params);
+    let resp = getCMLMValues(params.data);
 
     if (resp != undefined) {
       return resp.CurrentMonth - resp.LastMonth;
@@ -881,13 +882,14 @@ function DataReviewComponent(props) {
   };
 
   const setVarCMvsLMCalcPerc = (params) => {
-    let resp = getCMLMValues(params);
+    console.log('setVarCMvsLMCalcPerc', params.data);
+    let resp = getCMLMValues(params.data);
     let value = 0;
     if (resp != undefined) {
       if (resp.LastMonth != 0) {
         value = ((resp.CurrentMonth - resp.LastMonth) / resp.LastMonth) * 100;
         if(!isNaN(value)){
-          return value.toFixed(2)+"%";
+          return value.toFixed(2);
         }
       }
     }
@@ -970,7 +972,7 @@ function DataReviewComponent(props) {
 
   const setVarCMvsLYCalcPerc = (params) => {
     let resp = getCMLYValuesWithYear(params);
-
+    console.log('getCMLYValuesWithYear', resp);
     if (resp != undefined) {
       if (resp.CurrentMonthLY != 0 && resp.CurrentMonthLY != undefined) {
         if (resp.CurrentMonthCY) {
@@ -1045,9 +1047,9 @@ function DataReviewComponent(props) {
   };
 
   const getValueFormatter = (params) => {
+    console.log('getValueFormatter', params);
     if (params.value) {
-      return params.value
-      return params.value?.toFixed() + "%";
+      return params.value + "%";
     } else {
       return "";
     }
@@ -1454,7 +1456,26 @@ function DataReviewComponent(props) {
 
             sortable: true,
 
-            aggFunc: "sum",
+            aggFunc: params => {
+              console.log('var. CM vs LM (%)', params.rowNode.aggData);
+              const currentDate = new Date();
+              let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+              const currMonthName = allCalMonths[date.getMonth() - 1];
+              const lastMonthName = allCalMonths[date.getMonth() - 2];
+              const year = String(date.getFullYear()).slice(-2);
+              console.log('CMName',currMonthName + year);
+              console.log('LMName', lastMonthName + (year - 1));
+              let cm = params.rowNode.aggData?params.rowNode.aggData[`${currMonthName + year}`]: '';
+              let lm = params.rowNode.aggData?params.rowNode.aggData[`${lastMonthName + year}`]: '';
+              console.log('CM', cm);
+              console.log('LM', lm);
+              let result = ((cm-lm)/lm)*100;
+              if(isNaN(result) || result === Infinity){
+                return "";
+              } else {
+                return result.toFixed(2);
+              }
+            },
 
             singleClickEdit: true,
 
@@ -1605,14 +1626,32 @@ function DataReviewComponent(props) {
             }
           },
         },
-
         {
           headerName: "var. CM vs LY (%)",
           field: "PreVMvsLM",
           minWidth: 110,
           editable: false,
+          aggFunc: params => {
+            console.log('var. CM vs LY (%)', params.rowNode.aggData);
+            const currentDate = new Date();
+            let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const currMonthName = allCalMonths[date.getMonth() - 1];
+            const lastMonthName = allCalMonths[date.getMonth() - 2];
+            const year = String(date.getFullYear()).slice(-2);
+            console.log('CYName',currMonthName + year);
+            console.log('LYName', lastMonthName + (year - 1));
+            let cy = params.rowNode.aggData?params.rowNode.aggData[`${currMonthName + year}`]: '';
+            let ly = params.rowNode.aggData?params.rowNode.aggData[`${currMonthName + (year-1)}`]: '';
+            console.log('CY', cy);
+            console.log('LM', ly);
+            let result = ((cy-ly)/ly)*100;
+            if(isNaN(result) || result === Infinity){
+              return "";
+            } else {
+              return result.toFixed(2);
+            }
+          },
           singleClickEdit: true,
-          aggFunc: "sum",
           filter: "agNumberColumnFilter",
           sortable: true,
           suppressMenu: true,
@@ -2103,7 +2142,7 @@ function DataReviewComponent(props) {
                           }
                         }
                       }
-                      setReviewData(
+                      setRowData(
                         combinedArray.filter(
                           (e) =>
                             e.status == "EDITED" ||
@@ -2112,7 +2151,7 @@ function DataReviewComponent(props) {
                         )
                       );
                     } else {
-                      setReviewData(
+                      setRowData(
                         currentYearArray.filter(
                           (e) =>
                             e.status == "EDITED" ||
@@ -2121,10 +2160,10 @@ function DataReviewComponent(props) {
                         )
                       );
                     }
-                                              //prev quarter
-                                              let todays = new Date();
-                                              let cMonth = todays.getMonth();
-                                              getPreviousQuarterData(monthsOfTheYear[cMonth]);
+                    //prev quarter
+                    let todays = new Date();
+                    let cMonth = todays.getMonth();
+                    getPreviousQuarterData(monthsOfTheYear[cMonth]);
                   })            
                   .catch((e) => {
                     console.log(e);
@@ -2317,7 +2356,7 @@ function DataReviewComponent(props) {
                           }
                         }
                       }
-                      setReviewData(
+                      setRowData(
                         combinedArray.filter(
                           (e) =>
                             e.status == "EDITED" ||
@@ -2326,7 +2365,7 @@ function DataReviewComponent(props) {
                         )
                       );
                     } else {
-                      setReviewData(
+                      setRowData(
                         currentYearArray.filter(
                           (e) =>
                             e.status == "EDITED" ||
@@ -2335,10 +2374,10 @@ function DataReviewComponent(props) {
                         )
                       );
                     }
-                                              //prev quarter
-                                              let todays = new Date();
-                                              let cMonth = todays.getMonth();
-                                              getPreviousQuarterData(monthsOfTheYear[cMonth]);
+                    //prev quarter
+                    let todays = new Date();
+                    let cMonth = todays.getMonth();
+                    getPreviousQuarterData(monthsOfTheYear[cMonth]);
                   })            
                   .catch((e) => {
                     console.log(e);
@@ -2349,7 +2388,6 @@ function DataReviewComponent(props) {
             .catch((e) => {
               console.log("Data Input", e);
             });
-
         }
       })
       .catch((e) => {
@@ -2422,7 +2460,7 @@ function DataReviewComponent(props) {
         >
           <AgGridReact
             ref={gridRef}
-            rowData={reviewData}
+            rowData={rowData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}
