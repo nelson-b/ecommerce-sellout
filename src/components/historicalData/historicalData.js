@@ -134,8 +134,6 @@ function HistoricalData(props) {
       rowGroup: true,
 
       hide: true,
-      minWidth: 70, suppressSizeToFit: true, width: 70,
-      
     },
 
     {
@@ -149,8 +147,9 @@ function HistoricalData(props) {
 
       pinned: "left",
 
+      width: 220,
+
       suppressSizeToFit: true,
-      minWidth: 200, suppressSizeToFit: true, width: 200,
     },
 
     {
@@ -168,7 +167,7 @@ function HistoricalData(props) {
 
       rowGroup: true,
 
-      width: 120,
+      width: 100,
 
       hide: true,
 
@@ -211,17 +210,25 @@ function HistoricalData(props) {
       sortable: true,
       filter: true,
       pinned: "left",
+      width: 140,
       suppressSizeToFit: true,
       editable: false,
+      suppressMenu: true,
     },
+
     {
       headerName: "Status",
 
       field: "status",
 
       pinned: "left",
+
+      width: 110,
+
       suppressSizeToFit: true,
-      minWidth: 100, suppressSizeToFit: true, width: 100,
+
+      suppressMenu: true,
+
       cellRenderer: (params) => {
         const Status = params.value;
 
@@ -239,6 +246,9 @@ function HistoricalData(props) {
       },
     },
   ];
+
+
+
 
   const getHistoricalData = (mail, year, screenRole) => {
     props
@@ -520,13 +530,12 @@ function HistoricalData(props) {
       filter: true,
       sortable: true,
       suppressSizeToFit: true,
-      minWidth: 120, width: 120,
     };
   }, []);
 
   const autoGroupColumnDef = useMemo(() => {
     return {
-      minWidth: 120, suppressSizeToFit: true, width: 120,
+      width: 170,
 
       filterValueGetter: (params) => {
         if (params.node) {

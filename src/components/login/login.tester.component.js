@@ -19,7 +19,7 @@ import { connect } from "react-redux";
 import { retrieveStaticDataByAttrName } from "../../actions/staticDataAction";
 import { retrieveByEmailId } from "../../actions/userAction";
 import { redirectUrl, signInLink, tokenExpiryMinusAttr } from "../../config";
-import { api_ret_client_id, client_id, roles, status, user_login_info, user_not_exist_msg } from "../constant";
+import { api_ret_client_id, client_id, roles, user_login_info } from "../constant";
 import AlertModal from "../modal/alertModel";
 import Cookies from "js-cookie";
 
@@ -81,7 +81,6 @@ function TesterLogin(props) {
   const loginNavigation = (data) => {
     props.retrieveByEmailId(data.username)
         .then((data) => {
-          data = data.filter(data => data.status === status.active.toUpperCase());
           console.log('retrieveByEmailId', data);
           if(data.length > 0){
           setShowErrorModal(false);
@@ -92,7 +91,6 @@ function TesterLogin(props) {
             first_name: data[0].first_name,
             last_name: data[0].last_name
           };
-          
           console.log('respData', respData);
           let principalId = `{'email_id':'${respData.email_id}','role_id':'${respData.role_id}','first_name':'${respData.first_name}','last_name':'${respData.last_name}','status':'ACTIVE','modified_by':'jean@se.com','created_date':'2023-06-29T06:25:30','modified_date':'2023-06-29T06:24:54','ops_val':'Operations Val','zone_val':'Zone Val2','model_val':'Model Val','country_code':'USA'}`;
           //save userinfo in local storage
@@ -107,8 +105,8 @@ function TesterLogin(props) {
         }
         else {
           //user does not exist
-          console.error(user_not_exist_msg);
-          setErrorRet([user_not_exist_msg]);
+          console.error('user does not exist!!');
+          setErrorRet(["User does not exist!!"]);
           setShowErrorModal(true);
         }
       })

@@ -79,9 +79,10 @@ export const deleteAllSellOutData = () => async (dispatch) => {
   }
 };
 
-export const retrieveHistoricalData = (user, year, id) => async (dispatch) => {
+export const retrieveHistoricalData = (user, year, id, monthsArray) => async (dispatch) => {
+  console.log('monthsArray in actions:::',monthsArray)
   try {
-    const res = await SellOutDataService.getHistoricalData(user, year, id);
+    const res = await SellOutDataService.getHistoricalData(user, year, id, monthsArray);
 
     dispatch({
       type: RETRIEVE_HISTORICAL_DATA,

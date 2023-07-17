@@ -29,6 +29,8 @@ function Home(props) {
   const [userRole, setuserRole] = useState("");
   const [openingDatePrepared, setOpeningDate] = useState("");
   const [closingDatePrepared, setClosinggDate] = useState("");
+  const [shouldShosEditor, setShouldShosEditor] = useState(true);
+
   const monthsOfTheYear = [
     "Jan",
     "Feb",
@@ -391,10 +393,16 @@ function Home(props) {
 
   const getProperDate = (dates) => {
     let onlyYEar = dates.slice(0, 4);
-
+    console.log('dates:::', dates);
+    let splitTIme = dates.split(" ");
+    console.log('splitTIme:', splitTIme);
+    let times = splitTIme[1];
+    times= times.slice(0,5);
+    console.log('times;:', times);
     let dt = dates;
     let dat = new Date(dt);
     let arr = dat.toString().substring(4, 10).split(" ");
+    console.log('arr::::', arr);
     switch (arr[1]) {
       case 1:
         arr[1] += "st";
@@ -421,7 +429,7 @@ function Home(props) {
         arr[1] += "th";
         break;
     }
-    let newOnesss = arr[1] + " " + arr[0] + " " + onlyYEar;
+    let newOnesss = arr[1] + " " + arr[0] + " " + onlyYEar + " " + times + " UTC";
     return newOnesss;
   };
 
@@ -433,8 +441,10 @@ function Home(props) {
     let roleToPassInParam;
 
     if (usrDetails.role_id === roles.editor.toUpperCase()) {
+      setShouldShosEditor(true);
       roleToPassInParam = "EDITOR";
     } else {
+      setShouldShosEditor(false);
       roleToPassInParam = "APPROVER";
     }
     props
@@ -474,6 +484,7 @@ function Home(props) {
     }
     let dataToPassInParams;
     if (usrDetails.role_id === roles.editor.toUpperCase()) {
+
       let todays = new Date();
       let cMonth = todays.getMonth();
       dataToPassInParams = monthsOfTheYear[cMonth];
@@ -746,12 +757,26 @@ function Home(props) {
         <Row className="bottom-container">
           <Col className="window-container">
             <div className="window-header">
-              Sell Out Data Input Window Is Open from {openingDatePrepared}
+              {shouldShosEditor ?  (
+              'Sell Out Data Input Window Is Open from '+openingDatePrepared
+
+              ):(
+                'Sell Out Approver Window Is Open from '+openingDatePrepared
+
+              )
+              }
             </div>
           </Col>
           <Col>
             <div className="window-header">
-              Sell Out Data Input Window Will be Closed by {closingDatePrepared}
+            {shouldShosEditor ?  (
+              'Sell Out Data Input Window Will be Closed by '+ closingDatePrepared
+
+              ):(
+                'Sell Out Approver Window Will be Closed by '+ closingDatePrepared
+
+              )
+              }
             </div>
           </Col>
         </Row>

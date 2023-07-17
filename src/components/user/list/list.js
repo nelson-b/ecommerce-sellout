@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { retrieveAllNewListByRole } from "../../../actions/userAction.js";
 import userEditIcon from "../../../images/edit-icon.png";
-import { roles, status, user_login_info } from "../../constant.js";
+import { roles, user_login_info } from "../../constant.js";
 
 function UserList(props) {
   const navigate = useNavigate();

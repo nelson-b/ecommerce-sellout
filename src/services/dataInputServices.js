@@ -9,8 +9,8 @@ class DataInputService {
         return http.put(`/ecomm-sellout-dev-lamda-createpartner/update-sellout-data`, data);
     }
 
-    getAll(user, year, role) {
-        return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?USER=${user}&YEAR_VAL=${year}&ROLE_ID=${role}&fetch=by_user_role`);
+    getAll(user, year, role, monthsArray) {
+        return http.get(`/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?USER=${user}&YEAR_VAL=${year}&ROLE_ID=${role}&MONTHS=${JSON.stringify(monthsArray)}&fetch=by_user_role`);
     }
 
     updateReviewData(data) {

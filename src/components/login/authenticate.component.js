@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { retrieveUserRoleConfigByAuthCode } from "../../actions/partneraction";
 import Cookies from "js-cookie";
-import { roles, user_login_info, user_not_exist_msg } from "../constant";
+import { roles, user_login_info } from "../constant";
 import AlertModal from "../modal/alertModel";
 import { tokenExpiryMinusAttr } from "../../config";
 
@@ -37,12 +37,12 @@ function Authenticate(props) {
             console.log('retrieveUserRoleConfigByAuthCode', data);
             if(data.data){
               setShowErrorModal(false);
-              //save user information in local storage and bearer token and refresh token in cookies
+              //save user information, bearer token and refresh token in local storage
               setTokenUserInfo(data.data);
             } else {
-              console.error(user_not_exist_msg);
+              console.error('user does not exist!!');
               //show error popup
-              setErrorRet([user_not_exist_msg]);
+              setErrorRet(["User does not exist!!"]);
               setShowErrorModal(true);
             }
         })

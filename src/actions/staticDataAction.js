@@ -1,4 +1,4 @@
-import { RETRIEVE_COUNTRIES, RETRIEVE_STATIC_DATA_BY_ATTRNAME } from "./type";
+import { RETRIEVE_COUNTRIES, RETRIEVE_STATIC_DATA_BY_ATTRNAME, RETRIEVE_ZONES } from "./type";
 
 import StaticDataServices from "../services/staticDataServices";
 
@@ -23,6 +23,21 @@ import StaticDataServices from "../services/staticDataServices";
   
       dispatch({
         type: RETRIEVE_COUNTRIES,
+        payload: res.data,
+      });
+  
+      return Promise.resolve(res.data);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  export const retrieveAllStaticDataByZone = () => async (dispatch) => {
+    try {
+      const res = await StaticDataServices.getAllStaticDataListByZone();
+  
+      dispatch({
+        type: RETRIEVE_ZONES,
         payload: res.data,
       });
   

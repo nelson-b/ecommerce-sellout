@@ -1,12 +1,13 @@
 import http from "../http-common";
 
 class SellOutDataService {
-  getHistoricalData(user, year, id) {
+  getHistoricalData(user, year, id, monthsArray) {
+    console.log('monthsArray: in service::', monthsArray);
     let isSuperApproverUser = " ";
     if (id == "SUPERVISOR_APPROV_1_2") {
       isSuperApproverUser = `/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?fetch=all`;
     } else {
-      isSuperApproverUser = `/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?USER=${user}&YEAR_VAL=${year}&ROLE_ID=${id}&fetch=by_user_role`;
+      isSuperApproverUser = `/ecomm-sellout-dev-lamda-createpartner/get-sellout-data-input?USER=${user}&YEAR_VAL=${year}&ROLE_ID=${id}&MONTHS=${JSON.stringify(monthsArray)}&fetch=by_user_role`;
     }
     return http.get(isSuperApproverUser);
   }

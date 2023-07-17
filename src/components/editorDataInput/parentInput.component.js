@@ -6,7 +6,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Button, Row, Col, Container, Form, Breadcrumb } from "react-bootstrap";
-import { allCalMonths, roles, user_login_info } from "../constant";
+import { allCalMonths,quarters, roles, user_login_info } from "../constant";
 import "./parentInput.component.css";
 import BatchInputComponent from "./batchInput.component";
 import MyMenu from "../menu/menu.component.js";
@@ -128,7 +128,7 @@ function DataInputComponent(props) {
     ],
   };
 
-  const handleSave = ( closingDates, openingDates) => {
+  const handleSave = (rowData, closingDates, openingDates) => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     const currentYear = String(currentDate.getFullYear()).slice(-2);
@@ -136,10 +136,8 @@ function DataInputComponent(props) {
       setShowShouldUpdModal(true);
       return;
     }
-
     //post data
-
-    postData(closingDates, openingDates);
+    postData(rowData,closingDates, openingDates);
   };
 
   const [fileError, setFileError] = useState([]);
@@ -176,30 +174,87 @@ function DataInputComponent(props) {
     content: [],
   };
 
-  const postData = useCallback((closingDates, openingDates) => {
+  
+  const getCurrentQuarterForPostAPI = () => {
+    const currentDate = new Date();
+    const currentYear = String(currentDate.getFullYear()).slice(-2);
+    const currentMonth = allCalMonths[currentDate.getMonth()];
+    // const currentMonth = 'Jul'; // To test quarter basis
+    let currentQuarter = 0;
+    let currentQuarterIndex = 0;
+    let index = 1;
+    let selectedYear = currentYear;
+
+    for (const quarter in quarters) {
+      if (quarters[quarter].includes(currentMonth)) {
+        currentQuarter = quarter;
+        currentQuarterIndex = quarters[quarter].indexOf(currentMonth);
+        break;
+      }
+      index++;
+    }
+
+    let resultQuarter = 0;
+    if (currentQuarterIndex === 0) {
+      const previousIndex = index - 1 ? index - 1 : 4;
+      if (index - 1 == 0) {
+        selectedYear = currentYear - 1;
+      }
+      const previousQuarter = Object.keys(quarters)[previousIndex - 1];
+      resultQuarter = previousQuarter;
+    } else {
+      resultQuarter = currentQuarter;
+    }
+    const q2Values = quarters[resultQuarter];
+    return q2Values;
+  };
+
+  const postData = useCallback((rowData,closingDates, openingDates) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setuserRoleData(usrDetails.role_id);
     }
+    let q2Values = getCurrentQuarterForPostAPI();
+    let lowerCaseMonths = [];
+    q2Values.forEach((element) => {
+      lowerCaseMonths.push(element.toLowerCase());
+    });
     setShowShouldUpdModal(false);
     let payload = [];
     gridRef.current.api.forEachNode((rowNode, index) => {
+     let seriousData =  rowData.filter((e) =>e.Partner_id == rowNode.data.Partner_id)
+     let seriousDataForMonths = seriousData[0].SeriousData.months;
       let monthArray = [];
-      allCalMonths.forEach((element) => {
+      let d = new Date().getMonth();
+      let monthArrayToPass = [];
+      for(let i=0; i<d; i++) {
+        monthArrayToPass.push(monthsOfTheYear[i]);
+      }
+
+      monthArrayToPass.forEach((element) => {
         let amount = rowNode.data[`${element}_Amount`];
-        if (amount) {
-        } else {
-          amount = 0;
-        }
-        if (rowNode.data[`${element}_Amount`] >= 0) {
-          monthArray.push({
-            month: element.toLowerCase(),
-            sellout_local_currency: String(amount),
-            trans_type:
-              rowNode.data[`${element}_Estimated`] == true ? "EST" : "ACT",
-          });
-        }
+        let approvalStatus =0;
+        let abcData =  seriousDataForMonths.filter((e) =>e.month_val == element.toLowerCase());
+            if(amount == abcData[0].sellout_local_currency) {
+              approvalStatus = abcData[0].approval_status;
+            } else {
+              approvalStatus = 0;
+            }
+          if (amount) {
+          } else {
+            amount = 0;
+          }
+          if (rowNode.data[`${element}_Amount`]) {
+            monthArray.push({
+              month: element.toLowerCase(),
+              sellout_local_currency: String(amount),
+              trans_type:
+                rowNode.data[`${element}_Estimated`] == true ? "EST" : "ACT",
+                approval_status: '0'
+            });
+          }
+     
       });
       let currentYear = String(currentDate.getFullYear());
       let formatPayload = {
@@ -210,14 +265,16 @@ function DataInputComponent(props) {
         months: monthArray,
         trans_currency_code: rowNode.data.Currency_Of_Reporting,
         created_by: usrDetails.email_id,
+        modified_by:usrDetails.email_id,
         created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
         approval_status: "0",
         editor_comment: rowNode.data.Comment,
-        comments: "waiting for approver",
+        comments: '',
         batch_upload_flag: rowNode.data.batch_upload_flag,
         approved_date: new Date().toISOString().replace("T", " ").slice(0, -5),
         opening_date : openingDates,
-        closing_date: closingDates
+        closing_date: closingDates,
+        CURRENT_QUARTER_MONTHS:lowerCaseMonths
       };
 
       if (formatPayload.months.length > 0) {
@@ -278,8 +335,7 @@ function DataInputComponent(props) {
 
       editable: false,
 
-	    suppressSizeToFit: true, width: 90,
-	  
+      width: 100,
     },
 
     {
@@ -295,12 +351,13 @@ function DataInputComponent(props) {
 
       suppressNavigable: true,
 
+      width: 140,
+
       suppressSizeToFit: true,
 
       cellClass: "no-border",
 
       editable: false,
-      width: 110,
     },
 
     {
@@ -320,7 +377,7 @@ function DataInputComponent(props) {
 
       pinned: "left",
 
-	    suppressSizeToFit: true, width: 200,
+      width: 270,
 
       suppressSizeToFit: true,
 
@@ -362,10 +419,11 @@ function DataInputComponent(props) {
 
       pinned: "left",
 
+      width: 120,
+
       suppressSizeToFit: true,
 
       editable: false,
-      width: 100,
     },
 
     {
@@ -373,9 +431,13 @@ function DataInputComponent(props) {
 
       field: "Currency_Of_Reporting",
 
+      width: 110,
+
       editable: false,
 
       pinned: "left",
+
+      suppressMenu: true,
     },
 
     {
@@ -383,10 +445,14 @@ function DataInputComponent(props) {
 
       field: "Status",
 
+      width: 110,
+
       pinned: "left",
 
       editable: false,
-      suppressSizeToFit: true, width: 100,
+
+      suppressMenu: true,
+
       cellRenderer: (params) => {
         const Status = params.value;
 
@@ -422,7 +488,7 @@ function DataInputComponent(props) {
 
       editable: true,
 
-	    suppressSizeToFit: true, width: 120,
+      minWidth: 50,
 
       suppressSizeToFit: true,
 
@@ -557,7 +623,7 @@ function DataInputComponent(props) {
 
           singleClickEdit: true,
 
-          minWidth: 100,
+          minWidth: 90,
 
           valueParser: (params) => Number(params.newValue),
 
@@ -723,11 +789,15 @@ function DataInputComponent(props) {
 
       setuserRoleData(usrDetails.role_id);
     }
-    console.log("formatGetPayload::", data);
     let respPayload = [];
 
     data.forEach((row, index) => {
+      let obj = {
+        partner_id: row.partner_id,
+        months: row.months
+      }
       let indvRespPayload = {
+        SeriousData: obj,
         Zone: row.zone_val,
         Country: row.country_name,
         Country_code: row.country_code,
@@ -808,23 +878,28 @@ function DataInputComponent(props) {
       setUserEmail(usrDetails.email_id);
       setuserRoleData(usrDetails.role_id);
     }
-    console.log("coming inside parent input component");
     let previousAPIData = [];
+    let d = new Date().getMonth();
+    let monthArrayToPass = [];
+    for(let i=0; i<d; i++) {
+      monthArrayToPass.push(monthsOfTheYear[i].toLowerCase());
+    }
+
     props
       .retrieveAllData(
         usrDetails.email_id,
         filterGlobalData.currentYear,
-        usrDetails.role_id
+        usrDetails.role_id,
+        monthArrayToPass
       )
       .then((data) => {
         if (data) {
           previousAPIData = data;
           props
             .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
-            .then((data) => {
-              console.log("showMeData from next API", data.data);
+            .then((data2) => {
               let secondArray = [];
-              secondArray = data?.data;
+              secondArray = data2?.data;
               let letsCreateNewCombinedArray = [];
               for (let i = 0; i < previousAPIData.length; i++) {
                 for (let j = 0; j < secondArray.length; j++) {
@@ -835,6 +910,7 @@ function DataInputComponent(props) {
                   }
                 }
               }
+              secondArray = secondArray.filter((e) => e.Status == "EDITED" || e.Status == "ACTIVE");      
               previousAPIData = previousAPIData.concat(secondArray);
               let newData = formatGetPayload(previousAPIData, true);
               setRowData(newData.filter((e) => e.Status == "EDITED" || e.Status == "ACTIVE" || e.Status == "REJECT"));
@@ -846,7 +922,6 @@ function DataInputComponent(props) {
           props
             .retrievePartnerByRole(usrDetails.email_id, usrDetails.role_id)
             .then((data) => {
-              console.log("showMeData from next API", data.data);
               let secondArray = [];
               secondArray = data?.data;
               previousAPIData = previousAPIData.concat(secondArray);
@@ -939,6 +1014,9 @@ function DataInputComponent(props) {
             savedData={rowData}
             props={props}
             userDetails={filterGlobalData}
+            shouldDisableSaveButton={shouldDisableSaveButton}
+            openingDate={openingDate}
+            closingDate={closingDate}
           />
         </Row>
 
@@ -989,7 +1067,7 @@ function DataInputComponent(props) {
               }
               disabled={shouldDisableSaveButton}
               onClick={() => {
-                handleSave(closingDate, openingDate);
+                handleSave(rowData, closingDate, openingDate);
               }}
             >
               Save

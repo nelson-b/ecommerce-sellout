@@ -173,6 +173,8 @@ function BusinessUnitSplit(props) {
   };
 
   const handleUpload = useCallback((data) => {
+    console.log('rowData::::::', rowData);
+    console.log('And new data::', data);
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
     if (usrDetails) {
       setUserEmail(usrDetails.email_id);
@@ -783,7 +785,27 @@ function BusinessUnitSplit(props) {
             setShowSuccessModal(false);
           } else {
             setErrorData([]);
+            console.log('rowData::::::', rowData);
+            let isEverythingOkay = true;
+            if(rowData.length != json.length){
+              isEverythingOkay = false;
+            } else {
+              console.log('naah!! length is just fine');
+            }
+            rowData.forEach(oldData => {
+              let getTHings =  json.filter((e) => e.Partner_id == oldData.partner_id);
+              if(getTHings.length){
+              } else {
+               isEverythingOkay = false;
+              }
+             });
+             if(isEverythingOkay){
             handleUpload(json);
+            setSelectedFile(null);
+             } else {
+              setShowErrorModal(true);
+              setShowSuccessModal(false);
+             }
             // setShowErrorModal(false);
             // setShowSuccessModal(true);
             setSelectedFile(null);
@@ -926,7 +948,7 @@ function BusinessUnitSplit(props) {
               <Row className="edited-header">Edited By: {valuesData.modified_by}</Row>
 
               <Col className="edited-header">
-                Last Updete: {formattedDate} UTC
+                Last Updated: {formattedDate} UTC
               </Col>
             </div>
           </Stack>

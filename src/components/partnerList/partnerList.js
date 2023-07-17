@@ -83,7 +83,6 @@ function PartnerList(props) {
       suppressMenu: true,
       cellRenderer: (params) => {
         const Status = params.value;
-        console.log("params data", params);
         return (
           <div>
             <img

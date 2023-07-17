@@ -33,7 +33,8 @@ import {
   createData,
   updateSellOutData,
 } from "../../actions/dataInputAction";
-import { allCalMonths } from "../constant";
+import { allCalMonths, quarters } from "../constant";
+import { retrieveInputCalenderData } from "../../actions/inputCalenderAction";
 
 function PartnerQuarterApprover(props) {
   const gridRef = useRef();
@@ -46,7 +47,8 @@ function PartnerQuarterApprover(props) {
 
   const [validateAll, setValidateAll] = useState([]);
   const [selectedCell, setSelectedCell] = useState([]);
-
+  const [openingDate, setOpeningDate] = useState("");
+  const [closingDate, setClosinggDate] = useState("");
 
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
@@ -82,8 +84,23 @@ function PartnerQuarterApprover(props) {
     { name: "Euro", value: "2" },
   ];
 
-  const handleValidate = (activeData) => {
+  const handleValidate = (activeData, opening, closing) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
+    let q2Values = getCurrentQuarterForPostAPI();
+    let lowerCaseMonths = [];
+    let approvalStatus = usrDetails.role_id == roles.approve_1.toUpperCase()
+? "1"
+: usrDetails.role_id == roles.approver_2.toUpperCase()
+? "2"
+: "5";
+    q2Values.forEach((element) => {
+      lowerCaseMonths.push(element.toLowerCase());
+    });
+    activeData[0].CURRENT_QUARTER_MONTHS = lowerCaseMonths;
+    activeData[0].opening_date = opening;
+    activeData[0].closing_date = closing;
+    activeData[0].months[0].approval_status = approvalStatus;
     if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
@@ -121,6 +138,7 @@ function PartnerQuarterApprover(props) {
       months: monthArray,
       trans_currency_code: "DOL",
       created_by: data.created_by?data.created_by:userEmail,
+      modified_by: userEmail,
       created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
       approval_status:
         status1 == "REJECT"
@@ -147,7 +165,7 @@ function PartnerQuarterApprover(props) {
         "REJECT"
       );
 
-      handleValidate(reqData);
+      handleValidate(reqData, openingDate, closingDate);
     };
     const invokeValidate = () => {
       let reqData = rejectData(
@@ -156,7 +174,7 @@ function PartnerQuarterApprover(props) {
         ),
         "VALIDATE"
       );
-      handleValidate(reqData);
+      handleValidate(reqData, openingDate, closingDate);
     };
 
     return (
@@ -324,8 +342,8 @@ function PartnerQuarterApprover(props) {
       headerName: "Change in Value",
 
       field: radioValue == 1
-      ? "change_in_value"
-      : "change_in_value_local_currency",
+      ? "change_in_value_local_currency"
+      : "change_in_value",
      
       minWidth: 90,
 
@@ -344,8 +362,8 @@ function PartnerQuarterApprover(props) {
       headerName: "Change In %",
 
       field: radioValue == 1
-      ? "change_in_percentage"
-      : "change_in_percentage_local_currency",
+      ? "change_in_percentage_local_currency"
+      : "change_in_percentage",
       minWidth: 90,
 
       editable: false,
@@ -410,6 +428,12 @@ function PartnerQuarterApprover(props) {
     Q4: ["oct", "nov", "dec"],
   };
 
+   const quartersCustom = {
+    Q1: ["Jan", "Feb", "Mar"],
+    Q2: ["Apr", "May", "Jun"],
+    Q3: ["Jul", "Aug", "Sep"],
+    Q4: ["Oct", "Nov", "Dec"],
+  };
   let dateSample = new Date().getMonth();
   let currentQuarter = 1;
   let previousPreviousQuarter = "Q!";
@@ -448,9 +472,41 @@ function PartnerQuarterApprover(props) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
     }
+    
     getPreviousData(usrDetails.email_id, usrDetails.role_id, year, month);
+    let newDate = new Date().getMonth();
+    let currentQurterForAPI;
+    if (newDate <= 3) {
+      currentQurterForAPI = "Q1";
+    } else if (newDate > 3 && newDate <= 6) {
+      currentQurterForAPI = "Q2";
+    } else if (newDate > 6 && newDate <= 9) {
+      currentQurterForAPI = "Q3";
+    } else {
+      currentQurterForAPI = "Q4";
+    }
+    getPreviousQuarterData(currentQurterForAPI);
 
   }, []);
+
+  const getPreviousQuarterData = (quarter) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+
+    let today = new Date();
+    let year = today.getFullYear();
+    props
+      .retrieveInputCalenderData(year, quarter, "APPROVER")
+      .then((data) => {
+        let closingData = data.CLOSING_DATE;
+        let openingDate = data.OPENING_DATE;
+        setOpeningDate(openingDate);
+        setClosinggDate(closingData);
+        
+      })
+      .catch((e) => {
+        console.log("Partner list", e);
+      });
+  };
 
   const defaultColDef = useMemo(() => {
     return {
@@ -489,8 +545,19 @@ function PartnerQuarterApprover(props) {
     }
   };
 
-  const handleConfirm = useCallback((data, event) => {
-  
+  const handleConfirm = useCallback((data,opening, closing ) => {
+
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+let approvalStatus = usrDetails.role_id == roles.approve_1.toUpperCase()
+? "1"
+: usrDetails.role_id == roles.approver_2.toUpperCase()
+? "2"
+: "5";
+    let lowerCaseMonths = [];
+    let q2Values = getCurrentQuarterForPostAPI();
+    q2Values.forEach((element) => {
+      lowerCaseMonths.push(element.toLowerCase());
+    });
      let monthArray = [];
      let reqData = [];
      data?.forEach((e) => {
@@ -498,8 +565,10 @@ function PartnerQuarterApprover(props) {
          month: e.month_impacted,
          sellout_local_currency: e.sellout_approved_val_local_currency,
          trans_type: "",
+         approval_status: approvalStatus
        });
        reqData.push({
+        CURRENT_QUARTER_MONTHS: lowerCaseMonths,
          partner_id: e.partner_id[0],
          partner_name: e.partner_account_name,
          country_code: e.country_code,
@@ -508,18 +577,18 @@ function PartnerQuarterApprover(props) {
          trans_currency_code: "DOL",
          created_by: e.created_by,
          created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
-         approval_status:
-           userRole == roles.approve_1.toUpperCase()
-             ? "1"
-             : userRole == roles.approver_2.toUpperCase()
-             ? "2"
-             : "5",
+         modified_by: usrDetails.email_id,
+         approval_status:approvalStatus,
+        
          editor_comment: e.editor_comment,
          comments: "waiting for approver",
          batch_upload_flag: "false",
+         opening_date: opening,
+         closing_date: closing,
        });
        monthArray = [];
      });
+     
      props
        .createData(reqData)
        .then((data) => {
@@ -544,57 +613,80 @@ function PartnerQuarterApprover(props) {
     setShowSuccessModal(false);
   };
 
-  const handleInvestigation = useCallback((data, selectedCell) => {
-    return
-    console.log('data:::', selectedCell);
-    // alert(
-    //   message === 1
-    //     ? `${message} Partner Account Sent For Investigation `
-    //     : message > 1
-    //     ? `${message} Partners Account Sent For Investigation `
-    //     : ""
-    // );
-    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+  
+  const getCurrentQuarterForPostAPI = () => {
+    const currentDate = new Date();
+    const currentYear = String(currentDate.getFullYear()).slice(-2);
+    const currentMonth = allCalMonths[currentDate.getMonth()];
+    // const currentMonth = 'Jul'; // To test quarter basis
+    let currentQuarter = 0;
+    let currentQuarterIndex = 0;
+    let index = 1;
+    let selectedYear = currentYear;
 
-    let requestArray = [];
-    selectedCell.forEach((element) => {
-      let monthArray = [];
-      let itemYear = String(data[0].year_val).slice(-2);
-      let monthTill = new Date().getMonth();
-      for(let i=0; i< monthTill; i++) {
-        let monthEle = allCalMonths[i];
-        const saveArray =
-        radioValue == 1
-          ? element[`${monthEle + itemYear}`]
-          : element[`${monthEle + itemYear}E`];
-      
-        monthArray.push({
-          month: monthEle.toLowerCase(),
-          sellout_local_currency: saveArray,
-          trans_type: "",
-        });
+    for (const quarter in quartersCustom) {
+      if (quartersCustom[quarter].includes(currentMonth)) {
+        currentQuarter = quarter;
+        currentQuarterIndex = quartersCustom[quarter].indexOf(currentMonth);
+        break;
       }
-      let objForUpdate = {
-        partner_id: element.partner_id,
-        partner_name: element.partner_account_name,
-        country_code: element.country_code,
-        year_val: itemYear,
-        months: monthArray,
-        trans_currency_code: element.trans_currency_code,
-        created_by: usrDetails.email_id,
-        created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
-        approval_status: "3",
-        editor_comment: element.editorComments,
-        comments: element.approverComments,
-        batch_upload_flag: element.batch_upload_flag.toString(),
-        approved_date: null,
-        opening_date : '',
-        closing_date: ''
-      };
-      requestArray.push(objForUpdate);
+      index++;
+    }
+
+    let resultQuarter = 0;
+    if (currentQuarterIndex === 0) {
+      const previousIndex = index - 1 ? index - 1 : 4;
+      if (index - 1 == 0) {
+        selectedYear = currentYear - 1;
+      }
+      const previousQuarter = Object.keys(quartersCustom)[previousIndex - 1];
+      resultQuarter = previousQuarter;
+    } else {
+      resultQuarter = currentQuarter;
+    }
+    const q2Values = quartersCustom[resultQuarter];
+    return q2Values;
+  };
+
+  const handleInvestigation = useCallback((data, selectedCell, opening, closing) => {
+    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+    let lowerCaseMonths = [];
+    let q2Values = getCurrentQuarterForPostAPI();
+    q2Values.forEach((element) => {
+      lowerCaseMonths.push(element.toLowerCase());
     });
+    let onlyYear = new Date().getFullYear();
+    let finalDataToSend = [];
+    selectedCell.forEach(element => {
+      let monthObj = [{
+        month:element.month_impacted,
+        sellout_local_currency: element.sellout_approved_val_local_currency,
+        trans_type: '',
+        approval_status: '3'
+      }];
+         let objForUpdate = {
+      CURRENT_QUARTER_MONTHS: lowerCaseMonths,
+      partner_id: element.partner_id[0],
+      partner_name: element.partner_account_name,
+      country_code: element.country_code,
+      year_val: onlyYear.toString(),
+      months: monthObj,
+      trans_currency_code: '',
+      created_by: element?.created_by?element.created_by:usrDetails.email_id,
+      modified_by:usrDetails.email_id,
+      created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
+      approval_status: "3",
+      editor_comment: element.editor_comment,
+      comments: '',
+      batch_upload_flag: "false",
+      approved_date: null,
+      opening_date : opening,
+      closing_date: closing
+    };
+    finalDataToSend.push(objForUpdate);
+});    
     props
-    .updateSellOutData(requestArray)
+    .updateSellOutData(finalDataToSend)
     .then((data) => {
       // const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
       // getQuarterReviewData(usrDetails.email_id, year, usrDetails.role_id);
@@ -719,7 +811,7 @@ function PartnerQuarterApprover(props) {
               <Col xs="auto">
                 <Button
                   className="btn-invest edit-header"
-                  onClick={(e) => handleInvestigation(rowData, selectedCell)}
+                  onClick={(e) => handleInvestigation(rowData, selectedCell, openingDate, closingDate)}
                 >
                   Send For Investigation
                 </Button>
@@ -729,7 +821,7 @@ function PartnerQuarterApprover(props) {
                   className="btn-data save-header"
                   onClick={() => {
                     if (validateAll?.length) {
-                      handleConfirm(validateAll);
+                      handleConfirm(validateAll, openingDate, closingDate);
                     }
                   }}
                 >
@@ -753,4 +845,5 @@ export default connect(null, {
   getQuarterData,
   createData,
   updateSellOutData,
+  retrieveInputCalenderData
 })(PartnerQuarterApprover);

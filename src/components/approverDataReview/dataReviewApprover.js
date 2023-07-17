@@ -53,9 +53,10 @@ function DataReviewApprover(props) {
   //sso login func
   const [userEmail, setUserEmail] = useState("");
   const [userRole, setuserRole] = useState("");
-  const [openingDate, setOpeningDate] = useState('');
-  const [closingDate, setClosinggDate] = useState('');
+  const [openingDate, setOpeningDate] = useState("");
+  const [closingDate, setClosinggDate] = useState("");
   const [selectedCell, setSelectedCell] = useState([]);
+  const [postApiQuarter, setPostApiQuarter] = useState([]);
 
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
@@ -152,7 +153,7 @@ function DataReviewApprover(props) {
     {
       headerName: "Partner Account Name",
       field: "partner_account_name",
-
+      minWidth: 230,
       checkboxSelection: (params) => {
         if (params.data) {
           return true;
@@ -164,15 +165,15 @@ function DataReviewApprover(props) {
       pinned: "left",
       suppressSizeToFit: true,
       editable: false,
-	    suppressSizeToFit: true, width: 200,
     },
 
     {
       headerName: "Currency of Reporting",
       field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
       pinned: "left",
-
+      width: 110,
       editable: false,
+      suppressMenu: true,
     },
 
     {
@@ -181,7 +182,11 @@ function DataReviewApprover(props) {
       field: "status",
 
       pinned: "left",
-      minWidth: 100, suppressSizeToFit: true, width: 100,
+
+      width: 110,
+
+      suppressMenu: true,
+
       cellRenderer: (params) => {
         const Status = params.value;
 
@@ -246,8 +251,18 @@ function DataReviewApprover(props) {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
     let yearCurrent = new Date().getFullYear();
+    let q2Values = getCurrentQuarterForPostAPI();
+    let lowerCaseMonths = [];
+    q2Values.forEach((element) => {
+      lowerCaseMonths.push(element.toLowerCase());
+    });
     props
-      .retrieveHistoricalData(usrDetails.email_id, year, usrDetails.role_id)
+      .retrieveHistoricalData(
+        usrDetails.email_id,
+        year,
+        usrDetails.role_id,
+        lowerCaseMonths
+      )
       .then((data) => {
         let final_arr = [];
         if (data.length) {
@@ -267,7 +282,7 @@ function DataReviewApprover(props) {
             obj.editorComments = item.editor_comment;
             obj.YTD = "";
             obj.YTD_Growth = "";
-            obj.ambition = "";
+            obj.ambition = item.ambition_euro_avg;
             obj.approverComments = item.comments;
             obj.partner_id = item.partner_id;
             obj.year_val = item.year_val;
@@ -275,55 +290,82 @@ function DataReviewApprover(props) {
             obj.created_date = item.created_date;
             obj.approval_status = item.approval_status;
             obj.batch_upload_flag = item.batch_upload_flag;
-            
+            obj.ytd_sellout_local_currency = item.ytd_sellout_local_currency;
+            obj.ytd_sellout_euro = item.ytd_sellout_euro;
+            obj.ytd_sellout_local_currency_prev = item.ytd_sellout_local_currency_prev;
+            obj.ytd_sellout_euro_prev = item.ytd_sellout_euro_prev;
             item.months.map((each) => {
               if (each.month_val === "jan") {
                 obj["Jan" + itemYear] = each.sellout_local_currency;
                 obj["Jan" + itemYear + "E"] = each.sellout;
+                obj["Jan" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
               if (each.month_val === "feb") {
                 obj["Feb" + itemYear] = each.sellout_local_currency;
                 obj["Feb" + itemYear + "E"] = each.sellout;
+                obj["Feb" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
               if (each.month_val === "mar") {
                 obj["Mar" + itemYear] = each.sellout_local_currency;
                 obj["Mar" + itemYear + "E"] = each.sellout;
+                obj["Mar" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
               if (each.month_val === "apr") {
                 obj["Apr" + itemYear] = each.sellout_local_currency;
                 obj["Apr" + itemYear + "E"] = each.sellout;
+                obj["Apr" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
               if (each.month_val === "may") {
                 obj["May" + itemYear] = each.sellout_local_currency;
                 obj["May" + itemYear + "E"] = each.sellout;
+                obj["May" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
               if (each.month_val === "jun") {
                 obj["Jun" + itemYear] = each.sellout_local_currency;
                 obj["Jun" + itemYear + "E"] = each.sellout;
+                obj["Jun" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
               if (each.month_val === "jul") {
                 obj["Jul" + itemYear] = each.sellout_local_currency;
                 obj["Jul" + itemYear + "E"] = each.sellout;
+                obj["Jul" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
               if (each.month_val === "aug") {
                 obj["Aug" + itemYear] = each.sellout_local_currency;
                 obj["Aug" + itemYear + "E"] = each.sellout;
+                obj["Aug" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
               if (each.month_val === "sep") {
                 obj["Sep" + itemYear] = each.sellout_local_currency;
                 obj["Sep" + itemYear + "E"] = each.sellout;
+                obj["Sep" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
               if (each.month_val === "oct") {
                 obj["Oct" + itemYear] = each.sellout_local_currency;
                 obj["Oct" + itemYear + "E"] = each.sellout;
+                obj["Oct" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
               if (each.month_val === "nov") {
                 obj["Nov" + itemYear] = each.sellout_local_currency;
                 obj["Nov" + itemYear + "E"] = each.sellout;
+                obj["Nov" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
               if (each.month_val === "dec") {
                 obj["Dec" + itemYear] = each.sellout_local_currency;
-                obj["Jan" + itemYear + "E"] = each.sellout;
+                obj["Dec" + itemYear + "E"] = each.sellout;
+                obj["Dec" + itemYear + "approval_status"] =
+                  each.approval_status;
               }
             });
 
@@ -386,14 +428,30 @@ function DataReviewApprover(props) {
       });
   };
 
+  // const getTheCss2 =(params) => {
+  //   if(params?.data) {
+  //     if(params.data.approval_status == 1 || params.data.approval_status == '1' || params.data.approval_status == 2 || params.data.approval_status == '2') {
+  //       return {'pointer-events': 'none', opacity: '0.4' }
+  //     } else {
+  //       return ''
+  //     }
+  //   } else {
+  //     return ''
+  //   }
+
+  // }
   const getQuarterReviewDataPrevious = (currentYearArray, preYear) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
     let final_arr_previous = [];
     let combinedArray = [];
-
+    let q2Values = getCurrentQuarterForPostAPI();
+    let lowerCaseMonths = [];
+    q2Values.forEach((element) => {
+      lowerCaseMonths.push(element.toLowerCase());
+    });
     props
-      .retrieveHistoricalData(usrDetails.email_id, preYear, usrDetails.role_id)
+      .retrieveHistoricalData(usrDetails.email_id, preYear, usrDetails.role_id, lowerCaseMonths)
       .then((data) => {
         data.map((item) => {
           let string_year_val = item.year_val.toString();
@@ -411,7 +469,7 @@ function DataReviewApprover(props) {
           obj.editorComments = item.editor_comment;
           obj.YTD = "";
           obj.YTD_Growth = "";
-          obj.ambition = "";
+          obj.ambition = item.ambition_euro_avg;;
           obj.approverComments = item.comments;
           obj.partner_id = item.partner_id;
           obj.year_val = item.year_val;
@@ -419,6 +477,10 @@ function DataReviewApprover(props) {
           obj.created_date = item.created_date;
           obj.approval_status = item.approval_status;
           obj.batch_upload_flag = item.batch_upload_flag;
+          obj.ytd_sellout_local_currency = item.ytd_sellout_local_currency;
+          obj.ytd_sellout_euro = item.ytd_sellout_euro;
+          obj.ytd_sellout_local_currency_prev = item.ytd_sellout_local_currency_prev;
+          obj.ytd_sellout_euro_prev = item.ytd_sellout_euro_prev;
           item.months.map((each) => {
             let amountRounded = String(each.sellout_local_currency);
             let floatedAmount = parseFloat(amountRounded).toFixed();
@@ -427,50 +489,74 @@ function DataReviewApprover(props) {
             if (each.month_val === "jan") {
               obj["Jan" + itemYear] = floatedAmount;
               obj["Jan" + itemYear + "E"] = floatedAmountEuro;
+              obj["Jan" + itemYear + "approval_status"] =
+              each.approval_status;
             }
             if (each.month_val === "feb") {
               obj["Feb" + itemYear] = floatedAmount;
               obj["Feb" + itemYear + "E"] = floatedAmountEuro;
+              obj["Feb" + itemYear + "approval_status"] =
+              each.approval_status;
             }
             if (each.month_val === "mar") {
               obj["Mar" + itemYear] = floatedAmount;
               obj["Mar" + itemYear + "E"] = floatedAmountEuro;
+              obj["Mar" + itemYear + "approval_status"] =
+              each.approval_status;
             }
             if (each.month_val === "apr") {
               obj["Apr" + itemYear] = floatedAmount;
               obj["Apr" + itemYear + "E"] = floatedAmountEuro;
+              obj["Apr" + itemYear + "approval_status"] =
+              each.approval_status;
             }
             if (each.month_val === "may") {
               obj["May" + itemYear] = floatedAmount;
               obj["May" + itemYear + "E"] = floatedAmountEuro;
+              obj["May" + itemYear + "approval_status"] =
+              each.approval_status;
             }
             if (each.month_val === "jun") {
               obj["Jun" + itemYear] = floatedAmount;
               obj["Jun" + itemYear + "E"] = floatedAmountEuro;
+              obj["Jun" + itemYear + "approval_status"] =
+              each.approval_status;
             }
             if (each.month_val === "jul") {
               obj["Jul" + itemYear] = floatedAmount;
               obj["Jul" + itemYear + "E"] = floatedAmountEuro;
+              obj["Jul" + itemYear + "approval_status"] =
+              each.approval_status;
             }
             if (each.month_val === "aug") {
               obj["Aug" + itemYear] = floatedAmount;
               obj["Aug" + itemYear + "E"] = floatedAmountEuro;
+              obj["Aug" + itemYear + "approval_status"] =
+              each.approval_status;
             }
             if (each.month_val === "sep") {
               obj["Sep" + itemYear] = floatedAmount;
               obj["Sep" + itemYear + "E"] = floatedAmountEuro;
+              obj["Sep" + itemYear + "approval_status"] =
+              each.approval_status;
             }
             if (each.month_val === "oct") {
               obj["Oct" + itemYear] = floatedAmount;
               obj["Oct" + itemYear + "E"] = floatedAmountEuro;
+              obj["Oct" + itemYear + "approval_status"] =
+              each.approval_status;
             }
             if (each.month_val === "nov") {
               obj["Nov" + itemYear] = floatedAmount;
               obj["Nov" + itemYear + "E"] = floatedAmountEuro;
+              obj["Nov" + itemYear + "approval_status"] =
+              each.approval_status;
             }
             if (each.month_val === "dec") {
               obj["Dec" + itemYear] = floatedAmount;
-              obj["Jan" + itemYear + "E"] = floatedAmountEuro;
+              obj["Dec" + itemYear + "E"] = floatedAmountEuro;
+              obj["Dec" + itemYear + "approval_status"] =
+              each.approval_status;
             }
           });
 
@@ -495,13 +581,27 @@ function DataReviewApprover(props) {
           for (let j = 0; j < combinedArray.length; j++) {
             newArrC.push(combinedArray[j]);
           }
-          setReviewData(newArrC.filter((e) => e.status == "EDITED" || e.status == "ACTIVE" || e.status == "REJECT"));
+          setReviewData(
+            newArrC.filter(
+              (e) =>
+                e.status == "EDITED" ||
+                e.status == "ACTIVE" ||
+                e.status == "REJECT"
+            )
+          );
         } else {
           let newArr = [];
           for (let i = 0; i < currentYearArray.length; i++) {
             newArr.push(currentYearArray[i]);
           }
-          setReviewData(newArr.filter((e) => e.status == "EDITED" || e.status == "ACTIVE" || e.status == "REJECT"));
+          setReviewData(
+            newArr.filter(
+              (e) =>
+                e.status == "EDITED" ||
+                e.status == "ACTIVE" ||
+                e.status == "REJECT"
+            )
+          );
         }
       })
       .catch((e) => {
@@ -509,9 +609,48 @@ function DataReviewApprover(props) {
       });
   };
 
+  const getCurrentQuarterForPostAPI = () => {
+    const currentDate = new Date();
+    const currentYear = String(currentDate.getFullYear()).slice(-2);
+    const currentMonth = allCalMonths[currentDate.getMonth()];
+    // const currentMonth = 'Jul'; // To test quarter basis
+    let currentQuarter = 0;
+    let currentQuarterIndex = 0;
+    let index = 1;
+    let selectedYear = currentYear;
+
+    for (const quarter in quarters) {
+      if (quarters[quarter].includes(currentMonth)) {
+        currentQuarter = quarter;
+        currentQuarterIndex = quarters[quarter].indexOf(currentMonth);
+        break;
+      }
+      index++;
+    }
+
+    let resultQuarter = 0;
+    if (currentQuarterIndex === 0) {
+      const previousIndex = index - 1 ? index - 1 : 4;
+      if (index - 1 == 0) {
+        selectedYear = currentYear - 1;
+      }
+      const previousQuarter = Object.keys(quarters)[previousIndex - 1];
+      resultQuarter = previousQuarter;
+    } else {
+      resultQuarter = currentQuarter;
+    }
+    const q2Values = quarters[resultQuarter];
+    return q2Values;
+  };
+
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    getQuarterReviewData(usrDetails.email_id, year, usrDetails.role_id);
+
+    getQuarterReviewData(
+      usrDetails.email_id,
+      year,
+      usrDetails.role_id
+    );
 
     let newDate = new Date().getMonth();
     let currentQurterForAPI;
@@ -547,7 +686,6 @@ function DataReviewApprover(props) {
     }
 
     let resultQuarter = 0;
-
     if (currentQuarterIndex === 0) {
       const previousIndex = index - 1 ? index - 1 : 4;
       if (index - 1 == 0) {
@@ -591,7 +729,7 @@ function DataReviewApprover(props) {
       {
         headerName: "Partner Account Name",
         field: "partner_account_name",
-  
+        minWidth: 230,
         checkboxSelection: (params) => {
           if (params.data) {
             return true;
@@ -603,13 +741,12 @@ function DataReviewApprover(props) {
         pinned: "left",
         suppressSizeToFit: true,
         editable: false,
-        suppressSizeToFit: true, width: 200,
       },
       {
         headerName: "Currency of Reporting",
         field: radio == 1 ? "trans_currency_code" : "trans_currency_codeE",
         pinned: "left",
-        width: 140,
+        width: 110,
         editable: false,
         suppressMenu: true,
       },
@@ -643,88 +780,59 @@ function DataReviewApprover(props) {
 
       {
         headerName: `${q2Values[0]}${selectedYear}`,
-
         field:
           radio == 1
             ? `${q2Values[0]}${selectedYear}`
             : `${q2Values[0]}${selectedYear}E`,
-
         filter: true,
-
         sortable: true,
-
         minWidth: 90,
-
         aggFunc: "sum",
-
         suppressSizeToFit: true,
-
         suppressMenu: true,
-
         columnGroupShow: "open",
-
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
       },
-
       {
         headerName: `${q2Values[1]}${selectedYear}`,
-
         field:
           radio == 1
             ? `${q2Values[1]}${selectedYear}`
             : `${q2Values[1]}${selectedYear}E`,
 
         filter: true,
-
         sortable: true,
-
-        minWidth: 100,
-
+        minWidth: 90,
         aggFunc: "sum",
-
         suppressSizeToFit: true,
-
         suppressMenu: true,
-
         columnGroupShow: "open",
-
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
       },
-
       {
         headerName: `${q2Values[2]}${selectedYear}`,
-
         field:
           radio == 1
             ? `${q2Values[2]}${selectedYear}`
             : `${q2Values[2]}${selectedYear}E`,
-
         filter: true,
-
         sortable: true,
-
         minWidth: 90,
-
         aggFunc: "sum",
-
         suppressSizeToFit: true,
-
         suppressMenu: true,
-
         columnGroupShow: "open",
-
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
       },
-
       {
         headerName: "Sellout value Current Quarter",
         field: "SelloutCQ",
@@ -734,48 +842,53 @@ function DataReviewApprover(props) {
         aggFunc: "sum",
         sortable: true,
         suppressMenu: true,
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
         valueGetter: (params) => {
-          return getTotSellOutCurrQuatrCalc(params);
+          return getTotSellOutCurrQuatrCalc(params, radio);
         },
       },
 
       {
         headerName: "YTD Sellout Value",
-        field: "YTD",
+        field:
+        radio == 1
+          ? 'ytd_sellout_local_currency'
+          : 'ytd_sellout_euro',
         editable: false,
         minWidth: 140,
         wrapHeaderText: true,
         aggFunc: "sum",
         sortable: true,
         suppressMenu: true,
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
-        valueGetter: (params) => {
-          return getTotalYTDSellOutGrowthCalc(params);
-        },
+        // valueGetter: (params) => {
+        //   return getTotalYTDSellOutGrowthCalc(params, radio);
+        // },
       },
       {
         headerName: "YTD Sellout LY",
-        field: "YTD_Growth",
+        field:  radioValue == 1
+        ? 'ytd_sellout_local_currency_prev'
+        : 'ytd_sellout_euro_prev',
         editable: false,
-        minWidth: 150,
+        minWidth: 120,
         wrapHeaderText: true,
         aggFunc: "sum",
         sortable: true,
         suppressMenu: true,
-        valueGetter: (params) => {
-          return yTDSelloutPreviousYear(params);
-        },
-        valueFormatter: (params) => {
-          return getValueFormatter2(params);
-        },
-        cellStyle: { "borderColor": "#e2e2e2" },
+        // valueGetter: (params) => {
+        //   return yTDSelloutPreviousYear(params, radio);
+        // },
+        // valueFormatter: (params) => {
+        //   return getValueFormatter2(params);
+        // },
+        cellStyle: { "border-color": "#e2e2e2" },
       },
 
       {
@@ -791,20 +904,20 @@ function DataReviewApprover(props) {
           return callThisFunction(params);
         },
         valueGetter: (params) => {
-          return getYTDSelloutGrowthPercCalc(params);
+          return getYTDSelloutGrowthPercCalc(params, radio);
         },
         cellStyle: function (params) {
           if (params.value < "0") {
             return {
               color: "#ff0000",
               fontWeight: "bold",
-              "borderColor": "#e2e2e2",
+              "border-color": "#e2e2e2",
             };
           } else {
             return {
               color: "#009530",
               fontWeight: "bold",
-              "borderColor": "#e2e2e2",
+              "border-color": "#e2e2e2",
             };
           }
         },
@@ -826,7 +939,7 @@ function DataReviewApprover(props) {
 
         suppressMenu: true,
 
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
       },
 
       {
@@ -846,7 +959,7 @@ function DataReviewApprover(props) {
 
         suppressMenu: true,
 
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
       },
 
       {
@@ -866,7 +979,7 @@ function DataReviewApprover(props) {
 
         suppressMenu: true,
 
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
       },
 
       {
@@ -888,7 +1001,7 @@ function DataReviewApprover(props) {
 
         singleClickEdit: true,
 
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
 
         cellClassRules: { "cursor-pointer": () => true },
       },
@@ -897,7 +1010,8 @@ function DataReviewApprover(props) {
     gridRef.current.api.setColumnDefs(gridArr);
   }, []);
 
-  const onBtHideYearColumn = useCallback(() => {
+  const onBtHideYearColumn = useCallback((radio) => {
+    //this is okay
     setIsYearColumnVisible(false);
 
     gridRef.current.api.setColumnDefs([
@@ -915,7 +1029,7 @@ function DataReviewApprover(props) {
         filter: true,
         pinned: "left",
         suppressSizeToFit: true,
-        editable: false, 
+        editable: false,
       },
       {
         headerName: "Model",
@@ -925,38 +1039,30 @@ function DataReviewApprover(props) {
         filter: true,
         pinned: "left",
         suppressSizeToFit: true,
-        editable: false, 
+        editable: false,
       },
       {
         headerName: "Partner Account Name",
         field: "partner_account_name",
-  
-        checkboxSelection: (params) => {
-          if (params.data) {
-            return true;
-          } else {
-            return false;
-          }
-        },
-  
+        minWidth: 230,
         filter: true,
         pinned: "left",
         suppressSizeToFit: true,
         editable: false,
-        suppressSizeToFit: true, width: 200,
       },
       {
         headerName: "Currency of Reporting",
-        field: radioValue == 1 ? "trans_currency_code" : "trans_currency_codeE",
+        field: radio == 1 ? "trans_currency_code" : "trans_currency_codeE",
         pinned: "left",
-
-        editable: false
+        width: 110,
+        editable: false,
+        suppressMenu: true,
       },
       {
         headerName: "Status",
         field: "status",
         pinned: "left",
-
+        width: 110,
         suppressMenu: true,
         cellRenderer: (params) => {
           const Status = params.value;
@@ -989,9 +1095,9 @@ function DataReviewApprover(props) {
         aggFunc: "sum",
         sortable: true,
         suppressMenu: true,
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
         valueGetter: (params) => {
-          return getTotSellOutCurrQuatrCalc(params);
+          return getTotSellOutCurrQuatrCalc(params, radio);
         },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
@@ -1000,45 +1106,42 @@ function DataReviewApprover(props) {
 
       {
         headerName: "YTD Sellout Value",
-
-        field: "YTD",
-
+        field:
+        radio == 1
+          ? 'ytd_sellout_local_currency'
+          : 'ytd_sellout_euro',
         editable: false,
-
         minWidth: 140,
-
         wrapHeaderText: true,
-
         aggFunc: "sum",
-
         sortable: true,
-
         suppressMenu: true,
-
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
         valueFormatter: (params) => {
           return getValueFormatter2(params);
         },
-        valueGetter: (params) => {
-          return getTotalYTDSellOutGrowthCalc(params);
-        },
+        // valueGetter: (params) => {
+        //   return getTotalYTDSellOutGrowthCalc(params, radio);
+        // },
       },
       {
         headerName: "YTD Sellout LY",
-        field: "YTD_Growth",
+        field:  radioValue == 1
+        ? 'ytd_sellout_local_currency_prev'
+        : 'ytd_sellout_euro_prev',
         editable: false,
         minWidth: 120,
         wrapHeaderText: true,
         aggFunc: "sum",
         sortable: true,
         suppressMenu: true,
-        valueGetter: (params) => {
-          return yTDSelloutPreviousYear(params);
-        },
-        valueFormatter: (params) => {
-          return getValueFormatter2(params);
-        },
-        cellStyle: { "borderColor": "#e2e2e2" },
+        // valueGetter: (params) => {
+        //   return yTDSelloutPreviousYear(params, radio);
+        // },
+        // valueFormatter: (params) => {
+        //   return getValueFormatter2(params);
+        // },
+        cellStyle: { "border-color": "#e2e2e2" },
       },
 
       {
@@ -1054,60 +1157,45 @@ function DataReviewApprover(props) {
           return callThisFunction(params);
         },
         valueGetter: (params) => {
-          return getYTDSelloutGrowthPercCalc(params);
+          return getYTDSelloutGrowthPercCalc(params, radio);
         },
         cellStyle: function (params) {
           if (params.value < "0") {
             return {
               color: "#ff0000",
               fontWeight: "bold",
-              "borderColor": "#e2e2e2",
+              "border-color": "#e2e2e2",
             };
           } else {
             return {
               color: "#009530",
               fontWeight: "bold",
-              "borderColor": "#e2e2e2",
+              "border-color": "#e2e2e2",
             };
           }
         },
       },
       {
         headerName: "Ambition Data",
-
         field: "ambition",
-
         editable: false,
-
         minWidth: 120,
-
         wrapHeaderText: true,
-
         aggFunc: "sum",
-
         sortable: true,
-
         suppressMenu: true,
-
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
       },
-
       {
         headerName: "System Comments",
         field: "systemComments",
         editable: false,
-
         wrapHeaderText: true,
-
         minWidth: 140,
-
         aggFunc: "sum",
-
         sortable: true,
-
         suppressMenu: true,
-
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
       },
 
       {
@@ -1116,16 +1204,11 @@ function DataReviewApprover(props) {
         editable: false,
         wrapHeaderText: true,
         minWidth: 140,
-
         aggFunc: "sum",
-
         sortable: true,
-
         suppressMenu: true,
-
-        cellStyle: { "borderColor": "#e2e2e2" },
+        cellStyle: { "border-color": "#e2e2e2" },
       },
-
       {
         headerName: "Approver Comments",
         field: "comments",
@@ -1133,15 +1216,10 @@ function DataReviewApprover(props) {
         wrapHeaderText: true,
         minWidth: 140,
         aggFunc: "sum",
-
         sortable: true,
-
         suppressMenu: true,
-
         singleClickEdit: true,
-
-        cellStyle: { "borderColor": "#e2e2e2" },
-
+        cellStyle: { "border-color": "#e2e2e2" },
         cellClassRules: { "cursor-pointer": () => true },
       },
     ]);
@@ -1167,7 +1245,7 @@ function DataReviewApprover(props) {
     return monthValue;
   };
 
-  const getTotSellOutCurrQuatrCalc = (params) => {
+  const getTotSellOutCurrQuatrCalc = (params, radio) => {
     let tempTotal = 0;
 
     if (params.data) {
@@ -1181,7 +1259,7 @@ function DataReviewApprover(props) {
       );
 
       let customizedQuarterMonths = [];
-      if (radioValue == 1) {
+      if (radio == 1) {
         quatMonths.forEach((element) => {
           customizedQuarterMonths.push(element + choppedOffYear);
         });
@@ -1206,37 +1284,42 @@ function DataReviewApprover(props) {
     return tempTotal;
   };
 
-  const getTotalYTDSellOutGrowthCalc = (params) => {
+  const getTotalYTDSellOutGrowthCalc = (params, radio) => {
     if (params.data) {
-      let year = new Date().getFullYear();
-      let selectedValueString = year.toString();
-      let choppedOffYear = selectedValueString.slice(
-        2,
-        selectedValueString.length
-      );
-      let customizedQuarterMonths = [];
-      let currentMonth = new Date().getMonth();
-      if (radioValue == 1) {
-        for(let i = 0; i< currentMonth; i++) {
-          customizedQuarterMonths.push(monthsOfTheYear[i] + choppedOffYear);
-        }
+      // let year = new Date().getFullYear();
+      // let selectedValueString = year.toString();
+      // let choppedOffYear = selectedValueString.slice(
+      //   2,
+      //   selectedValueString.length
+      // );
+      // let customizedQuarterMonths = [];
+      // let currentMonth = new Date().getMonth();
+      let tempTotal = 0;
+      if (radio == 1) {
+        tempTotal = params.data.ytd_sellout_local_currency;
+        // for (let i = 0; i < currentMonth; i++) {
+        //   customizedQuarterMonths.push(monthsOfTheYear[i] + choppedOffYear);
+        // }
       } else {
-        for(let i = 0; i< currentMonth; i++) {
-          customizedQuarterMonths.push(monthsOfTheYear[i] + choppedOffYear+'E');
-        }
+        tempTotal = params.data.ytd_sellout_euro;
+        // for (let i = 0; i < currentMonth; i++) {
+        //   customizedQuarterMonths.push(
+        //     monthsOfTheYear[i] + choppedOffYear + "E"
+        //   );
+        // }
       }
 
-      let tempTotal = 0;
-      customizedQuarterMonths.map((item) => {
-        if (item in params?.data) {
-          tempTotal = tempTotal + params?.data[item];
-        }
-      });
+      
+      // customizedQuarterMonths.map((item) => {
+      //   if (item in params?.data) {
+      //     tempTotal = tempTotal + params?.data[item];
+      //   }
+      // });
       if (isNaN(tempTotal)) {
-        tempTotal = "";
+        tempTotal = 0;
       }
-      if (tempTotal == 0) {
-        tempTotal = "";
+      if (tempTotal == "") {
+        tempTotal = 0;
       }
       return tempTotal;
     }
@@ -1258,27 +1341,16 @@ function DataReviewApprover(props) {
     }
   };
 
-  const yTDSelloutPreviousYear = (params) => {
-    if (params?.data?.PreviousYearData) {
-      let previousData = params?.data?.PreviousYearData;
-      const d = new Date();
-      let currentYear = previousData.year_val.toString().slice(2);
-      let previousYear = currentYear - 1;
-      let months = d.getMonth();
+  const yTDSelloutPreviousYear = (params, radio) => {
+    if (params?.data) {
+      //let previousData = params?.data?.PreviousYearData;
       let total = 0;
-      for (let i = 0; i < months; i++) {
-        if (radioValue == 1) {
-          let key = monthsOfTheYear[i] + currentYear;
-          if (previousData[key]) {
-            total = total + Number(previousData[key]);
-          }
-        } else {
-          let key = monthsOfTheYear[i] + currentYear + "E";
-          if (previousData[key]) {
-            total = total + Number(previousData[key]);
-          }
-        }
+      if (radio == 1) {
+        total = params?.data.ytd_sellout_local_currency_prev;
+      }else {
+        total = params?.data.ytd_sellout_euro_prev;
       }
+      
       if (total == 0) {
         return "";
       } else {
@@ -1299,35 +1371,25 @@ function DataReviewApprover(props) {
     }
   };
 
-  const getYTDSelloutGrowthPercCalc = (params) => {
+  const getYTDSelloutGrowthPercCalc = (params, radio) => {
     let previousYearData = params?.data?.PreviousYearData;
 
     if (previousYearData) {
       let percentageOfGrowth = 0;
-      let totalOfCurrentYearGrowth = getTotalYTDSellOutGrowthCalc(params);
-      let yearCustom = previousYearData.year_val;
-      let selectedValueString = yearCustom.toString();
-      let choppedOffYear = selectedValueString.slice(2,selectedValueString.length);
-      let customizedYearMonths = [];
-      let currentMonth = new Date().getMonth();
-      if (radioValue == 1) {
-        for(let i = 0; i< currentMonth; i++) {
-          customizedYearMonths.push(monthsOfTheYear[i] + choppedOffYear);
-        }
+      let totalOfCurrentYearGrowth = getTotalYTDSellOutGrowthCalc(
+        params,
+        radio
+      );
+      let previousYearYTD = 0;
+      if (radio == 1) {
+        previousYearYTD = previousYearData.ytd_sellout_local_currency;
       } else {
-        for(let i = 0; i< currentMonth; i++) {
-          customizedYearMonths.push(monthsOfTheYear[i] + choppedOffYear+'E');
-        }
+        previousYearYTD = previousYearData.ytd_sellout_euro;
       }
-      let tempTotalPreviousYear = 0;
-      customizedYearMonths.map((item) => {
-        if (item in previousYearData) {
-          tempTotalPreviousYear = tempTotalPreviousYear + Number(previousYearData[item]);
-        }
-      });
-      if (tempTotalPreviousYear > 0 && totalOfCurrentYearGrowth > 0) {
-        let tempTotalDiff = totalOfCurrentYearGrowth - tempTotalPreviousYear;
-        let tempDivision = tempTotalDiff / tempTotalPreviousYear;
+
+      if (previousYearYTD > 0 && totalOfCurrentYearGrowth > 0) {
+        let tempTotalDiff = totalOfCurrentYearGrowth - previousYearYTD;
+        let tempDivision = tempTotalDiff / previousYearYTD;
         percentageOfGrowth = tempDivision * 100;
         return percentageOfGrowth;
       } else {
@@ -1348,48 +1410,53 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { "border-color": "#e2e2e2" },
       valueFormatter: (params) => {
         return getValueFormatter2(params);
       },
       valueGetter: (params) => {
-        return getTotSellOutCurrQuatrCalc(params);
+        return getTotSellOutCurrQuatrCalc(params, radioValue);
       },
     },
 
     {
       headerName: "YTD Sellout Value",
-      field: "YTD",
+      field:
+      radioValue == 1
+        ? 'ytd_sellout_local_currency'
+        : 'ytd_sellout_euro',
       editable: false,
       minWidth: 140,
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { "border-color": "#e2e2e2" },
       valueFormatter: (params) => {
         return getValueFormatter2(params);
       },
-      valueGetter: (params) => {
-        return getTotalYTDSellOutGrowthCalc(params);
-      },
+      // valueGetter: (params) => {
+      //   return getTotalYTDSellOutGrowthCalc(params, radioValue);
+      // },
     },
     {
       headerName: "YTD Sellout LY",
-      field: "YTD_Growth",
+      field:  radioValue == 1
+      ? 'ytd_sellout_local_currency_prev'
+      : 'ytd_sellout_euro_prev',
       editable: false,
       minWidth: 120,
       wrapHeaderText: true,
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      valueGetter: (params) => {
-        return yTDSelloutPreviousYear(params);
-      },
-      valueFormatter: (params) => {
-        return getValueFormatter2(params);
-      },
-      cellStyle: { "borderColor": "#e2e2e2" },
+      // valueGetter: (params) => {
+      //   return yTDSelloutPreviousYear(params, radioValue);
+      // },
+      // valueFormatter: (params) => {
+      //   return getValueFormatter2(params);
+      // },
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "YTD Sellout Growth",
@@ -1404,20 +1471,20 @@ function DataReviewApprover(props) {
         return callThisFunction(params);
       },
       valueGetter: (params) => {
-        return getYTDSelloutGrowthPercCalc(params);
+        return getYTDSelloutGrowthPercCalc(params, radioValue);
       },
       cellStyle: function (params) {
         if (params.value < "0") {
           return {
             color: "#ff0000",
             fontWeight: "bold",
-            "borderColor": "#e2e2e2",
+            "border-color": "#e2e2e2",
           };
         } else {
           return {
             color: "#009530",
             fontWeight: "bold",
-            "borderColor": "#e2e2e2",
+            "border-color": "#e2e2e2",
           };
         }
       },
@@ -1431,7 +1498,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "System Comments",
@@ -1442,7 +1509,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "Editor Comments",
@@ -1453,7 +1520,7 @@ function DataReviewApprover(props) {
       aggFunc: "sum",
       sortable: true,
       suppressMenu: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { "border-color": "#e2e2e2" },
     },
     {
       headerName: "Approver Comments",
@@ -1465,7 +1532,7 @@ function DataReviewApprover(props) {
       sortable: true,
       suppressMenu: true,
       singleClickEdit: true,
-      cellStyle: { "borderColor": "#e2e2e2" },
+      cellStyle: { "border-color": "#e2e2e2" },
       cellClassRules: { "cursor-pointer": () => true },
     }
   );
@@ -1483,7 +1550,7 @@ function DataReviewApprover(props) {
       },
 
       flex: 1,
-	    width: 120,
+
       resizable: true,
 
       filter: true,
@@ -1491,11 +1558,15 @@ function DataReviewApprover(props) {
       sortable: true,
 
       suppressSizeToFit: true,
+
+      suppressMenuHide: true,
     };
   }, []);
 
   const autoGroupColumnDef = useMemo(() => {
     return {
+      width: 150,
+
       filterValueGetter: (params) => {
         if (params.node) {
           var colGettingGrouped = params.colDef.showRowGroup + "";
@@ -1505,7 +1576,6 @@ function DataReviewApprover(props) {
       },
 
       pinned: "left",
-	    suppressSizeToFit: true, width: 120,
       cellRenderer: "agGroupCellRenderer",
       cellRendererParams: {
         suppressCount: true,
@@ -1515,7 +1585,7 @@ function DataReviewApprover(props) {
       },
       cellRendererParams: {
         checkbox: true,
-        disabled: true
+        disabled: true,
       },
       headerCheckboxSelection: true,
 
@@ -1529,48 +1599,186 @@ function DataReviewApprover(props) {
     setMessage(selectedRows?.length);
   };
 
-  const handleSave = useCallback((data, validateKey, selectedCell, closingDates, openingDates) => {
+  const handleSave = useCallback(
+    (data, validateKey, selectedCell, closingDates, openingDates) => {
+      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+      //if user not login then redirect to login page
+      if (usrDetails) {
+        setUserEmail(usrDetails.email_id);
+        setuserRole(usrDetails.role_id);
+      }
+      let lowerCaseMonths = [];
+      let q2Values = getCurrentQuarterForPostAPI();
+      q2Values.forEach((element) => {
+        lowerCaseMonths.push(element.toLowerCase());
+      });
+      let requestArray = [];
+      if (validateKey == "1") {
+        if(selectedCell.length) {
+          let exactMonths = getCurrentQuarterForPostAPI();
+          let approvalStatus;
+          if (usrDetails.role_id == roles.approve_1.toUpperCase()) {
+            approvalStatus = "1";
+          }
+          if (usrDetails.role_id == roles.approver_2.toUpperCase()) {
+            approvalStatus = "2";
+          }
+          if (usrDetails.role_id == roles.supervisor.toUpperCase()) {
+            approvalStatus = "4";
+          }
+          if (usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase()) {
+            approvalStatus = "5";
+          }
+        selectedCell.forEach((element) => {
+          let currentYEar = new Date().getFullYear();
+          let monthArray = [];
+          let itemYear = String(
+            element.year_val ? element.year_val : currentYEar
+          ).slice(-2);
+          for (let i = 0; i < exactMonths.length; i++) {
+            let monthEle = exactMonths[i];
+            const saveArray =
+              radioValue == 1
+                ? element[`${monthEle + itemYear}`]
+                : element[`${monthEle + itemYear}E`];
+
+            monthArray.push({
+              month: monthEle.toLowerCase(),
+              sellout_local_currency: saveArray,
+              trans_type: "",
+              approval_status: approvalStatus
+
+            });
+          }
+
+ 
+          let objForUpdate = {
+            partner_id: element.partner_id,
+            partner_name: element.partner_account_name,
+            country_code: element.country_code,
+            year_val: element?.year_val?.toString(),
+            months: monthArray,
+            trans_currency_code: element.trans_currency_code,
+            created_by: element?.created_by
+              ? element.created_by
+              : usrDetails.email_id,
+            modified_by: usrDetails.email_id,
+            created_date: new Date()
+              .toISOString()
+              .replace("T", " ")
+              .slice(0, -5),
+            approval_status: approvalStatus,
+            editor_comment: element.editorComments,
+            comments: element.approverComments,
+            batch_upload_flag: element.batch_upload_flag.toString(),
+            approved_date: new Date()
+              .toISOString()
+              .replace("T", " ")
+              .slice(0, -5),
+            opening_date: openingDates,
+            closing_date: closingDates,
+            CURRENT_QUARTER_MONTHS: lowerCaseMonths
+          };
+          requestArray.push(objForUpdate);
+        });
+      }
+      } else {
+        data.forEach((element) => {
+          let currentYEar = new Date().getFullYear();
+          let monthArray = [];
+          let itemYear = String(
+            data[0].year_val ? data[0].year_val : currentYEar
+          ).slice(-2);
+          let monthTill = new Date().getMonth();
+          let exactMonths = getCurrentQuarterForPostAPI();
+          for (let i = 0; i < exactMonths.length; i++) {
+            let monthEle = exactMonths[i];
+            const saveArray =
+              radioValue == 1
+                ? element[`${monthEle + itemYear}`]
+                : element[`${monthEle + itemYear}E`];
+
+            monthArray.push({
+              month: monthEle.toLowerCase(),
+              sellout_local_currency: saveArray,
+              trans_type: "",
+              approval_status: element[`${monthEle + itemYear+"approval_status"}`]
+            });
+          }
+
+          let reqData = {
+            partner_id: element.partner_id,
+            partner_name: element.partner_account_name,
+            country_code: element.country_code,
+            year_val: element?.year_val?.toString(),
+            months: monthArray,
+            trans_currency_code: element.trans_currency_code,
+            created_by: usrDetails.email_id,
+            modified_by: usrDetails.email_id,
+            created_date: new Date()
+              .toISOString()
+              .replace("T", " ")
+              .slice(0, -5),
+            approval_status: element?.approval_status?.toString(),
+            editor_comment: element.editorComments,
+            comments: element.approverComments,
+            batch_upload_flag: element.batch_upload_flag.toString(),
+            approved_date: new Date()
+              .toISOString()
+              .replace("T", " ")
+              .slice(0, -5),
+            opening_date: openingDates,
+            closing_date: closingDates,
+            CURRENT_QUARTER_MONTHS: lowerCaseMonths
+          };
+          requestArray.push(reqData);
+        });
+      }
+if(requestArray.length){
+  props
+  .updateSellOutData(requestArray)
+  .then((data) => {
+    // setReviewData(data);
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    //if user not login then redirect to login page
-    if (usrDetails) {
-      setUserEmail(usrDetails.email_id);
-      setuserRole(usrDetails.role_id);
-    }
-    let requestArray = [];
-    if (validateKey == "1") {
+    setMessage(0);
+    getQuarterReviewData(usrDetails.email_id, year, usrDetails.role_id);
+    setShowSuccessModal(true);
+  })
+  .catch((e) => {
+    console.log("Error", e);
+  });
+}
+
+    },
+    []
+  );
+
+  const handleSendForInvestgn = useCallback(
+    (data, selectedCell, closingDates, openingDates) => {
+      const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+      let lowerCaseMonths = [];
+      let q2Values = getCurrentQuarterForPostAPI();
+      q2Values.forEach((element) => {
+        lowerCaseMonths.push(element.toLowerCase());
+      });
+      let requestArray = [];
       selectedCell.forEach((element) => {
-        let currentYEar = new Date().getFullYear();
         let monthArray = [];
-        let itemYear = String(
-          element.year_val ? element.year_val : currentYEar
-        ).slice(-2);
-        let monthTill = new Date().getMonth()
-        for(let i=0; i< monthTill; i++) {
-          let monthEle = allCalMonths[i];
+        let itemYear = String(data[0].year_val).slice(-2);
+        let monthTill = new Date().getMonth();
+        let exactMonths = getCurrentQuarterForPostAPI();
+        for (let i = 0; i < exactMonths.length; i++) {
+          let monthEle = exactMonths[i];
           const saveArray =
-          radioValue == 1
-            ? element[`${monthEle + itemYear}`]
-            : element[`${monthEle + itemYear}E`];
-        
+            radioValue == 1
+              ? element[`${monthEle + itemYear}`]
+              : element[`${monthEle + itemYear}E`];
+
           monthArray.push({
             month: monthEle.toLowerCase(),
             sellout_local_currency: saveArray,
             trans_type: "",
           });
-        }
-
-        let approvalStatus;
-        if (usrDetails.role_id == roles.approve_1.toUpperCase()) {
-          approvalStatus = "1";
-        }
-        if (usrDetails.role_id == roles.approver_2.toUpperCase()) {
-          approvalStatus = "2";
-        }
-        if (usrDetails.role_id == roles.supervisor.toUpperCase()) {
-          approvalStatus = "4";
-        }
-        if (usrDetails.role_id == roles.supervisor_approv_1_2.toUpperCase()) {
-          approvalStatus = "5";
         }
         let objForUpdate = {
           partner_id: element.partner_id,
@@ -1579,147 +1787,37 @@ function DataReviewApprover(props) {
           year_val: element?.year_val?.toString(),
           months: monthArray,
           trans_currency_code: element.trans_currency_code,
-          created_by: usrDetails.email_id,
+          created_by: element?.created_by
+            ? element.created_by
+            : usrDetails.email_id,
+          modified_by: usrDetails.email_id,
           created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
-          approval_status: approvalStatus,
+          approval_status: "3",
           editor_comment: element.editorComments,
           comments: element.approverComments,
           batch_upload_flag: element.batch_upload_flag.toString(),
-          approved_date: new Date()
-            .toISOString()
-            .replace("T", " ")
-            .slice(0, -5),
-            opening_date : openingDates,
-            closing_date: closingDates
+          approved_date: null,
+          opening_date: openingDates,
+          closing_date: closingDates,
+          CURRENT_QUARTER_MONTHS: lowerCaseMonths
         };
+
         requestArray.push(objForUpdate);
       });
-    } else {
-      data.forEach((element) => {
-        let currentYEar = new Date().getFullYear();
-        let monthArray = [];
-        let itemYear = String(
-          data[0].year_val ? data[0].year_val : currentYEar
-        ).slice(-2);
-        let monthTill = new Date().getMonth();
-        for(let i=0; i< monthTill; i++) {
-          let monthEle = allCalMonths[i];
-          const saveArray =
-          radioValue == 1
-            ? element[`${monthEle + itemYear}`]
-            : element[`${monthEle + itemYear}E`];
-        
-          monthArray.push({
-            month: monthEle.toLowerCase(),
-            sellout_local_currency: saveArray,
-            trans_type: "",
-          });
-        }
-        // allCalMonths.forEach((monthEle) => {
-        //   const saveArray =
-        //     radioValue == 1
-        //       ? element[`${monthEle + itemYear}`]
-        //       : element[`${monthEle + itemYear}E`];
-        //   if (saveArray > 0) {
-        //     monthArray.push({
-        //       month: monthEle.toLowerCase(),
-        //       sellout_local_currency: saveArray,
-        //       trans_type: "",
-        //     });
-        //   }
-        // });
-
-        let reqData = {
-          partner_id: element.partner_id,
-          partner_name: element.partner_account_name,
-          country_code: element.country_code,
-          year_val: element?.year_val?.toString(),
-          months: monthArray,
-          trans_currency_code: element.trans_currency_code,
-          created_by: usrDetails.email_id,
-          created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
-          approval_status: element?.approval_status?.toString(),
-          editor_comment: element.editorComments,
-          comments: element.approverComments,
-          batch_upload_flag: element.batch_upload_flag.toString(),
-          approved_date: new Date()
-            .toISOString()
-            .replace("T", " ")
-            .slice(0, -5),
-            opening_date : openingDates,
-            closing_date: closingDates
-        };
-        requestArray.push(reqData);
-      });
-    }
-
-    props
-      .updateSellOutData(requestArray)
-      .then((data) => {
-        // setReviewData(data);
-        const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-        setMessage(0);
-        getQuarterReviewData(usrDetails.email_id, year, usrDetails.role_id);
-        setShowSuccessModal(true);
-      })
-      .catch((e) => {
-        console.log("Error", e);
-      });
-  }, []);
-
-  const handleSendForInvestgn = useCallback((data, selectedCell, closingDates, openingDates) => {
-    const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-
-    let requestArray = [];
-    selectedCell.forEach((element) => {
-      let monthArray = [];
-      let itemYear = String(data[0].year_val).slice(-2);
-      let monthTill = new Date().getMonth();
-      for(let i=0; i< monthTill; i++) {
-        let monthEle = allCalMonths[i];
-        const saveArray =
-        radioValue == 1
-          ? element[`${monthEle + itemYear}`]
-          : element[`${monthEle + itemYear}E`];
-      
-        monthArray.push({
-          month: monthEle.toLowerCase(),
-          sellout_local_currency: saveArray,
-          trans_type: "",
+      props
+        .updateSellOutData(requestArray)
+        .then((data) => {
+          const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
+          setMessage(0);
+          getQuarterReviewData(usrDetails.email_id, year, usrDetails.role_id);
+          setShowSuccessModal(true);
+        })
+        .catch((e) => {
+          console.log("Error", e);
         });
-      }
-      let objForUpdate = {
-        partner_id: element.partner_id,
-        partner_name: element.partner_account_name,
-        country_code: element.country_code,
-        year_val: element?.year_val?.toString(),
-        months: monthArray,
-        trans_currency_code: element.trans_currency_code,
-        created_by: usrDetails.email_id,
-        created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
-        approval_status: "3",
-        editor_comment: element.editorComments,
-        comments: element.approverComments,
-        batch_upload_flag: element.batch_upload_flag.toString(),
-        approved_date: null,
-        opening_date : openingDates,
-        closing_date: closingDates
-      };
-
-      requestArray.push(objForUpdate);
-    });
-    props
-      .updateSellOutData(requestArray)
-      .then((data) => {
-        const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-        setMessage(0);
-        getQuarterReviewData(usrDetails.email_id, year, usrDetails.role_id);
-        setShowSuccessModal(true);
-      })
-      .catch((e) => {
-        console.log("Error", e);
-      });
-  }, []);
+    },
+    []
+  );
 
   const handleReviewNavigation = () => {
     if (userRole == roles.supervisor_approv_1_2.toUpperCase()) {
@@ -1749,19 +1847,26 @@ function DataReviewApprover(props) {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
     let userRole = usrDetails.role_id;
-    if(params?.data) {
-      if(userRole === roles.approve_1.toUpperCase()) {
-        if (params.data.approval_status == 1 || params.data.approval_status == '1' || params.data.approval_status == 2 || params.data.approval_status == '2') {
-          return { fontWeight: "bold", opacity: "0.4", pointerEvents : "none" };
-        } 
-        
-      } else if(userRole === roles.approver_2.toUpperCase()) {
-        if (params.data.approval_status == 2 || params.data.approval_status == '2') {
-          return { fontWeight: "bold", opacity: "0.4", pointerEvents : "none" };
-        } 
+    if (params?.data) {
+      if (userRole === roles.approve_1.toUpperCase()) {
+        if (
+          params.data.approval_status == 1 ||
+          params.data.approval_status == "1" ||
+          params.data.approval_status == 2 ||
+          params.data.approval_status == "2"
+        ) {
+          return { fontWeight: "bold", opacity: "0.4", pointerEvents: "none" };
+        }
+      } else if (userRole === roles.approver_2.toUpperCase()) {
+        if (
+          params.data.approval_status == 2 ||
+          params.data.approval_status == "2"
+        ) {
+          return { fontWeight: "bold", opacity: "0.4", pointerEvents: "none" };
+        }
+      } else {
+        return { fontWeight: "bold" };
       }
-    } else if (params.node.aggData) {
-      return { fontWeight: "bold"};
     }
   };
 
@@ -1787,6 +1892,19 @@ function DataReviewApprover(props) {
         }
       });
     } else {
+      /*
+	else if (e.target.value === "Partner") {
+      gridRef.current.api.forEachNode((node) => {
+        if (
+          node.level === 0 ||
+          node.level === 1 ||
+          node.level === 2 ||
+          node.level === 3
+        ) {
+          gridRef.current.api.setRowNodeExpanded(node, true);
+        }
+      });
+    } */
       gridRef.current.api.collapseAll();
     }
   }, []);
@@ -1872,7 +1990,7 @@ function DataReviewApprover(props) {
                   className={`show-data toggle-button ${
                     !isYearColumnVisible ? "active" : ""
                   }`}
-                  onClick={() => onBtHideYearColumn()}
+                  onClick={() => onBtHideYearColumn(radioValue)}
                 >
                   Hide
                 </Button>
@@ -1894,11 +2012,16 @@ function DataReviewApprover(props) {
                       value={radio.value}
                       checked={radioValue === radio.value}
                       onChange={(e) => {
+                        let localRadio = e.currentTarget.value;
                         setRadioValue(e.currentTarget.value);
-
+                        setTimeout(() => {
+                          if (isYearColumnVisible) {
+                            onBtShowYearColumn(reviewData, localRadio);
+                          }
+                        }, 10);
                         setMessage(0);
 
-                        setIsYearColumnVisible(false);
+                        //  setIsYearColumnVisible(false);
                       }}
                     >
                       {radio.name}
@@ -1943,6 +2066,7 @@ function DataReviewApprover(props) {
                     Country
                   </option>
                   <option value="Model">Model</option>
+                  {/* <option value="Partner">Partner</option> */}
                 </Form.Select>
               </Col>
             </Row>
@@ -1954,7 +2078,7 @@ function DataReviewApprover(props) {
           style={{ height: 400, marginTop: "10px" }}
         >
           <AgGridReact
-            ref={gridRef}         
+            ref={gridRef}
             rowData={reviewData}
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
@@ -2005,7 +2129,12 @@ function DataReviewApprover(props) {
                   }
                   disabled={shouldDisableSaveButton}
                   onClick={(e) =>
-                    handleSendForInvestgn(reviewData, selectedCell, closingDate, openingDate)
+                    handleSendForInvestgn(
+                      reviewData,
+                      selectedCell,
+                      closingDate,
+                      openingDate
+                    )
                   }
                 >
                   Send For Investigation
@@ -2020,7 +2149,15 @@ function DataReviewApprover(props) {
                       : "btn-upload edit-header"
                   }
                   disabled={shouldDisableSaveButton}
-                  onClick={(e) => handleSave(reviewData, 0, selectedCell, closingDate, openingDate)}
+                  onClick={(e) =>
+                    handleSave(
+                      reviewData,
+                      0,
+                      selectedCell,
+                      closingDate,
+                      openingDate
+                    )
+                  }
                 >
                   Save
                 </Button>
@@ -2040,7 +2177,13 @@ function DataReviewApprover(props) {
                   }
                   disabled={shouldDisableSaveButton}
                   onClick={() => {
-                    handleSave(reviewData, 1, selectedCell, closingDate, openingDate);
+                    handleSave(
+                      reviewData,
+                      1,
+                      selectedCell,
+                      closingDate,
+                      openingDate
+                    );
                   }}
                 >
                   Validate

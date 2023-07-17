@@ -5,24 +5,27 @@ import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import * as xlsx from "xlsx-js-style";
 import AlertModel from "../modal/alertModel";
-import { allCalMonths, roles, user_login_info } from "../constant";
+import { allCalMonths, quarters,roles, user_login_info } from "../constant";
 import { ckeckErrors } from "../utils/index.js";
 import { retrieveAllData, createData } from "../../actions/dataInputAction";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { getUIDateFormat, getAPIDateFormatWithTime } from "../../helper/helper";
 
-function BatchInputComponent({ savedData, props, userDetails }) {
-  console.log(
-    "getUIDateFormatWithTime",
-    getAPIDateFormatWithTime(new Date().toUTCString())
-  );
+function BatchInputComponent({
+  savedData,
+  props,
+  userDetails,
+  shouldDisableSaveButton,
+  openingDate,
+  closingDate
+}) {
   const location = useLocation();
 
   const navigate = useNavigate();
   //sso login func
-  const [userEmail, setUserEmail] = useState('');
-  const [userRole, setuserRole] = useState('');
+  const [userEmail, setUserEmail] = useState("");
+  const [userRole, setuserRole] = useState("");
 
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
@@ -31,11 +34,13 @@ function BatchInputComponent({ savedData, props, userDetails }) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
 
-      if (usrDetails.role_id === roles.editor.toUpperCase() ||
+      if (
+        usrDetails.role_id === roles.editor.toUpperCase() ||
         usrDetails.role_id === roles.backup_editor.toUpperCase() ||
         usrDetails.role_id === roles.approve_1.toUpperCase() ||
         usrDetails.role_id === roles.approver_2.toUpperCase() ||
-        usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
+        usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()
+      ) {
       } else {
         navigate("/");
       }
@@ -82,6 +87,7 @@ function BatchInputComponent({ savedData, props, userDetails }) {
     setShowShouldUpdModal(false);
   };
 
+
   const successmsg = {
     headerLabel: "Success....",
     variant: "success",
@@ -103,6 +109,40 @@ function BatchInputComponent({ savedData, props, userDetails }) {
     content: [
       "Your previous data would be lost if you update it with new data",
     ],
+  };
+
+  const getCurrentQuarterForPostAPI = () => {
+    const currentDate = new Date();
+    const currentYear = String(currentDate.getFullYear()).slice(-2);
+    const currentMonth = allCalMonths[currentDate.getMonth()];
+    // const currentMonth = 'Jul'; // To test quarter basis
+    let currentQuarter = 0;
+    let currentQuarterIndex = 0;
+    let index = 1;
+    let selectedYear = currentYear;
+
+    for (const quarter in quarters) {
+      if (quarters[quarter].includes(currentMonth)) {
+        currentQuarter = quarter;
+        currentQuarterIndex = quarters[quarter].indexOf(currentMonth);
+        break;
+      }
+      index++;
+    }
+
+    let resultQuarter = 0;
+    if (currentQuarterIndex === 0) {
+      const previousIndex = index - 1 ? index - 1 : 4;
+      if (index - 1 == 0) {
+        selectedYear = currentYear - 1;
+      }
+      const previousQuarter = Object.keys(quarters)[previousIndex - 1];
+      resultQuarter = previousQuarter;
+    } else {
+      resultQuarter = currentQuarter;
+    }
+    const q2Values = quarters[resultQuarter];
+    return q2Values;
   };
 
   const postBatchData = (frmData) => {
@@ -128,13 +168,17 @@ function BatchInputComponent({ savedData, props, userDetails }) {
           let errorJson = [];
           setFileData(json);
           errorJson = ckeckErrors(json, json);
-
           json.forEach((i) => {
             if (i.Jan_Amount) {
               if (isNaN(i.Jan_Amount)) {
                 errorJson.push(
                   "There should be number for Jan month at partner : " +
-                  i["Partner Account Name"]
+                    i.Partner_Account_Name
+                );
+              } else if (i.Jan_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for Jan month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
@@ -142,7 +186,12 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Feb_Amount)) {
                 errorJson.push(
                   "There should be number for Feb month at partner : " +
-                  i["Partner Account Name"]
+                    i.Partner_Account_Name
+                );
+              } else if (i.Feb_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for Feb month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
@@ -150,7 +199,12 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Mar_Amount)) {
                 errorJson.push(
                   "There should be number for Mar month at partner : " +
-                  i["Partner Account Name"]
+                    i.Partner_Account_Name
+                );
+              } else if (i.Mar_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for Mar month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
@@ -158,7 +212,12 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Apr_Amount)) {
                 errorJson.push(
                   "There should be number at Apr at partner : " +
-                  i["Partner Account Name"]
+                    i.Partner_Account_Name
+                );
+              } else if (i.Apr_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for Apr month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
@@ -166,7 +225,12 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.May_Amount)) {
                 errorJson.push(
                   "There should be number at May at partner : " +
-                  i["Partner Account Name"]
+                    i.Partner_Account_Name
+                );
+              } else if (i.May_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for May month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
@@ -174,7 +238,12 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Jun_Amount)) {
                 errorJson.push(
                   "There should be number at Jun at partner : " +
-                  i["Partner Account Name"]
+                    i.Partner_Account_Name
+                );
+              } else if (i.Jun_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for Jun month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
@@ -182,23 +251,38 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Jul_Amount)) {
                 errorJson.push(
                   "There should be number at Jul at partner : " +
-                  i["Partner Account Name"]
+                    i.Partner_Account_Name
+                );
+              } else if (i.Jul_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for Jul month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
             if (i.Aug_Amount) {
               if (isNaN(i.Aug_Amount)) {
                 errorJson.push(
-                  "There should be number at Jul at partner : " +
-                  i["Partner Account Name"]
+                  "There should be number at Aug at partner : " +
+                    i.Partner_Account_Name
+                );
+              } else if (i.Aug_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for Aug month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
             if (i.Sep_Amount) {
               if (isNaN(i.Sep_Amount)) {
                 errorJson.push(
-                  "There should be number at Jul at partner : " +
-                  i["Partner Account Name"]
+                  "There should be number at Sep at partner : " +
+                    i.Partner_Account_Name
+                );
+              } else if (i.Sep_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for Sep month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
@@ -206,7 +290,12 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Oct_Amount)) {
                 errorJson.push(
                   "There should be number at Oct at partner : " +
-                  i["Partner Account Name"]
+                    i.Partner_Account_Name
+                );
+              } else if (i.Oct_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for Oct month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
@@ -214,7 +303,12 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Nov_Amount)) {
                 errorJson.push(
                   "There should be number at Nov at partner : " +
-                  i["Partner Account Name"]
+                    i.Partner_Account_Name
+                );
+              } else if (i.Nov_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for Nov month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
@@ -222,30 +316,31 @@ function BatchInputComponent({ savedData, props, userDetails }) {
               if (isNaN(i.Dec_Amount)) {
                 errorJson.push(
                   "There should be number at Dec at partner : " +
-                  i["Partner Account Name"]
+                    i.Partner_Account_Name
+                );
+              } else if (i.Dec_Amount < 0) {
+                errorJson.push(
+                  "There should not be negative number for Dec month at partner : " +
+                    i.Partner_Account_Name
                 );
               }
             }
           });
 
- 		  const currentYear = new Date().getFullYear();
+          const currentYear = new Date().getFullYear();
           json.forEach((rowNode) => {
-
-            if (rowNode.Year != currentYear && rowNode.Year !== "" && rowNode.Year !== undefined && rowNode.Year !== null) {
-
+            if (
+              rowNode.Year != currentYear &&
+              rowNode.Year !== "" &&
+              rowNode.Year !== undefined &&
+              rowNode.Year !== null
+            ) {
               errorJson.push(
-
                 `Invalid year value. Please enter the current year for partner: ${rowNode["Partner_Account_Name"]}`
-
               );
-
               return;
-
             }
-
-          })
-
-
+          });
 
           if (errorJson.length > 0) {
             setFileError(errorJson);
@@ -255,26 +350,52 @@ function BatchInputComponent({ savedData, props, userDetails }) {
           } else {
             //call api
             let payload = [];
-
+            let q2Values = getCurrentQuarterForPostAPI();
+            let lowerCaseMonths = [];
+            q2Values.forEach((element) => {
+              lowerCaseMonths.push(element.toLowerCase());
+            });
+            let isEverythingOkay = true;
+            if(savedData.length != json.length){
+              isEverythingOkay = false;
+            } else {
+            }
+            savedData.forEach(oldData => {
+             let getTHings =  json.filter((e) => e.Partner_id == oldData.Partner_id );
+             if(getTHings.length){
+             } else {
+              isEverythingOkay = false;
+             }
+            });
+            if(isEverythingOkay){
             // //iterate in the grid
             json.forEach((rowNode, index) => {
-              console.log('rowNode:: bhsbhsbhs', rowNode);
+              let seriousData =  savedData.filter((e) =>e.Partner_id == rowNode.Partner_id)
+              let seriousDataForMonths = seriousData[0].SeriousData.months;
+              let approvalStatus =0;
               //api to save data
               let monthArray = [];
               //12 months loop
               allCalMonths.forEach((element) => {
+                let abcData =  seriousDataForMonths.filter((e) =>e.month_val == element.toLowerCase());
+
                 if (rowNode[`${element}_Amount`] >= 0) {
-                  if( rowNode[`${element}_Amount`] !== ''){
-                    console.log('cominginside thisblock', rowNode[`${element}_Amount`]);
+                  if (rowNode[`${element}_Amount`] !== "") {
+                    if(rowNode[`${element}_Amount`] == abcData[0].sellout_local_currency) {
+                      approvalStatus = abcData[0].approval_status
+                    } else {
+                      approvalStatus = 0;
+                    }
                     let amountRounded = String(rowNode[`${element}_Amount`]);
                     monthArray.push({
                       month: element.toLowerCase(),
-                      sellout_local_currency: parseFloat(amountRounded).toFixed(),
+                      sellout_local_currency:
+                        parseFloat(amountRounded).toFixed(),
                       trans_type:
                         rowNode[`${element}_Estimated`] == true ? "EST" : "ACT",
+                        approval_status: approvalStatus
                     });
                   }
-     
                 }
               });
 
@@ -285,14 +406,18 @@ function BatchInputComponent({ savedData, props, userDetails }) {
                 year_val: String(rowNode.Year),
                 months: monthArray,
                 trans_currency_code: rowNode.Currency_Of_Reporting,
-                created_by: userDetails.loginUser, //login user
+                created_by: userDetails.loginUser,
+                modified_by: userDetails.loginUser, //login user
                 created_date: getAPIDateFormatWithTime(
                   new Date().toUTCString()
                 ),
                 approval_status: "0",
                 editor_comment: "",
-                comments: "waiting for approver",
+                comments: "",
                 batch_upload_flag: "true",
+                CURRENT_QUARTER_MONTHS: lowerCaseMonths,
+                opening_date: openingDate,
+                closing_date: closingDate,
               };
 
               if (formatPayload.months.length > 0) {
@@ -302,13 +427,15 @@ function BatchInputComponent({ savedData, props, userDetails }) {
             props
               .createData(payload)
               .then((data) => {
-                
                 document.getElementById("sellout-editor-input").reset();
                 setFileError([]);
                 setShowErrorModal(false);
                 setShowSuccessModal(true);
                 setShowShouldUpdModal(false);
-                setTimeout(() => navigate(`/dataReview?role=${userRole}`), 3000);
+                setTimeout(
+                  () => navigate(`/dataReview?role=${userRole}`),
+                  3000
+                );
               })
               .catch((e) => {
                 document.getElementById("sellout-editor-input").reset();
@@ -319,7 +446,12 @@ function BatchInputComponent({ savedData, props, userDetails }) {
                 return;
               });
             // });
+          } else {
+            setShowErrorModal(true);
+            setShowSuccessModal(false);
+            setShowShouldUpdModal(false);
           }
+        }
 
           errorJson = [];
         };
@@ -345,25 +477,47 @@ function BatchInputComponent({ savedData, props, userDetails }) {
     [
       "You can upload several batches of data via the batch method. If sellout values are already in the system, you will overwrite them when loading a new value for these partners and months.",
     ],
-    
+
     [" Do and don't on the sellout value columns "],
     ["The sell out value columns are named (Jan_Amount, Feb_Amount…). "],
-    ["You need to input sell out value only (not sell in). Please see the training guide on how to calculate the sell out value. "],
-    ["Only the last 6 months sell out value can be updated. Previous year will be closed after December reporting period happening in January Y+1. To update previous periods, please liaise with the Admin Team and your Super User.  "],
-    ["The input is done in Kilo (with 2 decimals maximum if needed) and in currency of reporting (mentioned in the template under the “Currency_Of_Reporting”). "],
-    ["When downloading the template, you will see the current sell out value in the system. If you input a different sell out value in the template, it will be loaded into the system, and will replace the existing sell out value. "],
-    ["If you input a “0”, the existing value in the system will be replaced by a 0. "],
-    ["If you leave the cell empty/ blank, then the existing value in the system will remain (no update). "],
+    [
+      "You need to input sell out value only (not sell in). Please see the training guide on how to calculate the sell out value. ",
+    ],
+    [
+      "Only the last 6 months sell out value can be updated. Previous year will be closed after December reporting period happening in January Y+1. To update previous periods, please liaise with the Admin Team and your Super User.  ",
+    ],
+    [
+      "The input is done in Kilo (with 2 decimals maximum if needed) and in currency of reporting (mentioned in the template under the “Currency_Of_Reporting”). ",
+    ],
+    [
+      "When downloading the template, you will see the current sell out value in the system. If you input a different sell out value in the template, it will be loaded into the system, and will replace the existing sell out value. ",
+    ],
+    [
+      "If you input a “0”, the existing value in the system will be replaced by a 0. ",
+    ],
+    [
+      "If you leave the cell empty/ blank, then the existing value in the system will remain (no update). ",
+    ],
 
     ["Do and don't on the “estimated” columns "],
-    ["You can use this template to define whether the sell out value is a estimate or the actual value (you might have to estimate the sell out value while waiting actual values from the partner). "],
+    [
+      "You can use this template to define whether the sell out value is a estimate or the actual value (you might have to estimate the sell out value while waiting actual values from the partner). ",
+    ],
     ["The “estimated” columns are named (Jan_Estimated, Feb_Estimated…). "],
-    ["Please write “TRUE” if sellout is estimated, “FALSE” if sellout is actual "],
-    ["Leaving the cell empty/ blank will populate the field as “actual”. You can always change that later in the application "],
+    [
+      "Please write “TRUE” if sellout is estimated, “FALSE” if sellout is actual ",
+    ],
+    [
+      "Leaving the cell empty/ blank will populate the field as “actual”. You can always change that later in the application ",
+    ],
 
     ["Do and don't on the partner account details "],
-    ["Don't change/ add/ remove partner account details in this template. The application will not recognize any changes, which will lead to an upload error. "],
-    ["If you need to update partner details (partner account name, status, currency of reporting), please go to the partner account section. "]
+    [
+      "Don't change/ add/ remove partner account details in this template. The application will not recognize any changes, which will lead to an upload error. ",
+    ],
+    [
+      "If you need to update partner details (partner account name, status, currency of reporting), please go to the partner account section. ",
+    ],
   ];
 
   const getExactData = (index, amount) => {
@@ -371,17 +525,13 @@ function BatchInputComponent({ savedData, props, userDetails }) {
     let month = today.getMonth();
     if (index < month) {
     } else {
-      amount = '';
-
+      amount = "";
     }
-    return amount
-  }
+    return amount;
+  };
 
   const exportToExcel = async () => {
     let exportExcelData = [];
-
-    console.log("savedData", savedData);
-
     savedData.forEach((row, index) => {
       let indvRespPayload = {
         Zone: row.Zone,
@@ -454,8 +604,6 @@ function BatchInputComponent({ savedData, props, userDetails }) {
       exportExcelData = exportExcelData.concat(indvRespPayload);
     });
 
-    console.log("exportExcelData", exportExcelData);
-
     const tempData = exportExcelData.map((e) => {
       const { id, status, ...rest } = e;
 
@@ -503,19 +651,19 @@ function BatchInputComponent({ savedData, props, userDetails }) {
     xlsx.utils.book_append_sheet(workbook, sheet1, "Read Me");
 
     workbook.Sheets["Read Me"]["A1"].s = {
-      font: { bold: true, color: { rgb: "000000" }},
-      alignment: {horizontal: "center"},
+      font: { bold: true, color: { rgb: "000000" } },
+      alignment: { horizontal: "center" },
     };
     workbook.Sheets["Read Me"]["A4"].s = {
-      font: { bold: true, color: { rgb: "000000" }},
+      font: { bold: true, color: { rgb: "000000" } },
     };
     workbook.Sheets["Read Me"]["A12"].s = {
-      font: { bold: true, color: { rgb: "000000" }},
+      font: { bold: true, color: { rgb: "000000" } },
     };
     workbook.Sheets["Read Me"]["A17"].s = {
-      font: { bold: true, color: { rgb: "000000" }},
+      font: { bold: true, color: { rgb: "000000" } },
     };
-    sheet1["!cols"] = [{wch: 200}];
+    sheet1["!cols"] = [{ wch: 200 }];
 
     const sheet2 = xlsx.utils.json_to_sheet(tempData);
 
@@ -769,7 +917,15 @@ function BatchInputComponent({ savedData, props, userDetails }) {
                     </Form.Group>
                   </Col>
                   <Col xs="auto">
-                    <Button className=" btn-upload save-header" type="submit">
+                    <Button
+                      className={
+                        shouldDisableSaveButton
+                          ? "btn-upload active-button"
+                          : "btn-upload save-header"
+                      }
+                      type="submit"
+                      disabled={shouldDisableSaveButton}
+                    >
                       Upload
                     </Button>
                     <AlertModel
@@ -810,4 +966,6 @@ function BatchInputComponent({ savedData, props, userDetails }) {
   );
 }
 
-export default connect(null, { retrieveAllData, createData })(BatchInputComponent);
+export default connect(null, { retrieveAllData, createData })(
+  BatchInputComponent
+);

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, isValidElement } from "react";
 import Select from "../singleSelect.js";
 import {
   Breadcrumb,
@@ -30,6 +30,8 @@ import {
 import {
   retrieveAllStaticData,
   retrieveAllCountryData,
+  retrieveStaticDataByAttrName,
+  retrieveAllStaticDataByZone
 } from "../../../actions/staticDataAction.js";
 import { connect } from "react-redux";
 import {
@@ -41,24 +43,29 @@ import AlertModal from "../../modal/alertModel.js";
 import { roles, status, user_login_info } from "../../constant.js";
 import { getAPIDateFormatWithTime } from "../../../helper/helper.js";
 import { userRoleOptions } from "../optionsData.js";
-import DataReviewService from '../../../services/dataReviewServices.js';
+import DataReviewService from "../../../services/dataReviewServices.js";
 
 function SaveUser(props) {
   const navigate = useNavigate();
 
-  const [userEmail, setUserEmail] = useState('');
-  const [userRoleData, setUserRoleData] = useState('');
+  const [userEmail, setUserEmail] = useState("");
+  const [userRoleData, setUserRoleData] = useState("");
+  const [selectedCountryData, setSelectedCountryData] = useState([]);
+  const [selectedModelData, setSelectedModelData] = useState([]);
+  const [selectedZoneData, setSelectedZoneData] = useState('');
+
   var specialArray = [];
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    if(usrDetails){
+    if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setUserRoleData(usrDetails.role_id);
-                      
-      if(usrDetails.role_id === roles.admin.toUpperCase() ||
-      usrDetails.role_id === roles.supervisor.toUpperCase() ||
-      usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()) {
-        console.log('user list for role admin');
+
+      if (
+        usrDetails.role_id === roles.admin.toUpperCase() ||
+        usrDetails.role_id === roles.supervisor.toUpperCase() ||
+        usrDetails.role_id === roles.supervisor_approv_1_2.toUpperCase()
+      ) {
       } else {
         navigate("/");
       }
@@ -82,7 +89,6 @@ function SaveUser(props) {
     modelType: [],
     usrcountry: [],
     partnerAccNm: [],
-    isDisabled: null
   };
 
   const [form, setForm] = useState(initialForm);
@@ -171,8 +177,10 @@ function SaveUser(props) {
   const [countryData, setCountryData] = useState([]);
   const [partnerDrpData, setPartnerDrpData] = useState([]);
   const [totalPartnerData, setTotalPartnerData] = useState([]);
-  const [isDisabledUser, setisDisabledUser] = useState([]);
+
   const [staticData, setStaticData] = useState([]);
+  const [zoneValues, setZoneValues] = useState([]);
+  const [modelValues, setModelValues] = useState([]);
 
   const convertMultiSelectDrpToInputData = (data) => {
     let retData = "";
@@ -205,17 +213,15 @@ function SaveUser(props) {
   };
 
   const convertInputDataToMultiSelectDrpOnlyForCountry = (data) => {
-    
     let outputData = [];
     let countryList = DataReviewService.getValueForCountryFunc();
     if (data) {
       let inputData = data.split(",");
       inputData.forEach((row) => {
         let countrySpecificName;
-        countryList.forEach(element => {
-        
-          if(element.value == row) {
-            countrySpecificName = element.label
+        countryList.forEach((element) => {
+          if (element.value == row) {
+            countrySpecificName = element.label;
           }
         });
         outputData = outputData.concat({
@@ -229,7 +235,7 @@ function SaveUser(props) {
 
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
-    if(usrDetails){
+    if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setUserRoleData(usrDetails.role_id);
     }
@@ -246,7 +252,7 @@ function SaveUser(props) {
         });
         //set data
         setCountryData(countryOptions);
-        DataReviewService.setValueForCountryFunc(countryOptions)
+        DataReviewService.setValueForCountryFunc(countryOptions);
       })
       .catch((e) => {
         console.log("retrieveAllCountryData", e);
@@ -258,22 +264,24 @@ function SaveUser(props) {
       .then((data) => {
         let partnerOptions = [];
         let partnerOptionsTotal = [];
-       // specialArray = data.data;
-       
+        // specialArray = data.data;
+
         data.data.forEach((partnerData) => {
           partnerOptions = partnerOptions.concat({
             value: partnerData.partner_id,
             label: partnerData.partner_account_name,
-            country_code: partnerData.country_code
+            country_code: partnerData.country_code,
           });
           partnerOptionsTotal = partnerOptionsTotal.concat({
             value: partnerData.partner_id,
             label: partnerData.partner_account_name,
-            country_code: partnerData.country_code
+            country_code: partnerData.country_code,
+            modelType: partnerData.model_type,
+            zoneVal: partnerData.zone_val,
           });
         });
         //set data
-       // setPartnerDrpData(partnerOptions);
+        // setPartnerDrpData(partnerOptions);
         DataReviewService.setValueForPartnerFunc(partnerOptionsTotal);
       })
       .catch((e) => {
@@ -298,6 +306,9 @@ function SaveUser(props) {
         console.log("retrieveAllStaticData", e);
       });
 
+      callApiToGetModels();
+      callApiToGetZones();
+
     if (props.module === "Update") {
       //prefill the data
       if (userEmailId) {
@@ -319,7 +330,6 @@ function SaveUser(props) {
               usrcountry: convertInputDataToMultiSelectDrpOnlyForCountry(
                 respData.country_code
               ),
-              isDisabled: respData.status === status.active.toUpperCase()
             };
 
             //set state of form
@@ -334,7 +344,7 @@ function SaveUser(props) {
                 )
               );
             }, 2000);
-        
+
             //prefill partner drop down
             props
               .retrieveUserRoleConfigByEmailIdRoleId(
@@ -366,8 +376,7 @@ function SaveUser(props) {
                       let name = "partnerAccNm";
                       handlePartnerChange(partnerData);
                     })
-                    .catch((e) => {
-                    });
+                    .catch((e) => {});
                 });
               });
           })
@@ -382,9 +391,180 @@ function SaveUser(props) {
     }
   }, []);
 
+  const callApiToGetModels = () => {
+    props
+      .retrieveStaticDataByAttrName('model_type')
+      .then((data) => {
+        let staticAllOptions = [];
+        data.forEach((row) => {
+          staticAllOptions = staticAllOptions.concat({
+            value: row.attribute_value,
+            label: row.attribute_value,
+          });
+        });
+        setModelValues(staticAllOptions);
+      })
+      .catch((e) => {
+        console.log("retrieveAllStaticData", e);
+      });
+  }
+
+  const callApiToGetZones = () => {
+    props
+    .retrieveAllStaticDataByZone()
+    .then((data) => {
+      let staticAllOptions = [];
+      data.data.forEach((row) => {
+        staticAllOptions = staticAllOptions.concat({
+          value: row.zone_val,
+          label: row.zone_val,
+        });
+      });
+      setZoneValues(staticAllOptions);
+    })
+    .catch((e) => {
+      console.log("retrieveAllStaticData", e);
+    });
+  }
+
+  const setPartnerData = (form, selected, from, selectedCountryData, selectedModelData, selectedZoneData) => {
+ 
+    if (from == "zone") {
+      if (selectedCountryData.length && selectedModelData.length && selectedZoneData) {
+        let filterForCountry = [];
+        let partnerList = [];
+        partnerList = DataReviewService.getValueForPartnerFunc();
+        selectedCountryData.forEach((selectedCountry) => {
+          partnerList.forEach((partnerEle) => {
+            if (selectedCountry.value == partnerEle.country_code) {
+              filterForCountry.push(partnerEle);
+            }
+          });
+        });
+        let againFilterForModelType = [];
+        selectedModelData.forEach((modelOption) => {
+          filterForCountry.forEach((countryWise) => {
+            if (modelOption.value == countryWise.modelType) {
+              againFilterForModelType.push(countryWise);
+            }
+          });
+        });
+        let againFilterForZone = [];
+        againFilterForModelType.forEach((countryAndModelWise) => {
+          if (selected == countryAndModelWise.zoneVal) {
+            againFilterForZone.push(countryAndModelWise);
+          }
+        });
+        let partnerOptions = [];
+        againFilterForZone.forEach((partnerData) => {
+          partnerOptions = partnerOptions.concat({
+            value: partnerData.value,
+            label: partnerData.label,
+            country_code: partnerData.country_code,
+            zoneVal: partnerData.zoneVal,
+            modelType: partnerData.modelType,
+          });
+        });
+        setPartnerDrpData(partnerOptions);
+      }
+    } else if (from == "model") {
+      if (selectedCountryData.length && selectedZoneData && selected) {
+        let filterForCountry = [];
+        let partnerList = [];
+        partnerList = DataReviewService.getValueForPartnerFunc();
+        selectedCountryData.forEach((selectedCountry) => {
+          partnerList.forEach((partnerEle) => {
+            if (selectedCountry.value == partnerEle.country_code) {
+              filterForCountry.push(partnerEle);
+            }
+          });
+        });
+        let againFilterForModelType = [];
+        selected.forEach((modelOption) => {
+          filterForCountry.forEach((countryWise) => {
+            if (modelOption.value == countryWise.modelType) {
+              againFilterForModelType.push(countryWise);
+            }
+          });
+        });
+        let againFilterForZone = [];
+        againFilterForModelType.forEach((countryAndModelWise) => {
+          if (selectedZoneData == countryAndModelWise.zoneVal) {
+            againFilterForZone.push(countryAndModelWise);
+          }
+        });
+        let partnerOptions = [];
+        againFilterForZone.forEach((partnerData) => {
+          partnerOptions = partnerOptions.concat({
+            value: partnerData.value,
+            label: partnerData.label,
+            country_code: partnerData.country_code,
+            zoneVal: partnerData.zoneVal,
+            modelType: partnerData.modelType,
+          });
+        });
+        setPartnerDrpData(partnerOptions);
+      }
+    } else if (from == "country") {
+      if (selectedModelData.length && selectedZoneData && selected.length) {
+        let filterForCountry = [];
+        let partnerList = [];
+        partnerList = DataReviewService.getValueForPartnerFunc();
+
+        selected.forEach((selectedCountry) => {
+          partnerList.forEach((partnerEle) => {
+            if (selectedCountry.value == partnerEle.country_code) {
+              filterForCountry.push(partnerEle);
+            }
+          });
+        });
+        let againFilterForModelType = [];
+        selectedModelData.forEach((modelOption) => {
+          filterForCountry.forEach((countryWise) => {
+            if (modelOption.value == countryWise.modelType) {
+              againFilterForModelType.push(countryWise);
+            }
+          });
+        });
+        let againFilterForZone = [];
+        againFilterForModelType.forEach((countryAndModelWise) => {
+          if (selectedZoneData == countryAndModelWise.zoneVal) {
+            againFilterForZone.push(countryAndModelWise);
+          }
+        });
+        let partnerOptions = [];
+        againFilterForZone.forEach((partnerData) => {
+          partnerOptions = partnerOptions.concat({
+            value: partnerData.value,
+            label: partnerData.label,
+            country_code: partnerData.country_code,
+            zoneVal: partnerData.zoneVal,
+            modelType: partnerData.modelType,
+          });
+        });
+        setPartnerDrpData(partnerOptions);
+      }
+    }
+
+    return;
+
+    //   if(form.modelType.length && form.usrzone) {
+
+    //   let partnerOptions = [];
+    //   countryOptions.forEach((partnerData) => {
+    //     partnerOptions = partnerOptions.concat({
+    //       value: partnerData.value,
+    //       label: partnerData.label,
+    //       country_code: partnerData.country_code
+    //     });
+    //   });
+    //   setPartnerDrpData(partnerOptions);
+    // }
+  };
+
   const handleCountryChange = (selected) => {
-    let partnerList = [];
-    partnerList = DataReviewService.getValueForPartnerFunc();
+    DataReviewService.setSelectedCountry(selected);
+    setPartnerDrpData([]);
     let name = "usrcountry";
     setOptionCountrySelected(selected);
     setForm((prev) => ({
@@ -397,29 +577,17 @@ function SaveUser(props) {
     } else {
       onValidate(false, name);
     }
-    let countryOptions = [];
-    selected.forEach((selectedCountry) => {
-      partnerList.forEach(partnerEle => {
-        if(selectedCountry.value == partnerEle.country_code) {
-          countryOptions.push(partnerEle)
-        }
-      });
-    });
-    let partnerOptions = [];   
-    countryOptions.forEach((partnerData) => {
-      partnerOptions = partnerOptions.concat({
-        value: partnerData.value,
-        label: partnerData.label,
-        country_code: partnerData.country_code
-      });
-    });
-    setPartnerDrpData(partnerOptions);
-    //set data
-  //  setCountryData(countryOptions);
+      setPartnerData(form, selected, "country", selected, DataReviewService.getSelectedModel(), DataReviewService.getSelectedZone());
+   
 
+    //set data
+    //  setCountryData(countryOptions);
   };
 
   const handleModelChange = (selected) => {
+    DataReviewService.setSelectedModel(selected);
+    setPartnerDrpData([]);
+
     let name = "modelType";
     setOptionModelSelected(selected);
     setForm((prev) => ({
@@ -432,6 +600,7 @@ function SaveUser(props) {
     } else {
       onValidate(false, name);
     }
+      setPartnerData(form, selected, "model", DataReviewService.getSelectedCountry(), selected, DataReviewService.getSelectedZone());
   };
 
   const handlePartnerChange = (selected) => {
@@ -447,10 +616,6 @@ function SaveUser(props) {
     } else {
       onValidate(false, name);
     }
-
-    //call api
-    // let partnerId = selected[0]?selected.value:'';
-    // console.log('partnerId',partnerId);
     props
       .retrieveAllUserRoleConfig() //i/p for test purpose
       .then((data) => {
@@ -466,21 +631,17 @@ function SaveUser(props) {
       });
   };
 
-  const handleIsDisabledChkChange = (selected) => {
-    let name = "isDisabled";
-    console.log('handleIsDisabledChkChange', selected);
-    setisDisabledUser(selected.target.checked);
-    setForm((prev) => ({
-      ...prev,
-      [name]: selected.target.checked,
-    }));
-  }
-
   const onHandleSelectChange = useCallback((value, name) => {
+    
+    setPartnerDrpData([]);
     setForm((prev) => ({
       ...prev,
       [name]: value,
     }));
+    if (name == "usrzone") {
+      DataReviewService.setSelectedZone(value);
+      setPartnerData(form, value, "zone", DataReviewService.getSelectedCountry(), DataReviewService.getSelectedModel(), value);
+    }
   }, []);
 
   const resetForm = () => {
@@ -504,7 +665,6 @@ function SaveUser(props) {
     handlePartnerChange([]);
     handleModelChange([]);
     handleCountryChange([]);
-
   };
 
   const onHandleTextChange = useCallback((event) => {
@@ -561,7 +721,6 @@ function SaveUser(props) {
       otherErrors.push("Email is not in correct format. eg. jean@se.com");
     }
 
-    console.log("errors", otherErrors);
     if (otherErrors.length > 0) {
       isInvalid = true;
     } else {
@@ -599,18 +758,7 @@ function SaveUser(props) {
     content: errorRet,
   };
 
-  const getPartnerCountryCode = (partnerID) => {
-   let listOfPartner = DataReviewService.getValueForPartnerFunc();
-   console.log('listOfPartner::::', listOfPartner);
-   listOfPartner.forEach(element => {
-    if(element.value == partnerID) {
-      return element.country_code
-    }
-   });
-  }
-
   const upsertUserProfile = (data) => {
-    console.log('upsertUserpfoile', data);
     let payload = {
       partner_id: null,
       role_id: null,
@@ -630,11 +778,10 @@ function SaveUser(props) {
     let isError = false;
 
     if (data.partnerAccNm) {
-      console.log("data.partnerAccNm", data.partnerAccNm);
-      data.partnerAccNm.forEach( (row)  => {
+      data.partnerAccNm.forEach((row) => {
         payload.partner_id = row.value; //partner id from multiselect drp
         payload.role_id = data.userrole;
-        payload.country_code =  row.country_code;
+        payload.country_code = row.country_code;
         payload.email_id = data.useremailid;
 
         switch (data.userrole.toUpperCase()) {
@@ -660,8 +807,7 @@ function SaveUser(props) {
 
         props
           .createUserPartnerRoleConfig(payload)
-          .then((data) => {
-          })
+          .then((data) => {})
           .catch((e) => {
             isError = true;
             setShowSuccessModal(false);
@@ -676,16 +822,14 @@ function SaveUser(props) {
     if (!isError) {
       setShowSuccessModal(true);
       setShowErrorModal(false);
-      if(props.module === "Create"){
-        resetForm();
-      }
+      resetForm();
     }
   };
 
   const handleSubmit = () => {
     const isValid = validateForm();
     if (!isValid) {
-      setShowErrorModal(true)
+      setShowErrorModal(true);
       return false;
     }
     //api call
@@ -693,16 +837,6 @@ function SaveUser(props) {
       postForm();
     }
   };
-  
-  //inactive set only by admin to block sso login, by default it should be active/pending 
-  const getUserStatusUpdate = (isDisabled) => {
-    console.log('getUserStatusUpdate', isDisabled);
-    if(isDisabled == null || userRoleData !== roles.admin.toUpperCase()){
-      return userRole === roles.admin.toUpperCase() ? status.active : status.pending;
-    } else {
-      return isDisabled === true ? status.active : status.disabled;
-    }
-  }
 
   const postForm = () => {
     let userData = {
@@ -710,7 +844,8 @@ function SaveUser(props) {
       role_id: form.userrole,
       first_name: form.firstname,
       last_name: form.lastname,
-      status: getUserStatusUpdate(form.isDisabled), //only admin can directly create user
+      status:
+        userRole == roles.admin.toUpperCase() ? status.active : status.pending, //only admin can directly create user
       modified_by: userEmail, //login user email id
       created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
       modified_date: getAPIDateFormatWithTime(new Date().toUTCString()),
@@ -727,26 +862,23 @@ function SaveUser(props) {
       props
         .createUserProfileConfig(userData)
         .then((data) => {
-let newOne = form;
-console.log('form that will go to Upsert:::', newOne);
-let accountDetails = newOne.partnerAccNm;
-let listOfPartner = DataReviewService.getValueForPartnerFunc();
-let newAccountArray = [];
-accountDetails.forEach(element => {
- 
-  listOfPartner.forEach(elementPartner => {
-   if(element.value == elementPartner.value) {
-    let obj = {
-      value: element.value,
-      label: element.label,
-      country_code: elementPartner.country_code
-    }
-    newAccountArray.push(obj);
-   }
-  });
-});
-newOne.partnerAccNm = newAccountArray;
-
+          let newOne = form;
+          let accountDetails = newOne.partnerAccNm;
+          let listOfPartner = DataReviewService.getValueForPartnerFunc();
+          let newAccountArray = [];
+          accountDetails.forEach((element) => {
+            listOfPartner.forEach((elementPartner) => {
+              if (element.value == elementPartner.value) {
+                let obj = {
+                  value: element.value,
+                  label: element.label,
+                  country_code: elementPartner.country_code,
+                };
+                newAccountArray.push(obj);
+              }
+            });
+          });
+          newOne.partnerAccNm = newAccountArray;
 
           upsertUserProfile(newOne);
         })
@@ -914,6 +1046,18 @@ newOne.partnerAccNm = newAccountArray;
                   <Form.Label size="sm" htmlFor="useremailid">
                     User email ID
                   </Form.Label>
+                  &nbsp;
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={tooltip(
+                      "Enter name to search or select from dropdown"
+                    )}
+                  >
+                    <span>
+                      <BiHelpCircle />
+                    </span>
+                  </OverlayTrigger>
+                  <br />
                   <input
                     type="text"
                     name="useremailid"
@@ -942,8 +1086,9 @@ newOne.partnerAccNm = newAccountArray;
                     name="userrole"
                     title="User Role"
                     value={form.userrole} // staticData
-					          isDisabled={
-                      props.module === "Update" && userRoleData !== roles.admin.toUpperCase()
+                    isDisabled={
+                      props.module === "Update" &&
+                      userRoleData !== roles.admin.toUpperCase()
                     }
                     options={staticData.filter(
                       (data) => data.category === "role_id"
@@ -984,9 +1129,7 @@ newOne.partnerAccNm = newAccountArray;
                     name="usrzone"
                     title="Zone"
                     value={form.usrzone}
-                    options={staticData.filter(
-                      (data) => data.category === "zone_val"
-                    )}
+                    options={zoneValues}
                     onChangeFunc={onHandleSelectChange}
                     {...error.usrzone}
                   />
@@ -996,9 +1139,7 @@ newOne.partnerAccNm = newAccountArray;
                     Model Type
                   </Form.Label>
                   <MultiSelectDrp
-                    options={staticData.filter(
-                      (data) => data.category === "model_val"
-                    )}
+                    options={modelValues}
                     isMulti
                     closeMenuOnSelect={false}
                     name="modelType"
@@ -1051,7 +1192,7 @@ newOne.partnerAccNm = newAccountArray;
                     value={optionCountrySelected}
                     inputId="usrcountry"
                     name="usrcountry"
-                    onChange={handleCountryChange }
+                    onChange={handleCountryChange}
                   />
                   {error.usrcountry.errorMsg && (
                     <span className="text-danger">
@@ -1107,28 +1248,6 @@ newOne.partnerAccNm = newAccountArray;
                     )}
                 </Col>
               </Row>
-              <br />
-              {props.module == "Update" && userRoleData == roles.admin.toUpperCase() && (
-              <Row className="username-header">
-                <Col className="col-3">
-                  <Form.Label size="sm" htmlFor="isDisabledUsr">
-                  <Form.Check
-                    size="sm"
-                    reverse
-                    type={'switch'}
-                    name="frmisDisabled"
-                    label={`Allow SSO login`}
-                    id={`isDisabledUsr`}
-                    value={form.isDisabled}
-                    checked={form.isDisabled}
-                    onChange={(item) => {
-                      handleIsDisabledChkChange(item);
-                    }}
-                  />
-                  </Form.Label>
-                </Col>
-              </Row>
-              )}
             </Card>
             <div>
               <Row className="mb-3" style={{ float: "right", padding: "20px" }}>
@@ -1179,4 +1298,6 @@ export default connect(null, {
   retrieveByEmailId,
   retrieveAllUserRoleConfig,
   retrieveUserRoleConfigByEmailIdRoleId,
+  retrieveStaticDataByAttrName,
+  retrieveAllStaticDataByZone
 })(SaveUser);

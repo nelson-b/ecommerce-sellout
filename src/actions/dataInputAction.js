@@ -23,9 +23,9 @@ export const createData = (data) => async (dispatch) => {
   }
 };
 
-export const retrieveAllData = (user, year, role) => async (dispatch) => {
+export const retrieveAllData = (user, year, role, monthArray) => async (dispatch) => {
   try {
-    const res = await dataInputServices.getAll(user, year, role);
+    const res = await dataInputServices.getAll(user, year, role, monthArray);
 
     dispatch({
       type: RETRIEVE_ALL_DATA_INPUT,

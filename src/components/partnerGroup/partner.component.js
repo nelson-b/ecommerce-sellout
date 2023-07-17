@@ -41,6 +41,7 @@ import {
   getUIDateFormat,
   getUIDateFormatToCompare,
 } from "../../helper/helper.js";
+import { TailSpin} from "react-loader-spinner";
 
 function PartnerComponent(props) {
   const navigate = useNavigate();
@@ -48,6 +49,8 @@ function PartnerComponent(props) {
   //sso login func
   const [userEmail, setUserEmail] = useState("");
   const [userRoleData, setUserRoleData] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
@@ -318,49 +321,29 @@ function PartnerComponent(props) {
     reqData,
     isCreateScreen
   ) => {
-    
-    // let reqUserPartConfData = {
-    //   partner_id: partner_id,
-    //   role_id: userRoleData,
-    //   country_code: reqData.country_code,
-    //   email_id: userEmail, //login user email
-    //   created_by: userEmail, //login user email
-    //   created_date: getAPIDateFormatWithTime(new Date().toUTCString()),
-    //   updated_by: userEmail, //login user email
-    //   editor: reqData.editor? reqData.editor :"",
-    //   backup_editor: reqData.backupEditor?reqData.backupEditor : "", 
-    //   approve_1: reqData.approver1?reqData.approver1: "",
-    //   approver_2: reqData.approver2?reqData.approver2: "",
-    //   supervisor: "", //super usr
-    //   supervisor_approv_1_2: "", //super approver usr
-    // };
-
     let obj = {};
-    if(userRoleData == 'EDITOR') {
-      obj.editor= userEmail;
-      obj.backup_editor = '';
-      obj.approve_1 = '';
-      obj.approver_2 = '';
-    }
-   else if(userRoleData == 'APPROVE_1') {
-      obj.editor= '';
-      obj.backup_editor = '';
+    if (userRoleData == "EDITOR") {
+      obj.editor = userEmail;
+      obj.backup_editor = "";
+      obj.approve_1 = "";
+      obj.approver_2 = "";
+    } else if (userRoleData == "APPROVE_1") {
+      obj.editor = "";
+      obj.backup_editor = "";
       obj.approve_1 = userEmail;
-      obj.approver_2 = '';
-    }
-   else if(userRoleData == 'APPROVER_2') {
-      obj.editor= '';
-      obj.backup_editor = '';
-      obj.approve_1 = '';
+      obj.approver_2 = "";
+    } else if (userRoleData == "APPROVER_2") {
+      obj.editor = "";
+      obj.backup_editor = "";
+      obj.approve_1 = "";
       obj.approver_2 = userEmail;
-    }
-   else if(userRoleData == 'BACKUP_EDITOR') {
-      obj.editor= '';
+    } else if (userRoleData == "BACKUP_EDITOR") {
+      obj.editor = "";
       obj.backup_editor = userEmail;
-      obj.approve_1 = '';
-      obj.approver_2 = '';
+      obj.approve_1 = "";
+      obj.approver_2 = "";
     } else {
-      obj.editor= reqData.editor;
+      obj.editor = reqData.editor;
       obj.backup_editor = reqData.backupEditor;
       obj.approve_1 = reqData.approver1;
       obj.approver_2 = reqData.approver2;
@@ -386,6 +369,7 @@ function PartnerComponent(props) {
     props
       .createUserPartnerRoleConfig(reqUserPartConfData)
       .then((data) => {
+        setLoading(false);
         console.log("createUserPartnerRoleConfig", data);
         if (isCreateScreen) {
           setSuccessRet(["Partner has been created successfully"]);
@@ -399,6 +383,7 @@ function PartnerComponent(props) {
         }
       })
       .catch((e) => {
+        setLoading(false);
         setShowSuccessModal(false);
         setErrorRet([]);
         setShowErrorModal(true);
@@ -420,7 +405,7 @@ function PartnerComponent(props) {
     }
     if (data.partner_id === "" || data.partner_id == undefined) {
       console.log("Calling create api");
-
+setLoading(true);
       let reqData = {
         platform_name: data.platform_name,
         country_code: data.country_code,
@@ -479,13 +464,14 @@ function PartnerComponent(props) {
               .createPartnerData(reqData)
               .then((data) => {
                 console.log("createPartnerData", data);
+             
                 //create user partner role config for higher level user
                 if (
                   userRoleData == roles.supervisor.toUpperCase() ||
                   userRoleData == roles.supervisor_approv_1_2.toUpperCase() ||
                   userRoleData == roles.admin.toUpperCase() ||
-                  userRoleData == roles.editor.toUpperCase()||  
-                  userRoleData == roles.approve_1.toUpperCase() || 
+                  userRoleData == roles.editor.toUpperCase() ||
+                  userRoleData == roles.approve_1.toUpperCase() ||
                   userRoleData == roles.approver_2.toUpperCase()
                 ) {
                   //call get by id api
@@ -508,34 +494,47 @@ function PartnerComponent(props) {
                       );
                     })
                     .catch((e) => {
+                      setLoading(false);
                       console.log(e);
                     });
                 } else {
                   setSuccessRet(["Partner has been created successfully"]);
+                  setLoading(false);
                   setShowSuccessModal(true);
                   setShowErrorModal(false);
                   document.getElementById("partner-form").reset();
                 }
               })
               .catch((e) => {
+                setLoading(false);
                 setShowSuccessModal(false);
                 setErrorRet([]);
                 setShowErrorModal(true);
                 console.log("Error", e);
               });
+          } else {
+            setLoading(false);
           }
         })
         .catch((e) => {
+          setLoading(false);
           console.log(e);
         });
     } else {
+      console.log('data.partner_status:', data.partner_status);
+      console.log('data.deactivation_date::', data.deactivation_date);
+
       let statusCustom = data.partner_status;
       if (
         userRoleData == roles.editor.toUpperCase() ||
         userRoleData == roles.approve_1.toUpperCase() ||
         userRoleData == roles.approver_2.toUpperCase()
       ) {
-        statusCustom = "EDITED";
+        if(data.deactivation_date){
+          statusCustom = "TOBECLOSED";
+        } else {
+          statusCustom = "EDITED";
+        }
       }
       let reqData = {
         partner_id: data.partner_id,
@@ -733,7 +732,11 @@ function PartnerComponent(props) {
                         defaultValue={partnerData.platform_name}
                         {...(props.module === "Create" && {
                           ...register("platform_name", {
-                            required: "Platform name is required"
+                            required: "Platform name is required",
+                            // pattern: {
+                            //   value: /^[a-zA-Z ]*$/i,
+                            //   message: "Platform name can have only alphabets",
+                            // },
                           }),
                         })}
                       />
@@ -850,7 +853,11 @@ function PartnerComponent(props) {
                         defaultValue={partnerData.reseller_name}
                         type="text"
                         {...register("reseller_name", {
-                          required: "Reseller name is required"
+                          required: "Reseller name is required",
+                          // pattern: {
+                          //   value: /^[a-zA-Z ]*$/i,
+                          //   message: "Reseller name can have only alphabets",
+                          // },
                         })}
                       />
                       {errors.reseller_name && (
@@ -1031,11 +1038,11 @@ function PartnerComponent(props) {
                         defaultValue={partnerData.partner_url}
                         {...register("partner_url", {
                           required: "URL Address of Partner is required",
-                          pattern: {
-                            value:
-                              /^((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?)*$/i,
-                            message: "URL format incorrect",
-                          },
+                          // pattern: {
+                          //   value:
+                          //     /^((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?)*$/i,
+                          //   message: "URL format incorrect",
+                          // },
                         })}
                       />
                       {errors.partner_url && (
@@ -1160,7 +1167,7 @@ function PartnerComponent(props) {
                           required: "E2 Playbook Type is required",
                         })}
                       >
-                        <option value="Not applicable">Not applicable</option>
+                     
                         {/* <option value={"type1"}>Type 1</option>
                         <option value={"type2"}>Type 2</option>
                         <option value={"E2"}>E2</option> */}
@@ -1315,7 +1322,12 @@ function PartnerComponent(props) {
                             className="field-Prop"
                             defaultValue={partnerData.deactivation_date}
                             type="date"
-                            {...register("deactivation_date", {})}
+                            {...register("deactivation_date", {
+                              required:
+                                partnerData.status !== "ACTIVE"
+                                  ? "Deactivation Date is required"
+                                  : undefined,
+                            })}
                           />
                           {errors.deactivation_date && (
                             <Form.Text className="text-danger">
@@ -1336,9 +1348,13 @@ function PartnerComponent(props) {
                           id="deactivation_reason"
                           name="deactivation_reason"
                           defaultValue={partnerData.deactivation_reason}
-                          {...register("deactivation_reason", {})}
+                          {...register("deactivation_reason", {
+                            required:
+                              partnerData.status !== "ACTIVE"
+                                ? "Deactivation reason is required"
+                                : undefined,
+                          })}
                         >
-                          <option value="">Not applicable</option>
                           {staticData &&
                             staticData
                               .filter(
@@ -1393,7 +1409,7 @@ function PartnerComponent(props) {
                           <option value=""></option>
                           {usrRoleData &&
                             usrRoleData
-                              .filter((role) => role.role_id == "EDITOR")
+                              .filter((role) => role.role_id == "EDITOR" && role.status == "ACTIVE")
                               .map((row) => (
                                 <option value={row.email_id}>{`${
                                   row.first_name + " " + row.last_name
@@ -1434,7 +1450,7 @@ function PartnerComponent(props) {
                           <option value=""></option>
                           {usrRoleData &&
                             usrRoleData
-                              .filter((role) => role.role_id == "BACKUP_EDITOR")
+                              .filter((role) => role.role_id == "BACKUP_EDITOR" && role.status == "ACTIVE")
                               .map((row) => (
                                 <option value={row.email_id}>{`${
                                   row.first_name + " " + row.last_name
@@ -1474,7 +1490,7 @@ function PartnerComponent(props) {
                           <option value=""></option>
                           {usrRoleData &&
                             usrRoleData
-                              .filter((role) => role.role_id == "APPROVE_1")
+                              .filter((role) => role.role_id == "APPROVE_1" && role.status == "ACTIVE")
                               .map((row) => (
                                 <option value={row.email_id}>{`${
                                   row.first_name + " " + row.last_name
@@ -1514,7 +1530,7 @@ function PartnerComponent(props) {
                           <option value=""></option>
                           {usrRoleData &&
                             usrRoleData
-                              .filter((role) => role.role_id == "APPROVER_2")
+                              .filter((role) => role.role_id == "APPROVER_2" && role.status == "ACTIVE")
                               .map((row) => (
                                 <option value={row.email_id}>{`${
                                   row.first_name + " " + row.last_name
@@ -1561,7 +1577,13 @@ function PartnerComponent(props) {
               </Col>
               <Col xs="auto">
                 <Button className="btn-upload save-header" type="submit">
-                  {props.module}
+                  {loading?(
+                    <TailSpin color="white" height={25} width={25}/>
+                  ):(
+                      props.module
+                    
+                  )}
+               
                 </Button>
                 <AlertModel
                   show={showSuccessModal}
