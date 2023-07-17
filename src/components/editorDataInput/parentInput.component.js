@@ -237,9 +237,9 @@ function DataInputComponent(props) {
         let approvalStatus =0;
         let abcData =  seriousDataForMonths.filter((e) =>e.month_val == element.toLowerCase());
             if(amount == abcData[0].sellout_local_currency) {
-              approvalStatus = abcData[0].approval_status;
+              approvalStatus = abcData[0]?.approval_status.toString();
             } else {
-              approvalStatus = 0;
+              approvalStatus = '0';
             }
           if (amount) {
           } else {
@@ -251,7 +251,7 @@ function DataInputComponent(props) {
               sellout_local_currency: String(amount),
               trans_type:
                 rowNode.data[`${element}_Estimated`] == true ? "EST" : "ACT",
-                approval_status: '0'
+                approval_status: approvalStatus
             });
           }
      
@@ -271,7 +271,7 @@ function DataInputComponent(props) {
         editor_comment: rowNode.data.Comment,
         comments: '',
         batch_upload_flag: rowNode.data.batch_upload_flag,
-        approved_date: new Date().toISOString().replace("T", " ").slice(0, -5),
+        approved_date: rowNode.data.approved_date,
         opening_date : openingDates,
         closing_date: closingDates,
         CURRENT_QUARTER_MONTHS:lowerCaseMonths

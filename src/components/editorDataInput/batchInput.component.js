@@ -415,6 +415,7 @@ function BatchInputComponent({
                 editor_comment: "",
                 comments: "",
                 batch_upload_flag: "true",
+                approved_date: rowNode.approved_date?rowNode.approved_date:null,
                 CURRENT_QUARTER_MONTHS: lowerCaseMonths,
                 opening_date: openingDate,
                 closing_date: closingDate,

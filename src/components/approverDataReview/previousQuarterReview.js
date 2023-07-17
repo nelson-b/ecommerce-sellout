@@ -84,7 +84,7 @@ function PartnerQuarterApprover(props) {
     { name: "Euro", value: "2" },
   ];
 
-  const handleValidate = (activeData, opening, closing) => {
+  const handleValidate = (activeData, opening, closing, type) => {
     const usrDetails = JSON.parse(localStorage.getItem(user_login_info));
 
     let q2Values = getCurrentQuarterForPostAPI();
@@ -94,13 +94,19 @@ function PartnerQuarterApprover(props) {
 : usrDetails.role_id == roles.approver_2.toUpperCase()
 ? "2"
 : "5";
+if(type == 'reject'){
+  approvalStatus = '3';
+}
     q2Values.forEach((element) => {
       lowerCaseMonths.push(element.toLowerCase());
     });
     activeData[0].CURRENT_QUARTER_MONTHS = lowerCaseMonths;
     activeData[0].opening_date = opening;
     activeData[0].closing_date = closing;
+    activeData[0].approval_status = approvalStatus;
     activeData[0].months[0].approval_status = approvalStatus;
+    activeData[0].approved_date = new Date().toISOString().replace("T", " ").slice(0, -5);
+
     if (usrDetails) {
       setUserEmail(usrDetails.email_id);
       setuserRole(usrDetails.role_id);
@@ -136,7 +142,7 @@ function PartnerQuarterApprover(props) {
       country_code: data.country_code,
       year_val: JSON.stringify(new Date().getFullYear()),
       months: monthArray,
-      trans_currency_code: "DOL",
+      trans_currency_code: data.trans_currency_code?data.trans_currency_code: '',
       created_by: data.created_by?data.created_by:userEmail,
       modified_by: userEmail,
       created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
@@ -165,7 +171,7 @@ function PartnerQuarterApprover(props) {
         "REJECT"
       );
 
-      handleValidate(reqData, openingDate, closingDate);
+      handleValidate(reqData, openingDate, closingDate, 'reject');
     };
     const invokeValidate = () => {
       let reqData = rejectData(
@@ -174,7 +180,7 @@ function PartnerQuarterApprover(props) {
         ),
         "VALIDATE"
       );
-      handleValidate(reqData, openingDate, closingDate);
+      handleValidate(reqData, openingDate, closingDate, 'approve');
     };
 
     return (
@@ -574,12 +580,12 @@ let approvalStatus = usrDetails.role_id == roles.approve_1.toUpperCase()
          country_code: e.country_code,
          year_val: JSON.stringify(new Date().getFullYear()),
          months: monthArray,
-         trans_currency_code: "DOL",
+         trans_currency_code: e.trans_currency_code?e.trans_currency_code: '',
          created_by: e.created_by,
          created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
          modified_by: usrDetails.email_id,
          approval_status:approvalStatus,
-        
+        approved_date: new Date().toISOString().replace("T", " ").slice(0, -5),
          editor_comment: e.editor_comment,
          comments: "waiting for approver",
          batch_upload_flag: "false",
@@ -671,7 +677,7 @@ let approvalStatus = usrDetails.role_id == roles.approve_1.toUpperCase()
       country_code: element.country_code,
       year_val: onlyYear.toString(),
       months: monthObj,
-      trans_currency_code: '',
+      trans_currency_code: element.trans_currency_code?element.trans_currency_code:'',
       created_by: element?.created_by?element.created_by:usrDetails.email_id,
       modified_by:usrDetails.email_id,
       created_date: new Date().toISOString().replace("T", " ").slice(0, -5),
